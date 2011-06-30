@@ -1,0 +1,52 @@
+Name:               HaskellCourse
+Version:            0.0.3
+License:            BSD3
+License-File:       LICENSE
+Author:             Tony Morris <tmorris@tmorris.net>
+Maintainer:         Tony Morris
+Homepage:           https://bitbucket.org/dibblego/haskell-course
+Synopsis:           Source code for a functional programming course
+Category:           Education
+Description:        Source code for a course in functional programming using Haskell
+Cabal-version:      >= 1.2
+Build-Type:         Simple
+
+Flag small_base
+  Description:      Choose the new, split-up base package.
+
+Library
+  Build-Depends:    base < 5 && >= 4,
+                    split,
+                    containers,
+                    array,
+                    directory,
+                    filepath,
+                    HUnit,
+                    QuickCheck,
+                    test-framework,
+                    test-framework-hunit,
+                    test-framework-quickcheck2
+
+  GHC-Options:      -Wall
+                    -fno-warn-orphans
+                    -fno-warn-type-defaults
+                    -fno-warn-name-shadowing
+                    -fno-warn-unused-do-bind
+
+  Exposed-Modules:  Answer.Replace
+                    Course
+                    L01.Optional
+                    L01.Validation
+                    L02.List
+                    L03.Person
+                    L03.Parser
+                    L04.Fluffy
+                    L04.Misty
+                    L04.Tests
+                    L05.Testing
+                    L06.JsonValue
+                    L06.MoreParser
+                    L06.JsonParser
+                    L07.Anagrams
+                    L08.FastAnagrams
+                    L09.EditDistance
