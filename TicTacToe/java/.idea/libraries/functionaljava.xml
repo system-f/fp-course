@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="functionaljava">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/functionaljava-3.1-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/functionaljava-3.1-SNAPSHOT-docs.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/functionaljava-3.1-SNAPSHOT-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

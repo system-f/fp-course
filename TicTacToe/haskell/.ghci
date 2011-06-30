@@ -1,0 +1,9 @@
+:m + Test.QuickCheck
+:l Data/TicTacToe.hs Test/Data/TicTacToe.hs
+:set prompt ">> "
+:set -XMonomorphismRestriction
+:set -W
+:set -fwarn-incomplete-record-updates
+:set -fwarn-missing-signatures
+:set -fwarn-tabs
+
