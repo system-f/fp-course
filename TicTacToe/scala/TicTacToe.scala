@@ -232,7 +232,7 @@ sealed trait FinishedBoard extends BoardLike {
     }
 
   def takeBack = board.takeBack.fold(
-    error("Broken invariant: board in-play with empty move list. This is a program bug")
+    sys.error("Broken invariant: board in-play with empty move list. This is a program bug")
   , b => b)
 
   def whoseTurn = board.whoseTurn
@@ -300,6 +300,7 @@ object Main {
       if(line.isEmpty) None else Some(line(0))
     }
 
+    @annotation.tailrec
     def gameLoop[B](
                     inheritance: B => BoardLike
                   , move: (Position, B) => Unit
