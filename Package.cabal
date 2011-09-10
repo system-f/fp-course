@@ -9,7 +9,7 @@ Synopsis:           A skeleton for creating haskell packages
 Category:           Development
 Description:        A skeleton for creating haskell packages
 Homepage:           https://bitbucket.org/dibblego/haskell-package/
-Cabal-version:      >= 1.2
+Cabal-Version:      >= 1.2
 Build-Type:         Simple
 
 Flag small_base
@@ -26,5 +26,5 @@ Library
                     src
 
   Exposed-Modules:
-                      M
+                    M
 
