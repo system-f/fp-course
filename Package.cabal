@@ -9,10 +9,14 @@ Synopsis:           A skeleton for creating haskell packages
 Category:           Development
 Description:        A skeleton for creating haskell packages
 Homepage:           https://github.com/tonymorris/haskell-package
-Cabal-Version:      >= 1.2
+Cabal-Version:      >= 1.6
 Build-Type:         Simple
 
-Flag small_base
+Source-Repository   head
+  Type:             git
+  Location:         git@github.com:tonymorris/haskell-package.git
+
+Flag                small_base
   Description:      Choose the new, split-up base package.
 
 Library
