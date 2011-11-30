@@ -80,7 +80,7 @@ testcase_unicornOptional =
 testcase_jellybeanList ::
   Assertion
 testcase_jellybeanList =
-  jellybean ((1 :| 2 :| 3 :| Nil) :| ((1 :: Int) :| 2 :| Nil) :| Nil) @?= Nil
+  jellybean ((1 :| 2 :| 3 :| Nil) :| ((1 :: Int) :| 2 :| Nil) :| Nil) @?= 1 :| 2 :| 3 :| 1 :| 2 :| Nil
 
 testcase_jellybeanOptionalF ::
   Assertion
