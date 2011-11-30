@@ -136,3 +136,28 @@ reverse = error "todo"
 
 -- END Exercises
 
+-- BEGIN Utility
+
+all ::
+  (a -> Bool)
+  -> List a
+  -> Bool
+all p =
+  foldRight (&&) True . map p
+
+isEmpty ::
+  List a
+  -> Bool
+isEmpty Nil    = True
+isEmpty (_:|_) = False
+
+contains ::
+  Eq a =>
+  List a
+  -> a
+  -> Bool
+contains Nil    _ = False
+contains (h:|t) e = h == e || contains t e
+
+-- END Utility
+
