@@ -7,7 +7,6 @@ module Course
 , module L03.Parser
 , module L04.Fluffy
 , module L04.Misty
-, module L04.Tests
 , module L05.Testing
 , module L06.JsonValue
 , module L06.MoreParser
@@ -23,10 +22,9 @@ import L01.Optional
 import L01.Validation
 import L02.List
 import L03.Person
-import L03.Parser hiding (tests)
+import L03.Parser 
 import L04.Fluffy
 import L04.Misty
-import L04.Tests
 import L05.Testing hiding (tests)
 import L06.JsonValue
 import L06.MoreParser

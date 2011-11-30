@@ -46,7 +46,6 @@ Library
                     L03.Parser
                     L04.Fluffy
                     L04.Misty
-                    L04.Tests
                     L05.Testing
                     L06.JsonValue
                     L06.MoreParser
