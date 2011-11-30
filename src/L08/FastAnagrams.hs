@@ -12,7 +12,7 @@ fastAnagrams ::
   -> FilePath
   -> IO [String]
 fastAnagrams name f =
-  (flip (filter . flip S.member) (permutations name) . S.fromList . lines) `fmap` readFile f
+  error "todo"
 
 newtype NoCaseString =
   NoCaseString {
