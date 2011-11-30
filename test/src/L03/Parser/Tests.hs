@@ -33,47 +33,47 @@ test =
 testcase_noInput :: 
   Assertion
 testcase_noInput =
-  parse personParser "" @?= Error []
+  assert (isError (parse personParser ""))
 
 testcase_agePositive :: 
   Assertion
 testcase_agePositive =
-  parse personParser "12x Fred Clarkson m 123-456.789#" @?= Error []
+  assert (isError (parse personParser "12x Fred Clarkson m 123-456.789#"))
 
 testcase_firstNameCapital :: 
   Assertion
 testcase_firstNameCapital =
-  parse personParser "123 fred Clarkson m 123-456.789#" @?= Error []
+  assert (isError (parse personParser "123 fred Clarkson m 123-456.789#"))
 
 testcase_surname5 :: 
   Assertion
 testcase_surname5 =
-  parse personParser "123 Fred Cla m 123-456.789#" @?= Error []
+  assert (isError (parse personParser "123 Fred Cla m 123-456.789#"))
 
 testcase_surnameCapital :: 
   Assertion
 testcase_surnameCapital =
-  parse personParser "123 Fred clarkson m 123-456.789#" @?= Error []
+  assert (isError (parse personParser "123 Fred clarkson m 123-456.789#"))
 
 testcase_gender :: 
   Assertion
 testcase_gender =
-  parse personParser "123 Fred Clarkson x 123-456.789#" @?= Error []
+  assert (isError (parse personParser "123 Fred Clarkson x 123-456.789#"))
 
 testcase_phoneBody :: 
   Assertion
 testcase_phoneBody =
-  parse personParser "123 Fred Clarkson m 1x3-456.789#" @?= Error []
+  assert (isError (parse personParser "123 Fred Clarkson m 1x3-456.789#"))
 
 testcase_phoneStart :: 
   Assertion
 testcase_phoneStart =
-  parse personParser "123 Fred Clarkson m -123-456.789#" @?= Error []
+  assert (isError (parse personParser "123 Fred Clarkson m -123-456.789#"))
 
 testcase_phoneEnd :: 
   Assertion
 testcase_phoneEnd =
-  parse personParser "123 Fred Clarkson m 123-456.789" @?= Error []
+  assert (isError (parse personParser "123 Fred Clarkson m 123-456.789"))
 
 testcase_successNoMore :: 
   Assertion
