@@ -1,9 +1,7 @@
 -- + Complete the 10 exercises below by filling out the function bodies.
---   The code currently compiles, but none of the tests pass (the test function).
 --   Replace the function bodies (error "todo") with an appropriate solution.
 -- + These exercises may be done in any order, however:
 --   Exercises are generally increasing in difficulty, though some people may find later exercise easier.
---   The tests are written to execute in the order 1 to 10, so you need to have Exercise n passing before Exercise (n+1) passes.
 -- + Note the existence of the library function max :: Int -> Int -> Int which will help you with Exercise 9.
 -- + Bonus for using the provided functions or for using one exercise solution to help solve another.
 -- + Approach with your best available intuition; just dive in and do what you can!
