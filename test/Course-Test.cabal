@@ -6,7 +6,7 @@ Copyright:          Tony Morris
 Synopsis:           Tests for a functional programming course
 Category:           Development
 Description:        Tests for a functional programming course
-Homepage:           https://github.com/tonymorris/haskell-course
+Homepage:           https://github.com/tonymorris/course
 Cabal-Version:      >= 1.6
 Build-Type:         Simple
 
