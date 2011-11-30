@@ -4,7 +4,7 @@ License:            BSD3
 License-File:       LICENSE
 Author:             Tony Morris <tmorris@tmorris.net>
 Maintainer:         Tony Morris
-Homepage:           https://bitbucket.org/dibblego/haskell-course
+Homepage:           https://github.com/tonymorris/course
 Synopsis:           Source code for a functional programming course
 Category:           Education
 Description:        Source code for a course in functional programming using Haskell
