@@ -27,48 +27,57 @@ data BKTree a =
 empty ::
   BKTree a
 empty =
-  error "todo"
+  Leaf
 
 instance MetricSpace a => Monoid (BKTree a) where
   mempty =
-    error "todo"
-  mappend =
-    error "todo"
+    empty
+  t `mappend` u =
+    foldl' (flip (.:.)) t (asList u)
   mconcat =
-    error "todo"
+    foldl' mappend empty
 
 instance Foldable BKTree where
-  foldl =
-    error "todo"
-  foldr =
-    error "todo"
+  foldl f z =
+    foldl' f z . asList
+  foldr f z =
+    foldr f z . asList
 
 bktree ::
   (MetricSpace a, Foldable f) =>
   f a
   -> BKTree a
 bktree =
-  error "todo"
+  foldl' (flip (.:.)) empty
 
 null ::
   BKTree a
   -> Bool
-null =
-  error "todo"
+null Leaf =
+  True
+null (Node _ _ _) =
+  False
 
 size ::
   BKTree a
   -> Int
-size =
-  error "todo"
+size Leaf =
+  0
+size (Node _ s _) =
+  s
 
 (.:.) ::
   MetricSpace a =>
   a
   -> BKTree a
   -> BKTree a
-(.:.) =
-  error "todo"
+a .:. Leaf =
+  Node a 1 M.empty
+a .:. Node z s m =
+  let d = z <--> a
+  in Node z (s+1) (M.alter (\zz -> Just $! case zz of
+                                             Just w -> a .:. w
+                                             Nothing -> Node a 1 M.empty) d m)
 
 infixr 5 .:.
 
@@ -77,8 +86,11 @@ member ::
   a
   -> BKTree a
   -> Bool
-member =
-  error "todo"
+member _ Leaf =
+  False
+member a (Node z _ m) =
+  let d = z <--> a
+  in d == 0 || any (member a) (d `M.lookup` m)
 
 withinDistance ::
   MetricSpace a =>
@@ -86,20 +98,24 @@ withinDistance ::
   -> a
   -> BKTree a
   -> [(Int, a)]
-withinDistance =
-  error "todo"
+withinDistance _ _ Leaf =
+  []
+withinDistance n a t@(Node z _ _) =
+  let d = z <--> a
+      k = M.toList (usingMap (breakMap d n) M.empty t) >>= \(_, u) -> withinDistance n a u
+  in (if d <= n then ((d, z) :) else id) k
 
 fromWords ::
   String
   -> BKTree String
 fromWords =
-  error "todo"
+  bktree . words
 
 fromDictionaryFile ::
   FilePath
   -> IO (BKTree String)
-fromDictionaryFile =
-  error "todo"
+fromDictionaryFile p =
+  fmap fromWords $ readFile p
 
 -- not exported
 
