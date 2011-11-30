@@ -1,7 +1,6 @@
 module L04.Misty where
 
 import L01.Optional
-import L01.Validation
 import L02.List
 import L03.Parser
 
