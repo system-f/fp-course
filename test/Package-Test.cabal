@@ -1,0 +1,39 @@
+Name:               Haskell-Package-Test
+Version:            0.0.1
+Author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
+Maintainer:         Tony Morris
+Copyright:          Tony Morris
+Synopsis:           A skeleton for testing haskell packages
+Category:           Development
+Description:        A skeleton for testing haskell packages
+Homepage:           https://github.com/tonymorris/haskell-package
+Cabal-Version:      >= 1.6
+Build-Type:         Simple
+
+Source-Repository   head
+  Type:             git
+  Location:         git@github.com:tonymorris/haskell-package.git
+
+Flag                small_base
+  Description:      Choose the new, split-up base package.
+
+Executable          package-test
+  Hs-Source-Dirs:  
+                    ../src src
+
+  Main-Is: 
+                    Main.hs
+
+  Ghc-Options:
+                    -O2
+                    -Wall
+                    -fhpc
+                    -fwarn-tabs
+  
+  Build-Depends:  
+                   base < 5 && >= 3
+                   , QuickCheck
+                   , test-framework
+                   , test-framework-quickcheck2
+                   , test-framework-hunit
+

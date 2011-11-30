@@ -1,5 +1,5 @@
+:set -isrc
 :m + Test.QuickCheck
-:l Course.hs
 :m + Course
 :set prompt ">> "
 :set -Wall
