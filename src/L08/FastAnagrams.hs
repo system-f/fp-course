@@ -11,7 +11,7 @@ fastAnagrams ::
   String
   -> FilePath
   -> IO [String]
-fastAnagrams name f =
+fastAnagrams =
   error "todo"
 
 newtype NoCaseString =
