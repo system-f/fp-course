@@ -1,23 +1,23 @@
-Name:               Haskell-Package-Test
+Name:               HaskellCourse-Test
 Version:            0.0.1
 Author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
 Maintainer:         Tony Morris
 Copyright:          Tony Morris
-Synopsis:           A skeleton for testing haskell packages
+Synopsis:           Tests for a functional programming course
 Category:           Development
-Description:        A skeleton for testing haskell packages
-Homepage:           https://github.com/tonymorris/haskell-package
+Description:        Tests for a functional programming course
+Homepage:           https://github.com/tonymorris/haskell-course
 Cabal-Version:      >= 1.6
 Build-Type:         Simple
 
 Source-Repository   head
   Type:             git
-  Location:         git@github.com:tonymorris/haskell-package.git
+  Location:         git@github.com:tonymorris/haskell-course.git
 
 Flag                small_base
   Description:      Choose the new, split-up base package.
 
-Executable          package-test
+Executable          course-test
   Hs-Source-Dirs:  
                     ../src src
 
