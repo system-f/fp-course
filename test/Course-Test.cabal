@@ -1,5 +1,5 @@
-Name:               HaskellCourse-Test
-Version:            0.0.1
+Name:               Course-Test
+Version:            0.0.2
 Author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
 Maintainer:         Tony Morris
 Copyright:          Tony Morris
@@ -12,28 +12,25 @@ Build-Type:         Simple
 
 Source-Repository   head
   Type:             git
-  Location:         git@github.com:tonymorris/haskell-course.git
+  Location:         git@github.com:tonymorris/course.git
 
 Flag                small_base
   Description:      Choose the new, split-up base package.
 
 Executable          course-test
-  Hs-Source-Dirs:  
-                    ../src src
+  Build-Depends:    base < 5 && >= 3
+                    , QuickCheck
+                    , test-framework
+                    , test-framework-quickcheck2
+                    , test-framework-hunit
 
-  Main-Is: 
-                    Main.hs
-
-  Ghc-Options:
-                    -O2
+  Ghc-Options:      -O2
                     -Wall
                     -fhpc
                     -fwarn-tabs
   
-  Build-Depends:  
-                   base < 5 && >= 3
-                   , QuickCheck
-                   , test-framework
-                   , test-framework-quickcheck2
-                   , test-framework-hunit
+  Hs-Source-Dirs:   ../src src
 
+  Main-Is:          Main.hs
+
+  

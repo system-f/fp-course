@@ -1,5 +1,5 @@
-Name:               HaskellCourse
-Version:            0.0.3
+Name:               Course
+Version:            0.0.4
 License:            BSD3
 License-File:       LICENSE
 Author:             Tony Morris <tmorris@tmorris.net>
@@ -11,21 +11,22 @@ Description:        Source code for a course in functional programming using Has
 Cabal-version:      >= 1.2
 Build-Type:         Simple
 
-Flag small_base
+Source-Repository   head
+  Type:             git
+  Location:         git@github.com:tonymorris/course.git
+
+Flag                small_base
   Description:      Choose the new, split-up base package.
 
 Library
-  Build-Depends:    base < 5 && >= 4,
-                    split,
-                    containers,
-                    array,
-                    directory,
-                    filepath,
-                    HUnit,
-                    QuickCheck,
-                    test-framework,
-                    test-framework-hunit,
-                    test-framework-quickcheck2
+  Build-Depends:    base < 5 && >= 4
+                    , HUnit
+                    , containers
+                    , array
+                    , QuickCheck
+                    , test-framework
+                    , test-framework-hunit
+                    , test-framework-quickcheck2
 
   GHC-Options:      -Wall
                     -fno-warn-orphans
@@ -33,8 +34,9 @@ Library
                     -fno-warn-name-shadowing
                     -fno-warn-unused-do-bind
 
-  Exposed-Modules:  Answer.Replace
-                    Course
+  Hs-Source-Dirs:   src
+
+  Exposed-Modules:  Course
                     L01.Optional
                     L01.Validation
                     L02.List
