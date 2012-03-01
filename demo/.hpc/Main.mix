@@ -1,1 +1,0 @@
-Mix "src/Main.hs" 1330561821 2065620214 1 [(6:12-6:15,ExpBox False),(6:3-6:15,ExpBox False),(5:1-6:15,TopLevelBox ["main"])]
