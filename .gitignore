@@ -1,3 +1,19 @@
+*~
+*#*
+
+# CABAL
 dist
+
+# Haskell Program Coverage
 .hpc
+
+# Leksah
 *.lkshs
+
+# Intellij IDEA
+.idea/workspace.xml
+.idea/ant.xml
+
+# ctags
+TAGS
+
