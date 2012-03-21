@@ -23,11 +23,11 @@ test =
     [
       testProperty "headOr defaults with Nil" prop_headOr_Nil
     , testProperty "headOr uses head with non-empty" prop_headOr_Cons
-    , testProperty "sum reduces to zero with subtraction" prop_sum
-    , testProperty "length reduces to zero with subtraction" prop_length
+    , testProperty "sum reduces to zero with subtraction" prop_suum
+    , testProperty "length reduces to zero with subtraction" prop_len
     , testProperty "map obeys law of identity" prop_map_identity
     , testProperty "map obeys law of composition" prop_map_composition
-    , testProperty "filter leaves only valid values" prop_filter
+    , testProperty "filter leaves only valid values" prop_fiilter
     , testProperty "append produces a list with the sum of the lengths" prop_append
     , testProperty "flatten sums the lengths" prop_flatten
     , testProperty "flatMap obeys law of left identity" prop_flatMap_left_identity
@@ -35,10 +35,8 @@ test =
     , testProperty "flatMap obeys law of associativity" prop_flatMap_associativity
     , testProperty "flatMap with id flattens" prop_flatMap_id_flattens
     , testProperty "flatMap obeys functor relationship" prop_flatMap_functor
-    , testProperty "maximum is greater or equal to other elements" prop_maximum
-    , testProperty "appending maximums is equal to maximum of appended" prop_maximum_append
-    , testProperty "reverse with single value" prop_reverse_single_value
-    , testProperty "appending reverse is equal to reversing appended" prop_reverse_append
+    , testProperty "reverse with single value" prop_rev_single_value
+    , testProperty "appending reverse is equal to reversing appended" prop_rev_append
     ]
 
 prop_headOr_Nil ::
@@ -55,23 +53,23 @@ prop_headOr_Cons ::
 prop_headOr_Cons h t x =
   headOr (h :| t) x == h
 
-prop_sum ::
+prop_suum ::
   List Int
   -> Bool
-prop_sum x =
-  foldLeft (-) (sum x) x == 0
+prop_suum x =
+  foldLeft (-) (suum x) x == 0
 
-prop_length ::
+prop_len ::
   List Int
   -> Bool
-prop_length x =
-  foldLeft (const . pred) (length x) x == 0
+prop_len x =
+  foldLeft (const . pred) (len x) x == 0
 
 prop_map_identity ::
   List Int
   -> Bool
 prop_map_identity x =
-  map id x == x
+  maap id x == x
 
 prop_map_composition ::
   Fun Int Int
@@ -79,28 +77,28 @@ prop_map_composition ::
   -> List Int
   -> Bool
 prop_map_composition (Fun _ f) (Fun _ g) x =
-  map f (map g x) == map (f . g) x
+  maap f (maap g x) == maap (f . g) x
 
-prop_filter ::
+prop_fiilter ::
   Fun Int Bool
   -> List Int
   -> Bool
-prop_filter (Fun _ p) x =
-  foldRight (\a b -> p a && b) True (filter p x) &&
-  foldRight (\a b -> not (p a) && b) True (filter (not . p) x)
+prop_fiilter (Fun _ p) x =
+  foldRight (\a b -> p a && b) True (fiilter p x) &&
+  foldRight (\a b -> not (p a) && b) True (fiilter (not . p) x)
 
 prop_append ::
   List Int
   -> List Int
   -> Bool
 prop_append x y =
-  length x + length y == length (append x y)
+  len x + len y == len (append x y)
 
 prop_flatten ::
   List (List Int)
   -> Bool
 prop_flatten x =
-  length (flatten x) == sum (map length x)
+  len (flatten x) == suum (maap len x)
 
 prop_flatMap_right_identity ::
   List Int
@@ -134,32 +132,18 @@ prop_flatMap_functor ::
   -> List Int
   -> Bool
 prop_flatMap_functor (Fun _ f) x =
-  map f x == flatMap (\w -> f w :| Nil) x
+  maap f x == flatMap (\w -> f w :| Nil) x
 
-prop_maximum ::
-  List Int
-  -> Property 
-prop_maximum x = 
-  let m = maximum x
-  in (x /= Nil) ==> foldRight (\a b -> m >= a && b) True x
-
-prop_maximum_append ::
-  List Int
-  -> List Int
-  -> Property
-prop_maximum_append x y =
-  (x /= Nil && y /= Nil) ==> maximum (maximum x :| maximum y :| Nil) == maximum (append x y)
-
-prop_reverse_single_value ::
+prop_rev_single_value ::
   Int
   -> Bool
-prop_reverse_single_value n =
-  reverse (n :| Nil) == (n :| Nil)
+prop_rev_single_value n =
+  rev (n :| Nil) == (n :| Nil)
 
-prop_reverse_append ::
+prop_rev_append ::
   List Int
   -> List Int
   -> Bool
-prop_reverse_append x y =
-  append (reverse x) (reverse y) == reverse (append y x)
+prop_rev_append x y =
+  append (rev x) (rev y) == rev (append y x)
 

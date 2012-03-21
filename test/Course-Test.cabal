@@ -20,6 +20,7 @@ Flag                small_base
 Executable          course-test
   Build-Depends:    base < 5 && >= 3
                     , QuickCheck
+                    , HUnit
                     , test-framework
                     , test-framework-quickcheck2
                     , test-framework-hunit
