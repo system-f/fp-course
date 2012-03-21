@@ -15,7 +15,6 @@ module L09.BKTree
 import L09.MetricSpace
 import Data.Map (Map)
 import qualified Data.Map as M
-import Prelude hiding (any, foldr, null)
 import Data.Foldable
 import Data.Monoid
 
@@ -50,10 +49,10 @@ bktree ::
 bktree =
   error "todo"
 
-null ::
+isEmpty ::
   BKTree a
   -> Bool
-null =
+isEmpty =
   error "todo"
 
 size ::

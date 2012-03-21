@@ -10,8 +10,6 @@
 
 module L02.List where
 
-import Prelude hiding (sum, length, map, filter, maximum, reverse)
-
 -- BEGIN Helper functions and data types
 
 -- The custom list type
@@ -59,8 +57,8 @@ headOr = error "todo"
 -- Performance: 1 mark
 -- Elegance: 0.5 marks
 -- Total: 4
-sum :: List Int -> Int
-sum = error "todo"
+suum :: List Int -> Int
+suum = error "todo"
 
 -- Exercise 3
 -- Relative Difficulty: 2
@@ -68,8 +66,8 @@ sum = error "todo"
 -- Performance: 1 mark
 -- Elegance: 0.5 marks
 -- Total: 4
-length :: List a -> Int
-length = error "todo"
+len :: List a -> Int
+len = error "todo"
 
 -- Exercise 4
 -- Relative Difficulty: 5
@@ -77,8 +75,8 @@ length = error "todo"
 -- Performance: 1.0 mark
 -- Elegance: 1.5 marks
 -- Total: 7
-map :: (a -> b) -> List a -> List b
-map = error "todo"
+maap :: (a -> b) -> List a -> List b
+maap = error "todo"
 
 -- Exercise 5
 -- Relative Difficulty: 5
@@ -86,8 +84,8 @@ map = error "todo"
 -- Performance: 1.5 marks
 -- Elegance: 1 mark
 -- Total: 7
-filter :: (a -> Bool) -> List a -> List a
-filter = error "todo"
+fiilter :: (a -> Bool) -> List a -> List a
+fiilter = error "todo"
 
 -- Exercise 6
 -- Relative Difficulty: 5
@@ -119,11 +117,11 @@ flatMap = error "todo"
 -- Exercise 9
 -- Relative Difficulty: 8
 -- Correctness: 3.5 marks
--- Performance: 3.0 marks
--- Elegance: 2.5 marks
+-- Performance: 2.0 marks
+-- Elegance: 3.5 marks
 -- Total: 9
-maximum :: List Int -> Int
-maximum = error "todo"
+seqf :: List (a -> b) -> a -> List b
+seqf = error "todo"
 
 -- Exercise 10
 -- Relative Difficulty: 10
@@ -131,33 +129,7 @@ maximum = error "todo"
 -- Performance: 2.5 marks
 -- Elegance: 2.5 marks
 -- Total: 10
-reverse :: List a -> List a
-reverse = error "todo"
+rev :: List a -> List a
+rev = error "todo"
 
 -- END Exercises
-
--- BEGIN Utility
-
-all ::
-  (a -> Bool)
-  -> List a
-  -> Bool
-all p =
-  foldRight (&&) True . map p
-
-isEmpty ::
-  List a
-  -> Bool
-isEmpty Nil    = True
-isEmpty (_:|_) = False
-
-contains ::
-  Eq a =>
-  List a
-  -> a
-  -> Bool
-contains Nil    _ = False
-contains (h:|t) e = h == e || contains t e
-
--- END Utility
-

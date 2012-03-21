@@ -8,8 +8,7 @@ module L09.EditDistance
 ) where
 
 import Data.Array
-import Prelude hiding (any, minimum)
-import Data.Foldable
+import Data.Foldable hiding (minimum)
 
 editDistance ::
   Eq a =>
