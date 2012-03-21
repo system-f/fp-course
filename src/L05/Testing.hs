@@ -141,7 +141,7 @@ prop_seqf ::
 prop_seqf =
   error "todo"
 
--- Exercise 11
+-- Exercise 10
 -- Reversing a list (x) then reversing again results in x.
 prop_rev ::
   List Int
