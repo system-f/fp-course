@@ -15,6 +15,7 @@ module L09.BKTree
 import L09.MetricSpace
 import Data.Map (Map)
 import qualified Data.Map as M
+import Prelude hiding (any, foldr)
 import Data.Foldable
 import Data.Monoid
 
