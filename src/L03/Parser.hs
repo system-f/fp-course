@@ -1,5 +1,6 @@
 module L03.Parser where
 
+import Control.Applicative
 import Data.Char
 import L01.Validation
 import L03.Person
@@ -218,3 +219,27 @@ personParser = error "todo"
 -- Exercise 20
 -- Make sure all the tests pass!
 
+
+-- Exercise 20.1
+-- Write a Functor instance for a Parser.
+-- ~~~ Use bindParser and valueParser ~~~
+instance Functor Parser where
+  fmap =
+    error "todo"
+
+-- Exercise 20.2
+-- Write an Applicative functor instance for a Parser.
+-- ~~~ Use bindParser and valueParser ~~~
+instance Applicative Parser where
+  pure =
+    error "todo"
+  (<*>) =
+    error "todo"
+
+-- Exercise 20.3
+-- Write a Monad instance for a Parser.
+instance Monad Parser where
+  return =
+    error "todo"
+  (>>=) =
+    error "todo"

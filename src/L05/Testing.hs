@@ -3,17 +3,10 @@
 module L05.Testing where
 
 import Test.QuickCheck
+import Test.QuickCheck.Function
 import Test.Framework
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 import L02.List
-
-
--- How to produce arbitrary instances of List
-instance Arbitrary a => Arbitrary (List a) where
-  arbitrary = fmap (foldr (:|) Nil) arbitrary
-
-instance Show (a -> b) where
-  show _ = "<function>"
 
 main :: IO ()
 main = defaultMain tests
@@ -94,7 +87,7 @@ prop_len =
 -- Filtering a list (x) with a predicate (f) produces a list of elements where
 -- all satisfy predicate f. /See all function below./
 prop_fiilter ::
-  (Int -> Bool)
+  Fun Int Bool
   -> List Int
   -> Bool
 prop_fiilter =
@@ -104,8 +97,8 @@ prop_fiilter =
 -- Mapping a function (g) on a list (x), then mapping another function (f) on that result,
 -- produces the same outcome as mapping the composition of f and g on x.
 prop_maap_composition ::
-  (Int -> String)
-  -> (Char -> Int)
+  Fun Int String
+  -> Fun Char Int
   -> List Char
   -> Bool
 prop_maap_composition =
@@ -124,9 +117,9 @@ prop_flatten =
 -- Using (>>>=>) expressed in terms of flatMap, show that
 -- (>>>=>) is an associative binary operation.
 prop_flatMap_associative ::
-  (Int -> List String)
-  -> (String -> List Char)
-  -> (Char -> List Integer)
+  Fun Int (List String)
+  -> Fun String (List Char)
+  -> Fun Char (List Integer)
   -> Int
   -> Bool
 prop_flatMap_associative =
@@ -135,7 +128,7 @@ prop_flatMap_associative =
 -- Exercise 9
 -- Calling seqf on a list with length x, produces a list with length x.
 prop_seqf ::
-  List (Int -> String)
+  List (Fun Int String)
   -> Int
   -> Bool
 prop_seqf =
