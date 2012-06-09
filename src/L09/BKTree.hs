@@ -3,6 +3,7 @@ module L09.BKTree
   BKTree
 , empty
 , bktree
+, isEmpty
 , null
 , size
 , (.:.)
