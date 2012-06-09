@@ -1,7 +1,9 @@
 :set -isrc
+:l src/M.hs
 :m + Test.QuickCheck
-:l M
-:m + M
 :set prompt ">> "
 :set -Wall
+:def hlint const . return $ ":! hlint \"src\""
+:def hoogle \s -> return $ ":! hoogle --count=15 \"" ++ s ++ "\""
+:def pl \s -> return $ ":! pointfree \"" ++ s ++ "\""
 
