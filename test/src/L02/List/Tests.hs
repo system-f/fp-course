@@ -7,10 +7,6 @@ import L02.List
 import Test.QuickCheck
 import Test.QuickCheck.Function
 
-instance Arbitrary a => Arbitrary (List a) where
-  arbitrary =
-    fmap (foldr (:|) Nil) arbitrary
-
 main :: 
   IO ()
 main = 
