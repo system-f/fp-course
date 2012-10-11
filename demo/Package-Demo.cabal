@@ -33,3 +33,8 @@ Executable          package-demo
   Build-Depends:  
                    base < 5 && >= 3
 
+  GHC-Options:      
+                   -Wall
+                   -O2
+                   -funbox-strict-fields
+

@@ -37,3 +37,8 @@ Executable          package-test
                    , test-framework-quickcheck2
                    , test-framework-hunit
 
+  GHC-Options:      
+                   -Wall
+                   -O2
+                   -funbox-strict-fields
+

@@ -32,3 +32,8 @@ Library
   Exposed-Modules:
                     M
 
+  GHC-Options:      
+                   -Wall
+                   -O2
+                   -funbox-strict-fields
+
