@@ -1,0 +1,75 @@
+#!/usr/bin/env runhaskell
+
+import Data.Time
+import System.Directory
+import System.Environment
+import System.FilePath
+import System.IO
+
+{-
+* rename package.iml
+* replace in .idea/modules.xml
+* rename package.cabal
+* replace in package.cabal
+  * Name
+* first module
+-}
+
+
+main = 
+  do args <- getArgs
+     case args of
+       [] -> 
+         do n <- getProgName
+            hPutStrLn stderr (n ++ " <package-name> [first-module]")
+       (h:t) ->
+         let piml = "package.iml"
+             himl = h ++ ".iml"
+             mods = "modules.xml"
+             imods = ".idea" </> mods
+             pcabal = "package.cabal"
+             hcabal = h ++ ".cabal"
+         in do tmp <- getTemporaryDirectory
+               now <- getCurrentTime
+               let dir = tmp </> h </> show now
+               createDirectoryIfMissing True dir
+               cbl <- readFile pcabal
+               writeFile (dir </> hcabal) (replace "Name:               package" ("Name:               " ++ h) cbl)
+               copyFile piml (dir </> himl)
+               iml <- readFile imods
+               writeFile (dir </> mods) (replace piml himl iml)
+               removeFile piml
+               removeFile pcabal
+               copyFile (dir </> himl) himl
+               copyFile (dir </> hcabal) hcabal
+               copyFile (dir </> mods) imods
+               case t of
+                 [] -> return ()
+                 (m:_) -> error "todo -- first module"
+
+replace ::
+  Eq a =>
+  [a]
+  -> [a]
+  -> [a]
+  -> [a]
+replace [] _ v =
+  v  
+replace _ _ [] =
+  []  
+replace x y v@(c:w) =
+  let fd [] [] =
+        Just []
+      fd [] e@(_:_) =
+        Just e
+      fd (_:_) [] =
+        Nothing  
+      fd (h:t) (h':t') =
+        if h == h'
+          then
+            fd t t'
+          else
+            Nothing       
+  in case fd x v of
+       Nothing -> c : replace x y w
+       Just q -> y ++ replace x y q
