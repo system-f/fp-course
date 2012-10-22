@@ -34,9 +34,7 @@ main =
                writeFile (dir </> mods) (replace piml himl iml)
                removeFile piml
                removeFile pcabal
-               copyFile (dir </> himl) himl
-               copyFile (dir </> hcabal) hcabal
-               copyFile (dir </> mods) imods
+               -- OMG I am such a nasty hacker
                case t of
                  [] -> return ()
                  (m:_) -> let n = split (=='.') m
@@ -50,8 +48,16 @@ main =
                                         p' = src </> joinPath p
                                         k' = k ++ ".hs"
                                     in do createDirectoryIfMissing True p'
-                                          writeFile (p' </> k') ("module " ++ intercalate "." p ++ '.' : k ++ " where\n")
+                                          let m' = intercalate "." p ++ '.' : k
+                                          writeFile (p' </> k') ("module " ++ m' ++ " where\n")
+                                          hc <- readFile (dir </> hcabal)
+                                          -- eek!
+                                          length hc `seq` writeFile (dir </> hcabal) (replace "Exposed-Modules:\n                    M" ("Exposed-Modules:\n                    " ++ m') hc)
                                           removeFile (src </> "M.hs")
+               copyFile (dir </> himl) himl
+               copyFile (dir </> hcabal) hcabal
+               copyFile (dir </> mods) imods
+               
 
 replace ::
   Eq a =>
