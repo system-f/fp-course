@@ -1,21 +1,14 @@
 #!/usr/bin/env runhaskell
 
+import Data.List
 import Data.Time
 import System.Directory
 import System.Environment
 import System.FilePath
 import System.IO
 
-{-
-* rename package.iml
-* replace in .idea/modules.xml
-* rename package.cabal
-* replace in package.cabal
-  * Name
-* first module
--}
-
-
+main ::
+  IO ()
 main = 
   do args <- getArgs
      case args of
@@ -29,6 +22,7 @@ main =
              imods = ".idea" </> mods
              pcabal = "package.cabal"
              hcabal = h ++ ".cabal"
+             src = "src"
          in do tmp <- getTemporaryDirectory
                now <- getCurrentTime
                let dir = tmp </> h </> show now
@@ -45,7 +39,19 @@ main =
                copyFile (dir </> mods) imods
                case t of
                  [] -> return ()
-                 (m:_) -> error "todo -- first module"
+                 (m:_) -> let n = split (=='.') m
+                              s [] = error "unexpected empty list"
+                              s [l] = ([], l)
+                              s (hh:tt@(_:_)) = let (p, k) = s tt
+                                            in (hh:p, k)
+                          in case n of
+                               [] -> return ()
+                               _ -> let (p, k) = s n
+                                        p' = src </> joinPath p
+                                        k' = k ++ ".hs"
+                                    in do createDirectoryIfMissing True p'
+                                          writeFile (p' </> k') ("module " ++ intercalate "." p ++ '.' : k ++ " where\n")
+                                          removeFile (src </> "M.hs")
 
 replace ::
   Eq a =>
@@ -73,3 +79,13 @@ replace x y v@(c:w) =
   in case fd x v of
        Nothing -> c : replace x y w
        Just q -> y ++ replace x y q
+
+split ::
+  (a -> Bool)
+  -> [a]
+  -> [[a]]
+split p =
+  unfoldr (\x -> case x of
+                   [] -> Nothing
+                   _ -> Just . fmap (drop 1) . break p $ x)
+
