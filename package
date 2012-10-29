@@ -23,6 +23,7 @@ main =
              imods = ".idea" </> mods
              pcabal = "package.cabal"
              hcabal = h ++ ".cabal"
+             ghci = ".ghci"
              src = "src"
          in do tmp <- getTemporaryDirectory
                now <- getCurrentTime
@@ -50,11 +51,15 @@ main =
                                         k' = k ++ ".hs"
                                     in do createDirectoryIfMissing True p'
                                           let m' = intercalate "." p ++ '.' : k
+                                              m'' = intercalate "/" p ++ '/' : k ++ ".hs"
                                           writeFile (p' </> k') ("module " ++ m' ++ " where\n")
                                           hc <- readFile (dir </> hcabal)
                                           -- eek!
                                           length hc `seq` writeFile (dir </> hcabal) (replace "Exposed-Modules:\n                    M" ("Exposed-Modules:\n                    " ++ m') hc)
                                           removeFile (src </> "M.hs")
+                                          hghci <- readFile ghci
+                                          writeFile (dir </> ghci) (replace "M.hs" m'' hghci)
+                                          copyFile (dir </> ghci) ghci                                                                                     
                copyFile (dir </> himl) himl
                copyFile (dir </> hcabal) hcabal
                copyFile (dir </> mods) imods
