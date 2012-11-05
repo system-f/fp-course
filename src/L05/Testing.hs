@@ -1,5 +1,3 @@
-{-# LANGUAGE TypeOperators #-}
-
 module L05.Testing where
 
 import Test.QuickCheck
