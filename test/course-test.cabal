@@ -1,5 +1,5 @@
-Name:               Course-Test
-Version:            0.0.2
+Name:               course-test
+Version:            0.0.5
 Author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
 Maintainer:         Tony Morris
 Copyright:          Tony Morris
@@ -25,10 +25,8 @@ Executable          course-test
                     , test-framework-quickcheck2
                     , test-framework-hunit
 
-  Ghc-Options:      -O2
-                    -Wall
+  Ghc-Options:      -Wall
                     -fhpc
-                    -fwarn-tabs
   
   Hs-Source-Dirs:   ../src src
 
