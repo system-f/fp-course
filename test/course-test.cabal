@@ -27,7 +27,9 @@ Executable          course-test
 
   Ghc-Options:      -Wall
                     -fhpc
-  
+                    -fno-warn-unused-imports
+                    -fno-warn-unused-binds
+
   Hs-Source-Dirs:   ../src src
 
   Main-Is:          Main.hs

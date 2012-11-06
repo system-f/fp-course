@@ -29,6 +29,8 @@ Library
                     , test-framework-quickcheck2
 
   GHC-Options:      -Wall
+                    -fno-warn-unused-imports
+                    -fno-warn-unused-binds
 
   Hs-Source-Dirs:   src
 
