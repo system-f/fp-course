@@ -11,8 +11,8 @@ fastAnagrams ::
   String
   -> FilePath
   -> IO [String]
-fastAnagrams =
-  error "todo"
+fastAnagrams name f =
+  (flip (filter . flip S.member) (permutations name) . S.fromList . lines) `fmap` readFile f
 
 newtype NoCaseString =
   NoCaseString {

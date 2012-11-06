@@ -11,28 +11,27 @@ newtype Compose f g a =
 -- Implement a Functor instance for Compose
 instance (Functor f, Functor g) =>
     Functor (Compose f g) where
-  fmap =
-    error "todo"
+  fmap f (Compose k) =
+    Compose (fmap (fmap f) k)
 
 instance (Applicative f, Applicative g) =>
     Applicative (Compose f g) where
 -- Exercise 2
 -- Implement the pure function for an Applicative instance for Compose
-  pure = 
-    error "todo"
+  pure =
+    Compose . pure . pure
 -- Exercise 3
 -- Implement the (<*>) function for an Applicative instance for Compose
-  _ <*> _ =
-    error "todo"
+  Compose f <*> Compose a =
+    Compose (liftA2 (<*>) f a)
 
 instance (Monad f, Monad g) =>
     Monad (Compose f g) where
 -- Exercise 4
 -- Implement the return function for a Monad instance for Compose
-  return = 
-    error "todo"
+  return =
+    Compose . return . return
 -- Exercise 5
 -- Implement the (>>=) function for a Monad instance for Compose
-  _ >>= _ =
-    error "todo"
-
+  Compose a >>= f =
+    undefined -- impossible
