@@ -1,6 +1,5 @@
 module L04.Testing where
 
-import Test.QuickCheck
 import Test.QuickCheck.Function
 import Test.Framework
 import Test.Framework.Providers.QuickCheck2 (testProperty)
