@@ -1,7 +1,6 @@
 module L03.Misty where
 
 import L01.Optional
-import L01.Validation
 import L02.List
 
 

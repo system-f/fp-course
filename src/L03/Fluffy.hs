@@ -19,7 +19,6 @@ instance Fluffy Optional where
   furry =
     error "todo"
 
-
 -- Exercise 3
 -- Relative Difficulty: 2
 instance Fluffy ((->) t) where
