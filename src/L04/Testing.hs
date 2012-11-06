@@ -1,4 +1,4 @@
-module L05.Testing where
+module L04.Testing where
 
 import Test.QuickCheck
 import Test.QuickCheck.Function

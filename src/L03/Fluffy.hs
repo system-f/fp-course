@@ -1,9 +1,8 @@
-module L04.Fluffy where
+module L03.Fluffy where
 
 import L01.Optional
 import L01.Validation
 import L02.List
-import L03.Parser
 
 class Fluffy f where
   furry :: (a -> b) -> f a -> f b
@@ -23,7 +22,7 @@ instance Fluffy Optional where
 
 -- Exercise 3
 -- Relative Difficulty: 2
-instance Fluffy Parser where
+instance Fluffy ((->) t) where
   furry =
     error "todo"
 

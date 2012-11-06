@@ -3,7 +3,7 @@ module L06.JsonParser where
 import Numeric
 import Control.Applicative
 import L01.Validation
-import L03.Parser
+import L05.Parser
 import L06.JsonValue
 import L06.MoreParser
 

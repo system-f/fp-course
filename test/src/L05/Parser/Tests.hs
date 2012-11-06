@@ -1,11 +1,11 @@
-module L03.Parser.Tests where
+module L05.Parser.Tests where
 
 import Test.HUnit hiding (test, Test)
 import Test.Framework
 import Test.Framework.Providers.HUnit (testCase)
 import L01.Validation
-import L03.Person
-import L03.Parser
+import L05.Person
+import L05.Parser
 
 main :: 
   IO ()

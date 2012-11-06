@@ -1,9 +1,8 @@
-module L04.Misty where
+module L03.Misty where
 
 import L01.Optional
 import L01.Validation
 import L02.List
-import L03.Parser
 
 
 class Misty m where
@@ -29,7 +28,7 @@ instance Misty Optional where
 
 -- Exercise 7
 -- Relative Difficulty: 3
-instance Misty Parser where
+instance Misty ((->) t) where
   banana = error "todo"
   unicorn = error "todo"
 

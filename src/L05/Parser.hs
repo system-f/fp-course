@@ -1,9 +1,9 @@
-module L03.Parser where
+module L05.Parser where
 
 import Control.Applicative
 import Data.Char
 import L01.Validation
-import L03.Person
+import L05.Person
 
 
 type Input = String

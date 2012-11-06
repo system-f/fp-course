@@ -38,11 +38,11 @@ Library
                     L01.Optional
                     L01.Validation
                     L02.List
-                    L03.Person
-                    L03.Parser
-                    L04.Fluffy
-                    L04.Misty
-                    L05.Testing
+                    L03.Fluffy
+                    L03.Misty
+                    L04.Testing
+                    L05.Person
+                    L05.Parser
                     L06.JsonValue
                     L06.MoreParser
                     L06.JsonParser

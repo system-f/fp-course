@@ -1,4 +1,4 @@
-module L03.Person where
+module L05.Person where
 
 -- Suppose we have a data structure to represent a person. The person data structure has these attributes:
 --     * Age: positive integer

@@ -1,7 +1,7 @@
 module L06.MoreParser where
 
 import L01.Validation
-import L03.Parser
+import L05.Parser
 import Data.Char
 import Numeric
 import Control.Applicative

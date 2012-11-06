@@ -1,12 +1,12 @@
-module L04.Misty.Tests where
+module L03.Misty.Tests where
 
 import Test.HUnit hiding (test, Test)
 import Test.Framework
 import Test.Framework.Providers.HUnit (testCase)
 import L01.Optional
 import L02.List
-import L04.Fluffy
-import L04.Misty
+import L03.Fluffy
+import L03.Misty
 
 main :: 
   IO ()
