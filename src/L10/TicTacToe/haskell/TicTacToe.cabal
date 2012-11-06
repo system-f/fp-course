@@ -1,0 +1,44 @@
+Name:               TicTacToe
+Version:            0.0.2
+Author:             Tony Morris <ʇǝu˙sıɹɹoɯʇ@ןןǝʞsɐɥ>
+Maintainer:         Tony Morris
+License:            BSD3
+License-File:       LICENSE
+Extra-Source-Files: TicTacToe
+Synopsis:           A sub-project (exercise) for a functional programming course
+Category:           Education
+Description:        A sub-project (exercise) for a functional programming course
+Cabal-version:      >= 1.2
+Build-Type:         Simple
+
+Flag small_base
+  Description:      Choose the new, split-up base package.
+
+Library
+  Build-Depends:
+                    base < 5 && >= 4
+                    , containers
+                    , HUnit
+                    , QuickCheck
+                    , test-framework
+                    , test-framework-hunit
+                    , test-framework-quickcheck2
+
+  GHC-Options:
+                    -Wall
+                    -fno-warn-orphans
+                    -fno-warn-type-defaults
+                    -fno-warn-name-shadowing
+
+  Exposed-Modules:
+                    Data.TicTacToe
+                    , Data.TicTacToe.Board
+                    , Data.TicTacToe.Position
+                    , Data.TicTacToe.Player
+                    , Data.TicTacToe.GameResult
+                    , Data.TicTacToe.Interact
+                    , Test.Data.TicTacToe
+                    , Test.Data.TicTacToe.Board
+                    , Test.Data.TicTacToe.Position
+                    , Test.Data.TicTacToe.Player
+                    , Test.Data.TicTacToe.GameResult
