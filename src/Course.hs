@@ -12,7 +12,7 @@ module Course
 , module L06.MoreParser
 , module L06.JsonParser
 , module L07.Anagrams
-, module L08.FastAnagrams
+, module L07.FastAnagrams
 , module L09.EditDistance
 , module L09.MetricSpace
 , module L09.BKTree
@@ -31,7 +31,7 @@ import L06.JsonValue
 import L06.MoreParser
 import L06.JsonParser
 import L07.Anagrams
-import L08.FastAnagrams
+import L07.FastAnagrams
 import L09.EditDistance
 import L09.MetricSpace
 import L09.BKTree

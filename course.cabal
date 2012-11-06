@@ -47,6 +47,6 @@ Library
                     L06.MoreParser
                     L06.JsonParser
                     L07.Anagrams
-                    L08.FastAnagrams
+                    L07.FastAnagrams
                     L09.EditDistance
                     L10.Compose

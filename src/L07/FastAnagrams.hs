@@ -1,4 +1,4 @@
-module L08.FastAnagrams where
+module L07.FastAnagrams where
 
 import Data.Char
 import Data.List
