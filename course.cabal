@@ -1,5 +1,5 @@
-Name:               Course
-Version:            0.0.4
+Name:               course
+Version:            0.0.5
 License:            BSD3
 License-File:       LICENSE
 Author:             Tony Morris <tmorris@tmorris.net>
@@ -29,8 +29,6 @@ Library
                     , test-framework-quickcheck2
 
   GHC-Options:      -Wall
-                    -fno-warn-unused-imports
-                    -fno-warn-unused-binds
 
   Hs-Source-Dirs:   src
 
