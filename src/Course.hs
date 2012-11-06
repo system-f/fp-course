@@ -16,6 +16,7 @@ module Course
 , module L09.EditDistance
 , module L09.MetricSpace
 , module L09.BKTree
+, module L10.Compose
 ) where
 
 import L01.Optional
@@ -34,3 +35,4 @@ import L08.FastAnagrams
 import L09.EditDistance
 import L09.MetricSpace
 import L09.BKTree
+import L10.Compose
