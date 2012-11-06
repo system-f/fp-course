@@ -10,21 +10,20 @@ class Fluffy f where
 -- Exercise 1
 -- Relative Difficulty: 1
 instance Fluffy List where
-  furry =
-    error "todo"
+  furry _ Nil    = Nil
+  furry f (h:|t) = f h :| furry f t
 
 -- Exercise 2
 -- Relative Difficulty: 1
 instance Fluffy Optional where
-  furry =
-    error "todo"
-
+  furry _ Empty = Empty
+  furry f (Full a) = Full (f a)
 
 -- Exercise 3
 -- Relative Difficulty: 2
 instance Fluffy ((->) t) where
-  furry =
-    error "todo"
+  furry f g =
+    \x -> f (g x)
 
 -----------------------
 -- SUPPORT LIBRARIES --
