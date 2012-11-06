@@ -13,10 +13,10 @@ module Course
 , module L06.JsonParser
 , module L07.Anagrams
 , module L07.FastAnagrams
-, module L09.EditDistance
-, module L09.MetricSpace
-, module L09.BKTree
-, module L10.Compose
+, module L08.EditDistance
+, module L08.MetricSpace
+, module L08.BKTree
+, module L09.Compose
 ) where
 
 import L01.Optional
@@ -32,7 +32,7 @@ import L06.MoreParser
 import L06.JsonParser
 import L07.Anagrams
 import L07.FastAnagrams
-import L09.EditDistance
-import L09.MetricSpace
-import L09.BKTree
-import L10.Compose
+import L08.EditDistance
+import L08.MetricSpace
+import L08.BKTree
+import L09.Compose

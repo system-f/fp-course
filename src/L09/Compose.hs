@@ -1,4 +1,4 @@
-module L10.Compose where
+module L09.Compose where
 
 import Control.Applicative
 

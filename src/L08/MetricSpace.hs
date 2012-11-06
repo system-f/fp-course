@@ -1,6 +1,6 @@
-module L09.MetricSpace where
+module L08.MetricSpace where
 
-import L09.EditDistance
+import L08.EditDistance
 
 class Eq a => MetricSpace a where
   (<-->) ::

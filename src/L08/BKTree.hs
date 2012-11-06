@@ -1,4 +1,4 @@
-module L09.BKTree
+module L08.BKTree
 (
   BKTree
 , empty
@@ -13,7 +13,7 @@ module L09.BKTree
 , fromDictionaryFile
 ) where
 
-import L09.MetricSpace
+import L08.MetricSpace
 import Data.Map (Map)
 import qualified Data.Map as M
 import Prelude hiding (any, foldr)

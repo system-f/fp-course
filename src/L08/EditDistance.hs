@@ -1,4 +1,4 @@
-module L09.EditDistance
+module L08.EditDistance
 (
   editDistance
 , Edit(..)

@@ -48,5 +48,7 @@ Library
                     L06.JsonParser
                     L07.Anagrams
                     L07.FastAnagrams
-                    L09.EditDistance
-                    L10.Compose
+                    L08.BKTree
+                    L08.EditDistance
+                    L08.MetricSpace
+                    L09.Compose
