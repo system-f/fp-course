@@ -41,6 +41,7 @@ Library
                     L03.Fluffy
                     L03.Misty
                     L03.State
+                    L04.ListZipper
                     L04.Testing
                     L05.Person
                     L05.Parser
