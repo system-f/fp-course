@@ -19,6 +19,7 @@ Flag                small_base
 
 Executable          course-test
   Build-Depends:    base < 5 && >= 3
+                    , containers
                     , QuickCheck
                     , HUnit
                     , test-framework
@@ -34,4 +35,4 @@ Executable          course-test
 
   Main-Is:          Main.hs
 
-  
+
