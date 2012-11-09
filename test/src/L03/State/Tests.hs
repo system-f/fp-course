@@ -23,8 +23,7 @@ banana_ ::
   => f b
   -> f a
   -> f b
-banana_ y x =
-  banana (const y) x
+banana_ = banana . const
 
 test ::
   Test
@@ -41,7 +40,10 @@ test =
     , testCase "findM (found)" testcase_findM_found
     , testCase "findM (not found)" testcase_findM_notFound
     , testProperty "firstRepeat" prop_firstRepeat
-    , testProperty "distinct" prop_distinct
+    , testCase "filterM (Full)" testcase_filterM_Full
+    , testCase "filterM (Empty)" testcase_filterM_Empty
+    , testProperty "distinct ensures unique elements" prop_distinct_firstRepeat
+    , testProperty "distinct nullifies duplication" prop_distinct_duplication
     , testCase "produce #1" testcase_produce1
     , testCase "produce #2" testcase_produce2
     , testCase "isHappy (placeholder)" testcase_isHappy
@@ -108,11 +110,31 @@ prop_firstRepeat xs =
     Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'
     Full x -> len (fiilter (== x) xs) > 1
 
-prop_distinct ::
+testcase_filterM_Full ::
+  Assertion
+testcase_filterM_Full =
+  let p x = Full (x `mod` 2 == 0)
+      xs = foldr (:|) Nil [1..10 :: Int]
+  in filterM p xs @?= Full (2 :| 4 :| 6 :| 8 :| 10 :| Nil)
+
+testcase_filterM_Empty ::
+  Assertion
+testcase_filterM_Empty =
+  let p x = if x `mod` 2 == 0 then Full True else Empty
+      xs = foldr (:|) Nil [1..10 :: Int]
+  in filterM p xs @?= Empty
+
+prop_distinct_firstRepeat ::
   List Int
   -> Bool
-prop_distinct xs =
+prop_distinct_firstRepeat xs =
   firstRepeat (distinct xs) == Empty
+
+prop_distinct_duplication ::
+  List Int
+  -> Bool
+prop_distinct_duplication xs =
+  distinct xs == distinct (flatMap (\x -> x :| x :| Nil) xs)
 
 testcase_produce1 ::
   Assertion
