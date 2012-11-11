@@ -300,16 +300,11 @@ moveLeftN ::
   Int
   -> f a
   -> MaybeListZipper a
-moveLeftN p z =
-  if p == 0
-    then
-      toMaybeListZipper z
-    else
-      if p < 0
-        then
-          moveRightN (negate p) z
-        else
-          moveLeftN (p-1) (moveLeft z)
+moveLeftN n z = case toMaybeListZipper z of
+  IsNotZ -> IsNotZ
+  IsZ z' | n == 0    -> fromListZipper z'
+         | n < 0     -> moveRightN (negate n) z'
+         | otherwise -> moveLeftN (pred n) (moveLeft z')
 
 -- Exercise 20
 -- Relative Difficulty: 4
@@ -319,16 +314,11 @@ moveRightN ::
   Int
   -> f a
   -> MaybeListZipper a
-moveRightN p z =
-  if p == 0
-    then
-      toMaybeListZipper z
-    else
-      if p < 0
-        then
-          moveRightN (negate p) z
-        else
-          moveRightN (p-1) (moveRight z)
+moveRightN n z = case toMaybeListZipper z of
+  IsNotZ -> IsNotZ
+  IsZ z' | n == 0    -> fromListZipper z'
+         | n < 0     -> moveLeftN (negate n) z'
+         | otherwise -> moveRightN (pred n) (moveRight z')
 
 -- Exercise 21
 -- Relative Difficulty: 6
