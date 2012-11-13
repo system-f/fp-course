@@ -62,7 +62,7 @@ sealed trait List[A] {
   // Performance: 1.5 marks
   // Elegance: 1 mark
   // Total: 7
-  def filter(f: A => Boolean): List[Boolean] =
+  def filter(f: A => Boolean): List[A] =
     foldRight[List[A]](a => if(f(a)) a |: _ else identity, Nil())
 
   // Exercise 6
