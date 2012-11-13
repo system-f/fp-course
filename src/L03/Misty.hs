@@ -58,7 +58,7 @@ rockstar n a = sausage (replicate n a)
 -- Relative Difficulty: 9
 filtering  :: Misty m => (a -> m Bool) -> [a] -> m [a]
 filtering _ []    = unicorn []
-filtering f (h:t) = (\g -> (\gs -> if g then h:gs else gs) `furry'` filtering f t) `banana` f h
+filtering f (h:t) = (\g -> (if g then (h:) else id) `furry'` filtering f t) `banana` f h
 
 -- Exercise 13
 -- Relative Difficulty: 10
