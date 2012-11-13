@@ -15,13 +15,13 @@ case class State[S, A](run: S => (A, S)) {
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting state.
   def exec(s: S): S =
-    sys.error("todo")
+    run(s)._2
 
   // Exercise 4
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting state.
   def eval(s: S): A =
-    sys.error("todo")
+    run(s)._1
 
 }
 
@@ -32,7 +32,10 @@ object State {
   implicit def StateFluffy[S]: Fluffy[({type l[a] = State[S, a]})#l] =
     new Fluffy[({type l[a] = State[S, a]})#l] {
       def furry[A, B](f: A => B) =
-        sys.error("todo")
+        q => State(s => {
+          val (a, t) = q run s
+          (f(a), t)
+        })
     }
 
   // Exercise 2
@@ -42,17 +45,20 @@ object State {
   implicit def StateMisty[S]: Misty[({type l[a] = State[S, a]})#l] =
     new Misty[({type l[a] = State[S, a]})#l] {
       def banana[A, B](f: A => State[S, B]) =
-        sys.error("todo")
+        q => State(s => {
+          val (a, t) = q run s
+          f(a) run t
+        })
 
       def unicorn[A] =
-        sys.error("todo")
+        a => State((a, _))
     }
 
   // Exercise 5
   // Relative Difficulty: 2
   // A `State` where the state also distributes into the produced value.
   def get[S]: State[S, S] =
-    sys.error("todo")
+    State(s => (s, s))
 
   // Exercise 6
   // Relative Difficulty: 2
