@@ -2,6 +2,7 @@ package L03
 
 import L01._
 import L02._
+import java.util.logging.StreamHandler
 
 // A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 case class State[S, A](run: S => (A, S)) {
@@ -64,7 +65,7 @@ object State {
   // Relative Difficulty: 2
   // A `State` where the resulting state is seeded with the given value.
   def put[S](s: S): State[S, Unit] =
-    sys.error("todo")
+    State(_ => ((), s))
 
   // Exercise 7
   // Relative Difficulty: 5
@@ -77,7 +78,12 @@ object State {
   //   find ::  (A =>   Bool ) => Stream[A] ->   Optional[A]
   //   findM :: (A => F[Bool]) => Stream[A] -> F[Optional[A]]
   def findM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Misty[F]): F[Optional[A]] =
-    sys.error("todo")
+    x match {
+      case Stream() =>
+        M.unicorn(Empty())
+      case h#::t =>
+        M.banana((q: Boolean) => if(q) M.unicorn(Full(h): Optional[A]) else findM(p, t))(p(h))
+    }
 
   // Exercise 8
   // Relative Difficulty: 4
