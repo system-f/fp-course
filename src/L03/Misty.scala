@@ -10,7 +10,7 @@ trait Misty[M[_]] {
   // Exercise 4
   // Relative Difficulty: 3
   // (use banana and unicorn)
-  final def furry[A, B](f: A => M[B]): M[A] => M[B] =
+  final def furry[A, B](f: A => B): M[A] => M[B] =
     sys.error("todo")
 }
 
