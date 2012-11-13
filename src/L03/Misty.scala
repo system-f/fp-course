@@ -75,7 +75,7 @@ object Misty {
 
   // Exercise 12
   // Relative Difficulty: 9
-  def filtering[M[_], A](f: A => M[Boolean], a: M[A])(implicit M: Misty[M]): M[List[A]] =
+  def filtering[M[_], A](f: A => M[Boolean], a: List[A])(implicit M: Misty[M]): M[List[A]] =
     sys.error("todo")
 
   // Exercise 13
