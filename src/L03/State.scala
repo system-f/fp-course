@@ -131,7 +131,7 @@ object State {
   // because it results in a recurring sequence.
   // ~~~ Use findM with State and produce
   // ~~~ Use jellybean to write a square function
-  // ~~~ Use library functions: containsOptional (below), String#toInt
+  // ~~~ Use library functions: containsOptional (below)
   def isHappy(i: BigInt): Boolean = {
     val one = BigInt(1)
     containsOptional(one)(findM[({type l[a] = State[Set[BigInt], a]})#l, BigInt](a => State(s => (a == 1 || (s contains a), s + a))
