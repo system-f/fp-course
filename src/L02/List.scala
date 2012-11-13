@@ -54,7 +54,7 @@ sealed trait List[A] {
   // Elegance: 1.5 marks
   // Total: 7
   def map[B](f: A => B): List[B] =
-    foldRight[List[B]]((a, b) => sys.error(""), sys.error(""))
+    foldRight[List[B]]((a, b) => f(a) |: b, Nil())
 
   // Exercise 5
   // Relative Difficulty: 5
