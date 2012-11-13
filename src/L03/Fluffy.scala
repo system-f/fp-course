@@ -14,7 +14,7 @@ object Fluffy {
   implicit val OptionalFluffy: Fluffy[Optional] =
     sys.error("todo")
 
-  implicit def Function1Fluffy[T]: Fluffy[({type l[a] = T => a]})#l] =
+  implicit def Function1Fluffy[T]: Fluffy[({type l[a] = T => a})#l] =
     sys.error("todo")
   
   ///////////////////////
