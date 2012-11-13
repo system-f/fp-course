@@ -10,17 +10,17 @@ package L02
 // TOTAL marks:    /66
 
 sealed trait List[A] {
-  final def foldRight[B](f: (A, B) => B, b: B): B =
+  final def foldRight[B](f: A => B => B, b: B): B =
     this match {
       case Nil() => b
-      case h|:t => f(h, t.foldRight(f, b))
+      case h|:t => f(h)(t.foldRight(f, b))
     }
 
   @annotation.tailrec
-  final def foldLeft[B](f: (B, A) => B, b: B): B =
+  final def foldLeft[B](f: B => A => B, b: B): B =
     this match {
       case Nil() => b
-      case h|:t => t.foldLeft(f, f(b, h))
+      case h|:t => t.foldLeft(f, f(b)(h))
     }
 
   def |:(a: A): List[A] =
@@ -93,7 +93,7 @@ sealed trait List[A] {
     sys.error("todo")
 
   override def toString: String =
-    foldRight[scala.List[A]](_ :: _, scala.Nil).toString
+    foldRight[scala.List[A]](a => a :: _, scala.Nil).toString
 }
 case class Nil[A]() extends List[A]
 case class |:[A](h: A, t: List[A]) extends List[A]
