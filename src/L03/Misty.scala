@@ -76,30 +76,35 @@ object Misty {
   // Exercise 12
   // Relative Difficulty: 9
   def filtering[M[_], A](f: A => M[Boolean], a: List[A])(implicit M: Misty[M]): M[List[A]] =
-    sys.error("todo")
+    a match {
+      case Nil() =>
+        M.unicorn(Nil())
+      case h|:t =>
+        M.banana((g: Boolean) => M.furry(if(g) h|:(_:List[A]) else identity[List[A]])(filtering(f, t)))(f(h))
+    }
 
   // Exercise 13
   // Relative Difficulty: 10
   def apple[M[_], A, B](f: M[A => B], a: M[A])(implicit M: Misty[M]): M[B] =
-    sys.error("todo")
+    M.banana(M.furry(_ : A => B)(a))(f)
 
   // Exercise 14
   // Relative Difficulty: 6
   // (bonus: use apple + furry')
   def lemon2[M[_], A, B, C](f: A => B => C, a: M[A], b: M[B])(implicit M: Misty[M]): M[C] =
-    sys.error("todo")
+    apple(M.furry(f)(a), b)
 
   // Exercise 15
   // Relative Difficulty: 6
   // (bonus: use apple + furry')
   def lemon3[M[_], A, B, C, D](f: A => B => C => D, a: M[A], b: M[B], c: M[C])(implicit M: Misty[M]): M[D] =
-    sys.error("todo")
+    apple(apple(M.furry(f)(a), b), c)
 
   // Exercise 16
   // Relative Difficulty: 6
   // (bonus: use apple + furry')
   def lemon4[M[_], A, B, C, D, E](f: A => B => C => D => E, a: M[A], b: M[B], c: M[C], d: M[D])(implicit M: Misty[M]): M[E] =
-    sys.error("todo")
+    apple(apple(apple(M.furry(f)(a), b), c), d)
 
   ///////////////////////
   // SUPPORT LIBRARIES //
