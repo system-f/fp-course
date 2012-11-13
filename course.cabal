@@ -31,6 +31,7 @@ Library
   GHC-Options:      -Wall
                     -fno-warn-unused-imports
                     -fno-warn-unused-binds
+                    -fno-warn-unused-do-bind
 
   Hs-Source-Dirs:   src
 
