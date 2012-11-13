@@ -8,15 +8,15 @@ import L02.List
 import L03.Fluffy
 import L03.Misty
 
-main :: 
+main ::
   IO ()
-main = 
+main =
   defaultMain [test]
 
-test :: 
+test ::
   Test
 test =
-  testGroup "Parser"
+  testGroup "Misty"
     [
       testCase "furry on Nil" testcase_furryNil
     , testCase "furry on Cons" testcase_furryCons

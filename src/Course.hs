@@ -19,6 +19,7 @@ module Course
 , module L08.MetricSpace
 , module L08.BKTree
 , module L09.Compose
+, module L10.Cheque
 ) where
 
 import L01.Optional
@@ -40,3 +41,4 @@ import L08.EditDistance
 import L08.MetricSpace
 import L08.BKTree
 import L09.Compose
+import L10.Cheque
