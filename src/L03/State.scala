@@ -114,7 +114,7 @@ object State {
   // because it results in a recurring sequence.
   // ~~~ Use findM with State and produce
   // ~~~ Use jellybean to write a square function
-  // ~~~ Use library functions: containsOptional (below), String#toInt
+  // ~~~ Use library functions: containsOptional (below)
   def isHappy(i: BigInt): Boolean =
     sys.error("todo")
 
