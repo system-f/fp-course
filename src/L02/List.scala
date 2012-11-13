@@ -124,5 +124,5 @@ object List {
   // Elegance: 3.5 marks
   // Total: 9
   def seqf[A, B](x: List[A => B]): A => List[B] =
-    x.foldRight[A => List[B]](a => b => error(""), _ => error(""))(a)
+    x.foldRight[A => List[B]](f => g => a => f(a) |: g(a), _ => Nil())
 }
