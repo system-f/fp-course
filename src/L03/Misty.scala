@@ -92,23 +92,3 @@ object Misty {
     }
 
 }
-
-
-/*
-
-
-// Exercise 16
-// Relative Difficulty: 6
--- (bonus: use apple + lemon3)
-lemon4 :: Misty m => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
-lemon4 = error "todo"
-
------------------------
--- SUPPORT LIBRARIES --
------------------------
-
-instance Misty [] where
-  banana = concatMap
-  unicorn = return
-
-*/
