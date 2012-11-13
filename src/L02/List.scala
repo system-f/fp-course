@@ -30,7 +30,10 @@ sealed trait List[A] {
   // Elegance: 0.5 marks
   // Total: 3
   def headOr(a: => A): A =
-    sys.error("todo")
+    this match {
+      case Nil() => a
+      case h|:_ => h
+    }
 
   // Exercise 3
   // Relative Difficulty: 2
@@ -39,7 +42,7 @@ sealed trait List[A] {
   // Elegance: 0.5 marks
   // Total: 4
   def len: Int =
-    sys.error("todo")
+    foldLeft[Int]((a, _) => a + 1, 0)
 
   // Exercise 4
   // Relative Difficulty: 5
@@ -48,7 +51,7 @@ sealed trait List[A] {
   // Elegance: 1.5 marks
   // Total: 7
   def map[B](f: A => B): List[B] =
-    sys.error("todo")
+    foldRight[List[B]]((a, b) => sys.error(""), sys.error(""))
 
   // Exercise 5
   // Relative Difficulty: 5
