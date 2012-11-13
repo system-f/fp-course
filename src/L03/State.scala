@@ -57,7 +57,7 @@ object State {
   // Exercise 6
   // Relative Difficulty: 2
   // A `State` where the resulting state is seeded with the given value.
-  def put[S]: State[S, Unit] =
+  def put[S](s: S): State[S, Unit] =
     sys.error("todo")
 
   // Exercise 7
