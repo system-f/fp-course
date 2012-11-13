@@ -11,17 +11,26 @@ object Fluffy {
   // Exercise 1
   // Relative Difficulty: 1
   implicit val ListFluffy: Fluffy[List] =
-    sys.error("todo")
+    new Fluffy[List] {
+      def furry[A, B](f: A => B) =
+        _ map f
+    }
 
   // Exercise 2
   // Relative Difficulty: 1
   implicit val OptionalFluffy: Fluffy[Optional] =
-    sys.error("todo")
+    new Fluffy[Optional] {
+      def furry[A, B](f: A => B) =
+        _ map f
+    }
 
   // Exercise 3
   // Relative Difficulty: 2
   implicit def Function1Fluffy[T]: Fluffy[({type l[a] = T => a})#l] =
-    sys.error("todo")
+    new Fluffy[({type l[a] = T => a})#l] {
+      def furry[A, B](f: A => B) =
+        _ andThen f
+    }
   
   ///////////////////////
   // SUPPORT LIBRARIES //
