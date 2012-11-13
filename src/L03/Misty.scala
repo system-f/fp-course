@@ -11,44 +11,67 @@ trait Misty[M[_]] {
   // Relative Difficulty: 3
   // (use banana and unicorn)
   final def furry[A, B](f: A => B): M[A] => M[B] =
-    sys.error("todo")
+    banana(unicorn compose f)
 }
 
 object Misty {
   // Exercise 5
   // Relative Difficulty: 2
   implicit val ListMisty: Misty[List] =
-    sys.error("todo")
+    new Misty[List] {
+      def banana[A, B](f: A => List[B]) =
+        _ flatMap f
+
+      def unicorn[A] =
+        _ |: Nil()
+    }
 
   // Exercise 6
   // Relative Difficulty: 2
   implicit val OptionalMisty: Misty[Optional] =
-    sys.error("todo")
+    new Misty[Optional] {
+      def banana[A, B](f: A => Optional[B]) =
+        _ flatMap f
+
+      def unicorn[A] =
+        Full(_)
+    }
 
   // Exercise 7
   // Relative Difficulty: 3
   implicit def Function1Misty[T]: Misty[({type l[a] = T => a})#l] =
-    sys.error("todo")
+    new Misty[({type l[a] = T => a})#l] {
+      def banana[A, B](f: A => T => B) =
+        (g: T => A) => (t: T) => f(g(t))(t)
+
+      def unicorn[A] =
+        a => (_: T) => a
+    }
 
   // Exercise 8
   // Relative Difficulty: 2
   def jellybean[M[_], A](x: M[M[A]])(implicit M: Misty[M]): M[A] =
-    sys.error("todo")
+    M.banana(identity[M[A]])(x)
 
   // Exercise 9
   // Relative Difficulty: 3
   def sausage[M[_], A](x: List[M[A]])(implicit M: Misty[M]): M[List[A]] =
-    sys.error("todo")
+    x match {
+      case Nil() =>
+        M.unicorn(Nil())
+      case h|:t =>
+        M.banana((hh: A) => M.furry((tt: List[A]) => hh|:tt)(sausage(t)))(h)
+    }
 
   // Exercise 10
   // Relative Difficulty: 3
   def moppy[M[_], A, B](f: A => M[B], x: List[A])(implicit M: Misty[M]): M[List[B]] =
-    sys.error("todo")
+    sausage(x map f)
 
   // Exercise 11
   // Relative Difficulty: 4
   def rockstar[M[_], A](n: Int, a: M[A])(implicit M: Misty[M]): M[List[A]] =
-    sys.error("todo")
+    sausage(List.fill(n)(a))
 
   // Exercise 12
   // Relative Difficulty: 9
