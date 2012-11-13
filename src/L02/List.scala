@@ -115,7 +115,7 @@ object List {
   // Elegance: 1 mark
   // Total: 7
   def flatten[A](x: List[List[A]]): List[A] =
-    sys.error("todo")
+    x.foldRight[List[A]](a => a append _, Nil())
 
   // Exercise 9
   // Relative Difficulty: 8
@@ -124,5 +124,5 @@ object List {
   // Elegance: 3.5 marks
   // Total: 9
   def seqf[A, B](x: List[A => B], a: A): List[B] =
-    sys.error("todo")
+    x.foldRight[A => List[B]](a => b => error(""), _ => error(""))(a)
 }
