@@ -4,7 +4,6 @@ package L02
 //   Replace the function bodies (sys.error("todo")) with an appropriate solution.
 // + These exercises may be done in any order, however:
 //   Exercises are generally increasing in difficulty, though some people may find later exercise easier.
-// + Note the existence of the library function max :: Int -> Int -> Int which will help you with Exercise 9.
 // + Bonus for using the provided functions or for using one exercise solution to help solve another.
 // + Approach with your best available intuition; just dive in and do what you can!
 
