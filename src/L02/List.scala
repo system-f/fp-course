@@ -23,6 +23,9 @@ sealed trait List[A] {
       case h|:t => t.foldLeft(f, f(b, h))
     }
 
+  def |:(a: A): List[A] =
+    new |:(a, this)
+
   // Exercise 1
   // Relative Difficulty: 1
   // Correctness: 2.0 marks
