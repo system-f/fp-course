@@ -120,6 +120,6 @@ object List {
   // Performance: 2.0 marks
   // Elegance: 3.5 marks
   // Total: 9
-  def seqf[A, B](x: List[A => B], a: A): List[B] =
+  def seqf[A, B](x: List[A => B]): A => List[B] =
     sys.error("todo")
 }
