@@ -215,11 +215,97 @@ fromChar '9' =
 fromChar _ =
   Nothing
 
+instance Show Digit3 where
+  show d =
+    let showd x = toLower `fmap` show x
+        x .++. y = x ++ if y == Zero then [] else '-' : showd y
+    in case d of
+        D1 a -> showd a
+        D2 Zero b -> showd b
+        D2 One b -> case b of
+                      Zero -> "ten"
+                      One -> "eleven"
+                      Two -> "twelve"
+                      Three -> "thirteen"
+                      Four -> "fourteen"
+                      Five -> "fifteen"
+                      Six -> "sixteen"
+                      Seven -> "seventeen"
+                      Eight -> "eighteen"
+                      Nine -> "nineteen"
+        D2 Two b -> "twenty" .++. b
+        D2 Three b -> "thirty" .++. b
+        D2 Four b -> "forty" .++. b
+        D2 Five b -> "fifty" .++. b
+        D2 Six b -> "sixty" .++. b
+        D2 Seven b -> "seventy" .++. b
+        D2 Eight b -> "eighty" .++. b
+        D2 Nine b -> "ninety" .++. b
+        D3 Zero Zero Zero -> ""
+        D3 Zero b c -> show (D2 b c)
+        D3 a Zero Zero -> showd a ++ " hundred"
+        D3 a b c -> showd a ++ " hundred and " ++ show (D2 b c)
+
+toDot ::
+  String
+  -> ([Digit], String)
+toDot =
+  let toDot' x [] =
+        (x, [])
+      toDot' x (h:t) =
+        let move = case fromChar h of
+                     Just n -> toDot' . (:) n
+                     Nothing -> if h == '.'
+                                  then
+                                    (,)
+                                  else
+                                     toDot'
+        in move x t
+  in toDot' []
+
+illionate ::
+  [Digit]
+  -> String
+illionate =
+  let space "" =
+        ""
+      space x =
+        ' ' : x
+      todigits acc _ [] =
+        acc
+      todigits _ [] _ =
+        error "unsupported illion"
+      todigits acc (_:is) (Zero:Zero:Zero:t) =
+        todigits acc is t
+      todigits acc (i:is) (q:r:s:t) =
+        todigits ((show (D3 s r q) ++ space i) : acc) is t
+      todigits acc (_:is) (Zero:Zero:t) =
+        todigits acc is t
+      todigits acc (i:_) (r:s:_) =
+        (show (D2 s r) ++ space i) : acc
+      todigits acc (_:is) (Zero:t) =
+        todigits acc is t
+      todigits acc (i:_) (s:_) =
+        (show (D1 s) ++ space i) : acc
+  in unwords . todigits [] illion
+
 dollars ::
   String
   -> String
-dollars =
-  error "todo"
+dollars x =
+  let (d, c) = toDot (dropWhile (`notElem` ('.':['1'..'9'])) x)
+      c' =
+        case mapMaybe fromChar c of
+          [] -> "zero cents"
+          [Zero, One] -> "one cent"
+          (a:b:_) -> show (D2 a b) ++ " cents"
+          (a:_) -> show (D2 a Zero) ++ " cents"
+      d' =
+        case d of
+          [] -> "zero dollars"
+          [One] -> "one dollar"
+          _ -> illionate d ++ " dollars"
+  in d' ++ " and " ++ c'
 
 -- Examples of input and output.
 test ::
