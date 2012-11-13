@@ -72,7 +72,7 @@ sealed trait List[A] {
   // Elegance: 1 mark
   // Total: 7
   def append(x: List[A]): List[A] =
-    sys.error("todo")
+    x.foldRight[List[A]](a => a |: _, this)
 
   // Exercise 8
   // Relative Difficulty: 7
@@ -81,7 +81,7 @@ sealed trait List[A] {
   // Elegance: 1.5 mark
   // Total: 8
   def flatMap[B](f: A => List[B]): List[B] =
-    sys.error("todo")
+    List.flatten(map(f))
 
   // Exercise 10
   // Relative Difficulty: 10
@@ -90,7 +90,7 @@ sealed trait List[A] {
   // Elegance: 2.5 marks
   // Total: 10
   def rev: List[A] =
-    sys.error("todo")
+    foldLeft[List[A]](a => _ |: a, Nil())
 
   override def toString: String =
     foldRight[scala.List[A]](a => a :: _, scala.Nil).toString
@@ -106,7 +106,7 @@ object List {
   // Elegance: 0.5 marks
   // Total: 4
   def sum(x: List[Int]): Int =
-    sys.error("todo")
+    x.foldLeft[Int](a => a + _, 0)
 
   // Exercise 7
   // Relative Difficulty: 5
