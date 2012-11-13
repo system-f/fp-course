@@ -45,7 +45,7 @@ sealed trait List[A] {
   // Elegance: 0.5 marks
   // Total: 4
   def len: Int =
-    foldLeft[Int]((a, _) => a + 1, 0)
+    foldLeft[Int](a => _ => a + 1, 0)
 
   // Exercise 4
   // Relative Difficulty: 5
@@ -54,7 +54,7 @@ sealed trait List[A] {
   // Elegance: 1.5 marks
   // Total: 7
   def map[B](f: A => B): List[B] =
-    foldRight[List[B]]((a, b) => f(a) |: b, Nil())
+    foldRight[List[B]](a => f(a) |: _, Nil())
 
   // Exercise 5
   // Relative Difficulty: 5
@@ -63,7 +63,7 @@ sealed trait List[A] {
   // Elegance: 1 mark
   // Total: 7
   def filter(f: A => Boolean): List[Boolean] =
-    sys.error("todo")
+    foldRight[List[A]](a => if(f(a)) a |: _ else identity, Nil())
 
   // Exercise 6
   // Relative Difficulty: 5
