@@ -2,7 +2,6 @@
 --   Replace the function bodies (error "todo") with an appropriate solution.
 -- + These exercises may be done in any order, however:
 --   Exercises are generally increasing in difficulty, though some people may find later exercise easier.
--- + Note the existence of the library function max :: Int -> Int -> Int which will help you with Exercise 9.
 -- + Bonus for using the provided functions or for using one exercise solution to help solve another.
 -- + Approach with your best available intuition; just dive in and do what you can!
 
@@ -32,14 +31,6 @@ foldRight f b (h :| t) = f h (foldRight f b t)
 foldLeft :: (b -> a -> b) -> b -> List a -> b
 foldLeft _ b Nil      = b
 foldLeft f b (h :| t) = let b' = f b h in b' `seq` foldLeft f b' t
-
-reduceRight :: (a -> a -> a) -> List a -> a
-reduceRight _ Nil      = error "bzzt. reduceRight on empty list"
-reduceRight f (h :| t) = foldRight f h t
-
-reduceLeft :: (a -> a -> a) -> List a -> a
-reduceLeft _ Nil      = error "bzzt. reduceLeft on empty list"
-reduceLeft f (h :| t) = foldLeft f h t
 
 -- END Helper functions and data types
 
