@@ -2,8 +2,7 @@ package L03
 
 import L01._
 import L02._
-import java.util.logging.StreamHandler
-import java.util
+import math.BigInt
 
 // A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 case class State[S, A](run: S => (A, S)) {
@@ -133,8 +132,13 @@ object State {
   // ~~~ Use findM with State and produce
   // ~~~ Use jellybean to write a square function
   // ~~~ Use library functions: containsOptional (below), String#toInt
-  def isHappy(i: BigInt): Boolean =
-    sys.error("todo")
+  def isHappy(i: BigInt): Boolean = {
+    val one = BigInt(1)
+    containsOptional(one)(findM[({type l[a] = State[Set[BigInt], a]})#l, BigInt](a => State(s => (a == 1 || (s contains a), s + a))
+                        , produce[BigInt](ii =>
+                            (ii.toString map (x => Misty.jellybean[({type l[a] = BigInt => a})#l, BigInt](a => a * _) apply (BigInt(x.toString)))).sum
+                          , i)) eval Set())
+  }
 
   ///////////////////////
   // SUPPORT LIBRARIES //
