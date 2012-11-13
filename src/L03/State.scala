@@ -3,6 +3,7 @@ package L03
 import L01._
 import L02._
 import java.util.logging.StreamHandler
+import java.util
 
 // A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 case class State[S, A](run: S => (A, S)) {
@@ -90,8 +91,8 @@ object State {
   // This function finds the first element in a `Stream` that repeats.
   // It is possible that no element repeats, hence an `Optional` result.
   // ~~~ Use findM and State with a Set. ~~~
-  def firstRepeat[A](x: Stream[A])(implicit O: math.Ordering[A]): Optional[A] =
-    sys.error("todo")
+  def firstRepeat[A](x: Stream[A]): Optional[A] =
+    findM[({type l[a] = State[Set[A], a]})#l, A](a => State(s => (s contains a, s + a)), x) eval Set()
 
   // Exercise 9
   // Relative Difficulty: 5
@@ -103,21 +104,26 @@ object State {
   //   filter ::  (A =>   Bool ) => Stream[A] =>   Stream[A]
   //   filterM :: (A => F[Bool]) => Stream[A] => F[Stream[A]]
   def filterM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Misty[F]): F[Stream[A]] =
-    sys.error("todo")
+    x match {
+      case Stream() =>
+        M.unicorn(Stream())
+      case h#::t =>
+        M.banana((q: Boolean) => M.furry(if(q) h #:: (_: Stream[A]) else identity[Stream[A]])(filterM(p, t)))(p(h))
+    }
 
   // Exercise 10
   // Relative Difficulty: 4
   // This function removes all duplicate elements in a `Stream`.
   // ~~~ Use filterM and State with a Set. ~~~
-  def distinct[A](x: Stream[A])(implicit O: math.Ordering[A]): Stream[A] =
-    sys.error("todo")
+  def distinct[A](x: Stream[A]): Stream[A] =
+    filterM[({type l[a] = State[Set[A], a]})#l, A](a => State(s => (!(s contains a), s + a)), x) eval Set()
 
   // Exercise 11
   // Relative Difficulty: 3
   // This function produces an infinite `Stream` that seeds with the given value at its head,
   // then runs the given function for subsequent elements
   def produce[A](f: A => A, a: A): Stream[A] =
-    sys.error("todo")
+    a #:: produce(f, f(a))
 
   // Exercise 12
   // Relative Difficulty: 10
