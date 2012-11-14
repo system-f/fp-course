@@ -168,10 +168,11 @@ findLeft ::
   (a -> Bool)
   -> f a
   -> MaybeListZipper a
-findLeft p z =
-  case moveLeft z of
-    z'@(IsZ (ListZipper _ x _)) -> if p x then z' else findLeft p z'
-    IsNotZ -> IsNotZ
+findLeft p z = case toMaybeListZipper z of
+  IsNotZ -> IsNotZ
+  IsZ (ListZipper ls x rs) -> case break p (x:ls) of
+    (rs', x':ls') -> IsZ (ListZipper ls' x' (reverse rs' ++ rs))
+    _ -> IsNotZ
 
 -- Exercise 10
 -- Relative Difficulty: 3
@@ -181,10 +182,12 @@ findRight ::
   (a -> Bool)
   -> f a
   -> MaybeListZipper a
-findRight p z =
-  case moveRight z of
-    z'@(IsZ (ListZipper _ x _)) -> if p x then z' else findRight p z'
-    IsNotZ -> IsNotZ
+findRight p z = case toMaybeListZipper z of
+  IsNotZ -> IsNotZ
+  IsZ (ListZipper ls x rs) ->
+    case break p (x:rs) of
+      (ls', x':rs') -> IsZ (ListZipper (reverse ls' ++ ls) x' rs')
+      _ -> IsNotZ
 
 -- Exercise 11
 -- Relative Difficulty: 4
