@@ -162,7 +162,8 @@ hasRight z =
 
 -- Exercise 9
 -- Relative Difficulty: 3
--- Move the zipper left until the given predicate matches.
+-- Seek to the left for a location matching a predicate, starting from the
+-- current one.
 findLeft ::
   ListZipper' f =>
   (a -> Bool)
@@ -176,7 +177,8 @@ findLeft p z = case toMaybeListZipper z of
 
 -- Exercise 10
 -- Relative Difficulty: 3
--- Move the zipper right until the given predicate matches.
+-- Seek to the right for a location matching a predicate, starting from the
+-- current one.
 findRight ::
   ListZipper' f =>
   (a -> Bool)
