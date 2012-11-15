@@ -382,11 +382,15 @@ nth ::
   -> f a
   -> MaybeListZipper a
 nth i z =
-  case toMaybeListZipper z of
-    g@(IsZ z') -> case moveLeftN' i z' of
-                             Left a -> moveRightN (i-a) z
-                             Right (ListZipper l _ _) -> moveLeftN (length l) g
-    z'@IsNotZ -> z'
+  if i < 0
+    then
+      IsNotZ
+    else
+      case toMaybeListZipper z of
+        g@(IsZ z') -> case moveLeftN' i z' of
+                                 Left a -> moveRightN (i-a) z
+                                 Right (ListZipper l _ _) -> moveLeftN (length l) g
+        z'@IsNotZ -> z'
 
 -- Exercise 24
 -- Relative Difficulty: 4
