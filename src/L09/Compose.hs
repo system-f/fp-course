@@ -33,5 +33,5 @@ instance (Monad f, Monad g) =>
     Compose . return . return
 -- Exercise 5
 -- Implement the (>>=) function for a Monad instance for Compose
-  Compose a >>= f =
+  Compose _ >>= _ =
     undefined -- impossible
