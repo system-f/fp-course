@@ -10,22 +10,21 @@ trait Fluffy[F[_]] {
 object Fluffy {
   // Exercise 1
   // Relative Difficulty: 1
-  implicit val ListFluffy: Fluffy[List] =
-    new Fluffy[List] {
-      def furry[A, B](f: A => B) =
-        _ map f
-    }
+  implicit val IdFluffy: Fluffy[Id] =
+    sys.error("todo")
 
   // Exercise 2
-  // Relative Difficulty: 1
-  implicit val OptionalFluffy: Fluffy[Optional] =
-    new Fluffy[Optional] {
-      def furry[A, B](f: A => B) =
-        _ map f
-    }
+  // Relative Difficulty: 2
+  implicit val ListFluffy: Fluffy[List] =
+    sys.error("todo")
 
   // Exercise 3
   // Relative Difficulty: 2
+  implicit val OptionalFluffy: Fluffy[Optional] =
+    sys.error("todo")
+
+  // Exercise 4
+  // Relative Difficulty: 3
   implicit def Function1Fluffy[T]: Fluffy[({type l[a] = T => a})#l] =
     new Fluffy[({type l[a] = T => a})#l] {
       def furry[A, B](f: A => B) =
