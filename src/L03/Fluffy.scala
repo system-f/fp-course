@@ -5,6 +5,11 @@ import L02._
 
 trait Fluffy[F[_]] {
   def furry[A, B](f: A => B): F[A] => F[B]
+
+  // Provided as a synonym for `furry` but with the arguments flipped.
+  // This helps the type-inferencer.
+  final def apply[A, B](a: F[A])(f: A => B): F[B] =
+    furry(f)(a)
 }
 
 object Fluffy {

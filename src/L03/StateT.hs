@@ -9,7 +9,7 @@ import L03.State
 import qualified Data.Set as S
 import qualified Data.Foldable as F
 
--- A `StateT` is a function from a state value `s` to a functor of (a produced value `a`, and a resulting state `s`).
+-- A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 newtype StateT s f a =
   StateT {
     runStateT ::
@@ -108,7 +108,7 @@ getT ::
 getT =
   StateT (\s -> unicorn (s, s))
 
--- Exercise 11
+-- Exercise 10
 -- Relative Difficulty: 2
 -- A `StateT` where the resulting state is seeded with the given value.
 putT ::
@@ -118,7 +118,7 @@ putT ::
 putT =
   StateT . const . unicorn . (,) ()
 
--- Exercise 12
+-- Exercise 11
 -- Relative Difficulty: 4
 -- Remove all duplicate elements in a `List`.
 -- ~~~ Use filterM and State' with a Data.Set#Set. ~~~
@@ -129,7 +129,7 @@ distinct' ::
 distinct' x =
   eval' (filterM (\a -> state' (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
 
--- Exercise 13
+-- Exercise 12
 -- Relative Difficulty: 5
 -- Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
@@ -150,14 +150,14 @@ data OptionalT f a =
       f (Optional a)
   }
 
--- Exercise 14
+-- Exercise 13
 -- Relative Difficulty: 3
 -- Implement the `Fluffy` instance for `OptionalT f` given a Fluffy f.
 instance Fluffy f => Fluffy (OptionalT f) where
   furry f (OptionalT x) =
     OptionalT (furry (furry f) x)
 
--- Exercise 15
+-- Exercise 14
 -- Relative Difficulty: 5
 -- Implement the `Misty` instance for `OptionalT f` given a Misty f.
 instance Misty f => Misty (OptionalT f) where
@@ -168,7 +168,7 @@ instance Misty f => Misty (OptionalT f) where
                                Empty -> unicorn Empty
                                Full a -> runOptionalT (f a)) x)
 
--- Exercise 16
+-- Exercise 15
 -- Relative Difficulty: 7
 -- Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than the given parameter in the list,
@@ -188,14 +188,14 @@ data Logger l a =
   Logger [l] a
   deriving (Eq, Show)
 
--- Exercise 17
+-- Exercise 16
 -- Relative Difficulty: 4
 -- Implement the `Fluffy` instance for `Logger`.
 instance Fluffy (Logger l) where
   furry f (Logger l a) =
     Logger l (f a)
 
--- Exercise 18
+-- Exercise 17
 -- Relative Difficulty: 5
 -- Implement the `Misty` instance for `Logger`.
 -- The `banana` implementation must append log values to maintain associativity.
@@ -206,7 +206,7 @@ instance Misty (Logger l) where
     let Logger l' b = f a
     in Logger (l ++ l') b
 
--- Exercise 19
+-- Exercise 18
 -- Relative Difficulty: 1
 -- A utility function for producing a `Logger` with one log value.
 log1 ::
@@ -216,7 +216,7 @@ log1 ::
 log1 l =
   Logger [l]
 
--- Exercise 20
+-- Exercise 19
 -- Relative Difficulty: 10
 -- Remove all duplicate integers from a list. Produce a log as you go.
 -- If there is an element above 100, then abort the entire computation and produce no result.
