@@ -26,6 +26,11 @@ trait Misty[M[_]] {
 }
 
 object Misty {
+  // Exercise 5
+  // Relative Difficulty: 1
+  implicit val IdMisty: Misty[Id] =
+    sys.error("todo")
+
   // Exercise 6
   // Relative Difficulty: 1
   implicit val ListMisty: Misty[List] =
