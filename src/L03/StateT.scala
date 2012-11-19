@@ -2,6 +2,7 @@ package L03
 
 import L01._
 import L02._
+import State.filterM
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 case class StateT[S, F[_], A](run: S => F[(A, S)]) {
@@ -15,13 +16,13 @@ case class StateT[S, F[_], A](run: S => F[(A, S)]) {
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting state.
   def exec(s: S)(implicit F: Fluffy[F]): F[S] =
-    sys.error("todo")
+    F(run(s))(_._2)
 
   // Exercise 7
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting value.
   def eval(s: S)(implicit F: Fluffy[F]): F[A] =
-    sys.error("todo")
+    F(run(s))(_._1)
 }
 
 object StateT {
@@ -59,44 +60,44 @@ object StateT {
   // Relative Difficulty: 1
   // Provide a constructor for `State` values.
   def state[S, A](k: S => (A, S)): State[S, A] =
-    sys.error("todo")
+    StateT(s => Id(k(s)))
 
   // Exercise 4
   // Relative Difficulty: 1
   // Provide an unwrapper for `State` values.
   def runState[S, A](x: State[S, A]): S => (A, S) =
-    sys.error("todo")
+    s => (x run s).a
 
   // Exercise 6
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting state.
   def exec[S, A](x: State[S, A]): S => S =
-    sys.error("todo")
+    runState(x)(_)._2
 
   // Exercise 8
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting value.
   def eval[S, A](x: State[S, A]): S => A =
-    sys.error("todo")
+    runState(x)(_)._1
 
   // Exercise 9
   // Relative Difficulty: 2
   // A `StateT` where the state also distributes into the produced value.
   def get[S, F[_]](implicit M: Misty[F]): StateT[S, F, S] =
-    sys.error("todo")
+    StateT(s => M.unicorn((s, s)))
 
   // Exercise 10
   // Relative Difficulty: 2
   // A `StateT` where the resulting state is seeded with the given value.
   def put[S, F[_]](s: S)(implicit M: Misty[F]): StateT[S, F, Unit] =
-    sys.error("todo")
+    StateT(_ => M.unicorn(((), s)))
 
   // Exercise 11
   // Relative Difficulty: 4
   // Remove all duplicate elements in a `List`.
   // ~~~ Use filterM and State with a Set. ~~~
   def distinct(x: List[Int]): List[Int] =
-    sys.error("todo")
+    filterM[({type l[a] = State[Set[Int], a]})#l, Int](a => state((s: Set[Int]) => (!(s contains a), s + a)), x) eval Set()
 
   // Exercise 12
   // Relative Difficulty: 5
