@@ -4,8 +4,8 @@ import L01._
 import L02._
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
-case class StateT[S, F[_], A](run: S => F[(A, S)])(implicit F: Fluffy[F]) {
-  def map[B](f: A => B): StateT[S, F, B] =
+case class StateT[S, F[_], A](run: S => F[(A, S)]) {
+  def map[B](f: A => B)(implicit F: Fluffy[F]): StateT[S, F, B] =
     StateT.StateTFluffy.furry(f)(this)
 
   def flatMap[B](f: A => StateT[S, F, B])(implicit M: Misty[F]): StateT[S, F, B] =
