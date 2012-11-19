@@ -2,6 +2,7 @@ package L03
 
 import L01._
 import L02._
+import State.filterM
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 case class StateT[S, F[_], A](run: S => F[(A, S)]) {
@@ -95,7 +96,7 @@ object StateT {
   // Relative Difficulty: 4
   // Remove all duplicate elements in a `List`.
   // ~~~ Use filterM and State with a Set. ~~~
-  def distinct(x: List[Int]): List[Int] =
+  def distinct(x: Stream[Int]): Stream[Int] =
     sys.error("todo")
 
   // Exercise 12
@@ -104,7 +105,7 @@ object StateT {
   // However, if you see a value greater than `100` in the list,
   // abort the computation by producing `Empty`.
   // ~~~ Use filterM and StateT over Optional with a Set. ~~~
-  def distinctF(x: List[Int]): Optional[List[Int]] =
+  def distinctF(x: Stream[Int]): Optional[Stream[Int]] =
     sys.error("todo")
 
   // An `OptionalT` is a functor of an `Optional` value.
@@ -130,7 +131,7 @@ object StateT {
   // However, if you see a value greater than the given parameter in the list,
   // abort the computation by producing `Empty`.
   // ~~~ Use filterM and StateT over (OptionalT over (Function1[Int, _]) with a Set. ~~~
-  def distinctG(x: List[Int]): Optional[List[Int]] =
+  def distinctG(x: Stream[Int]): Optional[Stream[Int]] =
     sys.error("todo")
 
   // A `Logger` is a pair of a list of log values (`List[L]`) and an arbitrary value (`A`).
@@ -166,7 +167,7 @@ object StateT {
   // If you see an even number, produce a log message, "even number: " followed by the even number.
   // Other numbers produce no log message.
   // ~~~ Use filterM and StateT over (OptionalT over Logger with a Set. ~~~
-  def distinctH(x: List[Int]): Logger[String, Optional[List[Int]]] =
+  def distinctH(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
     sys.error("todo")
 
 }
