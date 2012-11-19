@@ -12,6 +12,17 @@ trait Misty[M[_]] {
   // (use banana and unicorn)
   final def furry[A, B](f: A => B): M[A] => M[B] =
     banana(unicorn compose f)
+
+  // Provided as a synonym for `furry` but with the arguments flipped.
+  // This helps the type-inferencer.
+  final def apply[A, B](a: M[A])(f: A => B): M[B] =
+    furry(f)(a)
+
+  // Provided as a synonym for `banana` but with the arguments flipped.
+  // This helps the type-inferencer.
+  final def bana[A, B](a: M[A])(f: A => M[B]): M[B] =
+    banana(f)(a)
+
 }
 
 object Misty {

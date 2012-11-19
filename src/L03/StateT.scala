@@ -4,8 +4,8 @@ import L01._
 import L02._
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
-case class StateT[S, F[_], A](run: S => F[(A, S)])(implicit F: Fluffy[F]) {
-  def map[B](f: A => B): StateT[S, F, B] =
+case class StateT[S, F[_], A](run: S => F[(A, S)]) {
+  def map[B](f: A => B)(implicit F: Fluffy[F]): StateT[S, F, B] =
     StateT.StateTFluffy.furry(f)(this)
 
   def flatMap[B](f: A => StateT[S, F, B])(implicit M: Misty[F]): StateT[S, F, B] =
@@ -31,7 +31,9 @@ object StateT {
   implicit def StateTFluffy[S, F[_]](implicit F: Fluffy[F]): Fluffy[({type l[a] = StateT[S, F, a]})#l] =
     new Fluffy[({type l[a] = StateT[S, F, a]})#l] {
       def furry[A, B](f: A => B) =
-        sys.error("todo")
+        q => StateT(s => F(q run s){
+          case (a, t) => (f(a), t)
+        })
     }
 
   // Exercise 2
@@ -41,10 +43,12 @@ object StateT {
   implicit def StateTMisty[S, F[_]](implicit M: Misty[F]): Misty[({type l[a] = StateT[S, F, a]})#l] =
     new Misty[({type l[a] = StateT[S, F, a]})#l] {
       def banana[A, B](f: A => StateT[S, F, B]) =
-        sys.error("todo")
+        q => StateT(s => M.bana(q run s){
+          case (a, t) => f(a) run t
+        })
 
       def unicorn[A] =
-        sys.error("todo")
+        a => StateT(s => M.unicorn((a, s)))
     }
 
   // A `State'` is `StateT` specialised to the `Id` functor.
