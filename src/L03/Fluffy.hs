@@ -12,19 +12,19 @@ class Fluffy f where
 -- Relative Difficulty: 1
 instance Fluffy Id where
   furry =
-    error "todo"
+    mapId
 
 -- Exercise 2
 -- Relative Difficulty: 2
 instance Fluffy List where
   furry =
-    error "todo"
+    maap
 
 -- Exercise 3
 -- Relative Difficulty: 2
 instance Fluffy Optional where
   furry =
-    error "todo"
+    mapOptional
 
 -- Exercise 4
 -- Relative Difficulty: 3
