@@ -122,4 +122,15 @@ object List {
   // Total: 9
   def seqf[A, B](x: List[A => B]): A => List[B] =
     sys.error("todo")
+
+  ///////////////////////
+  // SUPPORT LIBRARIES //
+  ///////////////////////
+
+  def fill[A](n: Int)(a: A): List[A] =
+    if(n <= 0)
+      Nil()
+    else
+      a |: fill(n - 1)(a)
+
 }
