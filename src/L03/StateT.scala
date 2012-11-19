@@ -97,7 +97,7 @@ object StateT {
   // Remove all duplicate elements in a `List`.
   // ~~~ Use filterM and State with a Set. ~~~
   def distinct(x: Stream[Int]): Stream[Int] =
-    eval(filterM[({type l[a] = State[Set[Int], a]})#l, Int](a => state((s: Set[Int]) => (!(s contains a), s + a)), x))(Set())
+    eval(filterM[({type l[a] = State[Set[Int], a]})#l, Int](a => state(s => (!(s contains a), s + a)), x))(Set())
 
   // Exercise 12
   // Relative Difficulty: 5
