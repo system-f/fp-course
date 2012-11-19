@@ -21,18 +21,18 @@ newtype StateT s f a =
 -- Relative Difficulty: 2
 -- Implement the `Fluffy` instance for `StateT s f` given a Fluffy f.
 instance Fluffy f => Fluffy (StateT s f) where
-  furry =
-    error "todo"
+  furry f (StateT k) =
+    StateT (furry (\(a, t) -> (f a, t)) . k)
 
 -- Exercise 2
 -- Relative Difficulty: 5
 -- Implement the `Misty` instance for `StateT s g` given a Misty f.
 -- Make sure the state value is passed through in `banana`.
 instance Misty f => Misty (StateT s f) where
-  banana =
-    error "todo"
-  unicorn =
-    error "todo"
+  banana f (StateT k) =
+    StateT (banana (\(a, t) -> runStateT (f a) t) . k)
+  unicorn a =
+    StateT (\s -> unicorn (a, s))
 
 -- A `State'` is `StateT` specialised to the `Id` functor.
 type State' s a =
@@ -44,8 +44,8 @@ type State' s a =
 state' ::
   (s -> (a, s))
   -> State' s a
-state' =
-  error "todo"
+state' k =
+  StateT (Id . k)
 
 -- Exercise 4
 -- Relative Difficulty: 1
@@ -54,8 +54,8 @@ runState' ::
   State' s a
   -> s
   -> (a, s)
-runState' =
-  error "todo"
+runState' (StateT k) =
+  runId . k
 
 -- Exercise 5
 -- Relative Difficulty: 2
@@ -65,8 +65,8 @@ execT ::
   StateT s f a
   -> s
   -> f s
-execT =
-  error "todo"
+execT (StateT k) =
+  furry snd . k
 
 -- Exercise 6
 -- Relative Difficulty: 1
@@ -75,8 +75,8 @@ exec' ::
   State' s a
   -> s
   -> s
-exec' =
-  error "todo"
+exec' t =
+  runId . execT t
 
 -- Exercise 7
 -- Relative Difficulty: 2
@@ -86,8 +86,8 @@ evalT ::
   StateT s f a
   -> s
   -> f a
-evalT =
-  error "todo"
+evalT (StateT k) =
+  furry fst . k
 
 -- Exercise 8
 -- Relative Difficulty: 1
@@ -96,8 +96,8 @@ eval' ::
   State' s a
   -> s
   -> a
-eval' =
-  error "todo"
+eval' t =
+  runId . evalT t
 
 -- Exercise 9
 -- Relative Difficulty: 2
@@ -106,7 +106,7 @@ getT ::
   Misty f =>
   StateT s f s
 getT =
-  error "todo"
+  StateT (\s -> unicorn (s, s))
 
 -- Exercise 11
 -- Relative Difficulty: 2
@@ -116,7 +116,7 @@ putT ::
   s
   -> StateT s f ()
 putT =
-  error "todo"
+  StateT . const . unicorn . (,) ()
 
 -- Exercise 12
 -- Relative Difficulty: 4
@@ -126,8 +126,8 @@ distinct' ::
   (Ord a, Num a) =>
   List a
   -> List a
-distinct' =
-  error "todo"
+distinct' x =
+  eval' (filterM (\a -> state' (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
 
 -- Exercise 13
 -- Relative Difficulty: 5
@@ -139,8 +139,9 @@ distinctF ::
   (Ord a, Num a) =>
   List a
   -> Optional (List a)
-distinctF =
-  error "todo"
+distinctF x =
+  evalT (filterM (\a -> StateT (\s ->
+    if a > 100 then Empty else Full (a `S.notMember` s, a `S.insert` s))) x) S.empty
 
 -- An `OptionalT` is a functor of an `Optional` value.
 data OptionalT f a =
@@ -153,17 +154,19 @@ data OptionalT f a =
 -- Relative Difficulty: 3
 -- Implement the `Fluffy` instance for `OptionalT f` given a Fluffy f.
 instance Fluffy f => Fluffy (OptionalT f) where
-  furry =
-    error "todo"
+  furry f (OptionalT x) =
+    OptionalT (furry (furry f) x)
 
 -- Exercise 15
 -- Relative Difficulty: 5
 -- Implement the `Misty` instance for `OptionalT f` given a Misty f.
 instance Misty f => Misty (OptionalT f) where
   unicorn =
-    error "todo"
-  banana =
-    error "todo"
+    OptionalT . unicorn . unicorn
+  banana f (OptionalT x) =
+    OptionalT (banana (\o -> case o of
+                               Empty -> unicorn Empty
+                               Full a -> runOptionalT (f a)) x)
 
 -- Exercise 16
 -- Relative Difficulty: 7
@@ -176,8 +179,9 @@ distinctG ::
   List a
   -> a
   -> Optional (List a)
-distinctG =
-  error "todo"
+distinctG x =
+  runOptionalT (evalT (filterM (\a -> StateT (\s ->
+    OptionalT (\q -> if a > q then Empty else Full (a `S.notMember` s, a `S.insert` s)))) x) S.empty)
 
 -- A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
 data Logger l a =
@@ -188,8 +192,8 @@ data Logger l a =
 -- Relative Difficulty: 4
 -- Implement the `Fluffy` instance for `Logger`.
 instance Fluffy (Logger l) where
-  furry =
-    error "todo"
+  furry f (Logger l a) =
+    Logger l (f a)
 
 -- Exercise 18
 -- Relative Difficulty: 5
@@ -197,9 +201,10 @@ instance Fluffy (Logger l) where
 -- The `banana` implementation must append log values to maintain associativity.
 instance Misty (Logger l) where
   unicorn =
-    error "todo"
-  banana =
-    error "todo"
+    Logger []
+  banana f (Logger l a) =
+    let Logger l' b = f a
+    in Logger (l ++ l') b
 
 -- Exercise 19
 -- Relative Difficulty: 1
@@ -208,8 +213,8 @@ log1 ::
   l
   -> a
   -> Logger l a
-log1 =
-  error "todo"
+log1 l =
+  Logger [l]
 
 -- Exercise 20
 -- Relative Difficulty: 10
@@ -224,5 +229,11 @@ distinctH ::
   (Integral a) =>
   List a
   -> Logger String (Optional (List a))
-distinctH =
-  error "todo"
+distinctH x =
+  runOptionalT (evalT (filterM (\a -> StateT (\s ->
+    OptionalT (if a > 100
+                 then
+                   log1 ("aborting > 100: " ++ show a) Empty
+                 else (if even a
+                   then log1 ("even number: " ++ show a)
+                   else unicorn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)
