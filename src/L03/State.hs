@@ -47,7 +47,7 @@ exec (State k) =
 
 -- Exercise 4
 -- Relative Difficulty: 1
--- Run the `State` seeded with `s` and retrieve the resulting state.
+-- Run the `State` seeded with `s` and retrieve the resulting value.
 eval ::
   State s a
   -> s
@@ -74,7 +74,7 @@ put =
 
 -- Exercise 7
 -- Relative Difficulty: 5
--- This function finds the first element in a `List` that satisfies a given predicate.
+-- Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
 -- However, while performing the search, we sequence some `Misty` effect through.
 --
@@ -94,7 +94,7 @@ findM p (h :| t) =
 
 -- Exercise 8
 -- Relative Difficulty: 4
--- This function finds the first element in a `List` that repeats.
+-- Find the first element in a `List` that repeats.
 -- It is possible that no element repeats, hence an `Optional` result.
 -- ~~~ Use findM and State with a Data.Set#Set. ~~~
 firstRepeat ::
@@ -106,7 +106,7 @@ firstRepeat x =
 
 -- Exercise 9
 -- Relative Difficulty: 5
--- This function removes all elements in a `List` that fail a given predicate.
+-- Remove all elements in a `List` that fail a given predicate.
 -- However, while performing the filter, we sequence some `Misty` effect through.
 --
 -- Note the similarity of the type signature to List#filter
@@ -129,7 +129,7 @@ filterM p (h :| t) =
 
 -- Exercise 10
 -- Relative Difficulty: 4
--- This function removes all duplicate elements in a `List`.
+-- Remove all duplicate elements in a `List`.
 -- ~~~ Use filterM and State with a Data.Set#Set. ~~~
 distinct ::
   Ord a =>
@@ -140,7 +140,7 @@ distinct x =
 
 -- Exercise 11
 -- Relative Difficulty: 3
--- This function produces an infinite `List` that seeds with the given value at its head,
+-- Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
 produce ::
   (a -> a)

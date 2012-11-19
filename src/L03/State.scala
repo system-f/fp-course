@@ -69,7 +69,7 @@ object State {
 
   // Exercise 7
   // Relative Difficulty: 5
-  // This function finds the first element in a `Stream` that satisfies a given predicate.
+  // Find the first element in a `Stream` that satisfies a given predicate.
   // It is possible that no element is found, hence an `Optional` result.
   // However, while performing the search, we sequence some `Misty` effect through.
   //
@@ -87,7 +87,7 @@ object State {
 
   // Exercise 8
   // Relative Difficulty: 4
-  // This function finds the first element in a `Stream` that repeats.
+  // Find  the first element in a `Stream` that repeats.
   // It is possible that no element repeats, hence an `Optional` result.
   // ~~~ Use findM and State with a Set. ~~~
   def firstRepeat[A](x: Stream[A]): Optional[A] =
@@ -95,7 +95,7 @@ object State {
 
   // Exercise 9
   // Relative Difficulty: 5
-  // This function removes all elements in a `Stream` that fail a given predicate.
+  // Remove all elements in a `Stream` that fail a given predicate.
   // However, while performing the filter, we sequence some `Misty` effect through.
   //
   // Note the similarity of the type signature to Stream#filter
@@ -112,14 +112,14 @@ object State {
 
   // Exercise 10
   // Relative Difficulty: 4
-  // This function removes all duplicate elements in a `Stream`.
+  // Remove all duplicate elements in a `Stream`.
   // ~~~ Use filterM and State with a Set. ~~~
   def distinct[A](x: Stream[A]): Stream[A] =
     filterM[({type l[a] = State[Set[A], a]})#l, A](a => State(s => (!(s contains a), s + a)), x) eval Set()
 
   // Exercise 11
   // Relative Difficulty: 3
-  // This function produces an infinite `Stream` that seeds with the given value at its head,
+  // Produce an infinite `Stream` that seeds with the given value at its head,
   // then runs the given function for subsequent elements
   def produce[A](f: A => A, a: A): Stream[A] =
     a #:: produce(f, f(a))
