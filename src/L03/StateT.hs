@@ -17,14 +17,14 @@ newtype StateT s f a =
   }
 
 instance Fluffy f => Fluffy (StateT s f) where
-  furry f (StateT k) =
-      StateT (furry (\(a, t) -> (f a, t)) . k)
+  furry =
+    error "todo"
 
 instance Misty f => Misty (StateT s f) where
-  banana f (StateT k) =
-    StateT (banana (\(a, t) -> runStateT (f a) t) . k)
-  unicorn a =
-    StateT (\s -> unicorn (a, s))
+  banana =
+    error "todo"
+  unicorn =
+    error "todo"
 
 type State' s a =
   StateT s Id a
@@ -32,73 +32,72 @@ type State' s a =
 state' ::
   (s -> (a, s))
   -> State' s a
-state' k =
-  StateT (Id . k)
+state' =
+  error "todo"
 
 runState' ::
   State' s a
   -> s
   -> (a, s)
-runState' (StateT k) =
-  runId . k
+runState' =
+  error "todo"
 
 execT ::
   Fluffy f =>
   StateT s f a
   -> s
   -> f s
-execT (StateT k) =
-  furry snd . k
+execT =
+  error "todo"
 
 exec' ::
   State' s a
   -> s
   -> s
-exec' t =
-  runId . execT t
+exec' =
+  error "todo"
 
 evalT ::
   Fluffy f =>
   StateT s f a
   -> s
   -> f a
-evalT (StateT k) =
-  furry fst . k
+evalT =
+  error "todo"
 
 eval' ::
   State' s a
   -> s
   -> a
-eval' t =
-  runId . evalT t
+eval' =
+  error "todo"
 
 getT ::
   Misty f =>
   StateT s f s
 getT =
-  StateT (\s -> unicorn (s, s))
+  error "todo"
 
 putT ::
   Misty f =>
   s
   -> StateT s f ()
 putT =
-  StateT . const . unicorn . (,) ()
+  error "todo"
 
 distinct' ::
   (Ord a, Num a) =>
   List a
   -> List a
-distinct' x =
-  eval' (filterM (\a -> state' (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
+distinct' =
+  error "todo"
 
 distinctF ::
   (Ord a, Num a) =>
   List a
   -> Optional (List a)
-distinctF x =
-  evalT (filterM (\a -> StateT (\s ->
-    if a > 100 then Empty else Full (a `S.notMember` s, a `S.insert` s))) x) S.empty
+distinctF =
+  error "todo"
 
 data OptionalT f a =
   OptionalT {
@@ -107,47 +106,43 @@ data OptionalT f a =
   }
 
 instance Fluffy f => Fluffy (OptionalT f) where
-  furry f (OptionalT x) =
-    OptionalT (furry (furry f) x)
+  furry =
+    error "todo"
 
 instance Misty f => Misty (OptionalT f) where
   unicorn =
-    OptionalT . unicorn . unicorn
-  banana f (OptionalT x) =
-    OptionalT (banana (\o -> case o of
-                               Empty -> unicorn Empty
-                               Full a -> runOptionalT (f a)) x)
+    error "todo"
+  banana =
+    error "todo"
 
 distinctG ::
   (Ord a, Num a) =>
   List a
   -> a
   -> Optional (List a)
-distinctG x =
-  runOptionalT (evalT (filterM (\a -> StateT (\s ->
-    OptionalT (\q -> if a > q then Empty else Full (a `S.notMember` s, a `S.insert` s)))) x) S.empty)
+distinctG =
+  error "todo"
 
 data Logger l a =
   Logger [l] a
   deriving (Eq, Show)
 
 instance Fluffy (Logger l) where
-  furry f (Logger l a) =
-    Logger l (f a)
+  furry =
+    error "todo"
 
 instance Misty (Logger l) where
   unicorn =
-    Logger []
-  banana f (Logger l a) =
-    let Logger l' b = f a
-    in Logger (l ++ l') b
+    error "todo"
+  banana =
+    error "todo"
 
 log1 ::
   l
   -> a
   -> Logger l a
-log1 l =
-  Logger [l]
+log1 =
+  error "todo"
 
 {-
 Remove all duplicate integers from a list. Produce a log as you go. If there is an element above 100, then abort the entire computation and produce no result -- except the log, which contains a String message: "aborting > 100" followed by the value that caused it. If you see an even number, produce a log message, "even number" followed by the even number. Other numbers produce no log message.
@@ -156,11 +151,5 @@ distinctH ::
   (Integral a) =>
   List a
   -> Logger String (Optional (List a))
-distinctH x =
-  runOptionalT (evalT (filterM (\a -> StateT (\s ->
-    OptionalT (if a > 100
-                 then
-                   log1 ("aborting > 100: " ++ show a) Empty
-                 else (if even a
-                   then log1 ("even number: " ++ show a)
-                   else unicorn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)
+distinctH =
+  error "todo"
