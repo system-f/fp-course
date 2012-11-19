@@ -29,7 +29,13 @@ object Misty {
   // Exercise 5
   // Relative Difficulty: 1
   implicit val IdMisty: Misty[Id] =
-    sys.error("todo")
+    new Misty[Id] {
+      def banana[A, B](f: A => Id[B]) =
+        _ flatMap f
+
+      def unicorn[A] =
+        Id(_)
+    }
 
   // Exercise 6
   // Relative Difficulty: 1
