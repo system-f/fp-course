@@ -106,7 +106,8 @@ object StateT {
   // abort the computation by producing `Empty`.
   // ~~~ Use filterM and StateT over Optional with a Set. ~~~
   def distinctF(x: Stream[Int]): Optional[Stream[Int]] =
-    sys.error("todo")
+    filterM[({type l[a] = StateT[Set[Int], Optional, a]})#l, Int](a => StateT(s =>
+      if(a > 100) Empty[(Boolean, Set[Int])] else Full[(Boolean, Set[Int])]((!(s contains a), s + a))), x) eval Set()
 
   // An `OptionalT` is a functor of an `Optional` value.
   case class OptionalT[F[_], A](run: F[Optional[A]])
