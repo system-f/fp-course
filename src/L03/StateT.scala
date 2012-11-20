@@ -125,40 +125,31 @@ object StateT {
       sys.error("todo")
   }
 
-  // Exercise 15
-  // Relative Difficulty: 7
-  // Remove all duplicate elements in a `List`.
-  // However, if you see a value greater than the given parameter in the list,
-  // abort the computation by producing `Empty`.
-  // ~~~ Use filterM and StateT over (OptionalT over (Function1[Int, _]) with a Set. ~~~
-  def distinctG(x: Stream[Int]): Int => Optional[Stream[Int]] =
-    sys.error("todo")
-
   // A `Logger` is a pair of a list of log values (`List[L]`) and an arbitrary value (`A`).
   case class Logger[L, A](log: List[L], value: A)
 
   object Logger {
-    // Exercise 16
+    // Exercise 15
     // Relative Difficulty: 4
     // Implement the `Fluffy` instance for `Logger`.
     implicit def LoggerFluffy[L]: Fluffy[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
-    // Exercise 17
+    // Exercise 16
     // Relative Difficulty: 5
     // Implement the `Misty` instance for `Logger`.
     // The `banana` implementation must append log values to maintain associativity.
     implicit def LoggerMisty[L]: Misty[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
-    // Exercise 18
+    // Exercise 17
     // Relative Difficulty: 1
     // A utility function for producing a `Logger` with one log value.
     def log1[L, A](l: L, a: A): Logger[L, A] =
       sys.error("todo")
   }
 
-  // Exercise 19
+  // Exercise 18
   // Relative Difficulty: 10
   // Remove all duplicate integers from a list. Produce a log as you go.
   // If there is an element above 100, then abort the entire computation and produce no result.
@@ -167,7 +158,7 @@ object StateT {
   // If you see an even number, produce a log message, "even number: " followed by the even number.
   // Other numbers produce no log message.
   // ~~~ Use filterM and StateT over (OptionalT over Logger with a Set. ~~~
-  def distinctH(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
+  def distinctG(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
     sys.error("todo")
 
 }
