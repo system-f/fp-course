@@ -146,20 +146,32 @@ object StateT {
     // Relative Difficulty: 4
     // Implement the `Fluffy` instance for `Logger`.
     implicit def LoggerFluffy[L]: Fluffy[({type l[a] = Logger[L, a]})#l] =
-      sys.error("todo")
+      new Fluffy[({type l[a] = Logger[L, a]})#l] {
+        def furry[A, B](f: A => B) =
+          q => Logger(q.log, f(q.value))
+      }
 
     // Exercise 16
     // Relative Difficulty: 5
     // Implement the `Misty` instance for `Logger`.
     // The `banana` implementation must append log values to maintain associativity.
     implicit def LoggerMisty[L]: Misty[({type l[a] = Logger[L, a]})#l] =
-      sys.error("todo")
+      new Misty[({type l[a] = Logger[L, a]})#l] {
+        def banana[A, B](f: A => Logger[L, B]) =
+          q => {
+            val Logger(ll, b) = f(q.value)
+            Logger(q.log append ll, b)
+          }
+
+        def unicorn[A] =
+          Logger(Nil(), _)
+      }
 
     // Exercise 17
     // Relative Difficulty: 1
     // A utility function for producing a `Logger` with one log value.
     def log1[L, A](l: L, a: A): Logger[L, A] =
-      sys.error("todo")
+      Logger(l |: Nil(), a)
   }
 
   // Exercise 18
