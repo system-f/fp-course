@@ -165,33 +165,19 @@ instance Misty f => Misty (OptionalT f) where
   banana =
     error "todo"
 
--- Exercise 15
--- Relative Difficulty: 7
--- Remove all duplicate elements in a `List`.
--- However, if you see a value greater than the given parameter in the list,
--- abort the computation by producing `Empty`.
--- ~~~ Use filterM and StateT over (OptionalT over ((->) a) with a Data.Set#Set. ~~~
-distinctG ::
-  (Ord a, Num a) =>
-  List a
-  -> a
-  -> Optional (List a)
-distinctG =
-  error "todo"
-
 -- A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
 data Logger l a =
   Logger [l] a
   deriving (Eq, Show)
 
--- Exercise 16
+-- Exercise 15
 -- Relative Difficulty: 4
 -- Implement the `Fluffy` instance for `Logger`.
 instance Fluffy (Logger l) where
   furry =
     error "todo"
 
--- Exercise 17
+-- Exercise 16
 -- Relative Difficulty: 5
 -- Implement the `Misty` instance for `Logger`.
 -- The `banana` implementation must append log values to maintain associativity.
@@ -201,7 +187,7 @@ instance Misty (Logger l) where
   banana =
     error "todo"
 
--- Exercise 18
+-- Exercise 17
 -- Relative Difficulty: 1
 -- A utility function for producing a `Logger` with one log value.
 log1 ::
@@ -211,7 +197,7 @@ log1 ::
 log1 =
   error "todo"
 
--- Exercise 19
+-- Exercise 18
 -- Relative Difficulty: 10
 -- Remove all duplicate integers from a list. Produce a log as you go.
 -- If there is an element above 100, then abort the entire computation and produce no result.
@@ -220,9 +206,9 @@ log1 =
 -- If you see an even number, produce a log message, "even number: " followed by the even number.
 -- Other numbers produce no log message.
 -- ~~~ Use filterM and StateT over (OptionalT over Logger with a Data.Set#Set. ~~~
-distinctH ::
+distinctG ::
   (Integral a) =>
   List a
   -> Logger String (Optional (List a))
-distinctH =
+distinctG =
   error "todo"
