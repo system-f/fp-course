@@ -157,7 +157,7 @@ object StateT {
   // "aborting > 100: " followed by the value that caused it.
   // If you see an even number, produce a log message, "even number: " followed by the even number.
   // Other numbers produce no log message.
-  // ~~~ Use filterM and StateT over (OptionalT over Logger with a Set. ~~~
+  // ~~~ Use filterM and StateT over (OptionalT over Logger) with a Set. ~~~
   def distinctG(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
     sys.error("todo")
 
