@@ -149,6 +149,54 @@ object StateT {
       sys.error("todo")
   }
 
+  // This data structure is required to complete Exercise 18.
+  // It stacks State[S] on Logger[L] on Optional[A].
+  // However, we unravel that stack by rewriting this data structure.
+  // This is a consequence of a limitation of Scala's type system.
+  //
+  // This data structure is equivalent to:
+  // StateT[S, x => OptionalT[y => Logger[L, y], x] A]
+  case class StateTOptionalTLogger[S, L, A](run: S => Logger[L, Optional[(A, S)]]) {
+    // Analogous to eval on StateT
+    def eval(s: S): Logger[L, Optional[A]] = {
+      val r = run(s)
+      Logger(r.log, r.value map (_._1))
+    }
+  }
+
+  object StateTOptionalTLogger {
+    // StateTOptionalTLogger is a Fluffy.
+    implicit def StateTOptionalTLoggerFluffy[S, L]: Fluffy[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Fluffy[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+        def furry[A, B](f: A => B) =
+          q => StateTOptionalTLogger(s => {
+            val r = q run s
+            Logger(r.log, r.value map {
+              case (a, t) => (f(a), t)
+            })
+          })
+      }
+
+    // StateTOptionalTLogger is a Misty.
+    implicit def StateTOptionalTLoggerMisty[S, L]: Misty[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Misty[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+        def banana[A, B](f: A => StateTOptionalTLogger[S, L, B]) =
+          q => StateTOptionalTLogger(s => {
+            val r = q run s
+            r.value match {
+              case Empty() => Logger(r.log, Empty())
+              case Full((a, t)) => {
+                val q = f(a) run t
+                Logger(r.log append q.log, q.value)
+              }
+            }
+          })
+
+        def unicorn[A] =
+          a => StateTOptionalTLogger(s => Logger(Nil(), Full((a, s))))
+      }
+  }
+
   // Exercise 18
   // Relative Difficulty: 10
   // Remove all duplicate integers from a list. Produce a log as you go.
