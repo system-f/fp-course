@@ -127,7 +127,7 @@ object StateT {
   // However, if you see a value greater than the given parameter in the list,
   // abort the computation by producing `Empty`.
   // ~~~ Use filterM and StateT over (OptionalT over (Function1[Int, _]) with a Set. ~~~
-  def distinctG(x: Stream[Int]): Optional[Stream[Int]] =
+  def distinctG(x: Stream[Int]): Int => Optional[Stream[Int]] =
     sys.error("todo")
 
   // A `Logger` is a pair of a list of log values (`List[L]`) and an arbitrary value (`A`).
