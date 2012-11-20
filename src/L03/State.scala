@@ -20,7 +20,7 @@ case class State[S, A](run: S => (A, S)) {
 
   // Exercise 4
   // Relative Difficulty: 1
-  // Run the `State` seeded with `s` and retrieve the resulting state.
+  // Run the `State` seeded with `s` and retrieve the resulting value.
   def eval(s: S): A =
     run(s)._1
 
