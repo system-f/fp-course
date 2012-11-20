@@ -117,13 +117,25 @@ object StateT {
     // Relative Difficulty: 3
     // Implement the `Fluffy` instance for `OptionalT[F, _]` given a Fluffy[F].
     implicit def OptionalTFluffy[F[_]](implicit F: Fluffy[F]): Fluffy[({type l[a] = OptionalT[F, a]})#l] =
-      sys.error("todo")
+      new Fluffy[({type l[a] = OptionalT[F, a]})#l] {
+        def furry[A, B](f: A => B) =
+          q => OptionalT(F(q.run)(_ map f))
+      }
 
     // Exercise 14
     // Relative Difficulty: 5
     // Implement the `Misty` instance for `OptionalT[F, _]` given a Misty[F].
     implicit def OptionalTMisty[F[_]](implicit M: Misty[F]): Misty[({type l[a] = OptionalT[F, a]})#l] =
-      sys.error("todo")
+      new Misty[({type l[a] = OptionalT[F, a]})#l] {
+        def banana[A, B](f: A => OptionalT[F, B]) =
+          q => OptionalT(M.bana(q.run) {
+            case Empty() => M.unicorn(Empty())
+            case Full(a) => f(a).run
+          })
+
+        def unicorn[A] =
+          a => OptionalT(M.unicorn(Full(a)))
+      }
   }
 
   // Exercise 15
