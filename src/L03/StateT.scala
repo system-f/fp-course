@@ -232,6 +232,15 @@ object StateT {
   // Other numbers produce no log message.
   // ~~~ Use filterM and StateT over (OptionalT over Logger) with a Set. ~~~
   def distinctG(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
-    sys.error("todo")
+    filterM[({type l[a] = StateTOptionalTLogger[Set[Int], String, a]})#l, Int](a =>
+      StateTOptionalTLogger(s => if(a > 100)
+                                   Logger.log1("aborting > 100: " + a, Empty())
+                                 else {
+                                   val r = Full[(Boolean, Set[Int])]((!(s contains a), s + a))
+                                   if(a % 2 == 0)
+                                     Logger.log1("even number: " + a, r)
+                                   else
+                                     Logger(Nil(), r)
+                                  }), x) eval Set()
 
 }
