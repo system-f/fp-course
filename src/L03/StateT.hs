@@ -207,7 +207,7 @@ log1 =
 -- Other numbers produce no log message.
 -- ~~~ Use filterM and StateT over (OptionalT over Logger with a Data.Set#Set. ~~~
 distinctG ::
-  (Integral a) =>
+  (Integral a, Show a) =>
   List a
   -> Logger String (Optional (List a))
 distinctG =
