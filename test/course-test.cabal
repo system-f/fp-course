@@ -30,6 +30,8 @@ Executable          course-test
                     -fhpc
                     -fno-warn-unused-imports
                     -fno-warn-unused-binds
+                    -fno-warn-unused-do-bind
+                    -fno-warn-type-defaults
 
   Hs-Source-Dirs:   ../src src
 
