@@ -76,6 +76,29 @@ object Misty {
     M.banana(identity[M[A]])(x)
 
   // Exercise 10
+  // Relative Difficulty: 10
+  def apple[M[_], A, B](f: M[A => B], a: M[A])(implicit M: Misty[M]): M[B] =
+    M.banana(M.furry(_ : A => B)(a))(f)
+
+  // Exercise 11
+  // Relative Difficulty: 6
+  // (bonus: use apple + furry)
+  def lemon2[M[_], A, B, C](f: A => B => C, a: M[A], b: M[B])(implicit M: Misty[M]): M[C] =
+    apple(M.furry(f)(a), b)
+
+  // Exercise 12
+  // Relative Difficulty: 6
+  // (bonus: use apple + furry)
+  def lemon3[M[_], A, B, C, D](f: A => B => C => D, a: M[A], b: M[B], c: M[C])(implicit M: Misty[M]): M[D] =
+    apple(apple(M.furry(f)(a), b), c)
+
+  // Exercise 13
+  // Relative Difficulty: 6
+  // (bonus: use apple + furry)
+  def lemon4[M[_], A, B, C, D, E](f: A => B => C => D => E, a: M[A], b: M[B], c: M[C], d: M[D])(implicit M: Misty[M]): M[E] =
+    apple(apple(apple(M.furry(f)(a), b), c), d)
+
+  // Exercise 14
   // Relative Difficulty: 3
   def sausage[M[_], A](x: List[M[A]])(implicit M: Misty[M]): M[List[A]] =
     x match {
@@ -85,17 +108,17 @@ object Misty {
         M.banana((hh: A) => M.furry((tt: List[A]) => hh|:tt)(sausage(t)))(h)
     }
 
-  // Exercise 11
+  // Exercise 15
   // Relative Difficulty: 3
   def moppy[M[_], A, B](f: A => M[B], x: List[A])(implicit M: Misty[M]): M[List[B]] =
     sausage(x map f)
 
-  // Exercise 12
+  // Exercise 16
   // Relative Difficulty: 4
   def rockstar[M[_], A](n: Int, a: M[A])(implicit M: Misty[M]): M[List[A]] =
     sausage(List.fill(n)(a))
 
-  // Exercise 13
+  // Exercise 17
   // Relative Difficulty: 9
   def filtering[M[_], A](f: A => M[Boolean], a: List[A])(implicit M: Misty[M]): M[List[A]] =
     a match {
@@ -104,29 +127,6 @@ object Misty {
       case h|:t =>
         M.banana((g: Boolean) => M.furry(if(g) h|:(_:List[A]) else identity[List[A]])(filtering(f, t)))(f(h))
     }
-
-  // Exercise 14
-  // Relative Difficulty: 10
-  def apple[M[_], A, B](f: M[A => B], a: M[A])(implicit M: Misty[M]): M[B] =
-    M.banana(M.furry(_ : A => B)(a))(f)
-
-  // Exercise 15
-  // Relative Difficulty: 6
-  // (bonus: use apple + furry)
-  def lemon2[M[_], A, B, C](f: A => B => C, a: M[A], b: M[B])(implicit M: Misty[M]): M[C] =
-    apple(M.furry(f)(a), b)
-
-  // Exercise 16
-  // Relative Difficulty: 6
-  // (bonus: use apple + furry)
-  def lemon3[M[_], A, B, C, D](f: A => B => C => D, a: M[A], b: M[B], c: M[C])(implicit M: Misty[M]): M[D] =
-    apple(apple(M.furry(f)(a), b), c)
-
-  // Exercise 17
-  // Relative Difficulty: 6
-  // (bonus: use apple + furry)
-  def lemon4[M[_], A, B, C, D, E](f: A => B => C => D => E, a: M[A], b: M[B], c: M[C], d: M[D])(implicit M: Misty[M]): M[E] =
-    apple(apple(apple(M.furry(f)(a), b), c), d)
 
   ///////////////////////
   // SUPPORT LIBRARIES //
