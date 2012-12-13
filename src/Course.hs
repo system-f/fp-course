@@ -3,8 +3,8 @@ module Course
   module L01.Optional
 , module L01.Validation
 , module L02.List
-, module L03.Fluffy
-, module L03.Misty
+, module L03.Fuunctor
+, module L03.Moonad
 , module L03.State
 , module L03.StateT
 , module L04.ListZipper
@@ -26,8 +26,8 @@ module Course
 import L01.Optional
 import L01.Validation
 import L02.List
-import L03.Fluffy
-import L03.Misty
+import L03.Fuunctor
+import L03.Moonad
 import L03.State
 import L03.StateT
 import L04.ListZipper

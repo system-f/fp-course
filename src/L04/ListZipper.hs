@@ -3,7 +3,7 @@
 module L04.ListZipper where
 
 import Data.List
-import L03.Fluffy
+import L03.Fuunctor
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -31,18 +31,18 @@ data MaybeListZipper a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `ListZipper`.
-instance Fluffy ListZipper where
-  furry f (ListZipper l x r) =
+-- Implement the `Fuunctor` instance for `ListZipper`.
+instance Fuunctor ListZipper where
+  fmaap f (ListZipper l x r) =
     ListZipper (fmap f l) (f x) (fmap f r)
 
 -- Exercise 2
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `MaybeListZipper`.
-instance Fluffy MaybeListZipper where
-  furry f (IsZ z) =
-    IsZ (furry f z)
-  furry _ IsNotZ =
+-- Implement the `Fuunctor` instance for `MaybeListZipper`.
+instance Fuunctor MaybeListZipper where
+  fmaap f (IsZ z) =
+    IsZ (fmaap f z)
+  fmaap _ IsNotZ =
     IsNotZ
 
 -- Exercise 3
@@ -68,7 +68,7 @@ toMaybe (IsZ z) =
   Just z
 
 -- The `ListZipper'` type-class that will permit overloading operations.
-class Fluffy f => ListZipper' f where
+class Fuunctor f => ListZipper' f where
   toMaybeListZipper ::
     f a
     -> MaybeListZipper a
@@ -488,7 +488,7 @@ insertPushRight a z =
 -- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
 -- However, it is much more flexible, which we exploit here.
 
-class Fluffy f => Apply f where
+class Fuunctor f => Apply f where
   (<*>) ::
     f (a -> b)
     -> f a
@@ -498,7 +498,7 @@ class Apply f => Applicative f where
   unit ::
     a -> f a
 
-class Fluffy f => Extend f where
+class Fuunctor f => Extend f where
   (<<=) ::
     (f a -> b)
     -> f a
@@ -509,7 +509,7 @@ class Extend f => Comonad f where
     f a
     -> a
 
-class Fluffy t => Traversable t where
+class Fuunctor t => Traversable t where
   traverse ::
     Applicative f =>
     (a -> f b)
@@ -520,7 +520,7 @@ class Fluffy t => Traversable t where
 -- It will also come in use later.
 instance Traversable [] where
   traverse f =
-    foldr (\a b -> furry (:) (f a) <*> b) (unit [])
+    foldr (\a b -> fmaap (:) (f a) <*> b) (unit [])
 
 -- Exercise 31
 -- Relative Difficulty: 6
@@ -580,7 +580,7 @@ instance Comonad ListZipper where
 -- An effectful zipper is returned.
 instance Traversable ListZipper where
   traverse f (ListZipper l x r) =
-    furry (ListZipper . reverse) (traverse f $ reverse l) <*> f x <*> traverse f r
+    fmaap (ListZipper . reverse) (traverse f $ reverse l) <*> f x <*> traverse f r
 
 -- Exercise 38
 -- Relative Difficulty: 5
@@ -590,7 +590,7 @@ instance Traversable MaybeListZipper where
   traverse _ IsNotZ =
     unit IsNotZ
   traverse f (IsZ z) =
-    furry IsZ (traverse f z)
+    fmaap IsZ (traverse f z)
 
 -----------------------
 -- SUPPORT LIBRARIES --

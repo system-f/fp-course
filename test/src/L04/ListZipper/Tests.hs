@@ -1,7 +1,7 @@
 module L04.ListZipper.Tests where
 
 import Data.Maybe (isJust)
-import L03.Fluffy
+import L03.Fuunctor
 import L04.ListZipper
 import Test.Framework
 import Test.Framework.Providers.HUnit       (testCase)
@@ -20,8 +20,8 @@ test ::
 test =
   testGroup "ListZipper"
     [
-      testCase "furry on ListZipper" testcase_furryListZipper
-    , testCase "furry on MaybeListZipper" testcase_furryMaybeListZipper
+      testCase "fmaap on ListZipper" testcase_fmaapListZipper
+    , testCase "fmaap on MaybeListZipper" testcase_fmaapMaybeListZipper
     , testProperty "fromList/toList roundtrip" prop_fromList_toList
     , testProperty "toMaybe" prop_toMaybe
     , testCase "withFocus (front)" testcase_withFocus_front
@@ -36,16 +36,16 @@ test =
     , testProperty "findLeft (unsatisfiable)" prop_findLeft_nowhere
     ]
 
-testcase_furryListZipper ::
+testcase_fmaapListZipper ::
   Assertion
-testcase_furryListZipper =
-  furry (+1) (ListZipper [3,2,1] (4 :: Int) [5,6,7]) @?=
+testcase_fmaapListZipper =
+  fmaap (+1) (ListZipper [3,2,1] (4 :: Int) [5,6,7]) @?=
     (ListZipper [4,3,2] 5 [6,7,8])
 
-testcase_furryMaybeListZipper ::
+testcase_fmaapMaybeListZipper ::
   Assertion
-testcase_furryMaybeListZipper =
-  furry (+1) (IsZ (ListZipper [3,2,1] (4 :: Int) [5,6,7])) @?=
+testcase_fmaapMaybeListZipper =
+  fmaap (+1) (IsZ (ListZipper [3,2,1] (4 :: Int) [5,6,7])) @?=
     IsZ (ListZipper [4,3,2] 5 [6,7,8])
 
 prop_fromList_toList ::

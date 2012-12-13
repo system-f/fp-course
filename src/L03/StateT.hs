@@ -3,8 +3,8 @@ module L03.StateT where
 import L01.Id
 import L01.Optional
 import L02.List
-import L03.Fluffy
-import L03.Misty
+import L03.Fuunctor
+import L03.Moonad
 import L03.State
 import qualified Data.Set as S
 import qualified Data.Foldable as F
@@ -19,20 +19,20 @@ newtype StateT s f a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `StateT s f` given a Fluffy f.
-instance Fluffy f => Fluffy (StateT s f) where
-  furry f (StateT k) =
-    StateT (furry (\(a, t) -> (f a, t)) . k)
+-- Implement the `Fuunctor` instance for `StateT s f` given a Fuunctor f.
+instance Fuunctor f => Fuunctor (StateT s f) where
+  fmaap f (StateT k) =
+    StateT (fmaap (\(a, t) -> (f a, t)) . k)
 
 -- Exercise 2
 -- Relative Difficulty: 5
--- Implement the `Misty` instance for `StateT s g` given a Misty f.
--- Make sure the state value is passed through in `banana`.
-instance Misty f => Misty (StateT s f) where
-  banana f (StateT k) =
-    StateT (banana (\(a, t) -> runStateT (f a) t) . k)
-  unicorn a =
-    StateT (\s -> unicorn (a, s))
+-- Implement the `Moonad` instance for `StateT s g` given a Moonad f.
+-- Make sure the state value is passed through in `bind`.
+instance Moonad f => Moonad (StateT s f) where
+  bind f (StateT k) =
+    StateT (bind (\(a, t) -> runStateT (f a) t) . k)
+  reeturn a =
+    StateT (\s -> reeturn (a, s))
 
 -- A `State'` is `StateT` specialised to the `Id` functor.
 type State' s a =
@@ -61,12 +61,12 @@ runState' (StateT k) =
 -- Relative Difficulty: 2
 -- Run the `StateT` seeded with `s` and retrieve the resulting state.
 execT ::
-  Fluffy f =>
+  Fuunctor f =>
   StateT s f a
   -> s
   -> f s
 execT (StateT k) =
-  furry snd . k
+  fmaap snd . k
 
 -- Exercise 6
 -- Relative Difficulty: 1
@@ -82,12 +82,12 @@ exec' t =
 -- Relative Difficulty: 2
 -- Run the `StateT` seeded with `s` and retrieve the resulting value.
 evalT ::
-  Fluffy f =>
+  Fuunctor f =>
   StateT s f a
   -> s
   -> f a
 evalT (StateT k) =
-  furry fst . k
+  fmaap fst . k
 
 -- Exercise 8
 -- Relative Difficulty: 1
@@ -103,20 +103,20 @@ eval' t =
 -- Relative Difficulty: 2
 -- A `StateT` where the state also distributes into the produced value.
 getT ::
-  Misty f =>
+  Moonad f =>
   StateT s f s
 getT =
-  StateT (\s -> unicorn (s, s))
+  StateT (\s -> reeturn (s, s))
 
 -- Exercise 10
 -- Relative Difficulty: 2
 -- A `StateT` where the resulting state is seeded with the given value.
 putT ::
-  Misty f =>
+  Moonad f =>
   s
   -> StateT s f ()
 putT =
-  StateT . const . unicorn . (,) ()
+  StateT . const . reeturn . (,) ()
 
 -- Exercise 11
 -- Relative Difficulty: 4
@@ -152,21 +152,21 @@ data OptionalT f a =
 
 -- Exercise 13
 -- Relative Difficulty: 3
--- Implement the `Fluffy` instance for `OptionalT f` given a Fluffy f.
-instance Fluffy f => Fluffy (OptionalT f) where
-  furry f (OptionalT x) =
-    OptionalT (furry (furry f) x)
+-- Implement the `Fuunctor` instance for `OptionalT f` given a Fuunctor f.
+instance Fuunctor f => Fuunctor (OptionalT f) where
+  fmaap f (OptionalT x) =
+    OptionalT (fmaap (fmaap f) x)
 
 -- Exercise 14
 -- Relative Difficulty: 5
--- Implement the `Misty` instance for `OptionalT f` given a Misty f.
-instance Misty f => Misty (OptionalT f) where
-  unicorn =
-    OptionalT . unicorn . unicorn
-  banana f (OptionalT x) =
-    OptionalT (banana (\o -> case o of
-                               Empty -> unicorn Empty
-                               Full a -> runOptionalT (f a)) x)
+-- Implement the `Moonad` instance for `OptionalT f` given a Moonad f.
+instance Moonad f => Moonad (OptionalT f) where
+  reeturn =
+    OptionalT . reeturn . reeturn
+  bind f (OptionalT x) =
+    OptionalT (bind (\o -> case o of
+                             Empty -> reeturn Empty
+                             Full a -> runOptionalT (f a)) x)
 
 -- A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
 data Logger l a =
@@ -175,19 +175,19 @@ data Logger l a =
 
 -- Exercise 15
 -- Relative Difficulty: 4
--- Implement the `Fluffy` instance for `Logger`.
-instance Fluffy (Logger l) where
-  furry f (Logger l a) =
+-- Implement the `Fuunctor` instance for `Logger`.
+instance Fuunctor (Logger l) where
+  fmaap f (Logger l a) =
     Logger l (f a)
 
 -- Exercise 16
 -- Relative Difficulty: 5
--- Implement the `Misty` instance for `Logger`.
--- The `banana` implementation must append log values to maintain associativity.
-instance Misty (Logger l) where
-  unicorn =
+-- Implement the `Moonad` instance for `Logger`.
+-- The `bind` implementation must append log values to maintain associativity.
+instance Moonad (Logger l) where
+  reeturn =
     Logger []
-  banana f (Logger l a) =
+  bind f (Logger l a) =
     let Logger l' b = f a
     in Logger (l ++ l') b
 
@@ -221,4 +221,4 @@ distinctG x =
                    log1 ("aborting > 100: " ++ show a) Empty
                  else (if even a
                    then log1 ("even number: " ++ show a)
-                   else unicorn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)
+                   else reeturn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)

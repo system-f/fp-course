@@ -4,8 +4,8 @@ module L03.State where
 
 import L01.Optional
 import L02.List
-import L03.Fluffy
-import L03.Misty
+import L03.Fuunctor
+import L03.Moonad
 import Data.Char
 import qualified Data.Set as S
 import qualified Data.Foldable as F
@@ -20,19 +20,19 @@ newtype State s a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `State s`.
-instance Fluffy (State s) where
-  furry f (State k) =
+-- Implement the `Fuunctor` instance for `State s`.
+instance Fuunctor (State s) where
+  fmaap f (State k) =
       State (\s -> let (a, t) = k s in (f a, t))
 
 -- Exercise 2
 -- Relative Difficulty: 3
--- Implement the `Misty` instance for `State s`.
--- Make sure the state value is passed through in `banana`.
-instance Misty (State s) where
-  banana f (State k) =
+-- Implement the `Moonad` instance for `State s`.
+-- Make sure the state value is passed through in `bind`.
+instance Moonad (State s) where
+  bind f (State k) =
     State (\s -> let (a, t) = k s in runState (f a) t)
-  unicorn a =
+  reeturn a =
     State (\s -> (a, s))
 
 -- Exercise 3
@@ -76,21 +76,21 @@ put =
 -- Relative Difficulty: 5
 -- Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
--- However, while performing the search, we sequence some `Misty` effect through.
+-- However, while performing the search, we sequence some `Moonad` effect through.
 --
 -- Note the similarity of the type signature to List#find
 -- where the effect appears in every return position:
 --   find ::  (a ->   Bool) -> List a ->    Optional a
 --   findM :: (a -> f Bool) -> List a -> f (Optional a)
 findM ::
-  Misty f =>
+  Moonad f =>
   (a -> f Bool)
   -> List a
   -> f (Optional a)
 findM _ Nil =
-  unicorn Empty
+  reeturn Empty
 findM p (h :| t) =
-  banana (\q -> if q then unicorn (Full h) else findM p t) (p h)
+  bind (\q -> if q then reeturn (Full h) else findM p t) (p h)
 
 -- Exercise 8
 -- Relative Difficulty: 4
@@ -107,25 +107,25 @@ firstRepeat x =
 -- Exercise 9
 -- Relative Difficulty: 5
 -- Remove all elements in a `List` that fail a given predicate.
--- However, while performing the filter, we sequence some `Misty` effect through.
+-- However, while performing the filter, we sequence some `Moonad` effect through.
 --
 -- Note the similarity of the type signature to List#filter
 -- where the effect appears in every return position:
 --   filter ::  (a ->   Bool) -> List a ->    List a
 --   filterM :: (a -> f Bool) -> List a -> f (List a)
 filterM ::
-  Misty f =>
+  Moonad f =>
   (a -> f Bool)
   -> List a
   -> f (List a)
 filterM _ Nil =
-  unicorn Nil
+  reeturn Nil
 filterM p (h :| t) =
- banana (\q -> furry' (if q
-                         then
-                           (h:|)
-                         else
-                           id) (filterM p t)) (p h)
+ bind (\q -> fmaap' (if q
+                       then
+                         (h:|)
+                       else
+                         id) (filterM p t)) (p h)
 
 -- Exercise 10
 -- Relative Difficulty: 4
@@ -155,7 +155,7 @@ produce f a =
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
 -- because it results in a recurring sequence.
 -- ~~~ Use findM with State and produce
--- ~~~ Use jellybean to write a square function
+-- ~~~ Use flaatten to write a square function
 -- ~~~ Use library functions: Data.Foldable#elem, Data.Char#digitToInt
 isHappy ::
   Integer
@@ -165,7 +165,7 @@ isHappy =
     (`eval` S.empty) .
     findM (\j -> State $ \s -> (j == 1 || S.member j s, S.insert j s)) .
     produce (sum .
-             map (jellybean (*) .
+             map (flaatten (*) .
                   toInteger .
                   digitToInt) .
              show)
