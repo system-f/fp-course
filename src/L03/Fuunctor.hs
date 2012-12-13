@@ -1,40 +1,40 @@
-module L03.Fluffy where
+module L03.Fuunctor where
 
 import L01.Id
 import L01.Optional
 import L01.Validation
 import L02.List
 
-class Fluffy f where
-  furry :: (a -> b) -> f a -> f b
+class Fuunctor f where
+  fmaap :: (a -> b) -> f a -> f b
 
 -- Exercise 1
 -- Relative Difficulty: 1
-instance Fluffy Id where
-  furry =
+instance Fuunctor Id where
+  fmaap =
     error "todo"
 
 -- Exercise 2
 -- Relative Difficulty: 2
-instance Fluffy List where
-  furry =
+instance Fuunctor List where
+  fmaap =
     error "todo"
 
 -- Exercise 3
 -- Relative Difficulty: 2
-instance Fluffy Optional where
-  furry =
+instance Fuunctor Optional where
+  fmaap =
     error "todo"
 
 -- Exercise 4
 -- Relative Difficulty: 3
-instance Fluffy ((->) t) where
-  furry =
+instance Fuunctor ((->) t) where
+  fmaap =
     error "todo"
 
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
 
-instance Fluffy [] where
-  furry = fmap
+instance Fuunctor [] where
+  fmaap = fmap

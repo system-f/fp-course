@@ -1,12 +1,12 @@
-module L03.Misty.Tests where
+module L03.Moonad.Tests where
 
 import Test.HUnit hiding (test, Test)
 import Test.Framework
 import Test.Framework.Providers.HUnit (testCase)
 import L01.Optional
 import L02.List
-import L03.Fluffy
-import L03.Misty
+import L03.Fuunctor
+import L03.Moonad
 
 main ::
   IO ()
@@ -16,16 +16,16 @@ main =
 test ::
   Test
 test =
-  testGroup "Misty"
+  testGroup "Moonad"
     [
-      testCase "furry on Nil" testcase_furryNil
-    , testCase "furry on Cons" testcase_furryCons
-    , testCase "furry on Empty" testcase_furryEmpty
-    , testCase "furry on Full" testcase_furryFull
-    , testCase "banana on List" testcase_bananaList
-    , testCase "banana on Optional" testcase_bananaOptional
-    , testCase "unicorn on List" testcase_unicornList
-    , testCase "unicorn on Optional" testcase_unicornOptional
+      testCase "fmaap on Nil" testcase_fmaapNil
+    , testCase "fmaap on Cons" testcase_fmaapCons
+    , testCase "fmaap on Empty" testcase_fmaapEmpty
+    , testCase "fmaap on Full" testcase_fmaapFull
+    , testCase "bind on List" testcase_bindList
+    , testCase "bind on Optional" testcase_bindOptional
+    , testCase "reeturn on List" testcase_reeturnList
+    , testCase "reeturn on Optional" testcase_reeturnOptional
     , testCase "jellybean on List" testcase_jellybeanList
     , testCase "jellybean on Optional (Full then Empty)" testcase_jellybeanOptionalF
     , testCase "jellybean on Optional (Full then Full)" testcase_jellybeanOptionalFF
@@ -37,45 +37,45 @@ test =
     , testCase "moppy on Optional (Full then Full)" testcase_moppyOptionalFF
     ]
 
-testcase_furryNil ::
+testcase_fmaapNil ::
   Assertion
-testcase_furryNil =
-  furry (+(1 :: Int)) Nil @?= Nil
+testcase_fmaapNil =
+  fmaap (+(1 :: Int)) Nil @?= Nil
 
-testcase_furryCons ::
+testcase_fmaapCons ::
   Assertion
-testcase_furryCons =
-  furry (+(1 :: Int)) (1 :| 2 :| 3 :| Nil) @?= (2 :| 3 :| 4 :| Nil)
+testcase_fmaapCons =
+  fmaap (+(1 :: Int)) (1 :| 2 :| 3 :| Nil) @?= (2 :| 3 :| 4 :| Nil)
 
-testcase_furryEmpty ::
+testcase_fmaapEmpty ::
   Assertion
-testcase_furryEmpty =
-  furry (+(1 :: Int)) Empty @?= Empty
+testcase_fmaapEmpty =
+  fmaap (+(1 :: Int)) Empty @?= Empty
 
-testcase_furryFull ::
+testcase_fmaapFull ::
   Assertion
-testcase_furryFull =
-  furry (+(1 :: Int)) (Full 1) @?= (Full 2)
+testcase_fmaapFull =
+  fmaap (+(1 :: Int)) (Full 1) @?= (Full 2)
 
-testcase_bananaList ::
+testcase_bindList ::
   Assertion
-testcase_bananaList =
-  banana (\n -> n :| n :| Nil) ((1 :: Int) :| 2 :| 3 :| Nil) @?= (1 :| 1 :| 2 :| 2 :| 3 :| 3 :| Nil)
+testcase_bindList =
+  bind (\n -> n :| n :| Nil) ((1 :: Int) :| 2 :| 3 :| Nil) @?= (1 :| 1 :| 2 :| 2 :| 3 :| 3 :| Nil)
 
-testcase_bananaOptional ::
+testcase_bindOptional ::
   Assertion
-testcase_bananaOptional =
-  (banana (\n -> Full (n + n)) (Full 7)) @?= (Full (14 :: Int))
+testcase_bindOptional =
+  (bind (\n -> Full (n + n)) (Full 7)) @?= (Full (14 :: Int))
 
-testcase_unicornList ::
+testcase_reeturnList ::
   Assertion
-testcase_unicornList =
-  (unicorn 'x' :: List Char) @?= 'x' :| Nil
+testcase_reeturnList =
+  (reeturn 'x' :: List Char) @?= 'x' :| Nil
 
-testcase_unicornOptional ::
+testcase_reeturnOptional ::
   Assertion
-testcase_unicornOptional =
-  (unicorn 'x' :: Optional Char) @?= Full 'x'
+testcase_reeturnOptional =
+  (reeturn 'x' :: Optional Char) @?= Full 'x'
 
 testcase_jellybeanList ::
   Assertion

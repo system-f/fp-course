@@ -6,45 +6,45 @@ import State.filterM
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 case class StateT[S, F[_], A](run: S => F[(A, S)]) {
-  def map[B](f: A => B)(implicit F: Fluffy[F]): StateT[S, F, B] =
-    StateT.StateTFluffy.furry(f)(this)
+  def map[B](f: A => B)(implicit F: Fuunctor[F]): StateT[S, F, B] =
+    StateT.StateTFuunctor.fmaap(f)(this)
 
-  def flatMap[B](f: A => StateT[S, F, B])(implicit M: Misty[F]): StateT[S, F, B] =
-    StateT.StateTMisty.banana(f)(this)
+  def flatMap[B](f: A => StateT[S, F, B])(implicit M: Moonad[F]): StateT[S, F, B] =
+    StateT.StateTMoonad.bind(f)(this)
 
   // Exercise 5
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting state.
-  def exec(s: S)(implicit F: Fluffy[F]): F[S] =
+  def exec(s: S)(implicit F: Fuunctor[F]): F[S] =
     sys.error("todo")
 
   // Exercise 7
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting value.
-  def eval(s: S)(implicit F: Fluffy[F]): F[A] =
+  def eval(s: S)(implicit F: Fuunctor[F]): F[A] =
     sys.error("todo")
 }
 
 object StateT {
   // Exercise 1
   // Relative Difficulty: 2
-  // Implement the `Fluffy` instance for `StateT[S, F, _]` given a Fluffy[F].
-  implicit def StateTFluffy[S, F[_]](implicit F: Fluffy[F]): Fluffy[({type l[a] = StateT[S, F, a]})#l] =
-    new Fluffy[({type l[a] = StateT[S, F, a]})#l] {
-      def furry[A, B](f: A => B) =
+  // Implement the `Fuunctor` instance for `StateT[S, F, _]` given a Fuunctor[F].
+  implicit def StateTFuunctor[S, F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = StateT[S, F, a]})#l] =
+    new Fuunctor[({type l[a] = StateT[S, F, a]})#l] {
+      def fmaap[A, B](f: A => B) =
         sys.error("todo")
     }
 
   // Exercise 2
   // Relative Difficulty: 5
-  // Implement the `Misty` instance for `StateT[S, F, _]`.
-  // Make sure the state value is passed through in `banana` given a Misty[F].
-  implicit def StateTMisty[S, F[_]](implicit M: Misty[F]): Misty[({type l[a] = StateT[S, F, a]})#l] =
-    new Misty[({type l[a] = StateT[S, F, a]})#l] {
-      def banana[A, B](f: A => StateT[S, F, B]) =
+  // Implement the `Moonad` instance for `StateT[S, F, _]`.
+  // Make sure the state value is passed through in `bind` given a Moonad[F].
+  implicit def StateTMoonad[S, F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = StateT[S, F, a]})#l] =
+    new Moonad[({type l[a] = StateT[S, F, a]})#l] {
+      def bind[A, B](f: A => StateT[S, F, B]) =
         sys.error("todo")
 
-      def unicorn[A] =
+      def reeturn[A] =
         sys.error("todo")
     }
 
@@ -79,13 +79,13 @@ object StateT {
   // Exercise 9
   // Relative Difficulty: 2
   // A `StateT` where the state also distributes into the produced value.
-  def get[S, F[_]](implicit M: Misty[F]): StateT[S, F, S] =
+  def get[S, F[_]](implicit M: Moonad[F]): StateT[S, F, S] =
     sys.error("todo")
 
   // Exercise 10
   // Relative Difficulty: 2
   // A `StateT` where the resulting state is seeded with the given value.
-  def put[S, F[_]](s: S)(implicit M: Misty[F]): StateT[S, F, Unit] =
+  def put[S, F[_]](s: S)(implicit M: Moonad[F]): StateT[S, F, Unit] =
     sys.error("todo")
 
   // Exercise 11
@@ -110,14 +110,14 @@ object StateT {
   object OptionalT {
     // Exercise 13
     // Relative Difficulty: 3
-    // Implement the `Fluffy` instance for `OptionalT[F, _]` given a Fluffy[F].
-    implicit def OptionalTFluffy[F[_]](implicit F: Fluffy[F]): Fluffy[({type l[a] = OptionalT[F, a]})#l] =
+    // Implement the `Fuunctor` instance for `OptionalT[F, _]` given a Fuunctor[F].
+    implicit def OptionalTFuunctor[F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = OptionalT[F, a]})#l] =
       sys.error("todo")
 
     // Exercise 14
     // Relative Difficulty: 5
-    // Implement the `Misty` instance for `OptionalT[F, _]` given a Misty[F].
-    implicit def OptionalTMisty[F[_]](implicit M: Misty[F]): Misty[({type l[a] = OptionalT[F, a]})#l] =
+    // Implement the `Moonad` instance for `OptionalT[F, _]` given a Moonad[F].
+    implicit def OptionalTMoonad[F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = OptionalT[F, a]})#l] =
       sys.error("todo")
   }
 
@@ -127,15 +127,15 @@ object StateT {
   object Logger {
     // Exercise 15
     // Relative Difficulty: 4
-    // Implement the `Fluffy` instance for `Logger`.
-    implicit def LoggerFluffy[L]: Fluffy[({type l[a] = Logger[L, a]})#l] =
+    // Implement the `Fuunctor` instance for `Logger`.
+    implicit def LoggerFuunctor[L]: Fuunctor[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
     // Exercise 16
     // Relative Difficulty: 5
-    // Implement the `Misty` instance for `Logger`.
-    // The `banana` implementation must append log values to maintain associativity.
-    implicit def LoggerMisty[L]: Misty[({type l[a] = Logger[L, a]})#l] =
+    // Implement the `Moonad` instance for `Logger`.
+    // The `bind` implementation must append log values to maintain associativity.
+    implicit def LoggerMoonad[L]: Moonad[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
     // Exercise 17
@@ -161,10 +161,10 @@ object StateT {
   }
 
   object StateTOptionalTLogger {
-    // StateTOptionalTLogger is a Fluffy.
-    implicit def StateTOptionalTLoggerFluffy[S, L]: Fluffy[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
-      new Fluffy[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
-        def furry[A, B](f: A => B) =
+    // StateTOptionalTLogger is a Fuunctor.
+    implicit def StateTOptionalTLoggerFuunctor[S, L]: Fuunctor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Fuunctor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+        def fmaap[A, B](f: A => B) =
           q => StateTOptionalTLogger(s => {
             val r = q run s
             Logger(r.log, r.value map {
@@ -173,10 +173,10 @@ object StateT {
           })
       }
 
-    // StateTOptionalTLogger is a Misty.
-    implicit def StateTOptionalTLoggerMisty[S, L]: Misty[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
-      new Misty[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
-        def banana[A, B](f: A => StateTOptionalTLogger[S, L, B]) =
+    // StateTOptionalTLogger is a Moonad.
+    implicit def StateTOptionalTLoggerMoonad[S, L]: Moonad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Moonad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+        def bind[A, B](f: A => StateTOptionalTLogger[S, L, B]) =
           q => StateTOptionalTLogger(s => {
             val r = q run s
             r.value match {
@@ -188,7 +188,7 @@ object StateT {
             }
           })
 
-        def unicorn[A] =
+        def reeturn[A] =
           a => StateTOptionalTLogger(s => Logger(Nil(), Full((a, s))))
       }
   }

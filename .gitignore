@@ -20,3 +20,6 @@ _darcs
 # ctags
 TAGS
 
+# sbt
+/project
+/target

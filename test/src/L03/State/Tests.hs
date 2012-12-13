@@ -3,8 +3,8 @@ module L03.State.Tests where
 import Data.List (nub)
 import L01.Optional
 import L02.List
-import L03.Fluffy
-import L03.Misty
+import L03.Fuunctor
+import L03.Moonad
 import L03.State
 import Test.Framework
 import Test.Framework.Providers.HUnit       (testCase)
@@ -18,21 +18,21 @@ main ::
 main =
   defaultMain [test]
 
-banana_ ::
-  Misty f
+bind_ ::
+  Moonad f
   => f b
   -> f a
   -> f b
-banana_ = banana . const
+bind_ = bind . const
 
 test ::
   Test
 test =
   testGroup "State"
     [
-      testCase "furry on State" testcase_furry
-    , testCase "unicorn on State" testcase_unicorn
-    , testCase "banana on State" testcase_banana
+      testCase "fmaap on State" testcase_fmaap
+    , testCase "reeturn on State" testcase_reeturn
+    , testCase "bind on State" testcase_bind
     , testProperty "eval" prop_eval
     , testProperty "exec" prop_exec
     , testCase "get" testcase_get
@@ -49,20 +49,20 @@ test =
     , testCase "isHappy (placeholder)" testcase_isHappy
     ]
 
-testcase_furry ::
+testcase_fmaap ::
   Assertion
-testcase_furry =
-  runState (furry (+(1 :: Int)) (unicorn 0)) (0 :: Int) @?= (1, 0)
+testcase_fmaap =
+  runState (fmaap (+(1 :: Int)) (reeturn 0)) (0 :: Int) @?= (1, 0)
 
-testcase_unicorn ::
+testcase_reeturn ::
   Assertion
-testcase_unicorn =
-  runState (unicorn (1 :: Int)) (0 :: Int) @?= (1, 0)
+testcase_reeturn =
+  runState (reeturn (1 :: Int)) (0 :: Int) @?= (1, 0)
 
-testcase_banana ::
+testcase_bind ::
   Assertion
-testcase_banana =
-  runState (banana_ (put 2) (put 1)) (0 :: Int) @?= ((), 2)
+testcase_bind =
+  runState (bind_ (put 2) (put 1)) (0 :: Int) @?= ((), 2)
 
 prop_eval ::
   Fun Int (Int, Int)
@@ -93,14 +93,14 @@ testcase_findM_found ::
 testcase_findM_found =
   runState (findM p $ foldr (:|) Nil ['a'..'h']) 0 @?= (Full 'c', 3 :: Int)
   where
-    p x = banana (\s -> banana_ (unicorn (x == 'c')) $ put (1+s)) get
+    p x = bind (\s -> bind_ (reeturn (x == 'c')) $ put (1+s)) get
 
 testcase_findM_notFound ::
   Assertion
 testcase_findM_notFound =
   runState (findM p $ foldr (:|) Nil ['a'..'h']) 0 @?= (Empty, 8 :: Int)
   where
-    p x = banana (\s -> banana_ (unicorn (x == 'i')) $ put (1+s)) get
+    p x = bind (\s -> bind_ (reeturn (x == 'i')) $ put (1+s)) get
 
 prop_firstRepeat ::
   List Int

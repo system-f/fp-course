@@ -3,7 +3,7 @@
 module L04.ListZipper where
 
 import Data.List
-import L03.Fluffy
+import L03.Fuunctor
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -31,16 +31,16 @@ data MaybeListZipper a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `ListZipper`.
-instance Fluffy ListZipper where
-  furry =
+-- Implement the `Fuunctor` instance for `ListZipper`.
+instance Fuunctor ListZipper where
+  fmaap =
     error "todo"
 
 -- Exercise 2
 -- Relative Difficulty: 2
--- Implement the `Fluffy` instance for `MaybeListZipper`.
-instance Fluffy MaybeListZipper where
-  furry =
+-- Implement the `Fuunctor` instance for `MaybeListZipper`.
+instance Fuunctor MaybeListZipper where
+  fmaap =
     error "todo"
 
 -- Exercise 3
@@ -62,7 +62,7 @@ toMaybe =
   error "todo"
 
 -- The `ListZipper'` type-class that will permit overloading operations.
-class Fluffy f => ListZipper' f where
+class Fuunctor f => ListZipper' f where
   toMaybeListZipper ::
     f a
     -> MaybeListZipper a
@@ -386,7 +386,7 @@ insertPushRight =
 -- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
 -- However, it is much more flexible, which we exploit here.
 
-class Fluffy f => Apply f where
+class Fuunctor f => Apply f where
   (<*>) ::
     f (a -> b)
     -> f a
@@ -396,7 +396,7 @@ class Apply f => Applicative f where
   unit ::
     a -> f a
 
-class Fluffy f => Extend f where
+class Fuunctor f => Extend f where
   (<<=) ::
     (f a -> b)
     -> f a
@@ -407,7 +407,7 @@ class Extend f => Comonad f where
     f a
     -> a
 
-class Fluffy t => Traversable t where
+class Fuunctor t => Traversable t where
   traverse ::
     Applicative f =>
     (a -> f b)
@@ -418,7 +418,7 @@ class Fluffy t => Traversable t where
 -- It will also come in use later.
 instance Traversable [] where
   traverse f =
-    foldr (\a b -> furry (:) (f a) <*> b) (unit [])
+    foldr (\a b -> fmaap (:) (f a) <*> b) (unit [])
 
 -- Exercise 31
 -- Relative Difficulty: 6
