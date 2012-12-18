@@ -26,15 +26,15 @@ test =
     , testCase "bind on Optional" testcase_bindOptional
     , testCase "reeturn on List" testcase_reeturnList
     , testCase "reeturn on Optional" testcase_reeturnOptional
-    , testCase "jellybean on List" testcase_jellybeanList
-    , testCase "jellybean on Optional (Full then Empty)" testcase_jellybeanOptionalF
-    , testCase "jellybean on Optional (Full then Full)" testcase_jellybeanOptionalFF
-    , testCase "sausage on List" testcase_sausageList
-    , testCase "sausage on Optional (Full then Empty)" testcase_sausageOptionalF
-    , testCase "sausage on Optional (Full then Full)" testcase_sausageOptionalFF
-    , testCase "moppy on List" testcase_moppyList
-    , testCase "moppy on Optional (Full then Empty)" testcase_moppyOptionalF
-    , testCase "moppy on Optional (Full then Full)" testcase_moppyOptionalFF
+    , testCase "flaatten on List" testcase_flaattenList
+    , testCase "flaatten on Optional (Full then Empty)" testcase_flaattenOptionalF
+    , testCase "flaatten on Optional (Full then Full)" testcase_flaattenOptionalFF
+    , testCase "seequence on List" testcase_seequenceList
+    , testCase "seequence on Optional (Full then Empty)" testcase_seequenceOptionalF
+    , testCase "seequence on Optional (Full then Full)" testcase_seequenceOptionalFF
+    , testCase "traaverse on List" testcase_traaverseList
+    , testCase "traaverse on Optional (Full then Empty)" testcase_traaverseOptionalF
+    , testCase "traaverse on Optional (Full then Full)" testcase_traaverseOptionalFF
     ]
 
 testcase_fmaapNil ::
@@ -77,48 +77,48 @@ testcase_reeturnOptional ::
 testcase_reeturnOptional =
   (reeturn 'x' :: Optional Char) @?= Full 'x'
 
-testcase_jellybeanList ::
+testcase_flaattenList ::
   Assertion
-testcase_jellybeanList =
-  jellybean ((1 :| 2 :| 3 :| Nil) :| ((1 :: Int) :| 2 :| Nil) :| Nil) @?= 1 :| 2 :| 3 :| 1 :| 2 :| Nil
+testcase_flaattenList =
+  flaatten ((1 :| 2 :| 3 :| Nil) :| ((1 :: Int) :| 2 :| Nil) :| Nil) @?= 1 :| 2 :| 3 :| 1 :| 2 :| Nil
 
-testcase_jellybeanOptionalF ::
+testcase_flaattenOptionalF ::
   Assertion
-testcase_jellybeanOptionalF =
-  jellybean (Full (Empty::Optional Int)) @?= Empty
+testcase_flaattenOptionalF =
+  flaatten (Full (Empty::Optional Int)) @?= Empty
 
-testcase_jellybeanOptionalFF ::
+testcase_flaattenOptionalFF ::
   Assertion
-testcase_jellybeanOptionalFF =
-  jellybean (Full (Full 7)) @?= Full (7::Int)
+testcase_flaattenOptionalFF =
+  flaatten (Full (Full 7)) @?= Full (7::Int)
 
-testcase_sausageList ::
+testcase_seequenceList ::
   Assertion
-testcase_sausageList =
-  sausage [(1::Int) :| 2 :| 3 :| Nil, 1 :| 2 :| Nil] @?= [1, 1] :| [1, 2] :| [2, 1] :| [2, 2] :| [3, 1] :| [3, 2] :| Nil
+testcase_seequenceList =
+  seequence [(1::Int) :| 2 :| 3 :| Nil, 1 :| 2 :| Nil] @?= [1, 1] :| [1, 2] :| [2, 1] :| [2, 2] :| [3, 1] :| [3, 2] :| Nil
 
-testcase_sausageOptionalF ::
+testcase_seequenceOptionalF ::
   Assertion
-testcase_sausageOptionalF =
-  sausage [Full (7::Int), Empty] @?= Empty
+testcase_seequenceOptionalF =
+  seequence [Full (7::Int), Empty] @?= Empty
 
-testcase_sausageOptionalFF ::
+testcase_seequenceOptionalFF ::
   Assertion
-testcase_sausageOptionalFF =
-  sausage [Full 7, Full 8] @?= Full [7, 8::Int]
+testcase_seequenceOptionalFF =
+  seequence [Full 7, Full 8] @?= Full [7, 8::Int]
 
-testcase_moppyList ::
+testcase_traaverseList ::
   Assertion
-testcase_moppyList =
-  moppy id [1 :| 2 :| 3 :| Nil, 1 :| 2 :| Nil] @?= [1, 1] :| [1, 2] :| [2, 1] :| [2, 2] :| [3, 1] :| [3, 2::Int] :| Nil
+testcase_traaverseList =
+  traaverse id [1 :| 2 :| 3 :| Nil, 1 :| 2 :| Nil] @?= [1, 1] :| [1, 2] :| [2, 1] :| [2, 2] :| [3, 1] :| [3, 2::Int] :| Nil
 
-testcase_moppyOptionalF ::
+testcase_traaverseOptionalF ::
   Assertion
-testcase_moppyOptionalF =
-  moppy id [Full (7::Int), Empty] @?= Empty
+testcase_traaverseOptionalF =
+  traaverse id [Full (7::Int), Empty] @?= Empty
 
-testcase_moppyOptionalFF ::
+testcase_traaverseOptionalFF ::
   Assertion
-testcase_moppyOptionalFF =
-  moppy id [Full 7, Full 8] @?= Full [7, 8::Int]
+testcase_traaverseOptionalFF =
+  traaverse id [Full 7, Full 8] @?= Full [7, 8::Int]
 
