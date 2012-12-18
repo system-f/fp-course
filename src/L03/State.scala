@@ -113,7 +113,7 @@ object State {
   // In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
   // because it results in a recurring sequence.
   // ~~~ Use findM with State and produce
-  // ~~~ Use jellybean to write a square function
+  // ~~~ Use flaatten to write a square function
   // ~~~ Use library functions: containsOptional (below)
   def isHappy(i: BigInt): Boolean =
     sys.error("todo")

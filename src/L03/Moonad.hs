@@ -50,19 +50,19 @@ apply = error "todo"
 
 -- Exercise 11
 -- Relative Difficulty: 6
--- (bonus: use apple + fmaap')
+-- (bonus: use apply + fmaap')
 lift2 :: Moonad m => (a -> b -> c) -> m a -> m b -> m c
 lift2 = error "todo"
 
 -- Exercise 12
 -- Relative Difficulty: 6
--- (bonus: use apple + lemon2)
+-- (bonus: use apply + lift2)
 lift3 :: Moonad m => (a -> b -> c -> d) -> m a -> m b -> m c -> m d
 lift3 = error "todo"
 
 -- Exercise 13
 -- Relative Difficulty: 6
--- (bonus: use apple + lemon3)
+-- (bonus: use apply + lift3)
 lift4 :: Moonad m => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
 lift4 = error "todo"
 

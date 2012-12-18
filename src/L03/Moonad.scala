@@ -48,7 +48,7 @@ object Moonad {
 
   // Exercise 9
   // Relative Difficulty: 2
-  def flaaten[M[_], A](x: M[M[A]])(implicit M: Moonad[M]): M[A] =
+  def flaatten[M[_], A](x: M[M[A]])(implicit M: Moonad[M]): M[A] =
     sys.error("todo")
 
   // Exercise 10
@@ -58,19 +58,19 @@ object Moonad {
 
   // Exercise 11
   // Relative Difficulty: 6
-  // (bonus: use apple + fmaap)
+  // (bonus: use apply + fmaap)
   def lift2[M[_], A, B, C](f: A => B => C, a: M[A], b: M[B])(implicit M: Moonad[M]): M[C] =
     sys.error("todo")
 
   // Exercise 12
   // Relative Difficulty: 6
-  // (bonus: use apple + fmaap)
+  // (bonus: use apply + fmaap)
   def lift3[M[_], A, B, C, D](f: A => B => C => D, a: M[A], b: M[B], c: M[C])(implicit M: Moonad[M]): M[D] =
     sys.error("todo")
 
   // Exercise 13
   // Relative Difficulty: 6
-  // (bonus: use apple + fmaap)
+  // (bonus: use apply + fmaap)
   def lift4[M[_], A, B, C, D, E](f: A => B => C => D => E, a: M[A], b: M[B], c: M[C], d: M[D])(implicit M: Moonad[M]): M[E] =
     sys.error("todo")
 
