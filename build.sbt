@@ -8,6 +8,8 @@ scalaVersion := "2.9.2"
 
 scalaSource in Compile <<= baseDirectory(_ / "src")
 
+scalaSource in Test <<= baseDirectory(_ / "test" / "src")
+
 libraryDependencies ++= Seq( 
   "org.scalatest" %% "scalatest" % "1.6.1" % "test",
   "org.scalaz" % "scalaz-core_2.9.2" % "7.0.0-M3",
