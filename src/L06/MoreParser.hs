@@ -113,8 +113,8 @@ noneof =
   error "todo"
 
 -- Exercise 12
--- Write a function that applies the first parser, runs the second parser keeping the result,
--- then runs the third parser and produces the obtained result.
+-- Write a function that applies the first parser, runs the third parser keeping the result,
+-- then runs the second parser and produces the obtained result.
 -- ~~~ Use the Monad instance ~~~
 between ::
   Parser o
