@@ -71,22 +71,22 @@ apply f a =
 -- Relative Difficulty: 6
 -- (bonus: use apply + fmaap')
 lift2 :: Moonad m => (a -> b -> c) -> m a -> m b -> m c
-lift2 f a b =
-  apply (fmaap' f a) b
+lift2 f =
+  apply . fmaap' f
 
 -- Exercise 13
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift2)
 lift3 :: Moonad m => (a -> b -> c -> d) -> m a -> m b -> m c -> m d
-lift3 f a b c =
-  apply (apply (fmaap' f a) b) c
+lift3 f a =
+  apply . apply (fmaap' f a)
 
 -- Exercise 14
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift3)
 lift4 :: Moonad m => (a -> b -> c -> d -> e) -> m a -> m b -> m c -> m d -> m e
-lift4 f a b c d =
-  apply (apply (apply (fmaap' f a) b) c) d
+lift4 f a b =
+  apply . apply (apply (fmaap' f a) b)
 
 -- Exercise 15
 -- Relative Difficulty: 3
