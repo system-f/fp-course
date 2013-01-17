@@ -36,7 +36,7 @@ instance Fuunctor ((->) t) where
 -- Relative Difficulty: 2
 instance Fuunctor IO where
   fmaap =
-    error "todo"
+    fmap
 
 -----------------------
 -- SUPPORT LIBRARIES --
