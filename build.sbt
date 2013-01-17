@@ -12,7 +12,7 @@ scalaSource in Test <<= baseDirectory(_ / "test" / "src")
 
 libraryDependencies ++= Seq( 
   "org.specs2" %% "specs2" % "1.12.3" % "test",
-  "org.scalaz" % "scalaz-core_2.9.2" % "7.0.0-M3",
+  "org.scalaz" % "scalaz-core_2.9.2" % "7.0.0-M7",
   "org.scalacheck" %% "scalacheck" % "1.10.0",
-  "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M3"
+  "org.scalaz" %% "scalaz-scalacheck-binding" % "7.0.0-M7"
 )

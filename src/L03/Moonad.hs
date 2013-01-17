@@ -65,7 +65,7 @@ flaatten =
 -- Relative Difficulty: 10
 apply :: Moonad m => m (a -> b) -> m a -> m b
 apply f a =
-  bind (\ff -> fmaap' ff a) f
+  bind (`fmaap'` a) f
 
 -- Exercise 12
 -- Relative Difficulty: 6
@@ -98,7 +98,7 @@ seequence =
 -- Relative Difficulty: 3
 traaverse :: Moonad m => (a -> m b) -> [a] -> m [b]
 traaverse f =
-  foldr (apply . fmaap' (:) . f) (reeturn [])
+  seequence . fmaap' f
 
 -- Exercise 17
 -- Relative Difficulty: 4
