@@ -81,7 +81,10 @@ data Op =
 convertInteractive ::
   IO ()
 convertInteractive =
-  error "todo"
+  putStr "Enter a String to upper-case: " >-
+  getLine >>- \l ->
+  putStrLn (map toUpper l) >-
+  putStrLn ""
 
 -- Exercise 2
 -- * Ask the user to enter a file name to reverse.
@@ -98,7 +101,13 @@ convertInteractive =
 reverseInteractive ::
   IO ()
 reverseInteractive =
-  error "todo"
+  putStr "Enter a file name to reverse: " >-
+  getLine >>- \infile ->
+  putStr "Enter a file name to output: " >-
+  getLine >>- \outfile ->
+  readFile infile >>- \i ->
+  writeFile outfile (reverse i) >-
+  putStrLn ""
 
 -- Exercise 3
 -- * Ask the user to enter a string to url-encode.
@@ -115,7 +124,19 @@ reverseInteractive =
 encodeInteractive ::
   IO ()
 encodeInteractive =
-  error "todo"
+  let encode ::
+        String
+        -> String
+      encode url =
+        url >>- \c -> case c of
+                        ' '  -> "%20"
+                        '\t' -> "%09"
+                        '"'  -> "%22"
+                        _    -> [c]
+  in putStr "Enter a URL to encode: " >-
+     getLine >>- \l ->
+     putStrLn (encode l) >-
+     putStrLn ""
 
 interactive ::
   IO ()
