@@ -5,6 +5,7 @@ module Course
 , module L02.List
 , module L03.Fuunctor
 , module L03.Moonad
+, module L03.Interactive
 , module L03.State
 , module L03.StateT
 , module L04.ListZipper
@@ -28,6 +29,7 @@ import L01.Validation
 import L02.List
 import L03.Fuunctor
 import L03.Moonad
+import L03.Interactive
 import L03.State
 import L03.StateT
 import L04.ListZipper
