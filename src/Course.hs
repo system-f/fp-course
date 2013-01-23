@@ -1,6 +1,7 @@
 module Course
 (
   module L01.Optional
+, module L01.Id
 , module L01.Validation
 , module L02.List
 , module L03.Fuunctor
@@ -25,6 +26,7 @@ module Course
 ) where
 
 import L01.Optional
+import L01.Id
 import L01.Validation
 import L02.List
 import L03.Fuunctor
