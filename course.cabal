@@ -1,5 +1,5 @@
 Name:               course
-Version:            0.0.5
+Version:            0.0.6
 License:            BSD3
 License-File:       LICENSE
 Author:             Tony Morris <tmorris@tmorris.net>
@@ -42,6 +42,7 @@ Library
                     L02.List
                     L03.Fuunctor
                     L03.Moonad
+                    L03.Interactive
                     L03.State
                     L03.StateT
                     L04.ListZipper
