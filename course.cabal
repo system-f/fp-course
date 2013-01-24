@@ -37,6 +37,7 @@ Library
   Hs-Source-Dirs:   src
 
   Exposed-Modules:  Course
+                    L01.Id
                     L01.Optional
                     L01.Validation
                     L02.List
