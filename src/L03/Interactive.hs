@@ -91,7 +91,7 @@ convertInteractive =
 -- * Write the reversed contents to the output file.
 -- ~~~ getLine :: IO String -- an IO action that reads a string from standard input.
 -- ~~~ readFile :: FilePath -> IO String -- an IO action that reads contents of a file.
--- ~~~ writeFile :: FilePath -> String -> IO String -- writes a string to a file.
+-- ~~~ writeFile :: FilePath -> String -> IO () -- writes a string to a file.
 -- ~~~ reverse :: [a] -> [a] -- reverses a list.
 -- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
 -- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
@@ -109,7 +109,6 @@ reverseInteractive =
 --     - '"' -> "%22"
 --     - anything else is unchanged
 -- * Print the encoded URL to standard output.
--- ~~~ toUpper :: Char -> Char -- (Data.Char) converts a character to upper-case.
 -- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
 -- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
 encodeInteractive ::
