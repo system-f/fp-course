@@ -109,7 +109,6 @@ reverseInteractive =
 --     - '"' -> "%22"
 --     - anything else is unchanged
 -- * Print the encoded URL to standard output.
--- ~~~ toUpper :: Char -> Char -- (Data.Char) converts a character to upper-case.
 -- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
 -- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
 encodeInteractive ::
