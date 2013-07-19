@@ -37,8 +37,6 @@ data MaybeListZipper a =
 --
 -- | Implement the `Fuunctor` instance for `ListZipper`.
 --
--- Examples:
---
 -- >>> fmaap (+1) (ListZipper [3,2,1] 4 [5,6,7])
 -- [2,3,4]⋙5⋘[6,7,8]
 instance Fuunctor ListZipper where
@@ -49,8 +47,6 @@ instance Fuunctor ListZipper where
 -- Relative Difficulty: 2
 --
 -- | Implement the `Fuunctor` instance for `MaybeListZipper`.
---
--- Examples:
 --
 -- >>> fmaap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
 -- [2,3,4]⋙5⋘[6,7,8]
@@ -126,8 +122,6 @@ toList z =
 --
 -- | Update the focus of the zipper with the given function on the current focus.
 --
--- Examples:
---
 -- >>> withFocus (+1) (ListZipper [] 0 [1])
 -- []⋙1⋘[1]
 --
@@ -147,9 +141,7 @@ withFocus f z =
 -- Relative Difficulty: 2
 --
 -- | Set the focus of the zipper to the given value.
--- | ~~~ Use withFocus
---
--- Examples:
+-- ~~~ Use withFocus
 --
 -- >>> setFocus 1 (ListZipper [] 0 [1])
 -- []⋙1⋘[1]
@@ -179,8 +171,6 @@ setFocus =
 -- Relative Difficulty: 2
 --
 -- | Returns whether there are values to the left of focus.
---
--- Examples:
 --
 -- >>> hasLeft (ListZipper [1,0] 2 [3,4])
 -- True
@@ -219,7 +209,7 @@ hasRight z =
 -- Relative Difficulty: 3
 --
 -- | Seek to the left for a location matching a predicate, starting from the
--- | current one.
+-- current one.
 --
 -- prop> findLeft (const True) (fromList xs) == fromList xs
 --

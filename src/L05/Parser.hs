@@ -227,13 +227,11 @@ phoneParser = bindParser digit (\d ->
 -- Write a parser for Person.
 --
 -- | ~~~ Use bindParser, value, (>>>)
--- |         ageParser,
--- |         firstNameParser,
--- |         surnameParser,
--- |         genderParser,
--- |         phoneParser ~~~
---
--- Examples:
+--         ageParser,
+--         firstNameParser,
+--         surnameParser,
+--         genderParser,
+--         phoneParser ~~~
 --
 -- >>> isError (parse personParser "")
 -- True

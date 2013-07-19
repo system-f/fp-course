@@ -44,8 +44,6 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- | Returns the head of the list or the given default.
 --
--- Examples:
---
 -- >>> headOr (1 :. 2 :. Nil) 3
 -- 1
 --
@@ -66,8 +64,6 @@ headOr (h:._) _ = h
 --
 -- | Sum the elements of the list.
 --
--- Examples:
---
 -- >>> suum (1 :. 2 :. 3 :. Nil)
 -- 6
 --
@@ -83,8 +79,6 @@ suum = foldLeft (+) 0
 -- Total: 4
 --
 -- | Return the length of the list.
---
--- Examples:
 --
 -- >>> len (1 :. 2 :. 3 :. Nil)
 -- 3
@@ -102,8 +96,6 @@ len = foldLeft (const . succ) 0
 --
 -- | Map the given function on each element of the list.
 --
--- Examples:
---
 -- >>> maap (+10) (1 :. 2 :. 3 :. Nil)
 -- [11,12,13]
 --
@@ -119,8 +111,6 @@ maap f = foldRight (\a b -> f a :. b) Nil
 -- Total: 7
 --
 -- | Return elements satisfying the given predicate.
---
--- Examples:
 --
 -- >>> fiilter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
 -- [2,4]
@@ -140,8 +130,6 @@ fiilter f = foldRight (\a -> if f a then (a:.) else id) Nil
 --
 -- | Append two lists to a new list.
 --
--- Examples:
---
 -- >>> append (1 :. 2 :. 3 :. Nil) (4 :. 5 :. 6 :. Nil)
 -- [1,2,3,4,5,6]
 --
@@ -160,8 +148,6 @@ append = flip (foldRight (:.))
 --
 -- | Flatten a list of lists to a list.
 --
--- Examples:
---
 -- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
 -- [1,2,3,4,5,6,7,8,9]
 --
@@ -177,8 +163,6 @@ flatten = foldRight append Nil
 -- Total: 8
 --
 -- | Map a function then flatten to a list.
---
--- Examples:
 --
 -- >>> flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [1,2,3,2,3,4,3,4,5]
@@ -196,8 +180,6 @@ flatMap f = flatten . maap f
 --
 -- | Apply a list of functions to a value to a list of results.
 --
--- Examples:
---
 -- >> seqf ((+1) :. (*10) :. Nil) 12
 -- 13 :. 120 :. Nil
 --
@@ -213,8 +195,6 @@ seqf = foldRight (liftA2 (:.)) (pure Nil)
 -- Total: 10
 --
 -- | Reverse a list.
---
--- Examples:
 --
 -- >> rev (1 :. 2 :. 3 :. Nil)
 -- 3 :. 2 :. 1 :. Nil
