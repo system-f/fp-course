@@ -6,10 +6,10 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import L02.List
 
 main :: IO ()
-main = defaultMain tests
+main = undefined -- defaultMain tests
 
 tests :: [Test]
-tests =
+tests = undefined {-
   [
     testGroup "List"
       [
@@ -142,3 +142,4 @@ prop_rev ::
   -> Bool
 prop_rev x =
   (rev . rev) x == x
+                    -}

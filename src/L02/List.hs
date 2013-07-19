@@ -44,7 +44,7 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- Total: 3
 headOr :: List a -> a -> a
 headOr Nil a    = a
-headOr (h:|_) _ = h
+headOr (h:._) _ = h
 
 -- Exercise 2
 -- Relative Difficulty: 2
@@ -71,7 +71,7 @@ len = foldLeft (const . succ) 0
 -- Elegance: 1.5 marks
 -- Total: 7
 maap :: (a -> b) -> List a -> List b
-maap f = foldRight (\a b -> f a :| b) Nil
+maap f = foldRight (\a b -> f a :. b) Nil
 
 -- Exercise 5
 -- Relative Difficulty: 5
@@ -80,7 +80,7 @@ maap f = foldRight (\a b -> f a :| b) Nil
 -- Elegance: 1 mark
 -- Total: 7
 fiilter :: (a -> Bool) -> List a -> List a
-fiilter f = foldRight (\a -> if f a then (a:|) else id) Nil
+fiilter f = foldRight (\a -> if f a then (a:.) else id) Nil
 
 -- Exercise 6
 -- Relative Difficulty: 5
@@ -89,7 +89,7 @@ fiilter f = foldRight (\a -> if f a then (a:|) else id) Nil
 -- Elegance: 1 mark
 -- Total: 7
 append :: List a -> List a -> List a
-append = flip (foldRight (:|))
+append = flip (foldRight (:.))
 
 -- Exercise 7
 -- Relative Difficulty: 5
@@ -116,7 +116,7 @@ flatMap f = flatten . maap f
 -- Elegance: 3.5 marks
 -- Total: 9
 seqf :: List (a -> b) -> a -> List b
-seqf = foldRight (liftA2 (:|)) (pure Nil)
+seqf = foldRight (liftA2 (:.)) (pure Nil)
 
 -- Exercise 10
 -- Relative Difficulty: 10
@@ -125,7 +125,7 @@ seqf = foldRight (liftA2 (:|)) (pure Nil)
 -- Elegance: 2.5 marks
 -- Total: 10
 rev :: List a -> List a
-rev = foldLeft (flip (:|)) Nil
+rev = foldLeft (flip (:.)) Nil
 
 -- Exercise 10.1
 -- How to produce arbitrary instances of List

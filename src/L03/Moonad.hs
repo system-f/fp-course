@@ -29,7 +29,7 @@ instance Moonad List where
   bind =
     flatMap
   reeturn =
-    (:| Nil)
+    (:. Nil)
 
 -- Exercise 7
 -- Relative Difficulty: 2

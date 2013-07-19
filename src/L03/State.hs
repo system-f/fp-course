@@ -89,7 +89,7 @@ findM ::
   -> f (Optional a)
 findM _ Nil =
   reeturn Empty
-findM p (h :| t) =
+findM p (h :. t) =
   bind (\q -> if q then reeturn (Full h) else findM p t) (p h)
 
 -- Exercise 8
@@ -120,10 +120,10 @@ filterM ::
   -> f (List a)
 filterM _ Nil =
   reeturn Nil
-filterM p (h :| t) =
+filterM p (h :. t) =
  bind (\q -> fmaap' (if q
                        then
-                         (h:|)
+                         (h:.)
                        else
                          id) (filterM p t)) (p h)
 
@@ -147,7 +147,7 @@ produce ::
   -> a
   -> List a
 produce f a =
-  a :| produce f (f a)
+  a :. produce f (f a)
 
 -- Exercise 12
 -- Relative Difficulty: 10
