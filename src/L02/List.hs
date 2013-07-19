@@ -9,9 +9,6 @@
 
 module L02.List where
 
-import Test.QuickCheck
-import Control.Applicative
-
 -- BEGIN Helper functions and data types
 
 -- The custom list type
@@ -126,10 +123,5 @@ seqf = foldRight (liftA2 (:.)) (pure Nil)
 -- Total: 10
 rev :: List a -> List a
 rev = foldLeft (flip (:.)) Nil
-
--- Exercise 10.1
--- How to produce arbitrary instances of List
-instance Arbitrary a => Arbitrary (List a) where
-  arbitrary = fmap (foldr (:.) Nil) arbitrary
 
 -- END Exercises
