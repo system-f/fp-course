@@ -9,8 +9,6 @@
 
 module L02.List where
 
-import Test.QuickCheck
-
 -- BEGIN Helper functions and data types
 
 -- The custom list type
@@ -124,10 +122,5 @@ seqf = error "todo"
 -- Total: 10
 rev :: List a -> List a
 rev = error "todo"
-
--- Exercise 10.1
--- How to produce arbitrary instances of List
-instance Arbitrary a => Arbitrary (List a) where
-  arbitrary = fmap (foldr (:.) Nil) arbitrary
 
 -- END Exercises
