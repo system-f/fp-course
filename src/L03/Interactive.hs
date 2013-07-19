@@ -65,10 +65,7 @@ echo =
            reeturn c))
 
 data Op =
-  Op
-    Char -- ^ keyboard entry
-    String -- ^ description
-    (IO ()) -- ^ program
+  Op Char String (IO ()) -- keyboard entry, description, program
 
 -- Exercise 1
 -- * Ask the user to enter a string to convert to upper-case.

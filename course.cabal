@@ -1,38 +1,44 @@
-Name:               course
-Version:            0.0.7
-License:            BSD3
-License-File:       LICENSE
-Author:             Tony Morris <tmorris@tmorris.net>
-Maintainer:         Tony Morris
-Homepage:           https://github.com/tonymorris/course
-Synopsis:           Source code for a functional programming course
-Category:           Education
-Description:        Source code for a course in functional programming using Haskell
-Cabal-version:      >= 1.2
-Build-Type:         Simple
+name:               course
+version:            0.0.7
+license:            BSD3
+license-File:       LICENSE
+author:             Tony Morris <tmorris@tmorris.net>
+maintainer:         Tony Morris
+copyright:          Copyright (C) 2010-2013 Tony Morris
+synopsis:           Source code for a functional programming course
+category:           Education
+description:        Source code for a course in functional programming using Haskell
+homepage:           https://github.com/tonymorris/course
+bug-reports:        https://github.com/tonymorris/course/issues
+cabal-version:      >= 1.10
+build-type:         Custom
+extra-source-files: etc/CONTRIBUTORS,
+                    etc/CREDITS
 
-Source-Repository   head
-  Type:             git
-  Location:         git@github.com:tonymorris/course.git
+source-repository   head
+  type:             git
+  location:         git@github.com:tonymorris/course.git
 
-Flag                small_base
-  Description:      Choose the new, split-up base package.
+flag                small_base
+  description:      Choose the new, split-up base package.
 
-Library
-  Build-Depends:    base < 5 && >= 4
+library
+  default-language: Haskell2010
+
+  build-depends:    base < 5 && >= 4
                     , HUnit
                     , containers
                     , array
 
-  GHC-Options:      -Wall
+  ghc-options:      -Wall
                     -fno-warn-unused-imports
                     -fno-warn-unused-binds
                     -fno-warn-unused-do-bind
                     -fno-warn-type-defaults
 
-  Hs-Source-Dirs:   src
+  hs-source-dirs:   src
 
-  Exposed-Modules:  Course
+  exposed-modules:  Course
                     L01.Id
                     L01.Optional
                     L01.Validation
@@ -55,3 +61,27 @@ Library
                     L08.MetricSpace
                     L09.Compose
                     L10.Cheque
+
+test-suite          doctests
+  type:
+                    exitcode-stdio-1.0
+
+  main-is:
+                    doctests.hs
+
+  default-language:
+                    Haskell2010
+
+  build-depends:
+                    base < 5 && >= 3,
+                    doctest >= 0.9.7,
+                    filepath >= 1.3,
+                    directory >= 1.1,
+                    QuickCheck >= 2.0
+
+  ghc-options:
+                    -Wall
+                    -threaded
+
+  hs-source-dirs:
+                    test

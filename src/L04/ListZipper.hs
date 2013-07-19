@@ -5,6 +5,9 @@ module L04.ListZipper where
 import Data.List
 import L03.Fuunctor
 
+-- $setup
+-- >>> import Data.Maybe(isNothing)
+
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
 -- For example, taking the list [0,1,2,3,4,5,6], the moving focus to the third position, the zipper looks like:
@@ -31,14 +34,26 @@ data MaybeListZipper a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- Implement the `Fuunctor` instance for `ListZipper`.
+--
+-- | Implement the `Fuunctor` instance for `ListZipper`.
+--
+-- Examples:
+--
+-- >>> fmaap (+1) (ListZipper [3,2,1] 4 [5,6,7])
+-- [2,3,4]⋙5⋘[6,7,8]
 instance Fuunctor ListZipper where
   fmaap f (ListZipper l x r) =
     ListZipper (fmap f l) (f x) (fmap f r)
 
 -- Exercise 2
 -- Relative Difficulty: 2
--- Implement the `Fuunctor` instance for `MaybeListZipper`.
+--
+-- | Implement the `Fuunctor` instance for `MaybeListZipper`.
+--
+-- Examples:
+--
+-- >>> fmaap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
+-- [2,3,4]⋙5⋘[6,7,8]
 instance Fuunctor MaybeListZipper where
   fmaap f (IsZ z) =
     IsZ (fmaap f z)
@@ -47,7 +62,10 @@ instance Fuunctor MaybeListZipper where
 
 -- Exercise 3
 -- Relative Difficulty: 2
--- Create a `MaybeListZipper` positioning the focus at the head.
+--
+-- | Create a `MaybeListZipper` positioning the focus at the head.
+--
+-- prop> xs == toList (fromList xs)
 fromList ::
   [a]
   -> MaybeListZipper a
@@ -58,7 +76,10 @@ fromList (h:t) =
 
 -- Exercise 3
 -- Relative Difficulty: 2
--- Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
+--
+-- | Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
+--
+-- prop> null xs == isNothing (toMaybe (fromList xs))
 toMaybe ::
   MaybeListZipper a
   -> Maybe (ListZipper a)
@@ -102,7 +123,16 @@ toList z =
 
 -- Exercise 5
 -- Relative Difficulty: 3
--- Update the focus of the zipper with the given function on the current focus.
+--
+-- | Update the focus of the zipper with the given function on the current focus.
+--
+-- Examples:
+--
+-- >>> withFocus (+1) (ListZipper [] 0 [1])
+-- []⋙1⋘[1]
+--
+-- >>> withFocus (+1) (ListZipper [1,0] 2 [3,4])
+-- [0,1]⋙3⋘[3,4]
 withFocus ::
   ListZipper' f =>
   (a -> a)
@@ -115,8 +145,17 @@ withFocus f z =
 
 -- Exercise 6
 -- Relative Difficulty: 2
--- Set the focus of the zipper to the given value.
--- ~~~ Use withFocus
+--
+-- | Set the focus of the zipper to the given value.
+-- | ~~~ Use withFocus
+--
+-- Examples:
+--
+-- >>> setFocus 1 (ListZipper [] 0 [1])
+-- []⋙1⋘[1]
+--
+-- >>> setFocus 1 (ListZipper [1,0] 2 [3,4])
+-- [0,1]⋙1⋘[3,4]
 setFocus ::
   ListZipper' f =>
   a
@@ -138,7 +177,16 @@ setFocus =
 
 -- Exercise 7
 -- Relative Difficulty: 2
--- Returns whether there are values to the left of focus.
+--
+-- | Returns whether there are values to the left of focus.
+--
+-- Examples:
+--
+-- >>> hasLeft (ListZipper [1,0] 2 [3,4])
+-- True
+--
+-- >>> hasLeft (ListZipper [] 0 [1,2])
+-- False
 hasLeft ::
   ListZipper' f =>
   f a
@@ -150,7 +198,14 @@ hasLeft z =
 
 -- Exercise 8
 -- Relative Difficulty: 2
--- Returns whether there are values to the right of focus.
+--
+-- | Returns whether there are values to the right of focus.
+--
+-- >>> hasRight (ListZipper [1,0] 2 [3,4])
+-- True
+--
+-- >>> hasRight (ListZipper [1,0] 2 [])
+-- False
 hasRight ::
   ListZipper' f =>
   f a
@@ -162,8 +217,13 @@ hasRight z =
 
 -- Exercise 9
 -- Relative Difficulty: 3
--- Seek to the left for a location matching a predicate, starting from the
--- current one.
+--
+-- | Seek to the left for a location matching a predicate, starting from the
+-- | current one.
+--
+-- prop> findLeft (const True) (fromList xs) == fromList xs
+--
+-- prop> case xs of [] -> findLeft (const False) IsNotZ == IsNotZ; (x:xs') -> findLeft (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
 findLeft ::
   ListZipper' f =>
   (a -> Bool)
