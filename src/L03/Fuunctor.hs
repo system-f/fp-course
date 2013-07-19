@@ -13,8 +13,6 @@ class Fuunctor f where
 --
 -- | Maps a function on the Id functor.
 --
--- Examples:
---
 -- >>> fmaap (+1) (Id 2)
 -- Id 3
 instance Fuunctor Id where
@@ -25,8 +23,6 @@ instance Fuunctor Id where
 -- Relative Difficulty: 2
 --
 -- | Maps a function on the List functor.
---
--- Examples:
 --
 -- >>> fmaap (+1) Nil
 -- []
@@ -42,8 +38,6 @@ instance Fuunctor List where
 --
 -- | Maps a function on the Optional functor.
 --
--- Examples:
---
 -- >>> fmaap (+1) Empty
 -- Empty
 --
@@ -57,8 +51,6 @@ instance Fuunctor Optional where
 -- Relative Difficulty: 3
 --
 -- | Maps a function on the reader ((->) t) functor.
---
--- Examples:
 --
 -- >>> fmaap (+1) (*2) 8
 -- 17

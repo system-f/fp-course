@@ -14,8 +14,6 @@ class Moonad m where
   --
   -- | Witness that all things with bind and reeturn also have fmaap.
   --
-  -- Examples:
-  --
   -- >>> fmaap' (+1) (Id 2)
   -- Id 3
   --
@@ -33,8 +31,6 @@ class Moonad m where
 --
 -- | Binds a function on the Id monad.
 --
--- Examples:
---
 -- >>> bind (\x -> Id(x+1)) (Id 2)
 -- Id 3
 --
@@ -47,8 +43,6 @@ instance Moonad Id where
 -- Relative Difficulty: 2
 --
 -- | Binds a function on the List monad.
---
--- Examples:
 --
 -- >>> bind (\n -> n :. n :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [1,1,2,2,3,3]
@@ -63,8 +57,6 @@ instance Moonad List where
 --
 -- | Binds a function on the Optional monad.
 --
--- Examples:
---
 -- >>> bind (\n -> Full (n + n)) (Full 7)
 -- Full 14
 --
@@ -77,8 +69,6 @@ instance Moonad Optional where
 -- Relative Difficulty: 3
 --
 -- | Binds a function on the reader ((->) t) monad.
---
--- Examples:
 --
 -- >>> bind (*) (+10) 7
 -- 119
@@ -99,8 +89,6 @@ instance Moonad IO where
 --
 -- | Flattens a a combined structure to a single structure.
 --
--- Examples:
---
 -- >>> flaatten ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
 -- [1,2,3,1,2]
 --
@@ -119,8 +107,6 @@ flaatten = error "todo"
 -- Relative Difficulty: 10
 --
 -- | Applies a structure on functions to a structure on values.
---
--- Examples:
 --
 -- >>> apply (Id (+1)) (Id 2)
 -- Id 3
@@ -167,8 +153,6 @@ lift4 = error "todo"
 -- Relative Difficulty: 3
 --
 -- | Sequences a list of structures to a structure of list.
---
--- Examples:
 --
 -- >>> seequence [Id 7, Id 8, Id 9]
 -- Id [7,8,9]

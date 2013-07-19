@@ -11,8 +11,6 @@ data Validation a = Error Err | Value a
 
 -- | Returns whether or not the given validation is an error.
 --
--- Examples:
---
 -- >>> isError (Error "message")
 -- True
 --
@@ -26,8 +24,6 @@ isError (Value _) = False
 
 -- | Returns whether or not the given validation is a value.
 --
--- Examples:
---
 -- >>> isValue (Error "message")
 -- False
 --
@@ -39,8 +35,6 @@ isValue :: Validation a -> Bool
 isValue = not . isError
 
 -- | Maps a function on a validation's value side.
---
--- Examples:
 --
 -- >>> mapValidation (+10) (Error "message")
 -- Error "message"
@@ -54,8 +48,6 @@ mapValidation _ (Error s) = Error s
 mapValidation f (Value a) = Value (f a)
 
 -- | Binds a function on a validation's value side to a new validation.
---
--- Examples:
 --
 -- >>> bindValidation (Error "message") (\n -> if even n then Value (n + 10) else Error "odd")
 -- Error "message"
@@ -73,8 +65,6 @@ bindValidation (Value a) f = f a
 
 -- | Returns a validation's value side or the given default if it is an error.
 --
--- Examples:
---
 -- >>> valueOr (Error "message") 3
 -- 3
 --
@@ -87,8 +77,6 @@ valueOr (Error _) a = a
 valueOr (Value a) _ = a
 
 -- | Returns a validation's error side or the given default if it is a value.
---
--- Examples:
 --
 -- >>> errorOr (Error "message") "q"
 -- "message"

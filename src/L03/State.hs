@@ -27,8 +27,6 @@ newtype State s a =
 --
 -- | Implement the `Fuunctor` instance for `State s`.
 --
--- Examples:
---
 -- >>> runState (fmaap (+1) (reeturn 0)) 0
 -- (1,0)
 instance Fuunctor (State s) where
@@ -39,9 +37,7 @@ instance Fuunctor (State s) where
 -- Relative Difficulty: 3
 --
 -- | Implement the `Moonad` instance for `State s`.
--- | Make sure the state value is passed through in `bind`.
---
--- Examples:
+--   Make sure the state value is passed through in `bind`.
 --
 -- >>> runState (reeturn 1) 0
 -- (1,0)
@@ -84,8 +80,6 @@ eval =
 --
 -- | A `State` where the state also distributes into the produced value.
 --
--- Examples:
---
 -- >>> runState get 0
 -- (0,0)
 get ::
@@ -97,8 +91,6 @@ get =
 -- Relative Difficulty: 2
 --
 -- | A `State` where the resulting state is seeded with the given value.
---
--- Examples:
 --
 -- >>> runState (put 1) 0
 -- ((),1)
@@ -112,15 +104,13 @@ put =
 -- Relative Difficulty: 5
 --
 -- | Find the first element in a `List` that satisfies a given predicate.
--- | It is possible that no element is found, hence an `Optional` result.
--- | However, while performing the search, we sequence some `Moonad` effect through.
+-- It is possible that no element is found, hence an `Optional` result.
+-- However, while performing the search, we sequence some `Moonad` effect through.
 --
--- | Note the similarity of the type signature to List#find
--- | where the effect appears in every return position:
--- |   find ::  (a ->   Bool) -> List a ->    Optional a
--- |   findM :: (a -> f Bool) -> List a -> f (Optional a)
---
--- Examples:
+-- Note the similarity of the type signature to List#find
+-- where the effect appears in every return position:
+--   find ::  (a ->   Bool) -> List a ->    Optional a
+--   findM :: (a -> f Bool) -> List a -> f (Optional a)
 --
 -- >>> let p x = bind (\s -> bind (const $ reeturn (x == 'c')) $ put (1+s)) get in runState (findM p $ foldr (:.) Nil ['a'..'h']) 0
 -- (Full 'c',3)
@@ -139,8 +129,8 @@ findM =
 -- Relative Difficulty: 4
 --
 -- | Find the first element in a `List` that repeats.
--- | It is possible that no element repeats, hence an `Optional` result.
--- | ~~~ Use findM and State with a Data.Set#Set. ~~~
+-- It is possible that no element repeats, hence an `Optional` result.
+-- ~~~ Use findM and State with a Data.Set#Set. ~~~
 --
 -- prop> case firstRepeat xs of Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'; Full x -> len (fiilter (== x) xs) > 1
 firstRepeat ::
@@ -154,14 +144,12 @@ firstRepeat =
 -- Relative Difficulty: 5
 --
 -- | Remove all elements in a `List` that fail a given predicate.
--- | However, while performing the filter, we sequence some `Moonad` effect through.
+-- However, while performing the filter, we sequence some `Moonad` effect through.
 --
--- | Note the similarity of the type signature to List#filter
--- | where the effect appears in every return position:
--- |   filter ::  (a ->   Bool) -> List a ->    List a
--- |   filterM :: (a -> f Bool) -> List a -> f (List a)
---
--- Examples:
+-- Note the similarity of the type signature to List#filter
+-- where the effect appears in every return position:
+--   filter ::  (a ->   Bool) -> List a ->    List a
+--   filterM :: (a -> f Bool) -> List a -> f (List a)
 --
 -- >>> let p x = Full (x `mod` 2 == 0); xs = foldr (:.) Nil [1..10] in filterM p xs
 -- Full [2,4,6,8,10]
@@ -179,8 +167,8 @@ filterM =
 -- Exercise 10
 -- Relative Difficulty: 4
 --
--- | Remove all duplicate elements in a `List`.
--- | ~~~ Use filterM and State with a Data.Set#Set. ~~~
+-- Remove all duplicate elements in a `List`.
+-- ~~~ Use filterM and State with a Data.Set#Set. ~~~
 --
 -- prop> firstRepeat (distinct xs) == Empty
 --
@@ -196,9 +184,7 @@ distinct =
 -- Relative Difficulty: 3
 --
 -- | Produce an infinite `List` that seeds with the given value at its head,
--- | then runs the given function for subsequent elements
---
--- Examples:
+-- then runs the given function for subsequent elements
 --
 -- >>> let (x:.y:.z:.w:._) = produce (+1) 0 in [x,y,z,w]
 -- [0,1,2,3]

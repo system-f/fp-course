@@ -44,8 +44,6 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- | Returns the head of the list or the given default.
 --
--- Examples:
---
 -- >>> headOr (1 :. 2 :. Nil) 3
 -- 1
 --
@@ -65,8 +63,6 @@ headOr = error "todo"
 --
 -- | Sum the elements of the list.
 --
--- Examples:
---
 -- >>> suum (1 :. 2 :. 3 :. Nil)
 -- 6
 --
@@ -82,8 +78,6 @@ suum = error "todo"
 -- Total: 4
 --
 -- | Return the length of the list.
---
--- Examples:
 --
 -- >>> len (1 :. 2 :. 3 :. Nil)
 -- 3
@@ -101,8 +95,6 @@ len = error "todo"
 --
 -- | Map the given function on each element of the list.
 --
--- Examples:
---
 -- >>> maap (+10) (1 :. 2 :. 3 :. Nil)
 -- [11,12,13]
 --
@@ -118,8 +110,6 @@ maap = error "todo"
 -- Total: 7
 --
 -- | Return elements satisfying the given predicate.
---
--- Examples:
 --
 -- >>> fiilter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
 -- [2,4]
@@ -139,8 +129,6 @@ fiilter = error "todo"
 --
 -- | Append two lists to a new list.
 --
--- Examples:
---
 -- >>> append (1 :. 2 :. 3 :. Nil) (4 :. 5 :. 6 :. Nil)
 -- [1,2,3,4,5,6]
 --
@@ -159,8 +147,6 @@ append = error "todo"
 --
 -- | Flatten a list of lists to a list.
 --
--- Examples:
---
 -- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
 -- [1,2,3,4,5,6,7,8,9]
 --
@@ -176,8 +162,6 @@ flatten = error "todo"
 -- Total: 8
 --
 -- | Map a function then flatten to a list.
---
--- Examples:
 --
 -- >>> flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [1,2,3,2,3,4,3,4,5]
@@ -195,8 +179,6 @@ flatMap = error "todo"
 --
 -- | Apply a list of functions to a value to a list of results.
 --
--- Examples:
---
 -- >> seqf ((+1) :. (*10) :. Nil) 12
 -- 13 :. 120 :. Nil
 --
@@ -212,8 +194,6 @@ seqf = error "todo"
 -- Total: 10
 --
 -- | Reverse a list.
---
--- Examples:
 --
 -- >> rev (1 :. 2 :. 3 :. Nil)
 -- 3 :. 2 :. 1 :. Nil
