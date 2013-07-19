@@ -9,6 +9,8 @@
 
 module L02.List where
 
+import Control.Applicative
+
 -- BEGIN Helper functions and data types
 
 -- The custom list type
