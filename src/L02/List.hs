@@ -14,10 +14,10 @@ import Test.QuickCheck
 -- BEGIN Helper functions and data types
 
 -- The custom list type
-data List t = Nil | t :| List t deriving Eq
+data List t = Nil | t :. List t deriving Eq
 
 -- Right-associative
-infixr 5 :|
+infixr 5 :.
 
 instance (Show t) => Show (List t) where
   show = show . foldRight (:) []
@@ -25,11 +25,11 @@ instance (Show t) => Show (List t) where
 -- functions over List that you may consider using
 foldRight :: (a -> b -> b) -> b -> List a -> b
 foldRight _ b Nil      = b
-foldRight f b (h :| t) = f h (foldRight f b t)
+foldRight f b (h :. t) = f h (foldRight f b t)
 
 foldLeft :: (b -> a -> b) -> b -> List a -> b
 foldLeft _ b Nil      = b
-foldLeft f b (h :| t) = let b' = f b h in b' `seq` foldLeft f b' t
+foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 
 -- END Helper functions and data types
 
@@ -128,6 +128,6 @@ rev = error "todo"
 -- Exercise 10.1
 -- How to produce arbitrary instances of List
 instance Arbitrary a => Arbitrary (List a) where
-  arbitrary = fmap (foldr (:|) Nil) arbitrary
+  arbitrary = fmap (foldr (:.) Nil) arbitrary
 
 -- END Exercises
