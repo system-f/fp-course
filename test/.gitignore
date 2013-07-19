@@ -1,3 +1,8 @@
-dist
-*.tix
-.hpc
+# cabal
+/dist
+
+# cabal-dev
+/cabal-dev
+
+# Haskell Program Coverage
+/.hpc

@@ -9,6 +9,8 @@
 
 module L02.List where
 
+import Control.Applicative
+
 -- BEGIN Helper functions and data types
 
 -- The custom list type
@@ -39,6 +41,18 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- Performance: 0.5 mark
 -- Elegance: 0.5 marks
 -- Total: 3
+--
+-- | Returns the head of the list or the given default.
+--
+-- Examples:
+--
+-- >>> headOr (1 :. 2 :. Nil) 3
+-- 1
+--
+-- >>> headOr Nil 3
+-- 3
+--
+-- prop> Nil `headOr` x == x
 headOr :: List a -> a -> a
 headOr = error "todo"
 
@@ -48,6 +62,15 @@ headOr = error "todo"
 -- Performance: 1 mark
 -- Elegance: 0.5 marks
 -- Total: 4
+--
+-- | Sum the elements of the list.
+--
+-- Examples:
+--
+-- >>> suum (1 :. 2 :. 3 :. Nil)
+-- 6
+--
+-- prop> foldLeft (-) (suum x) x == 0
 suum :: List Int -> Int
 suum = error "todo"
 
@@ -57,6 +80,15 @@ suum = error "todo"
 -- Performance: 1 mark
 -- Elegance: 0.5 marks
 -- Total: 4
+--
+-- | Return the length of the list.
+--
+-- Examples:
+--
+-- >>> len (1 :. 2 :. 3 :. Nil)
+-- 3
+--
+-- prop> suum (maap (const 1) x) == len x
 len :: List a -> Int
 len = error "todo"
 
@@ -66,6 +98,15 @@ len = error "todo"
 -- Performance: 1.0 mark
 -- Elegance: 1.5 marks
 -- Total: 7
+--
+-- | Map the given function on each element of the list.
+--
+-- Examples:
+--
+-- >>> maap (+10) (1 :. 2 :. 3 :. Nil)
+-- [11,12,13]
+--
+-- prop> maap id x == x
 maap :: (a -> b) -> List a -> List b
 maap = error "todo"
 
@@ -75,6 +116,17 @@ maap = error "todo"
 -- Performance: 1.5 marks
 -- Elegance: 1 mark
 -- Total: 7
+--
+-- | Return elements satisfying the given predicate.
+--
+-- Examples:
+--
+-- >>> fiilter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
+-- [2,4]
+--
+-- prop> fiilter (const True) x == x
+--
+-- prop> fiilter (const False) x == Nil
 fiilter :: (a -> Bool) -> List a -> List a
 fiilter = error "todo"
 
@@ -84,6 +136,17 @@ fiilter = error "todo"
 -- Performance: 1.5 marks
 -- Elegance: 1 mark
 -- Total: 7
+--
+-- | Append two lists to a new list.
+--
+-- Examples:
+--
+-- >>> append (1 :. 2 :. 3 :. Nil) (4 :. 5 :. 6 :. Nil)
+-- [1,2,3,4,5,6]
+--
+-- prop> (x `append` y) `append` z == x `append` (y `append` z)
+--
+-- prop> append x Nil == x
 append :: List a -> List a -> List a
 append = error "todo"
 
@@ -93,6 +156,15 @@ append = error "todo"
 -- Performance: 1.5 marks
 -- Elegance: 1 mark
 -- Total: 7
+--
+-- | Flatten a list of lists to a list.
+--
+-- Examples:
+--
+-- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
+-- [1,2,3,4,5,6,7,8,9]
+--
+-- prop> suum (maap len x) == len (flatten x)
 flatten :: List (List a) -> List a
 flatten = error "todo"
 
@@ -102,6 +174,15 @@ flatten = error "todo"
 -- Performance: 1.5 marks
 -- Elegance: 1.5 mark
 -- Total: 8
+--
+-- | Map a function then flatten to a list.
+--
+-- Examples:
+--
+-- >>> flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil)
+-- [1,2,3,2,3,4,3,4,5]
+--
+-- prop> flatMap id (x :: List (List Int)) == flatten x
 flatMap :: (a -> List b) -> List a -> List b
 flatMap = error "todo"
 
@@ -111,6 +192,15 @@ flatMap = error "todo"
 -- Performance: 2.0 marks
 -- Elegance: 3.5 marks
 -- Total: 9
+--
+-- | Apply a list of functions to a value to a list of results.
+--
+-- Examples:
+--
+-- >> seqf ((+1) :. (*10) :. Nil) 12
+-- 13 :. 120 :. Nil
+--
+-- prop> let fs = ((+1) :. (*10) :. Nil) in len (seqf fs y) == len fs
 seqf :: List (a -> b) -> a -> List b
 seqf = error "todo"
 
@@ -120,6 +210,15 @@ seqf = error "todo"
 -- Performance: 2.5 marks
 -- Elegance: 2.5 marks
 -- Total: 10
+--
+-- | Reverse a list.
+--
+-- Examples:
+--
+-- >> rev (1 :. 2 :. 3 :. Nil)
+-- 3 :. 2 :. 1 :. Nil
+--
+-- prop> (rev . rev) x == x
 rev :: List a -> List a
 rev = error "todo"
 

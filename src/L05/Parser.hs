@@ -207,12 +207,48 @@ phoneParser = error "todo"
 
 -- Exercise 19
 -- Write a parser for Person.
--- ~~~ Use bindParser, value, (>>>)
---         ageParser,
---         firstNameParser,
---         surnameParser,
---         genderParser,
---         phoneParser ~~~
+--
+-- | ~~~ Use bindParser, value, (>>>)
+-- |         ageParser,
+-- |         firstNameParser,
+-- |         surnameParser,
+-- |         genderParser,
+-- |         phoneParser ~~~
+--
+-- Examples:
+--
+-- >>> isError (parse personParser "")
+-- True
+--
+-- >>> isError (parse personParser "12x Fred Clarkson m 123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 fred Clarkson m 123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred Cla m 123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred clarkson m 123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred Clarkson x 123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred Clarkson m 1x3-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred Clarkson m -123-456.789#")
+-- True
+--
+-- >>> isError (parse personParser "123 Fred Clarkson m 123-456.789")
+-- True
+--
+-- >>> parse personParser "123 Fred Clarkson m 123-456.789#"
+-- Value ("",Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"})
+--
+-- >>> parse personParser "123 Fred Clarkson m 123-456.789# rest"
+-- Value (" rest",Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"})
 personParser :: Parser Person
 personParser = error "todo"
 
