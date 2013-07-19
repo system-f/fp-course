@@ -47,7 +47,6 @@ Library
                     L03.State
                     L03.StateT
                     L04.ListZipper
-                    L04.Testing
                     L05.Person
                     L05.Parser
                     L06.JsonValue
