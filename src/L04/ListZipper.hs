@@ -212,6 +212,13 @@ findLeft =
 -- Relative Difficulty: 3
 -- Seek to the right for a location matching a predicate, starting from the
 -- current one.
+--
+-- | Seek to the right for a location matching a predicate, starting from the
+-- current one.
+--
+-- prop> findRight (const True) (fromList xs) == fromList xs
+--
+-- prop> case xs of [] -> findRight (const False) IsNotZ == IsNotZ; (x:xs') -> findRight (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
 findRight ::
   ListZipper' f =>
   (a -> Bool)
