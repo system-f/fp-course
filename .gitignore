@@ -4,6 +4,9 @@
 # CABAL
 dist
 
+# cabal-dev
+/cabal-dev
+
 # Haskell Program Coverage
 .hpc
 

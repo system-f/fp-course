@@ -1,6 +1,5 @@
 :set -isrc
 :l src/Course.hs
-:m + Test.QuickCheck
 :set prompt ">> "
 :set -Wall
 :set -fno-warn-unused-imports
