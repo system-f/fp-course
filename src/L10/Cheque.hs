@@ -1,7 +1,7 @@
 {-
 
 Write a function (dollars) that accepts a `String` and returns a `String`.
-It will accept a numeric value as input, representing an amount of money, and convert to its trascribed English.
+It will accept a numeric value as input, representing an amount of money, and convert to its transcribed English.
 
 For example, the input "1.11" will result in a return value of "one dollar and eleven cents"
 
@@ -215,41 +215,82 @@ fromChar '9' =
 fromChar _ =
   Nothing
 
+-- | Take a numeric value and produce its English output.
+--
+-- >>> dollars "0"
+-- >>> dollars "0"
+-- "zero dollars and zero cents"
+--
+-- >>> dollars "1"
+-- "one dollar and zero cents"
+--
+-- >>> dollars "0.1"
+-- "zero dollars and ten cents"
+--
+-- >>> dollars "1."
+-- "one dollar and zero cents"
+--
+-- >>> dollars "0."
+-- "zero dollars and zero cents"
+--
+-- >>> dollars "0.0"
+-- "zero dollars and zero cents"
+--
+-- >>> dollars ".34"
+-- "zero dollars and thirty-four cents"
+--
+-- >>> dollars "0.3456789"
+-- "zero dollars and thirty-four cents"
+--
+-- >>> dollars "1.0"
+-- "one dollar and zero cents"
+--
+-- >>> dollars "1.01"
+-- "one dollar and one cent"
+--
+-- >>> dollars "a1a"
+-- "one dollar and zero cents"
+--
+-- >>> dollars "a1a.a0.7b"
+-- "one dollar and seven cents"
+--
+-- >>> dollars "100"
+-- "one hundred dollars and zero cents"
+--
+-- >>> dollars "100.0"
+-- "one hundred dollars and zero cents"
+--
+-- >>> dollars "100.00"
+-- "one hundred dollars and zero cents"
+--
+-- >>> dollars "100.00000"
+-- "one hundred dollars and zero cents"
+--
+-- >>> dollars "1000456.13"
+-- "one million four hundred and fifty-six dollars and thirteen cents"
+--
+-- >>> dollars "1001456.13"
+-- "one million one thousand four hundred and fifty-six dollars and thirteen cents"
+--
+-- >>> dollars "16000000456.13"
+-- "sixteen billion four hundred and fifty-six dollars and thirteen cents"
+--
+-- >>> dollars "100.45"
+-- "one hundred dollars and forty-five cents"
+--
+-- >>> dollars "100.07"
+-- "one hundred dollars and seven cents"
+--
+-- >>> dollars "9abc9def9ghi.jkl9mno"
+-- "nine hundred and ninety-nine dollars and ninety cents"
+--
+-- >>> dollars "12345.67"
+-- "twelve thousand three hundred and forty-five dollars and sixty-seven cents"
+--
+-- >>> dollars "456789123456789012345678901234567890123456789012345678901234567890.12"
+-- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
 dollars ::
   String
   -> String
 dollars =
   error "todo"
-
--- Examples of input and output.
-test ::
-  IO ()
-test =
-  mapM_ (\(i, o) -> let r = dollars i
-                    in when (o /= r) (mapM_ putStrLn [i, '\t':o, '\t':r]))
-    [
-      ("0", "zero dollars and zero cents")
-    , ("1", "one dollar and zero cents")
-    , ("0.1", "zero dollars and ten cents")
-    , ("1.", "one dollar and zero cents")
-    , ("0.", "zero dollars and zero cents")
-    , ("0.0", "zero dollars and zero cents")
-    , (".34", "zero dollars and thirty-four cents")
-    , ("0.3456789", "zero dollars and thirty-four cents")
-    , ("1.0", "one dollar and zero cents")
-    , ("1.01", "one dollar and one cent")
-    , ("a1a", "one dollar and zero cents")
-    , ("a1a.a0.7b", "one dollar and seven cents")
-    , ("100", "one hundred dollars and zero cents")
-    , ("100.0", "one hundred dollars and zero cents")
-    , ("100.00", "one hundred dollars and zero cents")
-    , ("100.00000", "one hundred dollars and zero cents")
-    , ("1000456.13", "one million four hundred and fifty-six dollars and thirteen cents")
-    , ("1001456.13", "one million one thousand four hundred and fifty-six dollars and thirteen cents")
-    , ("16000000456.13", "sixteen billion four hundred and fifty-six dollars and thirteen cents")
-    , ("100.45", "one hundred dollars and forty-five cents")
-    , ("100.07", "one hundred dollars and seven cents")
-    , ("9abc9def9ghi.jkl9mno", "nine hundred and ninety-nine dollars and ninety cents")
-    , ("12345.67", "twelve thousand three hundred and forty-five dollars and sixty-seven cents")
-    , ("456789123456789012345678901234567890123456789012345678901234567890.12", "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents")
-    ]
