@@ -228,9 +228,21 @@ hex =
   error "todo"
 
 -- Exercise 15
--- Write a function that produces a non-empty list of values coming off the given parser (which must succeed at least once),
+-- | Write a function that produces a non-empty list of values coming off the given parser (which must succeed at least once),
 -- separated by the second given parser.
 -- ~~~ Use list and the Monad instance ~~~
+--
+-- >>> parse (sepby1 character (is ',')) "a"
+-- Value ("","a")
+--
+-- >>> parse (sepby1 character (is ',')) "a,b,c"
+-- Value ("","abc")
+--
+-- >>> parse (sepby1 character (is ',')) "a,b,c,,def"
+-- Value ("def","abc,")
+--
+-- >>> isError (parse (sepby1 character (is ',')) "")
+-- True
 sepby1 ::
   Parser a
   -> Parser s
@@ -239,9 +251,21 @@ sepby1 =
   error "todo"
 
 -- Exercise 16
--- Write a function that produces a list of values coming off the given parser,
+-- | Write a function that produces a list of values coming off the given parser,
 -- separated by the second given parser.
 -- ~~~ Use sepby1 and (|||) ~~~
+--
+-- >>> parse (sepby character (is ',')) ""
+-- Value ("","")
+--
+-- >>> parse (sepby character (is ',')) "a"
+-- Value ("","a")
+--
+-- >>> parse (sepby character (is ',')) "a,b,c"
+-- Value ("","abc")
+--
+-- >>> parse (sepby character (is ',')) "a,b,c,,def"
+-- Value ("def","abc,")
 sepby ::
   Parser a
   -> Parser s
@@ -250,15 +274,36 @@ sepby =
   error "todo"
 
 -- Exercise 17
--- Write a parser that asserts that there is no remaining input.
+-- | Write a parser that asserts that there is no remaining input.
+--
+-- >>> parse eof ""
+-- Value ("",())
+--
+-- >>> isError (parse eof "abc")
+-- True
 eof ::
   Parser ()
 eof =
   error "todo"
 
 -- Exercise 18
--- Write a parser that produces a characer that satisfies all of the given predicates.
--- ~~~ Use sequence and Data.List.and ~~~
+-- | Write a parser that produces a characer that satisfies all of the given predicates.
+-- ~~~ Use sequence and Data.List#and ~~~
+--
+-- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABC"
+-- Value ("BC",'A')
+--
+-- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABc"
+-- Value ("Bc",'A')
+--
+-- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "XBc")
+-- True
+--
+-- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "")
+-- True
+--
+-- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "abc")
+-- True
 satisfyAll ::
   [Char -> Bool]
   -> Parser Char
@@ -266,8 +311,20 @@ satisfyAll =
   error "todo"
 
 -- Exercise 19
--- Write a parser that produces a characer that satisfies any of the given predicates.
--- ~~~ Use sequence and Data.List.or ~~~
+-- | Write a parser that produces a characer that satisfies any of the given predicates.
+-- ~~~ Use sequence and Data.List#333or ~~~
+--
+-- >>> parse (satisfyAny [isLower, (/= 'X')]) "abc"
+-- Value ("bc",'a')
+--
+-- >>> parse (satisfyAny [isLower, (/= 'X')]) "ABc"
+-- Value ("Bc",'A')
+--
+-- >>> isError (parse (satisfyAny [isLower, (/= 'X')]) "XBc")
+-- True
+--
+-- >>> isError (parse (satisfyAny [isLower, (/= 'X')]) "")
+-- True
 satisfyAny ::
   [Char -> Bool]
   -> Parser Char
@@ -275,8 +332,26 @@ satisfyAny =
   error "todo"
 
 -- Exercise 20
--- Write a parser that parses between the two given characters, separated by a comma character ','.
+-- | Write a parser that parses between the two given characters, separated by a comma character ','.
 -- ~~~ Use betweenCharTok, sepby and charTok ~~~
+--
+-- >>> parse (betweenSepbyComma '[' ']' lower) "[a]"
+-- Value ("","a")
+--
+-- >>> parse (betweenSepbyComma '[' ']' lower) "[]"
+-- Value ("","")
+--
+-- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[A]")
+-- True
+--
+-- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[abc]")
+-- True
+--
+-- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[a")
+-- True
+--
+-- >>> isError (parse (betweenSepbyComma '[' ']' lower) "a]")
+-- True
 betweenSepbyComma ::
   Char
   -> Char
