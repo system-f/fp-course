@@ -18,7 +18,7 @@ You should write automated tests for your API. For example, the following univer
 `forall Board b. forall Position p. such that (not (positionIsOccupied
 p b)). takeBack(move(p, b)) == b`
 
-You should encode this property in an automated specification test. For Scala, use ScalaCheck. For Haskell, QuickCheck. For Java, consider [Functional Java](http://functionaljava.org/). For other languages such as C# or F#, you may need to search around.
+You should encode this property in an automated specification test. For Scala, use ScalaCheck. For Haskell, QuickCheck. For Java, consider [Functional Java](http://functionaljava.org/). For .NET, use [FsCheck](https://github.com/fsharp/FsCheck). For other languages, you may need to search around.
 
 Haskell-specific
 ----------------
