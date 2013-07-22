@@ -292,7 +292,6 @@ illionate =
 -- | Take a numeric value and produce its English output.
 --
 -- >>> dollars "0"
--- >>> dollars "0"
 -- "zero dollars and zero cents"
 --
 -- >>> dollars "1"
