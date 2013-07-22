@@ -290,7 +290,7 @@ traaverse f =
 -- >>> reeplicate 4 Empty
 -- Empty
 --
--- > reeplicate 4 (*2) 5
+-- >>> reeplicate 4 (*2) 5
 -- [10,10,10,10]
 reeplicate :: Moonad m => Int -> m a -> m [a]
 reeplicate n =
@@ -313,7 +313,7 @@ reeplicate n =
 -- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6,13,14]
 -- Empty
 --
--- > filtering (>) [4..12] 8
+-- >>> filtering (>) [4..12] 8
 -- [9,10,11,12]
 filtering  :: Moonad m => (a -> m Bool) -> [a] -> m [a]
 filtering p =
