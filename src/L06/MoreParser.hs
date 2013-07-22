@@ -53,16 +53,31 @@ commaTok =
   charTok ','
 
 -- Exercise 5
--- Write a parser that parses either a double-quote or a single-quote.
+-- | Write a parser that parses either a double-quote or a single-quote.
 -- ~~~ Use is and (|||) ~~~
+--
+-- >>> parse quote "'abc"
+-- Value ("abc",'\'')
+--
+-- >>> parse quote "\"abc"
+-- Value ("abc",'"')
+--
+-- >>> isError (parse quote "abc")
+-- True
 quote ::
   Parser Char
 quote =
   is '"' ||| is '\''
 
 -- Exercise 6
--- Write a function that parses the given string (fails otherwise).
+-- | Write a function that parses the given string (fails otherwise).
 -- ~~~ Use is and mapM ~~~
+--
+-- >>> parse (string "abc") "abcdef"
+-- Value ("def","abc")
+--
+-- >>> isError (parse (string "abc") "bcdef")
+-- True
 string ::
   String
   -> Parser String
@@ -70,8 +85,14 @@ string =
   mapM is
 
 -- Exercise 7
--- Write a function that parsers the given string, followed by 0 or more spaces.
+-- | Write a function that parsers the given string, followed by 0 or more spaces.
 -- ~~~ Use tok and string ~~~
+--
+-- >>> parse (stringTok "abc") "abc  "
+-- Value ("","abc")
+--
+-- >>> isError (parse (stringTok "abc") "bc  ")
+-- True
 stringTok ::
   String
   -> Parser String
@@ -79,8 +100,14 @@ stringTok =
   tok . string
 
 -- Exercise 8
--- Write a function that tries the given parser, otherwise succeeds by producing the given value.
+-- | Write a function that tries the given parser, otherwise succeeds by producing the given value.
 -- ~~~ Use (|||) ~~~
+--
+-- >>> parse (option 'x' character) "abc"
+-- Value ("bc",'a')
+--
+-- >>> parse (option 'x' character) ""
+-- Value ("",'x')
 option ::
   a
   -> Parser a
@@ -89,16 +116,28 @@ option a p =
   p ||| return a
 
 -- Exercise 9
--- Write a parser that parses 1 or more digits.
+-- | Write a parser that parses 1 or more digits.
 -- ~~~ Use many1 and digit ~~~
+--
+-- >>> parse digits1 "123"
+-- Value ("","123")
+--
+-- >>> isError (parse digits1 "abc123")
+-- True
 digits1 ::
   Parser String
 digits1 =
   many1 digit
 
 -- Exercise 10
--- Write a function that parses one of the characters in the given string.
+-- | Write a function that parses one of the characters in the given string.
 -- ~~~ Use satisfy and elem ~~~
+--
+-- >>> parse (oneof "abc") "bcdef"
+-- Value ("cdef",'b')
+--
+-- >>> isError (parse (oneof "abc") "def")
+-- True
 oneof ::
   String
   -> Parser Char
@@ -106,8 +145,14 @@ oneof s =
   satisfy (`elem` s)
 
 -- Exercise 11
--- Write a function that parses any character, but fails if it is in the given string.
+-- | Write a function that parses any character, but fails if it is in the given string.
 -- ~~~ Use satisfy and notElem ~~~
+--
+-- >>> parse (noneof "bcd") "abc"
+-- Value ("bc",'a')
+--
+-- >>> isError (parse (noneof "abcd") "abc")
+-- True
 noneof ::
   String
   -> Parser Char
@@ -115,9 +160,21 @@ noneof s =
   satisfy (`notElem` s)
 
 -- Exercise 12
--- Write a function that applies the first parser, runs the third parser keeping the result,
+-- | Write a function that applies the first parser, runs the third parser keeping the result,
 -- then runs the second parser and produces the obtained result.
 -- ~~~ Use the Monad instance ~~~
+--
+-- >>> parse (between (is '[') (is ']') character) "[a]"
+-- Value ("",'a')
+--
+-- >>> isError (parse (between (is '[') (is ']') character) "[abc]")
+-- True
+--
+-- >>> isError (parse (between (is '[') (is ']') character) "[abc")
+-- True
+--
+-- >>> isError (parse (between (is '[') (is ']') character) "abc]")
+-- True
 between ::
   Parser o
   -> Parser c
@@ -130,8 +187,20 @@ between o c a =
      return v
 
 -- Exercise 13
--- Write a function that applies the given parser in between the two given characters.
+-- | Write a function that applies the given parser in between the two given characters.
 -- ~~~ Use between and charTok ~~~
+--
+-- λ> parse (betweenCharTok '[' ']' character) "[a]"
+-- Value ("",'a')
+--
+-- λ> isError (parse (betweenCharTok '[' ']' character) "[abc]")
+-- True
+--
+-- λ> isError (parse (betweenCharTok '[' ']' character) "[abc")
+-- True
+--
+-- λ> isError (parse (betweenCharTok '[' ']' character) "abc]")
+-- True
 betweenCharTok ::
   Char
   -> Char
@@ -141,8 +210,23 @@ betweenCharTok a b =
   between (charTok a) (charTok b)
 
 -- Exercise 14
--- Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
+-- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
 -- ~~~ Use readHex, isHexDigit, replicateM, satisfy and the Monad instance ~~~
+--
+-- >>> parse hex "u0010"
+-- Value ("",'\DLE')
+--
+-- >>> parse hex "u0a1f"
+-- Value ("",'\2591')
+--
+-- >>> isError (parse hex "0010")
+-- True
+--
+-- >>> isError (parse hex "u001")
+-- True
+--
+-- >>> isError (parse hex "u0axf")
+-- True
 hex ::
   Parser Char
 hex =
