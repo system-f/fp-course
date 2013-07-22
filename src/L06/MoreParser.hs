@@ -58,7 +58,7 @@ commaTok =
 quote ::
   Parser Char
 quote =
-  is '"' ||| is '\"'
+  is '"' ||| is '\''
 
 -- Exercise 6
 -- Write a function that parses the given string (fails otherwise).
