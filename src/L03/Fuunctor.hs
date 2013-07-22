@@ -60,6 +60,11 @@ instance Fuunctor ((->) t) where
 
 -- Exercise 5
 -- Relative Difficulty: 2
+--
+-- | Maps a function on an IO program.
+--
+-- >>> fmaap reverse (putStr "hi" >> return "abc")
+-- hi"cba"
 instance Fuunctor IO where
   fmaap =
     fmap
