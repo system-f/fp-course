@@ -5,7 +5,6 @@
       <configuration>
         <option name="compilerLibraryLevel" value="Global" />
         <option name="compilerLibraryName" value="scala-2.9.2" />
-        <option name="languageLevel" value="Scala 2.9" />
       </configuration>
     </facet>
   </component>
@@ -17,6 +16,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/src" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/cabal-dev" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/project" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
