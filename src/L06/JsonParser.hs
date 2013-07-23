@@ -12,27 +12,27 @@ import L06.MoreParser
 -- ~~~ Use oneof, hex, is, satisfyAll, betweenCharTok, list ~~~
 --
 -- >>> parse jsonString "\"abc\""
--- Value ("","abc")
+-- Result >< "abc"
 --
 -- >>> parse jsonString "\"abc\"def"
--- Value ("def","abc")
+-- Result >def< "abc"
 --
 -- >>> parse jsonString "\"\\babc\"def"
--- Value ("def","babc")
+-- Result >def< "babc"
 --
 -- >>> parse jsonString "\"\\u00abc\"def"
--- Value ("def","\171c")
+-- Result >def< "\171c"
 --
 -- >>> parse jsonString "\"\\u00ffabc\"def"
--- Value ("def","\255abc")
+-- Result >def< "\255abc"
 --
 -- >>> parse jsonString "\"\\u00faabc\"def"
--- Value ("def","\250abc")
+-- Result >def< "\250abc"
 --
--- >>> isError (parse jsonString "abc")
+-- >>> isErrorResult (parse jsonString "abc")
 -- True
 --
--- >>> isError (parse jsonString "\"\\abc\"def")
+-- >>> isErrorResult (parse jsonString "\"\\abc\"def")
 -- True
 jsonString ::
   Parser String
@@ -44,24 +44,24 @@ jsonString =
 -- ~~~ Use Numeric#readSigned and Numeric#readFloat ~~~
 --
 -- >>> parse jsonNumber "234"
--- Value ("",234 % 1)
+-- Result >< 234 % 1
 --
 -- >>> parse jsonNumber "-234"
--- Value ("",(-234) % 1)
+-- Result >< (-234) % 1
 --
 -- >>> parse jsonNumber "123.45"
--- Value ("",2469 % 20)
+-- Result >< 2469 % 20
 --
 -- >>> parse jsonNumber "-123"
--- Value ("",(-123) % 1)
+-- Result >< (-123) % 1
 --
 -- >>> parse jsonNumber "-123.45"
--- Value ("",(-2469) % 20)
+-- Result >< (-2469) % 20
 --
--- >>> isError (parse jsonNumber "-")
+-- >>> isErrorResult (parse jsonNumber "-")
 -- True
 --
--- >>> isError (parse jsonNumber "abc")
+-- >>> isErrorResult (parse jsonNumber "abc")
 -- True
 jsonNumber ::
   Parser Rational
@@ -73,9 +73,9 @@ jsonNumber =
 -- ~~~ Use stringTok ~~~
 --
 -- >>> parse jsonTrue "true"
--- Value ("","true")
+-- Result >< "true"
 --
--- >>> isError (parse jsonTrue "TRUE")
+-- >>> isErrorResult (parse jsonTrue "TRUE")
 -- True
 jsonTrue ::
   Parser String
@@ -88,9 +88,9 @@ jsonTrue =
 --
 --
 -- >>> parse jsonFalse "false"
--- Value ("","false")
+-- Result >< "false"
 --
--- >>> isError (parse jsonFalse "FALSE")
+-- >>> isErrorResult (parse jsonFalse "FALSE")
 -- True
 jsonFalse ::
   Parser String
@@ -102,9 +102,9 @@ jsonFalse =
 -- ~~~ Use stringTok ~~~
 --
 -- >>> parse jsonNull "null"
--- Value ("","null")
+-- Result >< "null"
 --
--- >>> isError (parse jsonNull "NULL")
+-- >>> isErrorResult (parse jsonNull "NULL")
 -- True
 jsonNull ::
   Parser String
@@ -116,19 +116,19 @@ jsonNull =
 -- ~~~ Use betweenSepbyComma and jsonValue ~~~
 --
 -- >>> parse jsonArray "[]"
--- Value ("",[])
+-- Result >< []
 --
 -- >>> parse jsonArray "[true]"
--- Value ("",[JsonTrue])
+-- Result >< [JsonTrue]
 --
 -- >>> parse jsonArray "[true, \"abc\"]"
--- Value ("",[JsonTrue,JsonString "abc"])
+-- Result >< [JsonTrue,JsonString "abc"]
 --
 -- >>> parse jsonArray "[true, \"abc\", []]"
--- Value ("",[JsonTrue,JsonString "abc",JsonArray []])
+-- Result >< [JsonTrue,JsonString "abc",JsonArray []]
 --
 -- >>> parse jsonArray "[true, \"abc\", [false]]"
--- Value ("",[JsonTrue,JsonString "abc",JsonArray [JsonFalse]])
+-- Result >< [JsonTrue,JsonString "abc",JsonArray [JsonFalse]]
 jsonArray ::
   Parser [JsonValue]
 jsonArray =
@@ -139,16 +139,16 @@ jsonArray =
 -- ~~~ Use jsonString, charTok, betweenSepbyComma and jsonValue ~~~
 --
 -- >>> parse jsonObject "{}"
--- Value ("",[])
+-- Result >< []
 --
 -- >>> parse jsonObject "{ \"key1\" : true }"
--- Value ("",[("key1",JsonTrue)])
+-- Result >< [("key1",JsonTrue)]
 --
 -- >>> parse jsonObject "{ \"key1\" : true , \"key2\" : false }"
--- Value ("",[("key1",JsonTrue),("key2",JsonFalse)])
+-- Result >< [("key1",JsonTrue),("key2",JsonFalse)]
 --
 -- >>> parse jsonObject "{ \"key1\" : true , \"key2\" : false } xyz"
--- Value ("xyz",[("key1",JsonTrue),("key2",JsonFalse)])
+-- Result >xyz< [("key1",JsonTrue),("key2",JsonFalse)]
 jsonObject ::
   Parser Assoc
 jsonObject =
@@ -159,13 +159,13 @@ jsonObject =
 -- ~~~ Use spaces, jsonNull, jsonTrue, jsonFalse, jsonArray, jsonString, jsonObject and jsonNumber ~~~
 --
 -- >>> parse jsonValue "true"
--- Value ("",JsonTrue)
+-- Result >< JsonTrue
 --
 -- >>> parse jsonObject "{ \"key1\" : true , \"key2\" : [7, false] }"
--- Value ("",[("key1",JsonTrue),("key2",JsonArray [JsonRational False (7 % 1),JsonFalse])])
+-- Result >< [("key1",JsonTrue),("key2",JsonArray [JsonRational False (7 % 1),JsonFalse])]
 --
 -- >>> parse jsonObject "{ \"key1\" : true , \"key2\" : [7, false] , \"key3\" : { \"key4\" : null } }"
--- Value ("",[("key1",JsonTrue),("key2",JsonArray [JsonRational False (7 % 1),JsonFalse]),("key3",JsonObject [("key4",JsonNull)])])
+-- Result >< [("key1",JsonTrue),("key2",JsonArray [JsonRational False (7 % 1),JsonFalse]),("key3",JsonObject [("key4",JsonNull)])]
 jsonValue ::
   Parser JsonValue
 jsonValue =
@@ -176,7 +176,6 @@ jsonValue =
 -- ~~~ Use readFile and jsonValue ~~~
 readJsonValue ::
   FilePath
-  -> IO JsonValue
+  -> IO (ParseResult JsonValue)
 readJsonValue =
   error "todo"
-

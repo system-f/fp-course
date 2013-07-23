@@ -10,11 +10,54 @@ type Input = String
 
 data ParseResult a =
   UnexpectedEof
+  | ExpectedEof Input
   | UnexpectedChar Char
   | Failed
   | Result Input a
-  deriving (Eq, Show)
+  deriving Eq
 
+instance Show a => Show (ParseResult a) where
+  show UnexpectedEof =
+    "Expected end of stream"
+  show (ExpectedEof i) =
+    "Expected end of stream, but got >" ++ i ++ "<"
+  show (UnexpectedChar c) =
+    "Unexpected character" ++ [c]
+  show Failed =
+    "Parse failed"
+  show (Result i a) =
+    "Result >" ++ i ++ "< " ++ show a
+
+-- Function to also access the input while binding parsers.
+bindResult ::
+  (Input -> a -> ParseResult b)
+  -> ParseResult a
+  -> ParseResult b
+bindResult _ UnexpectedEof =
+  UnexpectedEof
+bindResult _ (ExpectedEof i) =
+  ExpectedEof i
+bindResult _ (UnexpectedChar c) =
+  UnexpectedChar c
+bindResult _ Failed =
+  Failed
+bindResult f (Result i a) =
+  f i a
+
+-- Function to determine is a parse result is an error.
+isErrorResult ::
+  ParseResult a
+  -> Bool
+isErrorResult UnexpectedEof =
+  True
+isErrorResult (ExpectedEof _) =
+  True
+isErrorResult (UnexpectedChar _) =
+  True
+isErrorResult Failed =
+  True
+isErrorResult (Result _ _) =
+  False
 
 data Parser a = P {
   parse :: Input -> ParseResult a
@@ -24,14 +67,14 @@ data Parser a = P {
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
 -- >>> parse (valueParser 3) "abc"
--- Value ("abc",3)
+-- Result >abc< 3
 valueParser :: a -> Parser a
 valueParser = error "todo"
 
 -- Exercise 2
 -- | Return a parser that always fails with the given error.
 --
--- >>> isError (parse (failed "message") "abc")
+-- >>> isErrorResult (parse (failed "message") "abc")
 -- True
 failed :: Err -> Parser a
 failed = error "todo"
@@ -40,9 +83,9 @@ failed = error "todo"
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
 -- >>> parse character "abc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
--- >>> isError (parse character "")
+-- >>> isErrorResult (parse character "")
 -- True
 character :: Parser Char
 character = error "todo"
@@ -52,20 +95,21 @@ character = error "todo"
 --   * if that parser succeeds with a value (a), put that value into the given function
 --     then put in the remaining input in the resulting parser.
 --   * if that parser fails with an error the returned parser fails with that error.
+-- ~~~ Use bindResult. ~~~
 --
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "abc"
--- Value ("bc",'v')
+-- Result >bc< 'v'
 --
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "a"
--- Value ("",'v')
+-- Result >< 'v'
 --
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "xabc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
--- >>> isError (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "")
+-- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "")
 -- True
 --
--- >>> isError (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
+-- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
 -- True
 bindParser :: Parser a -> (a -> Parser b) -> Parser b
 bindParser = error "todo"
@@ -78,9 +122,9 @@ bindParser = error "todo"
 -- ~~~ This function should call bindParser. ~~~
 --
 -- >>> parse (character >>> valueParser 'v') "abc"
--- Value ("bc",'v')
+-- Result >bc< 'v'
 --
--- >>> isError (parse (character >>> valueParser 'v') "")
+-- >>> isErrorResult (parse (character >>> valueParser 'v') "")
 -- True
 (>>>) :: Parser a -> Parser b -> Parser b
 (>>>) = error "todo"
@@ -91,16 +135,16 @@ bindParser = error "todo"
 --   * If the first parser fails, try the second parser.
 --
 -- >>> parse (character ||| valueParser 'v') ""
--- Value ("",'v')
+-- Result >< 'v'
 --
--- >>> parse (failed "message" ||| valueParser 'v') ""
--- Value ("",'v')
+-- >>> parse (failed ||| valueParser 'v') ""
+-- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
--- >>> parse (failed "message" ||| valueParser 'v') "abc"
--- Value ("abc",'v')
+-- >>> parse (failed ||| valueParser 'v') "abc"
+-- Result >abc< 'v'
 (|||) :: Parser a -> Parser a -> Parser a
 (|||) = error "todo"
 
@@ -111,13 +155,13 @@ infixl 3 |||
 -- ~~~ Use many1, valueParser and (|||). ~~~
 --
 -- >>> parse (list (character)) "abc"
--- Value ("","abc")
+-- Result >< "abc"
 --
 -- >>> parse (list (character >> valueParser 'v')) "abc"
--- Value ("","vvv")
+-- Result >< "vvv"
 --
 -- >>> parse (list (character >> valueParser 'v')) ""
--- Value ("","")
+-- Result >< ""
 list :: Parser a -> Parser [a]
 list = error "todo"
 
@@ -130,12 +174,12 @@ list = error "todo"
 --
 --
 -- >>> parse (many1 (character)) "abc"
--- Value ("","abc")
+-- Result >< "abc"
 --
 -- >>> parse (many1 (character >> valueParser 'v')) "abc"
--- Value ("","vvv")
+-- Result >< "vvv"
 --
--- >>> isError (parse (many1 (character >> valueParser 'v')) "")
+-- >>> isErrorResult (parse (many1 (character >> valueParser 'v')) "")
 -- True
 many1 :: Parser a -> Parser [a]
 many1 = error "todo"
@@ -147,9 +191,9 @@ many1 = error "todo"
 -- ~~~ The bindParser and character functions will be helpful here. ~~~
 --
 -- >>> parse (satisfy isUpper) "Abc"
--- Value ("bc",'A')
+-- Result >bc< 'A'
 --
--- >>> isError (parse (satisfy isUpper) "abc")
+-- >>> isErrorResult (parse (satisfy isUpper) "abc")
 -- True
 satisfy :: (Char -> Bool) -> Parser Char
 satisfy = error "todo"
@@ -226,9 +270,9 @@ alpha = error "todo"
 -- ~~~ Optionally use Prelude.foldr. If not, an explicit recursive call. ~~~
 --
 -- >>> parse (sequenceParser [character, is 'x', upper]) "axCdef"
--- Value ("def","axC")
+-- Result >def< "axC"
 --
--- >>> isError (parse (sequenceParser [character, is 'x', upper]) "abCdef")
+-- >>> isErrorResult (parse (sequenceParser [character, is 'x', upper]) "abCdef")
 -- True
 sequenceParser :: [Parser a] -> Parser [a]
 sequenceParser = error "todo"
@@ -240,9 +284,9 @@ sequenceParser = error "todo"
 -- ~~~ Use sequenceParser and Prelude.replicate. ~~~
 --
 -- >>> parse (thisMany 4 upper) "ABCDef"
--- Value ("ef","ABCD")
+-- Result >ef< "ABCD"
 --
--- >>> isError (parse (thisMany 4 upper) "ABcDef")
+-- >>> isErrorResult (parse (thisMany 4 upper) "ABcDef")
 -- True
 thisMany :: Int -> Parser a -> Parser [a]
 thisMany = error "todo"
@@ -253,12 +297,12 @@ thisMany = error "todo"
 -- ~~~ Equivalent to natural. ~~~
 --
 -- >>> parse ageParser "120"
--- Value ("",120)
+-- Result >< 120
 --
--- >>> isError (parse ageParser "abc")
+-- >>> isErrorResult (parse ageParser "abc")
 -- True
 --
--- >>> isError (parse ageParser "-120")
+-- >>> isErrorResult (parse ageParser "-120")
 -- True
 ageParser :: Parser Int
 ageParser = error "todo"
@@ -269,9 +313,9 @@ ageParser = error "todo"
 -- ~~~ Use bindParser, value, upper, list and lower. ~~~
 --
 -- λ> parse firstNameParser "Abc"
--- Value ("","Abc")
+-- Result >< "Abc"
 --
--- λ> isError (parse firstNameParser "abc")
+-- λ> isErrorResult (parse firstNameParser "abc")
 -- True
 firstNameParser :: Parser String
 firstNameParser = error "todo"
@@ -282,12 +326,12 @@ firstNameParser = error "todo"
 -- ~~~ Use bindParser, value, upper, thisMany, lower and list. ~~~
 --
 -- >>> parse surnameParser "Abcdef"
--- Value ("","Abcdef")
+-- Result >< "Abcdef"
 --
--- >>> isError (parse surnameParser "Abc")
+-- >>> isErrorResult (parse surnameParser "Abc")
 -- True
 --
--- >>> isError (parse surnameParser "abc")
+-- >>> isErrorResult (parse surnameParser "abc")
 -- True
 surnameParser :: Parser String
 surnameParser = error "todo"
@@ -298,12 +342,12 @@ surnameParser = error "todo"
 -- ~~~ Use is and (|||). ~~~
 --
 -- >>> parse genderParser "mabc"
--- Value ("abc",'m')
+-- Result >abc< 'm'
 --
 -- >>> parse genderParser "fabc"
--- Value ("abc",'f')
+-- Result >abc< 'f'
 --
--- >>> isError (parse genderParser "abc")
+-- >>> isErrorResult (parse genderParser "abc")
 -- True
 genderParser :: Parser Char
 genderParser = error "todo"
@@ -317,13 +361,13 @@ genderParser = error "todo"
 -- ~~~ Use list, digit, (|||) and is. ~~~
 --
 -- >>> parse phoneBodyParser "123-456"
--- Value ("","123-456")
+-- Result >< "123-456"
 --
 -- >>> parse phoneBodyParser "123-4a56"
--- Value ("a56","123-4")
+-- Result >a56< "123-4"
 --
 -- >>> parse phoneBodyParser "a123-456"
--- Value ("a123-456","")
+-- Result >a123-456< ""
 phoneBodyParser :: Parser String
 phoneBodyParser = error "todo"
 
@@ -333,15 +377,15 @@ phoneBodyParser = error "todo"
 -- ~~~ Use bindParser, value, digit, phoneBodyParser and is. ~~~
 --
 -- >>> parse phoneParser "123-456#"
--- Value ("","123-456")
+-- Result >< "123-456"
 --
 -- >>> parse phoneParser "123-456#abc"
--- Value ("abc","123-456")
+-- Result >abc< "123-456"
 --
--- >>> isError (parse phoneParser "123-456")
+-- >>> isErrorResult (parse phoneParser "123-456")
 -- True
 --
--- >>> isError (parse phoneParser "a123-456")
+-- >>> isErrorResult (parse phoneParser "a123-456")
 -- True
 phoneParser :: Parser String
 phoneParser = error "todo"
@@ -356,38 +400,38 @@ phoneParser = error "todo"
 --         genderParser,
 --         phoneParser ~~~
 --
--- >>> isError (parse personParser "")
+-- >>> isErrorResult (parse personParser "")
 -- True
 --
--- >>> isError (parse personParser "12x Fred Clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "12x Fred Clarkson m 123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 fred Clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 fred Clarkson m 123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred Cla m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Cla m 123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred clarkson m 123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred Clarkson x 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson x 123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred Clarkson m 1x3-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson m 1x3-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred Clarkson m -123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson m -123-456.789#")
 -- True
 --
--- >>> isError (parse personParser "123 Fred Clarkson m 123-456.789")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson m 123-456.789")
 -- True
 --
 -- >>> parse personParser "123 Fred Clarkson m 123-456.789#"
--- Value ("",Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"})
+-- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"}
 --
 -- >>> parse personParser "123 Fred Clarkson m 123-456.789# rest"
--- Value (" rest",Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"})
+-- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"}
 personParser :: Parser Person
 personParser = error "todo"
 

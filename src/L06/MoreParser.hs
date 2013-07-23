@@ -12,7 +12,7 @@ import Control.Monad
 (<.>) ::
   Parser a
   -> Input
-  -> Validation a
+  -> Maybe a
 (<.>) =
   error "todo"
 
@@ -55,12 +55,12 @@ commaTok =
 -- ~~~ Use is and (|||) ~~~
 --
 -- >>> parse quote "'abc"
--- Value ("abc",'\'')
+-- Result >abc< '\''
 --
 -- >>> parse quote "\"abc"
--- Value ("abc",'"')
+-- Result >abc< '"'
 --
--- >>> isError (parse quote "abc")
+-- >>> isErrorResult (parse quote "abc")
 -- True
 quote ::
   Parser Char
@@ -72,9 +72,9 @@ quote =
 -- ~~~ Use is and mapM ~~~
 --
 -- >>> parse (string "abc") "abcdef"
--- Value ("def","abc")
+-- Result >def< "abc"
 --
--- >>> isError (parse (string "abc") "bcdef")
+-- >>> isErrorResult (parse (string "abc") "bcdef")
 -- True
 string ::
   String
@@ -87,9 +87,9 @@ string =
 -- ~~~ Use tok and string ~~~
 --
 -- >>> parse (stringTok "abc") "abc  "
--- Value ("","abc")
+-- Result >< "abc"
 --
--- >>> isError (parse (stringTok "abc") "bc  ")
+-- >>> isErrorResult (parse (stringTok "abc") "bc  ")
 -- True
 stringTok ::
   String
@@ -102,10 +102,10 @@ stringTok =
 -- ~~~ Use (|||) ~~~
 --
 -- >>> parse (option 'x' character) "abc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
 -- >>> parse (option 'x' character) ""
--- Value ("",'x')
+-- Result >< 'x'
 option ::
   a
   -> Parser a
@@ -118,9 +118,9 @@ option =
 -- ~~~ Use many1 and digit ~~~
 --
 -- >>> parse digits1 "123"
--- Value ("","123")
+-- Result >< "123"
 --
--- >>> isError (parse digits1 "abc123")
+-- >>> isErrorResult (parse digits1 "abc123")
 -- True
 digits1 ::
   Parser String
@@ -132,9 +132,9 @@ digits1 =
 -- ~~~ Use satisfy and elem ~~~
 --
 -- >>> parse (oneof "abc") "bcdef"
--- Value ("cdef",'b')
+-- Result >cdef< 'b'
 --
--- >>> isError (parse (oneof "abc") "def")
+-- >>> isErrorResult (parse (oneof "abc") "def")
 -- True
 oneof ::
   String
@@ -147,9 +147,9 @@ oneof =
 -- ~~~ Use satisfy and notElem ~~~
 --
 -- >>> parse (noneof "bcd") "abc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
--- >>> isError (parse (noneof "abcd") "abc")
+-- >>> isErrorResult (parse (noneof "abcd") "abc")
 -- True
 noneof ::
   String
@@ -163,15 +163,15 @@ noneof =
 -- ~~~ Use the Monad instance ~~~
 --
 -- >>> parse (between (is '[') (is ']') character) "[a]"
--- Value ("",'a')
+-- Result >< 'a'
 --
--- >>> isError (parse (between (is '[') (is ']') character) "[abc]")
+-- >>> isErrorResult (parse (between (is '[') (is ']') character) "[abc]")
 -- True
 --
--- >>> isError (parse (between (is '[') (is ']') character) "[abc")
+-- >>> isErrorResult (parse (between (is '[') (is ']') character) "[abc")
 -- True
 --
--- >>> isError (parse (between (is '[') (is ']') character) "abc]")
+-- >>> isErrorResult (parse (between (is '[') (is ']') character) "abc]")
 -- True
 between ::
   Parser o
@@ -186,15 +186,15 @@ between =
 -- ~~~ Use between and charTok ~~~
 --
 -- λ> parse (betweenCharTok '[' ']' character) "[a]"
--- Value ("",'a')
+-- Result >< 'a'
 --
--- λ> isError (parse (betweenCharTok '[' ']' character) "[abc]")
+-- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc]")
 -- True
 --
--- λ> isError (parse (betweenCharTok '[' ']' character) "[abc")
+-- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc")
 -- True
 --
--- λ> isError (parse (betweenCharTok '[' ']' character) "abc]")
+-- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "abc]")
 -- True
 betweenCharTok ::
   Char
@@ -209,18 +209,18 @@ betweenCharTok =
 -- ~~~ Use readHex, isHexDigit, replicateM, satisfy and the Monad instance ~~~
 --
 -- >>> parse hex "u0010"
--- Value ("",'\DLE')
+-- Result >< '\DLE'
 --
 -- >>> parse hex "u0a1f"
--- Value ("",'\2591')
+-- Result >< '\2591'
 --
--- >>> isError (parse hex "0010")
+-- >>> isErrorResult (parse hex "0010")
 -- True
 --
--- >>> isError (parse hex "u001")
+-- >>> isErrorResult (parse hex "u001")
 -- True
 --
--- >>> isError (parse hex "u0axf")
+-- >>> isErrorResult (parse hex "u0axf")
 -- True
 hex ::
   Parser Char
@@ -233,15 +233,15 @@ hex =
 -- ~~~ Use list and the Monad instance ~~~
 --
 -- >>> parse (sepby1 character (is ',')) "a"
--- Value ("","a")
+-- Result >< "a"
 --
 -- >>> parse (sepby1 character (is ',')) "a,b,c"
--- Value ("","abc")
+-- Result >< "abc"
 --
 -- >>> parse (sepby1 character (is ',')) "a,b,c,,def"
--- Value ("def","abc,")
+-- Result >def< "abc,"
 --
--- >>> isError (parse (sepby1 character (is ',')) "")
+-- >>> isErrorResult (parse (sepby1 character (is ',')) "")
 -- True
 sepby1 ::
   Parser a
@@ -256,16 +256,16 @@ sepby1 =
 -- ~~~ Use sepby1 and (|||) ~~~
 --
 -- >>> parse (sepby character (is ',')) ""
--- Value ("","")
+-- Result >< ""
 --
 -- >>> parse (sepby character (is ',')) "a"
--- Value ("","a")
+-- Result >< "a"
 --
 -- >>> parse (sepby character (is ',')) "a,b,c"
--- Value ("","abc")
+-- Result >< "abc"
 --
 -- >>> parse (sepby character (is ',')) "a,b,c,,def"
--- Value ("def","abc,")
+-- Result >def< "abc,"
 sepby ::
   Parser a
   -> Parser s
@@ -277,9 +277,9 @@ sepby =
 -- | Write a parser that asserts that there is no remaining input.
 --
 -- >>> parse eof ""
--- Value ("",())
+-- Result >< ()
 --
--- >>> isError (parse eof "abc")
+-- >>> isErrorResult (parse eof "abc")
 -- True
 eof ::
   Parser ()
@@ -291,18 +291,18 @@ eof =
 -- ~~~ Use sequence and Data.List#and ~~~
 --
 -- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABC"
--- Value ("BC",'A')
+-- Result >BC< 'A'
 --
 -- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABc"
--- Value ("Bc",'A')
+-- Result >Bc< 'A'
 --
--- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "XBc")
+-- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "XBc")
 -- True
 --
--- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "")
+-- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "")
 -- True
 --
--- >>> isError (parse (satisfyAll [isUpper, (/= 'X')]) "abc")
+-- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "abc")
 -- True
 satisfyAll ::
   [Char -> Bool]
@@ -315,15 +315,15 @@ satisfyAll =
 -- ~~~ Use sequence and Data.List#333or ~~~
 --
 -- >>> parse (satisfyAny [isLower, (/= 'X')]) "abc"
--- Value ("bc",'a')
+-- Result >bc< 'a'
 --
 -- >>> parse (satisfyAny [isLower, (/= 'X')]) "ABc"
--- Value ("Bc",'A')
+-- Result >Bc< 'A'
 --
--- >>> isError (parse (satisfyAny [isLower, (/= 'X')]) "XBc")
+-- >>> isErrorResult (parse (satisfyAny [isLower, (/= 'X')]) "XBc")
 -- True
 --
--- >>> isError (parse (satisfyAny [isLower, (/= 'X')]) "")
+-- >>> isErrorResult (parse (satisfyAny [isLower, (/= 'X')]) "")
 -- True
 satisfyAny ::
   [Char -> Bool]
@@ -336,21 +336,21 @@ satisfyAny =
 -- ~~~ Use betweenCharTok, sepby and charTok ~~~
 --
 -- >>> parse (betweenSepbyComma '[' ']' lower) "[a]"
--- Value ("","a")
+-- Result >< "a"
 --
 -- >>> parse (betweenSepbyComma '[' ']' lower) "[]"
--- Value ("","")
+-- Result >< ""
 --
--- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[A]")
+-- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "[A]")
 -- True
 --
--- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[abc]")
+-- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "[abc]")
 -- True
 --
--- >>> isError (parse (betweenSepbyComma '[' ']' lower) "[a")
+-- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "[a")
 -- True
 --
--- >>> isError (parse (betweenSepbyComma '[' ']' lower) "a]")
+-- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "a]")
 -- True
 betweenSepbyComma ::
   Char
