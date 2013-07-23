@@ -180,8 +180,8 @@ flatMap = error "todo"
 --
 -- | Apply a list of functions to a value to a list of results.
 --
--- >> seqOptional ((+1) :. (*10) :. Nil) 12
--- 13 :. 120 :. Nil
+-- >> seqOptional (Full 1 :. Full 10 :. Nil)
+-- Full (1 :. 10 :. Nil)
 seqOptional  :: List (Optional a) -> Optional (List a)
 seqOptional = error "todo"
 
