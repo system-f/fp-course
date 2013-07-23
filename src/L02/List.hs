@@ -10,6 +10,7 @@
 module L02.List where
 
 import Control.Applicative
+import L01.Optional
 
 -- BEGIN Helper functions and data types
 
@@ -179,12 +180,10 @@ flatMap = error "todo"
 --
 -- | Apply a list of functions to a value to a list of results.
 --
--- >> seqf ((+1) :. (*10) :. Nil) 12
+-- >> seqOptional ((+1) :. (*10) :. Nil) 12
 -- 13 :. 120 :. Nil
---
--- prop> let fs = ((+1) :. (*10) :. Nil) in len (seqf fs y) == len fs
-seqf :: List (a -> b) -> a -> List b
-seqf = error "todo"
+seqOptional  :: List (Optional a) -> Optional (List a)
+seqOptional = error "todo"
 
 -- Exercise 10
 -- Relative Difficulty: 10

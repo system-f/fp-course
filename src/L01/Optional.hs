@@ -22,3 +22,5 @@ Full a ?? _ = a
 Empty <+> o = o
 k <+> _     = k
 
+twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
+twiceOptional f a b = bindOptional a (\aa -> mapOptional (f aa) b)
