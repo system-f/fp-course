@@ -180,7 +180,7 @@ flatMap = error "todo"
 --
 -- | Apply a list of functions to a value to a list of results.
 --
--- >> seqOptional (Full 1 :. Full 10 :. Nil)
+-- >>> seqOptional (Full 1 :. Full 10 :. Nil)
 -- Full (1 :. 10 :. Nil)
 seqOptional  :: List (Optional a) -> Optional (List a)
 seqOptional = error "todo"
@@ -194,7 +194,7 @@ seqOptional = error "todo"
 --
 -- | Reverse a list.
 --
--- >> rev (1 :. 2 :. 3 :. Nil)
+-- >>> rev (1 :. 2 :. 3 :. Nil)
 -- 3 :. 2 :. 1 :. Nil
 --
 -- prop> (rev . rev) x == x
