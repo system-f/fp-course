@@ -210,8 +210,6 @@ findLeft =
 
 -- Exercise 10
 -- Relative Difficulty: 3
--- Seek to the right for a location matching a predicate, starting from the
--- current one.
 --
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
@@ -229,8 +227,14 @@ findRight =
 
 -- Exercise 11
 -- Relative Difficulty: 4
--- Move the zipper left, or if there are no elements to the left, go to the far right.
+-- | Move the zipper left, or if there are no elements to the left, go to the far right.
 -- CAUTION: This function is non-total, why?
+--
+-- >>> moveLeftLoop (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2]⋙3⋘[4,5,6,7]
+--
+-- >>> moveLeftLoop (ListZipper [] 1 [2,3,4])
+-- [1,2,3]⋙4⋘[]
 moveLeftLoop ::
   ListZipper' f =>
   f a
@@ -240,7 +244,13 @@ moveLeftLoop =
 
 -- Exercise 12
 -- Relative Difficulty: 4
--- Move the zipper right, or if there are no elements to the right, go to the far left.
+-- | Move the zipper right, or if there are no elements to the right, go to the far left.
+--
+-- >>> moveRightLoop (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4]⋙5⋘[6,7]
+--
+-- >>> moveRightLoop (ListZipper [3,2,1] 4 [])
+-- []⋙1⋘[2,3,4]
 moveRightLoop ::
   ListZipper' f =>
   f a
@@ -250,7 +260,13 @@ moveRightLoop =
 
 -- Exercise 13
 -- Relative Difficulty: 3
--- Move the zipper one position to the left.
+-- | Move the zipper one position to the left.
+--
+-- >>> moveLeft (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2]⋙3⋘[4,5,6,7]
+--
+-- >>> moveLeft (ListZipper [] 1 [2,3,4])
+-- ∅
 moveLeft ::
   ListZipper' f =>
   f a
@@ -260,7 +276,13 @@ moveLeft =
 
 -- Exercise 14
 -- Relative Difficulty: 3
--- Move the zipper one position to the right.
+-- | Move the zipper one position to the right.
+--
+-- >>> moveRight (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4]⋙5⋘[6,7]
+--
+-- >>> moveRight (ListZipper [3,2,1] 4 [])
+-- ∅
 moveRight ::
   ListZipper' f =>
   f a
@@ -270,7 +292,13 @@ moveRight =
 
 -- Exercise 15
 -- Relative Difficulty: 3
--- Swap the current focus with the value to the left of focus.
+-- | Swap the current focus with the value to the left of focus.
+--
+-- >>> swapLeft (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,4]⋙3⋘[5,6,7]
+--
+-- >>> swapLeft (ListZipper [] 1 [2,3,4])
+-- ∅
 swapLeft ::
   ListZipper' f =>
   f a
@@ -280,7 +308,13 @@ swapLeft =
 
 -- Exercise 16
 -- Relative Difficulty: 3
--- Swap the current focus with the value to the right of focus.
+-- | Swap the current focus with the value to the right of focus.
+--
+-- >>> swapRight (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3]⋙5⋘[4,6,7]
+--
+-- >>> swapRight (ListZipper [3,2,1] 4 [])
+-- ∅
 swapRight ::
   ListZipper' f =>
   f a
@@ -290,7 +324,15 @@ swapRight =
 
 -- Exercise 17
 -- Relative Difficulty: 3
--- Drop all values to the left of the focus.
+-- | Drop all values to the left of the focus.
+--
+-- >>> dropLefts (ListZipper [3,2,1] 4 [5,6,7])
+-- []⋙4⋘[5,6,7]
+--
+-- >>> dropLefts (ListZipper [] 1 [2,3,4])
+-- []⋙1⋘[2,3,4]
+--
+-- prop> dropLefts (ListZipper l x r) == ListZipper [] x r
 dropLefts ::
   ListZipper' f =>
   f a
@@ -300,7 +342,15 @@ dropLefts =
 
 -- Exercise 18
 -- Relative Difficulty: 3
--- Drop all values to the right of the focus.
+-- | Drop all values to the right of the focus.
+--
+-- >>> dropRights (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3]⋙4⋘[]
+--
+-- >>> dropRights (ListZipper [3,2,1] 4 [])
+-- [1,2,3]⋙4⋘[]
+--
+-- prop> dropRights (ListZipper l x r) == ListZipper l x []
 dropRights ::
   ListZipper' f =>
   f a
@@ -332,8 +382,20 @@ moveRightN =
 
 -- Exercise 21
 -- Relative Difficulty: 6
--- Move the focus left the given number of positions. If the value is negative, move right instead.
+-- | Move the focus left the given number of positions. If the value is negative, move right instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
+--
+-- >>> moveLeftN 2 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1]⋙2⋘[3,4,5,6,7]
+--
+-- >>> moveLeftN 4 (ListZipper [3,2,1] 4 [5,6,7])
+-- ∅
+--
+-- >>> moveLeftN (-2) (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4,5]⋙6⋘[7]
+--
+-- >>> moveLeftN (-4) (ListZipper [3,2,1] 4 [5,6,7])
+-- ∅
 moveLeftN' ::
   ListZipper' f =>
   Int
@@ -344,8 +406,20 @@ moveLeftN' =
 
 -- Exercise 22
 -- Relative Difficulty: 6
--- Move the focus right the given number of positions. If the value is negative, move left instead.
+-- | Move the focus right the given number of positions. If the value is negative, move left instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
+--
+-- >>> moveRightN 2 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4,5]⋙6⋘[7]
+--
+-- >>> moveRightN 4 (ListZipper [3,2,1] 4 [5,6,7])
+-- ∅
+--
+-- >>> moveRightN (-2) (ListZipper [3,2,1] 4 [5,6,7])
+-- [1]⋙2⋘[3,4,5,6,7]
+--
+-- >>> moveRightN (-4) (ListZipper [3,2,1] 4 [5,6,7])
+-- ∅
 moveRightN' ::
   ListZipper' f =>
   Int
@@ -356,7 +430,16 @@ moveRightN' =
 
 -- Exercise 23
 -- Relative Difficulty: 7
--- Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
+-- | Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
+--
+-- >>> nth 1 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1]⋙2⋘[3,4,5,6,7]
+--
+-- >>> nth 5 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4,5]⋙6⋘[7]
+--
+-- >>> nth 8 (ListZipper [3,2,1] 4 [5,6,7])
+-- ∅
 nth ::
   ListZipper' f =>
   Int
@@ -367,7 +450,12 @@ nth =
 
 -- Exercise 24
 -- Relative Difficulty: 4
--- Return the absolute position of the current focus in the zipper.
+-- | Return the absolute position of the current focus in the zipper.
+--
+-- >>> index (ListZipper [3,2,1] 4 [5,6,7])
+-- Just 3
+--
+-- prop> maybe True (\i -> maybe False (==z) (toMaybe (nth i z))) (index z)
 index ::
   ListZipper' f =>
   f a
@@ -377,8 +465,11 @@ index =
 
 -- Exercise 25
 -- Relative Difficulty: 5
--- Move the focus to the end of the zipper.
+-- | Move the focus to the end of the zipper.
 -- CAUTION: This function is non-total, why?
+--
+-- >>> end (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4,5,6]⋙7⋘[]
 end ::
   ListZipper' f =>
   f a
@@ -388,7 +479,10 @@ end =
 
 -- Exercise 26
 -- Relative Difficulty: 5
--- Move the focus to the start of the zipper.
+-- | Move the focus to the start of the zipper.
+--
+-- >>> start (ListZipper [3,2,1] 4 [5,6,7])
+-- []⋙1⋘[2,3,4,5,6,7]
 start ::
   ListZipper' f =>
   f a
@@ -398,7 +492,13 @@ start =
 
 -- Exercise 27
 -- Relative Difficulty: 5
--- Delete the current focus and pull the left values to take the empty position.
+-- | Delete the current focus and pull the left values to take the empty position.
+--
+-- >>> deletePullLeft (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2]⋙3⋘[5,6,7]
+--
+-- >>> deletePullLeft (ListZipper [] 1 [2,3,4])
+-- ∅
 deletePullLeft ::
   ListZipper' f =>
   f a
@@ -408,7 +508,13 @@ deletePullLeft =
 
 -- Exercise 28
 -- Relative Difficulty: 5
--- Delete the current focus and pull the right values to take the empty position.
+-- | Delete the current focus and pull the right values to take the empty position.
+--
+-- >>> deletePullRight (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3]⋙5⋘[6,7]
+--
+-- >>> deletePullRight (ListZipper [3,2,1] 4 [])
+-- ∅
 deletePullRight ::
   ListZipper' f =>
   f a
@@ -418,7 +524,15 @@ deletePullRight =
 
 -- Exercise 29
 -- Relative Difficulty: 5
--- Insert at the current focus and push the left values to make way for the new position.
+-- | Insert at the current focus and push the left values to make way for the new position.
+--
+-- >>> insertPushLeft 15 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3,4]⋙15⋘[5,6,7]
+--
+-- >>> insertPushLeft 15 (ListZipper [] 1 [2,3,4])
+-- [1]⋙15⋘[2,3,4]
+--
+-- prop> maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
 insertPushLeft ::
   ListZipper' f =>
   a
@@ -429,7 +543,15 @@ insertPushLeft =
 
 -- Exercise 30
 -- Relative Difficulty: 5
--- Insert at the current focus and push the right values to make way for the new position.
+-- | Insert at the current focus and push the right values to make way for the new position.
+--
+-- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [5,6,7])
+-- [1,2,3]⋙15⋘[4,5,6,7]
+--
+-- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [])
+-- [1,2,3]⋙15⋘[4]
+--
+-- prop> maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
 insertPushRight ::
   ListZipper' f =>
   a
@@ -479,15 +601,18 @@ instance Traversable [] where
 
 -- Exercise 31
 -- Relative Difficulty: 6
--- Implement the `Apply` instance for `ListZipper`.
+-- | Implement the `Apply` instance for `ListZipper`.
 -- This implementation zips functions with values by function application.
+--
+-- >>> ListZipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> ListZipper [3,2,1] 4 [5,6,7]
+-- [12,5]⋙8⋘[15,24,12]
 instance Apply ListZipper where
   (<*>) =
     error "todo"
 
 -- Exercise 32
 -- Relative Difficulty: 4
--- Implement the `Apply` instance for `MaybeListZipper`.
+-- | Implement the `Apply` instance for `MaybeListZipper`.
 -- ~~~ Use (<*>) for `ListZipper`.
 instance Apply MaybeListZipper where
   (<*>) =
@@ -495,7 +620,7 @@ instance Apply MaybeListZipper where
 
 -- Exercise 33
 -- Relative Difficulty: 5
--- Implement the `Applicative` instance for `ListZipper`.
+-- | Implement the `Applicative` instance for `ListZipper`.
 -- This implementation produces an infinite list zipper (to both left and right).
 -- ~~~ Use Data.List#repeat.
 instance Applicative ListZipper where
@@ -504,7 +629,7 @@ instance Applicative ListZipper where
 
 -- Exercise 34
 -- Relative Difficulty: 4
--- Implement the `Applicative` instance for `MaybeListZipper`.
+-- | Implement the `Applicative` instance for `MaybeListZipper`.
 -- ~~~ Use unit for `ListZipper`.
 instance Applicative MaybeListZipper where
   unit =
@@ -512,24 +637,30 @@ instance Applicative MaybeListZipper where
 
 -- Exercise 35
 -- Relative Difficulty: 7
--- Implement the `Extend` instance for `ListZipper`.
+-- | Implement the `Extend` instance for `ListZipper`.
 -- This implementation "visits" every possible zipper value derivable from a given zipper (i.e. all zippers to the left and right).
 -- ~~~ Use unit Data.List#unfoldr.
+--
+-- >>> id <<= (ListZipper [2,1] 3 [4,5])
+-- [[]⋙1⋘[2,3,4,5],[1]⋙2⋘[3,4,5]]⋙[1,2]⋙3⋘[4,5]⋘[[1,2,3]⋙4⋘[5],[1,2,3,4]⋙5⋘[]]
 instance Extend ListZipper where
   (<<=) =
     error "todo"
 
 -- Exercise 36
 -- Relative Difficulty: 3
--- Implement the `Comonad` instance for `ListZipper`.
+-- | Implement the `Comonad` instance for `ListZipper`.
 -- This implementation returns the current focus of the zipper.
+--
+-- >>> counit (ListZipper [2,1] 3 [4,5])
+-- 3
 instance Comonad ListZipper where
   counit =
     error "todo"
 
 -- Exercise 37
 -- Relative Difficulty: 10
--- Implement the `Traversable` instance for `ListZipper`.
+-- | Implement the `Traversable` instance for `ListZipper`.
 -- This implementation traverses a zipper while running some `Applicative` effect through the zipper.
 -- An effectful zipper is returned.
 instance Traversable ListZipper where
@@ -538,7 +669,7 @@ instance Traversable ListZipper where
 
 -- Exercise 38
 -- Relative Difficulty: 5
--- Implement the `Traversable` instance for `MaybeListZipper`.
+-- | Implement the `Traversable` instance for `MaybeListZipper`.
 -- ~~~ Use `traverse` for `ListZipper`.
 instance Traversable MaybeListZipper where
   traverse =
