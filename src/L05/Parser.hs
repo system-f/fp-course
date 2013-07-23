@@ -8,8 +8,16 @@ import L05.Person
 
 type Input = String
 
+data ParseResult a =
+  UnexpectedEof
+  | UnexpectedChar Char
+  | Failed
+  | Result Input a
+  deriving (Eq, Show)
+
+
 data Parser a = P {
-  parse :: Input -> Validation (Input, a)
+  parse :: Input -> ParseResult a
 }
 
 -- Exercise 1
