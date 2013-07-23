@@ -23,8 +23,8 @@ valueParser = error "todo"
 -- Exercise 2
 -- | Return a parser that always fails with the given error.
 --
--- >>> parse (failed "message") "abc"
--- Error "message"
+-- >>> isError (parse (failed "message") "abc")
+-- True
 failed :: Err -> Parser a
 failed = error "todo"
 
@@ -48,17 +48,17 @@ character = error "todo"
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "abc"
 -- Value ("bc",'v')
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) ""
--- Error "Unexpected end of stream"
---
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "a"
 -- Value ("",'v')
 --
--- >>> isError (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
--- True
---
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "xabc"
 -- Value ("bc",'a')
+--
+-- >>> isError (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "")
+-- True
+--
+-- >>> isError (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
+-- True
 bindParser :: Parser a -> (a -> Parser b) -> Parser b
 bindParser = error "todo"
 
@@ -72,8 +72,8 @@ bindParser = error "todo"
 -- >>> parse (character >>> valueParser 'v') "abc"
 -- Value ("bc",'v')
 --
--- >>> parse (character >>> valueParser 'v') ""
--- Error "Unexpected end of stream"
+-- >>> isError (parse (character >>> valueParser 'v') "")
+-- True
 (>>>) :: Parser a -> Parser b -> Parser b
 (>>>) = error "todo"
 
@@ -324,17 +324,17 @@ phoneBodyParser = error "todo"
 -- * Phone: ... but must start with a digit and end with a hash (#)
 -- ~~~ Use bindParser, value, digit, phoneBodyParser and is. ~~~
 --
--- >>> parse phoneParser "123-456"
--- Error "Unexpected end of stream"
---
--- >>> parse phoneParser "a123-456"
--- Error "Unexpected character a"
---
 -- >>> parse phoneParser "123-456#"
 -- Value ("","123-456")
 --
 -- >>> parse phoneParser "123-456#abc"
 -- Value ("abc","123-456")
+--
+-- >>> isError (parse phoneParser "123-456")
+-- True
+--
+-- >>> isError (parse phoneParser "a123-456")
+-- True
 phoneParser :: Parser String
 phoneParser = error "todo"
 
