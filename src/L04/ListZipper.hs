@@ -131,7 +131,7 @@ withFocus =
 -- Relative Difficulty: 2
 --
 -- | Set the focus of the zipper to the given value.
--- ~~~ Use withFocus
+-- /Tip:/ Use `withFocus`.
 --
 -- >>> setFocus 1 (ListZipper [] 0 [1])
 -- []⋙1⋘[1]
@@ -613,7 +613,8 @@ instance Apply ListZipper where
 -- Exercise 32
 -- Relative Difficulty: 4
 -- | Implement the `Apply` instance for `MaybeListZipper`.
--- ~~~ Use (<*>) for `ListZipper`.
+--
+-- /Tip:/ Use `<*>` for `ListZipper`.
 instance Apply MaybeListZipper where
   (<*>) =
     error "todo"
@@ -622,7 +623,8 @@ instance Apply MaybeListZipper where
 -- Relative Difficulty: 5
 -- | Implement the `Applicative` instance for `ListZipper`.
 -- This implementation produces an infinite list zipper (to both left and right).
--- ~~~ Use Data.List#repeat.
+--
+-- /Tip:/ Use @Data.List#repeat@.
 instance Applicative ListZipper where
   unit =
     error "todo"
@@ -630,7 +632,8 @@ instance Applicative ListZipper where
 -- Exercise 34
 -- Relative Difficulty: 4
 -- | Implement the `Applicative` instance for `MaybeListZipper`.
--- ~~~ Use unit for `ListZipper`.
+--
+-- /Tip:/ Use @unit@ for `ListZipper`.
 instance Applicative MaybeListZipper where
   unit =
     error "todo"
@@ -639,7 +642,8 @@ instance Applicative MaybeListZipper where
 -- Relative Difficulty: 7
 -- | Implement the `Extend` instance for `ListZipper`.
 -- This implementation "visits" every possible zipper value derivable from a given zipper (i.e. all zippers to the left and right).
--- ~~~ Use unit Data.List#unfoldr.
+--
+-- /Tip:/ Use @Data.List#unfoldr@.
 --
 -- >>> id <<= (ListZipper [2,1] 3 [4,5])
 -- [[]⋙1⋘[2,3,4,5],[1]⋙2⋘[3,4,5]]⋙[1,2]⋙3⋘[4,5]⋘[[1,2,3]⋙4⋘[5],[1,2,3,4]⋙5⋘[]]
@@ -670,7 +674,8 @@ instance Traversable ListZipper where
 -- Exercise 38
 -- Relative Difficulty: 5
 -- | Implement the `Traversable` instance for `MaybeListZipper`.
--- ~~~ Use `traverse` for `ListZipper`.
+--
+-- /Tip:/ Use `traverse` for `ListZipper`.
 instance Traversable MaybeListZipper where
   traverse =
     error "todo"
