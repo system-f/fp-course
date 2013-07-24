@@ -77,7 +77,7 @@ object State {
   // Relative Difficulty: 4
   // Find  the first element in a `Stream` that repeats.
   // It is possible that no element repeats, hence an `Optional` result.
-  // ~~~ Use findM and State with a Set. ~~~
+  // Tip: Use findM and State with a Set.
   def firstRepeat[A](x: Stream[A])(implicit O: math.Ordering[A]): Optional[A] =
     sys.error("todo")
 
@@ -96,7 +96,7 @@ object State {
   // Exercise 10
   // Relative Difficulty: 4
   // Remove all duplicate elements in a `Stream`.
-  // ~~~ Use filterM and State with a Set. ~~~
+  // Tip: Use filterM and State with a Set.
   def distinct[A](x: Stream[A])(implicit O: math.Ordering[A]): Stream[A] =
     sys.error("todo")
 
@@ -112,9 +112,9 @@ object State {
   // A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
   // In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
   // because it results in a recurring sequence.
-  // ~~~ Use findM with State and produce
-  // ~~~ Use flaatten to write a square function
-  // ~~~ Use library functions: containsOptional (below)
+  // Tip: Use findM with State and produce
+  // Tip: Use flaatten to write a square function
+  // Tip: Use library functions: containsOptional (below)
   def isHappy(i: BigInt): Boolean =
     sys.error("todo")
 
