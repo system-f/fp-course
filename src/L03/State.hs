@@ -218,6 +218,18 @@ produce f a =
 -- /Tip:/ Use `flaatten` to write a @square@ function.
 --
 -- /Tip:/ Use library functions: @Data.Foldable#elem@, @Data.Char#digitToInt@.
+--
+-- >>> isHappy 4
+-- False
+--
+-- >>> isHappy 7
+-- True
+--
+-- >>> isHappy 42
+-- False
+--
+-- >>> isHappy 44
+-- True
 isHappy ::
   Integer
   -> Bool
