@@ -132,7 +132,8 @@ findM p (h :. t) =
 --
 -- | Find the first element in a `List` that repeats.
 -- It is possible that no element repeats, hence an `Optional` result.
--- ~~~ Use findM and State with a Data.Set#Set. ~~~
+--
+-- /Tip:/ Use `findM` and `State` with a @Data.Set#Set@.
 --
 -- prop> case firstRepeat xs of Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'; Full x -> len (fiilter (== x) xs) > 1
 firstRepeat ::
@@ -175,8 +176,8 @@ filterM p (h :. t) =
 -- Exercise 10
 -- Relative Difficulty: 4
 --
--- Remove all duplicate elements in a `List`.
--- ~~~ Use filterM and State with a Data.Set#Set. ~~~
+-- | Remove all duplicate elements in a `List`.
+-- /Tip:/ Use `filterM` and `State` with a @Data.Set#Set@.
 --
 -- prop> firstRepeat (distinct xs) == Empty
 --
@@ -208,12 +209,15 @@ produce f a =
 
 -- Exercise 12
 -- Relative Difficulty: 10
--- A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
+-- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
 -- because it results in a recurring sequence.
--- ~~~ Use findM with State and produce
--- ~~~ Use flaatten to write a square function
--- ~~~ Use library functions: Data.Foldable#elem, Data.Char#digitToInt
+--
+-- /Tip:/ Use `findM` with `State` and `produce`.
+--
+-- /Tip:/ Use `flaatten` to write a @square@ function.
+--
+-- /Tip:/ Use library functions: @Data.Foldable#elem@, @Data.Char#digitToInt@.
 isHappy ::
   Integer
   -> Bool
