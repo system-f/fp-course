@@ -7,7 +7,7 @@ import Numeric
 import Control.Applicative
 import Control.Monad
 
--- Parses the given input and returns the result.
+-- | Parses the given input and returns the result.
 -- The remaining input is ignored.
 (<.>) ::
   Parser a
@@ -20,16 +20,17 @@ P p <.> i =
 
 
 -- Exercise 1
--- Write a parser that will parse zero or more spaces.
+-- | Write a parser that will parse zero or more spaces.
 spaces ::
   Parser String
 spaces =
   list space
 
 -- Exercise 2
--- Write a function that applies the given parser, then parses 0 or more spaces,
+-- | Write a function that applies the given parser, then parses 0 or more spaces,
 -- then produces the result of the original parser.
--- ~~~ Use the monad instance ~~~
+--
+-- /Tip:/ Use the monad instance.
 tok ::
   Parser a
   -> Parser a
@@ -39,8 +40,9 @@ tok p =
      return v
 
 -- Exercise 3
--- Write a function that parses the given char followed by 0 or more spaces.
--- ~~~ Use tok and is ~~~
+-- | Write a function that parses the given char followed by 0 or more spaces.
+--
+-- /Tip:/ Use `tok` and `is`.
 charTok ::
   Char
   -> Parser Char
@@ -48,8 +50,9 @@ charTok =
   tok . is
 
 -- Exercise 4
--- Write a parser that parses a comma ',' followed by 0 or more spaces.
--- ~~~ Use charTok ~~~
+-- | Write a parser that parses a comma ',' followed by 0 or more spaces.
+--
+-- /Tip:/ Use `charTok`.
 commaTok ::
   Parser Char
 commaTok =
@@ -57,7 +60,8 @@ commaTok =
 
 -- Exercise 5
 -- | Write a parser that parses either a double-quote or a single-quote.
--- ~~~ Use is and (|||) ~~~
+--
+-- /Tip:/ Use `is` and `|||`
 --
 -- >>> parse quote "'abc"
 -- Result >abc< '\''
@@ -74,7 +78,8 @@ quote =
 
 -- Exercise 6
 -- | Write a function that parses the given string (fails otherwise).
--- ~~~ Use is and mapM ~~~
+--
+-- /Tip:/ Use `is` and `mapM`.
 --
 -- >>> parse (string "abc") "abcdef"
 -- Result >def< "abc"
@@ -89,7 +94,8 @@ string =
 
 -- Exercise 7
 -- | Write a function that parsers the given string, followed by 0 or more spaces.
--- ~~~ Use tok and string ~~~
+--
+-- /Tip:/ Use `tok` and `string`.
 --
 -- >>> parse (stringTok "abc") "abc  "
 -- Result >< "abc"
@@ -104,7 +110,8 @@ stringTok =
 
 -- Exercise 8
 -- | Write a function that tries the given parser, otherwise succeeds by producing the given value.
--- ~~~ Use (|||) ~~~
+--
+-- /Tip:/ Use `|||`.
 --
 -- >>> parse (option 'x' character) "abc"
 -- Result >bc< 'a'
@@ -120,7 +127,8 @@ option a p =
 
 -- Exercise 9
 -- | Write a parser that parses 1 or more digits.
--- ~~~ Use many1 and digit ~~~
+--
+-- /Tip:/ Use `many1` and `digit`.
 --
 -- >>> parse digits1 "123"
 -- Result >< "123"
@@ -134,7 +142,8 @@ digits1 =
 
 -- Exercise 10
 -- | Write a function that parses one of the characters in the given string.
--- ~~~ Use satisfy and elem ~~~
+--
+-- /Tip:/ Use `satisfy` and `elem`.
 --
 -- >>> parse (oneof "abc") "bcdef"
 -- Result >cdef< 'b'
@@ -149,7 +158,8 @@ oneof s =
 
 -- Exercise 11
 -- | Write a function that parses any character, but fails if it is in the given string.
--- ~~~ Use satisfy and notElem ~~~
+--
+-- /Tip:/ Use `satisfy` and `notElem`.
 --
 -- >>> parse (noneof "bcd") "abc"
 -- Result >bc< 'a'
@@ -165,7 +175,8 @@ noneof s =
 -- Exercise 12
 -- | Write a function that applies the first parser, runs the third parser keeping the result,
 -- then runs the second parser and produces the obtained result.
--- ~~~ Use the Monad instance ~~~
+--
+-- /Tip:/ Use the monad instance.
 --
 -- >>> parse (between (is '[') (is ']') character) "[a]"
 -- Result >< 'a'
@@ -191,7 +202,8 @@ between o c a =
 
 -- Exercise 13
 -- | Write a function that applies the given parser in between the two given characters.
--- ~~~ Use between and charTok ~~~
+--
+-- /Tip:/ Use `between` and `charTok`.
 --
 -- λ> parse (betweenCharTok '[' ']' character) "[a]"
 -- Result >< 'a'
@@ -214,7 +226,8 @@ betweenCharTok a b =
 
 -- Exercise 14
 -- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
--- ~~~ Use readHex, isHexDigit, replicateM, satisfy and the Monad instance ~~~
+--
+-- /Tip:/ Use `readHex`, `isHexDigit`, `replicateM`, `satisfy` and the monad instance.
 --
 -- >>> parse hex "u0010"
 -- Result >< '\DLE'
@@ -243,7 +256,8 @@ hex =
 -- Exercise 15
 -- | Write a function that produces a non-empty list of values coming off the given parser (which must succeed at least once),
 -- separated by the second given parser.
--- ~~~ Use list and the Monad instance ~~~
+--
+-- /Tip:/ Use `list` and the monad instance.
 --
 -- >>> parse (sepby1 character (is ',')) "a"
 -- Result >< "a"
@@ -268,7 +282,8 @@ sepby1 p s =
 -- Exercise 16
 -- | Write a function that produces a list of values coming off the given parser,
 -- separated by the second given parser.
--- ~~~ Use sepby1 and (|||) ~~~
+--
+-- /Tip:/ Use `sepby1` and `|||`.
 --
 -- >>> parse (sepby character (is ',')) ""
 -- Result >< ""
@@ -305,7 +320,8 @@ eof =
 
 -- Exercise 18
 -- | Write a parser that produces a characer that satisfies all of the given predicates.
--- ~~~ Use sequence and Data.List#and ~~~
+--
+-- /Tip:/ Use `sequence` and @Data.List#and@.
 --
 -- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABC"
 -- Result >BC< 'A'
@@ -329,7 +345,8 @@ satisfyAll ps =
 
 -- Exercise 19
 -- | Write a parser that produces a characer that satisfies any of the given predicates.
--- ~~~ Use sequence and Data.List#333or ~~~
+--
+-- /Tip:/ Use `sequence` and @Data.List#or@.
 --
 -- >>> parse (satisfyAny [isLower, (/= 'X')]) "abc"
 -- Result >bc< 'a'
@@ -350,7 +367,8 @@ satisfyAny ps =
 
 -- Exercise 20
 -- | Write a parser that parses between the two given characters, separated by a comma character ','.
--- ~~~ Use betweenCharTok, sepby and charTok ~~~
+--
+-- /Tip:/ Use `betweenCharTok`, `sepby` and `charTok`.
 --
 -- >>> parse (betweenSepbyComma '[' ']' lower) "[a]"
 -- Result >< "a"

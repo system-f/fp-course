@@ -68,13 +68,21 @@ data Op =
   Op Char String (IO ()) -- keyboard entry, description, program
 
 -- Exercise 1
+-- |
+--
 -- * Ask the user to enter a string to convert to upper-case.
+--
 -- * Convert the string to upper-case.
+--
 -- * Print the upper-cased string to standard output.
--- ~~~ getLine :: IO String -- an IO action that reads a string from standard input.
--- ~~~ toUpper :: Char -> Char -- (Data.Char) converts a character to upper-case.
--- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
--- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
+--
+-- /Tip:/ @getLine :: IO String@ -- an IO action that reads a string from standard input.
+--
+-- /Tip:/ @toUpper :: Char -> Char@ -- (Data.Char) converts a character to upper-case.
+--
+-- /Tip:/ @putStr :: String -> IO ()@ -- Prints a string to standard output.
+--
+-- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 convertInteractive ::
   IO ()
 convertInteractive =
@@ -84,17 +92,29 @@ convertInteractive =
   putStrLn ""
 
 -- Exercise 2
+-- |
+--
 -- * Ask the user to enter a file name to reverse.
+--
 -- * Ask the user to enter a file name to write the reversed file to.
+--
 -- * Read the contents of the input file.
+--
 -- * Reverse the contents of the input file.
+--
 -- * Write the reversed contents to the output file.
--- ~~~ getLine :: IO String -- an IO action that reads a string from standard input.
--- ~~~ readFile :: FilePath -> IO String -- an IO action that reads contents of a file.
--- ~~~ writeFile :: FilePath -> String -> IO () -- writes a string to a file.
--- ~~~ reverse :: [a] -> [a] -- reverses a list.
--- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
--- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
+--
+-- /Tip:/ @getLine :: IO String@ -- an IO action that reads a string from standard input.
+--
+-- /Tip:/ @readFile :: FilePath -> IO String@ -- an IO action that reads contents of a file.
+--
+-- /Tip:/ @writeFile :: FilePath -> String -> IO ()@ -- writes a string to a file.
+--
+-- /Tip:/ @reverse :: [a] -> [a]@ -- reverses a list.
+--
+-- /Tip:/ @putStr :: String -> IO ()@ -- Prints a string to standard output.
+--
+-- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 reverseInteractive ::
   IO ()
 reverseInteractive =
@@ -107,16 +127,27 @@ reverseInteractive =
   putStrLn ""
 
 -- Exercise 3
+-- |
+--
 -- * Ask the user to enter a string to url-encode.
+--
 -- * Convert the string with a URL encoder.
---   * For simplicity, encoding is defined as:
---     - ' ' -> "%20"
---     - '\t' -> "%09"
---     - '"' -> "%22"
---     - anything else is unchanged
+--
+-- * For simplicity, encoding is defined as:
+--
+-- * @' ' -> \"%20\"@
+--
+-- * @'\t' -> \"%09\"@
+--
+-- * @'\"' -> \"%22\"@
+--
+-- * @/anything else is unchanged/@
+--
 -- * Print the encoded URL to standard output.
--- ~~~ putStr :: String -> IO () -- Prints a string to standard output.
--- ~~~ putStrLn :: String -> IO () -- Prints a string and then a new line to standard output.
+--
+-- /Tip:/ @putStr :: String -> IO ()@ -- Prints a string to standard output.
+--
+-- /Tip:/ @putStrLn :: String -> IO ()@ -- Prints a string and then a new line to standard output.
 encodeInteractive ::
   IO ()
 encodeInteractive =

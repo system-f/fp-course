@@ -95,7 +95,7 @@ object StateT {
   // Exercise 11
   // Relative Difficulty: 4
   // Remove all duplicate elements in a `List`.
-  // ~~~ Use filterM and State with a Set. ~~~
+  // Tip: Use filterM and State with a Set.
   def distinct(x: Stream[Int]): Stream[Int] =
     eval(filterM[({type l[a] = State[Set[Int], a]})#l, Int](a => state(s => (!(s contains a), s + a)), x))(Set())
 
@@ -104,7 +104,7 @@ object StateT {
   // Remove all duplicate elements in a `List`.
   // However, if you see a value greater than `100` in the list,
   // abort the computation by producing `Empty`.
-  // ~~~ Use filterM and StateT over Optional with a Set. ~~~
+  // Tip: Use filterM and StateT over Optional with a Set.
   def distinctF(x: Stream[Int]): Optional[Stream[Int]] =
     filterM[({type l[a] = StateT[Set[Int], Optional, a]})#l, Int](a => StateT(s =>
       if(a > 100) Empty[(Boolean, Set[Int])] else Full[(Boolean, Set[Int])]((!(s contains a), s + a))), x) eval Set()
@@ -230,7 +230,7 @@ object StateT {
   // "aborting > 100: " followed by the value that caused it.
   // If you see an even number, produce a log message, "even number: " followed by the even number.
   // Other numbers produce no log message.
-  // ~~~ Use filterM and StateT over (OptionalT over Logger) with a Set. ~~~
+  // Tip: Use filterM and StateT over (OptionalT over Logger) with a Set.
   def distinctG(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
     filterM[({type l[a] = StateTOptionalTLogger[Set[Int], String, a]})#l, Int](a =>
       StateTOptionalTLogger(s => if(a > 100)

@@ -9,7 +9,8 @@ import L06.MoreParser
 
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
--- ~~~ Use oneof, hex, is, satisfyAll, betweenCharTok, list ~~~
+--
+-- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `betweenCharTok`, `list`.
 --
 -- >>> parse jsonString "\"abc\""
 -- Result >< "abc"
@@ -44,7 +45,8 @@ jsonString =
 
 -- Exercise 2
 -- | Parse a JSON rational.
--- ~~~ Use Numeric#readSigned and Numeric#readFloat ~~~
+--
+-- /Tip:/ Use @Numeric#readSigned@ and @Numeric#readFloat@.
 --
 -- >>> parse jsonNumber "234"
 -- Result >< 234 % 1
@@ -75,7 +77,8 @@ jsonNumber =
 
 -- Exercise 3
 -- | Parse a JSON true literal.
--- ~~~ Use stringTok ~~~
+--
+-- /Tip:/ Use `stringTok`.
 --
 -- >>> parse jsonTrue "true"
 -- Result >< "true"
@@ -89,8 +92,8 @@ jsonTrue =
 
 -- Exercise 4
 -- | Parse a JSON false literal.
--- ~~~ Use stringTok ~~~
 --
+-- /Tip:/ Use `stringTok`.
 --
 -- >>> parse jsonFalse "false"
 -- Result >< "false"
@@ -104,7 +107,8 @@ jsonFalse =
 
 -- Exercise 5
 -- | Parse a JSON null literal.
--- ~~~ Use stringTok ~~~
+--
+-- /Tip:/ Use `stringTok`.
 --
 -- >>> parse jsonNull "null"
 -- Result >< "null"
@@ -118,7 +122,8 @@ jsonNull =
 
 -- Exercise 6
 -- | Parse a JSON array.
--- ~~~ Use betweenSepbyComma and jsonValue ~~~
+--
+-- /Tip:/ Use `betweenSepbyComma` and `jsonValue`.
 --
 -- >>> parse jsonArray "[]"
 -- Result >< []
@@ -141,7 +146,8 @@ jsonArray =
 
 -- Exercise 7
 -- | Parse a JSON object.
--- ~~~ Use jsonString, charTok, betweenSepbyComma and jsonValue ~~~
+--
+-- /Tip:/ Use `jsonString`, `charTok`, `betweenSepbyComma` and `jsonValue`.
 --
 -- >>> parse jsonObject "{}"
 -- Result >< []
@@ -162,7 +168,8 @@ jsonObject =
 
 -- Exercise 8
 -- | Parse a JSON value.
--- ~~~ Use spaces, jsonNull, jsonTrue, jsonFalse, jsonArray, jsonString, jsonObject and jsonNumber ~~~
+--
+-- /Tip:/ Use `spaces`, `jsonNull`, `jsonTrue`, `jsonFalse`, `jsonArray`, `jsonString`, `jsonObject` and `jsonNumber`.
 --
 -- >>> parse jsonValue "true"
 -- Result >< JsonTrue
@@ -185,8 +192,9 @@ jsonValue =
    ||| JsonRational False <$> jsonNumber)
 
 -- Exercise 9
--- Read a file into a JSON value.
--- ~~~ Use readFile and jsonValue ~~~
+-- | Read a file into a JSON value.
+--
+-- /Tip:/ Use @System.IO#readFile@ and `jsonValue`.
 readJsonValue ::
   FilePath
   -> IO (ParseResult JsonValue)
