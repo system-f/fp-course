@@ -8,8 +8,8 @@ copyright:          Copyright (C) 2010-2013 Tony Morris
 synopsis:           Source code for a functional programming course
 category:           Education
 description:        Source code for a course in functional programming using Haskell
-homepage:           https://github.com/tonymorris/course
-bug-reports:        https://github.com/tonymorris/course/issues
+homepage:           https://github.com/NICTA/course
+bug-reports:        https://github.com/NICTA/course/issues
 cabal-version:      >= 1.10
 build-type:         Custom
 extra-source-files: etc/CONTRIBUTORS,
@@ -17,7 +17,7 @@ extra-source-files: etc/CONTRIBUTORS,
 
 source-repository   head
   type:             git
-  location:         git@github.com:tonymorris/course.git
+  location:         git@github.com:NICTA/course.git
 
 flag                small_base
   description:      Choose the new, split-up base package.
