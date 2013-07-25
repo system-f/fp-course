@@ -8,14 +8,12 @@
 
 The course is structured according to a linear progression and uses the Haskell
 programming language to learn programming concepts pertaining to functional
-programming. Module L[N] must be completed before module L[N+1] unless otherwise
-stated. The existing code compiles, however answers have been replaced with
-calls to the Haskell `error` function.
+programming.
 
-Exercises are annotated with a comment containing the word "Exercise." Some
-exercises contain tips, which are annotated with a preceding "Tip:". It is not
-necessary to adhere to tips. Tips are provided for potential guidance, which may
-be discarded.
+Exercises are annotated with a comment containing the word "Exercise." The existing code compiles, however answers have
+been replaced with a call to the Haskell `error` function and so the code will throw an exception if it is run. Some
+exercises contain tips, which are annotated with a preceding "Tip:". It is not necessary to adhere to tips. Tips are
+provided for potential guidance, which may be  discarded.
 
 The exercises are designed in a way that requires personal guidance, so if you
 attempt it on your own and feel a little lost, this is normal. All the
@@ -30,8 +28,8 @@ instructions are not contained herein.
 3. Execute the command `ghci`, which will compile and load all the source code.
    You may need to set permissions on a file, `chmod 600 .ghci`.
 
-4. The `L01` module does not contain exercises. Its purpose is to demonstrate
-   the structure of a project. The first exercise starts at `L02`.
+4. The `Intro` module does not contain exercises. Its purpose is to demonstrate
+   the structure of a project. The first recommend exercise is `Structure.List`.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
@@ -121,6 +119,30 @@ this source code:
     > cabal configure --enable-tests
     > cabal build
     > cabal test
+
+### Progression
+
+It is recommended to perform some exercises before others. The first step is to inspect the `Intro` modules. They
+contain examples of data structures and Haskell syntax. The next step is to complete the exercises in `Structure.List`.
+
+After this, the following progression of modules is recommended:
+
+* `Monad.Fuunctor`
+* `Monad.Moonad`
+* `Monad.State`
+* `Monad.StateT`
+* `Structure.ListZipper`
+* `Parser.Parser`
+* `Parser.MoreParser`
+* `Parser.JsonParser`
+* `IO.Interactive`
+* `Algorithm.Anagrams`
+* `Algorithm.FastAnagrams`
+* `Algorithm.EditDistance`
+* `Structure.BKTree`
+* `Algorithm.Cheque`
+
+After these are completed, complete the exercises in the `projects` directory.
 
 ### References
 
