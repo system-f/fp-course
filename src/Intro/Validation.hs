@@ -1,0 +1,94 @@
+module Intro.Validation where
+
+type Err = String
+
+--  class Validation<A> {
+--    Validation(String error) {} // Error
+--    Validation(A value) {} // Value
+--  }
+data Validation a = Error Err | Value a
+  deriving (Eq, Show)
+
+-- | Returns whether or not the given validation is an error.
+--
+-- >>> isError (Error "message")
+-- True
+--
+-- >>> isError (Value 7)
+-- False
+--
+-- prop> isError x /= isValue x
+isError :: Validation a -> Bool
+isError (Error _) = True
+isError (Value _) = False
+
+-- | Returns whether or not the given validation is a value.
+--
+-- >>> isValue (Error "message")
+-- False
+--
+-- >>> isValue (Value 7)
+-- True
+--
+-- prop> isValue x /= isError x
+isValue :: Validation a -> Bool
+isValue = not . isError
+
+-- | Maps a function on a validation's value side.
+--
+-- >>> mapValidation (+10) (Error "message")
+-- Error "message"
+--
+-- >>> mapValidation (+10) (Value 7)
+-- Value 17
+--
+-- prop> mapValidation id x == x
+mapValidation :: (a -> b) -> Validation a -> Validation b
+mapValidation _ (Error s) = Error s
+mapValidation f (Value a) = Value (f a)
+
+-- | Binds a function on a validation's value side to a new validation.
+--
+-- >>> bindValidation (Error "message") (\n -> if even n then Value (n + 10) else Error "odd")
+-- Error "message"
+--
+-- >>> bindValidation (Value 7) (\n -> if even n then Value (n + 10) else Error "odd")
+-- Error "odd"
+--
+-- >>> bindValidation (Value 8) (\n -> if even n then Value (n + 10) else Error "odd")
+-- Value 18
+--
+-- prop> bindValidation x Value == x
+bindValidation :: Validation a -> (a -> Validation b) -> Validation b
+bindValidation (Error s) _ = Error s
+bindValidation (Value a) f = f a
+
+-- | Returns a validation's value side or the given default if it is an error.
+--
+-- >>> valueOr (Error "message") 3
+-- 3
+--
+-- >>> valueOr (Value 7) 3
+-- 7
+--
+-- prop> isValue x || valueOr x n == n
+valueOr :: Validation a -> a -> a
+valueOr (Error _) a = a
+valueOr (Value a) _ = a
+
+-- | Returns a validation's error side or the given default if it is a value.
+--
+-- >>> errorOr (Error "message") "q"
+-- "message"
+--
+-- >>> errorOr (Value 7) "q"
+-- "q"
+--
+-- prop> isError x || errorOr x e == e
+errorOr :: Validation a -> Err -> Err
+errorOr (Error e) _ = e
+errorOr (Value _) a = a
+
+valueValidation :: a -> Validation a
+valueValidation = Value
+
