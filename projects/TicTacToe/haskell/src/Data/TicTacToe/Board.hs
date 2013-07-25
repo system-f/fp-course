@@ -15,7 +15,6 @@ module Data.TicTacToe.Board
 , getResult
 -- * Make a move on a board
 , Move(..)
-, (-?->)
 , MoveResult
 , foldMoveResult
 , keepPlayingOr
@@ -43,6 +42,7 @@ import Data.Maybe
 
 data EmptyBoard =
   EmptyBoard
+  deriving Eq
 
 class Move from to | from -> to where
   (-->) ::
@@ -57,8 +57,8 @@ instance Move EmptyBoard Board where
     [(p, player1)] `Board` M.singleton p player1
 
 instance Move Board MoveResult where
-  p --> b@(Board q m) =
-    let w       = whoseTurn b
+  p --> bd@(Board q m) =
+    let w       = whoseTurn bd
         (j, m') = M.insertLookupWithKey (\_ x _ -> x) p w m
         wins =
           [
@@ -74,26 +74,21 @@ instance Move Board MoveResult where
         allEq (d:e:t) = d == e && allEq (e:t)
         allEq _       = True
         isWin         = any (\(a, b, c) -> any allEq $ mapM (`M.lookup` m') [a, b, c]) wins
-        isDraw        = all (`M.member` m') [minBound ..]
+        isD           = all (`M.member` m') [minBound ..]
         b'            = Board ((p, w):q) m'
     in maybe (if isWin
               then
                 GameFinished (b' `FinishedBoard` win w)
               else
-                if isDraw
+                if isD
                 then
                   GameFinished (b' `FinishedBoard` draw)
                 else
                   KeepPlaying b') (const PositionAlreadyOccupied) j
 
-(-?->) ::
-  Position
-  -> MoveResult
-  -> MoveResult
-p -?-> r =
-  keepPlayingOr r (\b -> p --> b) r
-
-infixr 5 -?->
+instance Move MoveResult MoveResult where
+  p --> r =
+    keepPlayingOr r (\b -> p --> b) r
 
 -- | The result of making a move on a tic-tac-toe board.
 data MoveResult =
@@ -126,6 +121,8 @@ keepPlayingOr def kp =
   foldMoveResult def kp (const def)
 
 -- | Return the possible board from a move result. A board is returned if the result is to continue play.
+--
+-- prop> (\b' -> whoseTurn b /= whoseTurn b') `all` keepPlaying (p --> (b :: Board))
 keepPlaying ::
   MoveResult
   -> Maybe Board
@@ -144,6 +141,9 @@ class TakeBack to from | to -> from where
     to
     -> from
 
+-- |
+--
+-- prop> foldMoveResult True (foldTakenBack False (==b) . takeBack) (\fb -> takeBack fb == b) (p --> b)
 instance TakeBack FinishedBoard Board where
   takeBack (FinishedBoard (Board ((p, _):t) m) _) =
     Board t (p `M.delete` m)
@@ -218,16 +218,16 @@ printEachPosition ::
   -> IO ()
 printEachPosition k =
   let z = ".===.===.===."
-      lines = [
-                z
-              , concat ["| ", k NW, " | ", k N , " | ", k NE, " |"]
-              , z
-              , concat ["| ", k W , " | ", k C , " | ", k E , " |"]
-              , z
-              , concat ["| ", k SW, " | ", k S , " | ", k SE, " |"]
-              , z
-              ]
-  in forM_ lines putStrLn
+      each = [
+               z
+             , concat ["| ", k NW, " | ", k N , " | ", k NE, " |"]
+             , z
+             , concat ["| ", k W , " | ", k C , " | ", k E , " |"]
+             , z
+             , concat ["| ", k SW, " | ", k S , " | ", k SE, " |"]
+             , z
+             ]
+  in forM_ each putStrLn
 
 -- | Functions that work on boards that are in play or have completed.
 --
@@ -335,6 +335,9 @@ instance BoardLike EmptyBoard where
   printBoard _ =
     printEachPosition (pos M.empty " ")
 
+-- |
+--
+-- prop> whoseTurn (b :: Board) /= whoseNotTurn b
 instance BoardLike Board where
   whoseTurn (Board [] _) =
     player1
@@ -393,8 +396,8 @@ pos ::
   -> String
   -> k
   -> String
-pos m empty p =
-  maybe empty (return . toSymbol) (p `M.lookup` m)
+pos m e p =
+  maybe e (return . toSymbol) (p `M.lookup` m)
 
 showPositionMap ::
   M.Map Position Player

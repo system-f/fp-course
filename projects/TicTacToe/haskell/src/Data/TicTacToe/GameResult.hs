@@ -31,17 +31,23 @@ data GameResult =
   deriving (Eq, Show)
 
 -- | Fold a game result.
+--
+-- prop> gameResult win draw r == r
 gameResult ::
   (Player -> x) -- ^ If either of the players won.
   -> x -- ^ If the game was a draw.
   -> GameResult -- ^ The game result to fold.
   -> x
-gameResult win _    (Win p) =
-  win p
-gameResult _   draw Draw    =
-  draw
+gameResult w _    (Win p) =
+  w p
+gameResult _   d Draw    =
+  d
 
 -- | Fold a game result.
+--
+-- prop> playerGameResult player1Wins player2Wins draw r == r
+--
+-- prop> playerGameResult isPlayer1Wins isPlayer2Wins isDraw p p
 playerGameResult ::
   x -- ^ If player 1 won.
   -> x -- ^ If player 2 won.

@@ -17,6 +17,9 @@ data Position =
   | SE -- ^ South-east (bottom right).
   deriving (Eq, Ord, Enum, Bounded)
 
+-- |
+--
+-- prop> length (show p) == 2
 instance Show Position where
   show NW = "NW"
   show N  = "N "

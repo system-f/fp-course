@@ -26,6 +26,8 @@ instance Show Player where
   show Player2 = "Player 2"
 
 -- | Returns whether or not the player is player 1.
+--
+-- prop> isPlayer1 p /= isPlayer2 p
 isPlayer1 ::
   Player ->
   Bool
@@ -54,6 +56,8 @@ player2 =
   Player2
 
 -- | Folds a player.
+--
+-- prop> player player1 player2 p == p
 player ::
   x -- ^ If player 1.
   -> x -- ^ If player 2.
@@ -65,6 +69,8 @@ player _ x Player2 =
   x
 
 -- | Switches a player from player 1 to player 2 or vice versa.
+--
+-- prop> (alternate p /= p) && (alternate (alternate p) == p)
 alternate ::
   Player -- ^ The player to alternate.
   -> Player

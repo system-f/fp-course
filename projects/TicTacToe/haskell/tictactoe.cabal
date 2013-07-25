@@ -1,5 +1,5 @@
-name:               course
-version:            0.0.7
+name:               tictactoe
+version:            0.0.3
 license:            BSD3
 license-File:       etc/LICENCE
 author:             Tony Morris <tmorris@tmorris.net>
@@ -8,15 +8,13 @@ copyright:          Copyright (C) 2010-2013 Tony Morris
 copyright:          Copyright (C) 2012,2013 National ICT Australia Limited 2012, 2013
 copyright:          Copyright (C) 2012      James Earl Douglas
 copyright:          Copyright (C) 2012      Ben Sinclair
-synopsis:           Source code for a functional programming course
+synopsis:           A model of the game of Tic-Tac-Toe
 category:           Education
-description:        Source code for a course in functional programming using Haskell
+description:        A model of the game of Tic-Tac-Toe enforcing game properties with types
 homepage:           https://github.com/NICTA/course
 bug-reports:        https://github.com/NICTA/course/issues
 cabal-version:      >= 1.10
 build-type:         Custom
-extra-source-files: etc/CONTRIBUTORS,
-                    etc/CREDITS
 
 source-repository   head
   type:             git
@@ -31,39 +29,18 @@ library
   build-depends:    base < 5 && >= 4
                     , HUnit
                     , containers
-                    , array
 
   ghc-options:      -Wall
-                    -fno-warn-unused-imports
-                    -fno-warn-unused-binds
-                    -fno-warn-unused-do-bind
-                    -fno-warn-type-defaults
 
   hs-source-dirs:   src
 
-  exposed-modules:  Course
-                    Algorithm.Anagrams
-                    Algorithm.Cheque
-                    Algorithm.EditDistance
-                    Algorithm.FastAnagrams
-                    Intro.Id
-                    Intro.Optional
-                    Intro.Validation
-                    IO.Interactive
-                    Monad.Compose
-                    Monad.Fuunctor
-                    Monad.Moonad
-                    Monad.State
-                    Monad.StateT
-                    Parser.JsonParser
-                    Parser.JsonValue
-                    Parser.MoreParser
-                    Parser.Parser
-                    Parser.Person
-                    Structure.BKTree
-                    Structure.List
-                    Structure.ListZipper
-                    Structure.MetricSpace
+  exposed-modules:
+                    Data.TicTacToe
+                    , Data.TicTacToe.Board
+                    , Data.TicTacToe.Position
+                    , Data.TicTacToe.Player
+                    , Data.TicTacToe.GameResult
+                    , Data.TicTacToe.Interact
 
 test-suite          doctests
   type:
