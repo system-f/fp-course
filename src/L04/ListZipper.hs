@@ -385,17 +385,20 @@ moveRightN =
 -- | Move the focus left the given number of positions. If the value is negative, move right instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
 --
--- >>> moveLeftN 2 (ListZipper [3,2,1] 4 [5,6,7])
--- [1]⋙2⋘[3,4,5,6,7]
+-- >>> moveLeftN' 4 (ListZipper [3,2,1] 4 [5,6,7])
+-- Left 3
 --
--- >>> moveLeftN 4 (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- >>> moveLeftN' 1 (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1,2]⋙3⋘[4,5,6,7]
 --
--- >>> moveLeftN (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5]⋙6⋘[7]
+-- >>> moveLeftN' 0 (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1,2,3]⋙4⋘[5,6,7]
 --
--- >>> moveLeftN (-4) (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- >>> moveLeftN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1,2,3,4,5]⋙6⋘[7]
+--
+-- >>> moveLeftN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
+-- Left 3
 moveLeftN' ::
   ListZipper' f =>
   Int
@@ -409,17 +412,20 @@ moveLeftN' =
 -- | Move the focus right the given number of positions. If the value is negative, move left instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
 --
--- >>> moveRightN 2 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5]⋙6⋘[7]
+-- >>> moveRightN' 4 (ListZipper [3,2,1] 4 [5,6,7])
+-- Left 3
 --
--- >>> moveRightN 4 (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- >>> moveRightN' 1 (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1,2,3,4]⋙5⋘[6,7]
 --
--- >>> moveRightN (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- [1]⋙2⋘[3,4,5,6,7]
+-- >>> moveRightN' 0 (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1,2,3]⋙4⋘[5,6,7]
 --
--- >>> moveRightN (-4) (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- >>> moveRightN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
+-- Right [1]⋙2⋘[3,4,5,6,7]
+--
+-- >>> moveRightN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
+-- Left 3
 moveRightN' ::
   ListZipper' f =>
   Int
