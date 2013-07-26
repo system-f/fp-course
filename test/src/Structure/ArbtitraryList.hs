@@ -1,4 +1,4 @@
-module Structure.List.Arbitrary where
+module Structure.ArbitraryList where
 
 import Structure.List
 import Test.QuickCheck

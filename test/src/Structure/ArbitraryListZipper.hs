@@ -1,4 +1,4 @@
-module Structure.ListZipper.Arbitrary where
+module Structure.ArbitraryListZipper where
 
 import Structure.ListZipper
 import Test.QuickCheck

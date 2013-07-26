@@ -1,4 +1,4 @@
-module Intro.Validation.Arbitrary where
+module Intro.ArbitraryValidation where
 
 import Intro.Validation
 import Test.QuickCheck
