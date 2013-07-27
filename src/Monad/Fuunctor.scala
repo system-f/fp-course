@@ -18,7 +18,7 @@ object Fuunctor {
   implicit val IdFuunctor: Fuunctor[Id] =
     new Fuunctor[Id] {
       def fmaap[A, B](f: A => B) =
-        _ map f
+        sys.error("todo")
     }
 
   // Exercise 2
@@ -26,7 +26,7 @@ object Fuunctor {
   implicit val ListFuunctor: Fuunctor[List] =
     new Fuunctor[List] {
       def fmaap[A, B](f: A => B) =
-        _ map f
+        sys.error("todo")
     }
 
   // Exercise 3
@@ -34,7 +34,7 @@ object Fuunctor {
   implicit val OptionalFuunctor: Fuunctor[Optional] =
     new Fuunctor[Optional] {
       def fmaap[A, B](f: A => B) =
-        _ map f
+        sys.error("todo")
     }
 
   // Exercise 4
@@ -42,7 +42,7 @@ object Fuunctor {
   implicit def Function1Fuunctor[T]: Fuunctor[({type l[a] = T => a})#l] =
     new Fuunctor[({type l[a] = T => a})#l] {
       def fmaap[A, B](f: A => B) =
-        _ andThen f
+        sys.error("todo")
     }
 
   ///////////////////////

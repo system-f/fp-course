@@ -21,18 +21,18 @@ newtype StateT s f a =
 -- Relative Difficulty: 2
 -- | Implement the `Fuunctor` instance for @StateT s f@ given a @Fuunctor f@.
 instance Fuunctor f => Fuunctor (StateT s f) where
-  fmaap f (StateT k) =
-    StateT (fmaap (\(a, t) -> (f a, t)) . k)
+  fmaap =
+    error "todo"
 
 -- Exercise 2
 -- Relative Difficulty: 5
 -- | Implement the `Moonad` instance for @StateT s g@ given a @Moonad f@.
 -- Make sure the state value is passed through in `bind`.
 instance Moonad f => Moonad (StateT s f) where
-  bind f (StateT k) =
-    StateT (bind (\(a, t) -> runStateT (f a) t) . k)
-  reeturn a =
-    StateT (\s -> reeturn (a, s))
+  bind =
+    error "todo"
+  reeturn =
+    error "todo"
 
 -- | A `State'` is `StateT` specialised to the `Id` functor.
 type State' s a =
@@ -44,8 +44,8 @@ type State' s a =
 state' ::
   (s -> (a, s))
   -> State' s a
-state' k =
-  StateT (Id . k)
+state' =
+  error "todo"
 
 -- Exercise 4
 -- Relative Difficulty: 1
@@ -54,8 +54,8 @@ runState' ::
   State' s a
   -> s
   -> (a, s)
-runState' (StateT k) =
-  runId . k
+runState' =
+  error "todo"
 
 -- Exercise 5
 -- Relative Difficulty: 2
@@ -65,8 +65,8 @@ execT ::
   StateT s f a
   -> s
   -> f s
-execT (StateT k) =
-  fmaap snd . k
+execT =
+  error "todo"
 
 -- Exercise 6
 -- Relative Difficulty: 1
@@ -75,8 +75,8 @@ exec' ::
   State' s a
   -> s
   -> s
-exec' t =
-  runId . execT t
+exec' =
+  error "todo"
 
 -- Exercise 7
 -- Relative Difficulty: 2
@@ -86,8 +86,8 @@ evalT ::
   StateT s f a
   -> s
   -> f a
-evalT (StateT k) =
-  fmaap fst . k
+evalT =
+  error "todo"
 
 -- Exercise 8
 -- Relative Difficulty: 1
@@ -96,8 +96,8 @@ eval' ::
   State' s a
   -> s
   -> a
-eval' t =
-  runId . evalT t
+eval' =
+  error "todo"
 
 -- Exercise 9
 -- Relative Difficulty: 2
@@ -106,7 +106,7 @@ getT ::
   Moonad f =>
   StateT s f s
 getT =
-  StateT (\s -> reeturn (s, s))
+  error "todo"
 
 -- Exercise 10
 -- Relative Difficulty: 2
@@ -116,7 +116,7 @@ putT ::
   s
   -> StateT s f ()
 putT =
-  StateT . const . reeturn . (,) ()
+  error "todo"
 
 -- Exercise 11
 -- Relative Difficulty: 4
@@ -127,8 +127,8 @@ distinct' ::
   (Ord a, Num a) =>
   List a
   -> List a
-distinct' x =
-  eval' (filterM (\a -> state' (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
+distinct' =
+  error "todo"
 
 -- Exercise 12
 -- Relative Difficulty: 5
@@ -141,9 +141,8 @@ distinctF ::
   (Ord a, Num a) =>
   List a
   -> Optional (List a)
-distinctF x =
-  evalT (filterM (\a -> StateT (\s ->
-    if a > 100 then Empty else Full (a `S.notMember` s, a `S.insert` s))) x) S.empty
+distinctF =
+  error "todo"
 
 -- | An `OptionalT` is a functor of an `Optional` value.
 data OptionalT f a =
@@ -156,19 +155,17 @@ data OptionalT f a =
 -- Relative Difficulty: 3
 -- | Implement the `Fuunctor` instance for `OptionalT f` given a Fuunctor f.
 instance Fuunctor f => Fuunctor (OptionalT f) where
-  fmaap f (OptionalT x) =
-    OptionalT (fmaap (fmaap f) x)
+  fmaap =
+    error "todo"
 
 -- Exercise 14
 -- Relative Difficulty: 5
 -- | Implement the `Moonad` instance for `OptionalT f` given a Moonad f.
 instance Moonad f => Moonad (OptionalT f) where
   reeturn =
-    OptionalT . reeturn . reeturn
-  bind f (OptionalT x) =
-    OptionalT (bind (\o -> case o of
-                             Empty -> reeturn Empty
-                             Full a -> runOptionalT (f a)) x)
+    error "todo"
+  bind =
+    error "todo"
 
 -- | A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
 data Logger l a =
@@ -179,8 +176,8 @@ data Logger l a =
 -- Relative Difficulty: 4
 -- | Implement the `Fuunctor` instance for `Logger`.
 instance Fuunctor (Logger l) where
-  fmaap f (Logger l a) =
-    Logger l (f a)
+  fmaap =
+    error "todo"
 
 -- Exercise 16
 -- Relative Difficulty: 5
@@ -188,10 +185,9 @@ instance Fuunctor (Logger l) where
 -- The `bind` implementation must append log values to maintain associativity.
 instance Moonad (Logger l) where
   reeturn =
-    Logger []
-  bind f (Logger l a) =
-    let Logger l' b = f a
-    in Logger (l ++ l') b
+    error "todo"
+  bind =
+    error "todo"
 
 -- Exercise 17
 -- Relative Difficulty: 1
@@ -200,8 +196,8 @@ log1 ::
   l
   -> a
   -> Logger l a
-log1 l =
-  Logger [l]
+log1 =
+  error "todo"
 
 -- Exercise 18
 -- Relative Difficulty: 10
@@ -217,11 +213,5 @@ distinctG ::
   (Integral a, Show a) =>
   List a
   -> Logger String (Optional (List a))
-distinctG x =
-  runOptionalT (evalT (filterM (\a -> StateT (\s ->
-    OptionalT (if a > 100
-                 then
-                   log1 ("aborting > 100: " ++ show a) Empty
-                 else (if even a
-                   then log1 ("even number: " ++ show a)
-                   else reeturn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)
+distinctG =
+  error "todo"

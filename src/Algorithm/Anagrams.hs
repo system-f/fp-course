@@ -29,8 +29,8 @@ anagrams ::
   String
   -> FilePath
   -> IO [String]
-anagrams name =
-  fmap (intersectBy equalIgnoringCase (permutations name) . lines) . readFile
+anagrams =
+  error "todo"
 
 -- Compare two strings for equality, ignoring case
 equalIgnoringCase ::
@@ -38,4 +38,4 @@ equalIgnoringCase ::
   -> String
   -> Bool
 equalIgnoringCase =
-  (==) `on` map toLower
+  error "todo"
