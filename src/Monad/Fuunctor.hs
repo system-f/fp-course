@@ -17,7 +17,7 @@ class Fuunctor f where
 -- Id 3
 instance Fuunctor Id where
   fmaap =
-    error "todo"
+    mapId
 
 -- Exercise 2
 -- Relative Difficulty: 2
@@ -31,7 +31,7 @@ instance Fuunctor Id where
 -- [2,3,4]
 instance Fuunctor List where
   fmaap =
-    error "todo"
+    maap
 
 -- Exercise 3
 -- Relative Difficulty: 2
@@ -45,7 +45,7 @@ instance Fuunctor List where
 -- Full 3
 instance Fuunctor Optional where
   fmaap =
-    error "todo"
+    mapOptional
 
 -- Exercise 4
 -- Relative Difficulty: 3
@@ -55,8 +55,8 @@ instance Fuunctor Optional where
 -- >>> fmaap (+1) (*2) 8
 -- 17
 instance Fuunctor ((->) t) where
-  fmaap =
-    error "todo"
+  fmaap f g =
+    \x -> f (g x)
 
 -- Exercise 5
 -- Relative Difficulty: 2
@@ -67,7 +67,7 @@ instance Fuunctor ((->) t) where
 -- hi"cba"
 instance Fuunctor IO where
   fmaap =
-    error "todo"
+    fmap
 
 -----------------------
 -- SUPPORT LIBRARIES --
