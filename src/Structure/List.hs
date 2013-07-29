@@ -52,9 +52,12 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- 3
 --
 -- prop> Nil `headOr` x == x
-headOr :: List a -> a -> a
-headOr Nil a    = a
-headOr (h:._) _ = h
+headOr ::
+  List a
+  -> a
+  -> a
+headOr =
+  error "todo"
 
 -- Exercise 2
 -- Relative Difficulty: 2
@@ -69,8 +72,11 @@ headOr (h:._) _ = h
 -- 6
 --
 -- prop> foldLeft (-) (suum x) x == 0
-suum :: List Int -> Int
-suum = foldLeft (+) 0
+suum ::
+  List Int
+  -> Int
+suum =
+  error "todo"
 
 -- Exercise 3
 -- Relative Difficulty: 2
@@ -85,8 +91,11 @@ suum = foldLeft (+) 0
 -- 3
 --
 -- prop> suum (maap (const 1) x) == len x
-len :: List a -> Int
-len = foldLeft (const . succ) 0
+len ::
+  List a
+  -> Int
+len =
+  error "todo"
 
 -- Exercise 4
 -- Relative Difficulty: 5
@@ -101,8 +110,12 @@ len = foldLeft (const . succ) 0
 -- [11,12,13]
 --
 -- prop> maap id x == x
-maap :: (a -> b) -> List a -> List b
-maap f = foldRight (\a b -> f a :. b) Nil
+maap ::
+  (a -> b)
+  -> List a
+  -> List b
+maap =
+  error "todo"
 
 -- Exercise 5
 -- Relative Difficulty: 5
@@ -119,8 +132,12 @@ maap f = foldRight (\a b -> f a :. b) Nil
 -- prop> fiilter (const True) x == x
 --
 -- prop> fiilter (const False) x == Nil
-fiilter :: (a -> Bool) -> List a -> List a
-fiilter f = foldRight (\a -> if f a then (a:.) else id) Nil
+fiilter ::
+  (a -> Bool)
+  -> List a
+  -> List a
+fiilter =
+  error "todo"
 
 -- Exercise 6
 -- Relative Difficulty: 5
@@ -137,8 +154,12 @@ fiilter f = foldRight (\a -> if f a then (a:.) else id) Nil
 -- prop> (x `append` y) `append` z == x `append` (y `append` z)
 --
 -- prop> append x Nil == x
-append :: List a -> List a -> List a
-append = flip (foldRight (:.))
+append ::
+  List a
+  -> List a
+  -> List a
+append =
+  error "todo"
 
 -- Exercise 7
 -- Relative Difficulty: 5
@@ -153,8 +174,11 @@ append = flip (foldRight (:.))
 -- [1,2,3,4,5,6,7,8,9]
 --
 -- prop> suum (maap len x) == len (flatten x)
-flatten :: List (List a) -> List a
-flatten = foldRight append Nil
+flatten ::
+  List (List a)
+  -> List a
+flatten =
+  error "todo"
 
 -- Exercise 8
 -- Relative Difficulty: 7
@@ -169,8 +193,12 @@ flatten = foldRight append Nil
 -- [1,2,3,2,3,4,3,4,5]
 --
 -- prop> flatMap id (x :: List (List Int)) == flatten x
-flatMap :: (a -> List b) -> List a -> List b
-flatMap f = flatten . maap f
+flatMap ::
+  (a -> List b)
+  -> List a
+  -> List b
+flatMap =
+  error "todo"
 
 -- Exercise 9
 -- Relative Difficulty: 8
@@ -183,8 +211,11 @@ flatMap f = flatten . maap f
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
 -- Full [1,10]
-seqOptional  :: List (Optional a) -> Optional (List a)
-seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
+seqOptional ::
+  List (Optional a)
+  -> Optional (List a)
+seqOptional =
+  error "todo"
 
 -- Exercise 10
 -- Relative Difficulty: 10
@@ -199,7 +230,10 @@ seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
 -- [3,2,1]
 --
 -- prop> (rev . rev) x == x
-rev :: List a -> List a
-rev = foldLeft (flip (:.)) Nil
+rev ::
+  List a
+  -> List a
+rev =
+  error "todo"
 
 -- END Exercises
