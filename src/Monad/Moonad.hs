@@ -31,8 +31,8 @@ class Moonad m where
     (a -> b)
     -> m a
     -> m b
-  fmaap' =
-    error "todo"
+  fmaap' f =
+    bind (reeturn . f)
 
 -- Exercise 7
 -- Relative Difficulty: 1
@@ -44,10 +44,10 @@ class Moonad m where
 --
 -- prop> reeturn x == Id x
 instance Moonad Id where
-  bind =
-    error "todo"
+  bind f (Id a) =
+    f a
   reeturn =
-    error "todo"
+    Id
 
 -- Exercise 8
 -- Relative Difficulty: 2
@@ -60,9 +60,9 @@ instance Moonad Id where
 -- prop> reeturn x == x :. Nil
 instance Moonad List where
   bind =
-    error "todo"
+    flatMap
   reeturn =
-    error "todo"
+    (:. Nil)
 
 -- Exercise 9
 -- Relative Difficulty: 2
@@ -75,9 +75,9 @@ instance Moonad List where
 -- prop> reeturn x == Full x
 instance Moonad Optional where
   bind =
-    error "todo"
+    flip bindOptional
   reeturn =
-    error "todo"
+    Full
 
 -- Exercise 10
 -- Relative Difficulty: 3
@@ -89,10 +89,10 @@ instance Moonad Optional where
 --
 -- prop> reeturn x y == x
 instance Moonad ((->) t) where
-  bind =
-    error "todo"
+  bind f g x =
+    f (g x) x
   reeturn =
-    error "todo"
+    const
 
 -- Exercise 11
 -- Relative Difficulty: 2
@@ -102,9 +102,9 @@ instance Moonad ((->) t) where
 -- /Tip:/ Use standard library functions. This is not cheating.
 instance Moonad IO where
   bind =
-    error "todo"
+    (=<<)
   reeturn =
-    error "todo"
+    return
 
 -- Exercise 12
 -- Relative Difficulty: 2
@@ -127,7 +127,7 @@ flaatten ::
   m (m a)
   -> m a
 flaatten =
-  error "todo"
+  bind id
 
 -- Exercise 13
 -- Relative Difficulty: 10
@@ -159,8 +159,8 @@ apply ::
   m (a -> b)
   -> m a
   -> m b
-apply =
-  error "todo"
+apply f a =
+  bind (`fmaap'` a) f
 
 -- Exercise 14
 -- Relative Difficulty: 6
@@ -191,8 +191,8 @@ lift2 ::
   -> m a
   -> m b
   -> m c
-lift2 =
-  error "todo"
+lift2 f =
+  apply . fmaap' f
 
 -- Exercise 15
 -- Relative Difficulty: 6
@@ -227,8 +227,8 @@ lift3 ::
   -> m b
   -> m c
   -> m d
-lift3 =
-  error "todo"
+lift3 f a =
+  apply . apply (fmaap' f a)
 
 -- Exercise 16
 -- Relative Difficulty: 6
@@ -264,8 +264,8 @@ lift4 ::
   -> m c
   -> m d
   -> m e
-lift4 =
-  error "todo"
+lift4 f a b =
+  apply . apply (apply (fmaap' f a) b)
 
 -- Exercise 17
 -- Relative Difficulty: 3
@@ -291,7 +291,7 @@ seequence ::
   [m a]
   -> m [a]
 seequence =
-  error "todo"
+  foldr (lift2 (:)) (reeturn [])
 
 -- Exercise 18
 -- Relative Difficulty: 3
@@ -317,8 +317,8 @@ traaverse ::
   (a -> m b)
   -> [a]
   -> m [b]
-traaverse =
-  error "todo"
+traaverse f =
+  seequence . fmaap' f
 
 -- Exercise 19
 -- Relative Difficulty: 4
@@ -341,8 +341,8 @@ reeplicate ::
   Int
   -> m a
   -> m [a]
-reeplicate =
-  error "todo"
+reeplicate n =
+  seequence . replicate n
 
 -- Exercise 20
 -- Relative Difficulty: 9
@@ -368,8 +368,8 @@ filtering ::
   (a -> m Bool)
   -> [a]
   -> m [a]
-filtering =
-  error "todo"
+filtering p =
+  foldr (\a b -> bind (\q -> if q then fmaap' (a:) b else b) (p a)) (reeturn [])
 
 -----------------------
 -- SUPPORT LIBRARIES --

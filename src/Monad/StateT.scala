@@ -16,13 +16,13 @@ case class StateT[S, F[_], A](run: S => F[(A, S)]) {
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting state.
   def exec(s: S)(implicit F: Fuunctor[F]): F[S] =
-    sys.error("todo")
+    F(run(s))(_._2)
 
   // Exercise 7
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting value.
   def eval(s: S)(implicit F: Fuunctor[F]): F[A] =
-    sys.error("todo")
+    F(run(s))(_._1)
 }
 
 object StateT {
@@ -32,7 +32,9 @@ object StateT {
   implicit def StateTFuunctor[S, F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = StateT[S, F, a]})#l] =
     new Fuunctor[({type l[a] = StateT[S, F, a]})#l] {
       def fmaap[A, B](f: A => B) =
-        sys.error("todo")
+        q => StateT(s => F(q run s){
+          case (a, t) => (f(a), t)
+        })
     }
 
   // Exercise 2
@@ -42,58 +44,60 @@ object StateT {
   implicit def StateTMoonad[S, F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = StateT[S, F, a]})#l] =
     new Moonad[({type l[a] = StateT[S, F, a]})#l] {
       def bind[A, B](f: A => StateT[S, F, B]) =
-        sys.error("todo")
+        q => StateT(s => M.bindf(q run s){
+          case (a, t) => f(a) run t
+        })
 
       def reeturn[A] =
-        sys.error("todo")
+        a => StateT(s => M.reeturn((a, s)))
     }
 
   // A `State'` is `StateT` specialised to the `Id` functor.
   type State[S, A] =
-    StateT[S, Id, A]
+  StateT[S, Id, A]
 
   // Exercise 3
   // Relative Difficulty: 1
   // Provide a constructor for `State` values.
   def state[S, A](k: S => (A, S)): State[S, A] =
-    sys.error("todo")
+    StateT(s => Id(k(s)))
 
   // Exercise 4
   // Relative Difficulty: 1
   // Provide an unwrapper for `State` values.
   def runState[S, A](x: State[S, A]): S => (A, S) =
-    sys.error("todo")
+    s => (x run s).a
 
   // Exercise 6
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting state.
   def exec[S, A](x: State[S, A]): S => S =
-    sys.error("todo")
+    runState(x)(_)._2
 
   // Exercise 8
   // Relative Difficulty: 1
   // Run the `State` seeded with `s` and retrieve the resulting value.
   def eval[S, A](x: State[S, A]): S => A =
-    sys.error("todo")
+    runState(x)(_)._1
 
   // Exercise 9
   // Relative Difficulty: 2
   // A `StateT` where the state also distributes into the produced value.
   def get[S, F[_]](implicit M: Moonad[F]): StateT[S, F, S] =
-    sys.error("todo")
+    StateT(s => M.reeturn((s, s)))
 
   // Exercise 10
   // Relative Difficulty: 2
   // A `StateT` where the resulting state is seeded with the given value.
   def put[S, F[_]](s: S)(implicit M: Moonad[F]): StateT[S, F, Unit] =
-    sys.error("todo")
+    StateT(_ => M.reeturn(((), s)))
 
   // Exercise 11
   // Relative Difficulty: 4
   // Remove all duplicate elements in a `List`.
   // Tip: Use filterM and State with a Set.
   def distinct(x: Stream[Int]): Stream[Int] =
-    sys.error("todo")
+    eval(filterM[({type l[a] = State[Set[Int], a]})#l, Int](a => state(s => (!(s contains a), s + a)), x))(Set())
 
   // Exercise 12
   // Relative Difficulty: 5
@@ -102,7 +106,8 @@ object StateT {
   // abort the computation by producing `Empty`.
   // Tip: Use filterM and StateT over Optional with a Set.
   def distinctF(x: Stream[Int]): Optional[Stream[Int]] =
-    sys.error("todo")
+    filterM[({type l[a] = StateT[Set[Int], Optional, a]})#l, Int](a => StateT(s =>
+      if(a > 100) Empty[(Boolean, Set[Int])] else Full[(Boolean, Set[Int])]((!(s contains a), s + a))), x) eval Set()
 
   // An `OptionalT` is a functor of an `Optional` value.
   case class OptionalT[F[_], A](run: F[Optional[A]])
@@ -112,13 +117,25 @@ object StateT {
     // Relative Difficulty: 3
     // Implement the `Fuunctor` instance for `OptionalT[F, _]` given a Fuunctor[F].
     implicit def OptionalTFuunctor[F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = OptionalT[F, a]})#l] =
-      sys.error("todo")
+      new Fuunctor[({type l[a] = OptionalT[F, a]})#l] {
+        def fmaap[A, B](f: A => B) =
+          q => OptionalT(F(q.run)(_ map f))
+      }
 
     // Exercise 14
     // Relative Difficulty: 5
     // Implement the `Moonad` instance for `OptionalT[F, _]` given a Moonad[F].
     implicit def OptionalTMoonad[F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = OptionalT[F, a]})#l] =
-      sys.error("todo")
+      new Moonad[({type l[a] = OptionalT[F, a]})#l] {
+        def bind[A, B](f: A => OptionalT[F, B]) =
+          q => OptionalT(M.bindf(q.run) {
+            case Empty() => M.reeturn(Empty())
+            case Full(a) => f(a).run
+          })
+
+        def reeturn[A] =
+          a => OptionalT(M.reeturn(Full(a)))
+      }
   }
 
   // A `Logger` is a pair of a list of log values (`List[L]`) and an arbitrary value (`A`).
@@ -129,20 +146,32 @@ object StateT {
     // Relative Difficulty: 4
     // Implement the `Fuunctor` instance for `Logger`.
     implicit def LoggerFuunctor[L]: Fuunctor[({type l[a] = Logger[L, a]})#l] =
-      sys.error("todo")
+      new Fuunctor[({type l[a] = Logger[L, a]})#l] {
+        def fmaap[A, B](f: A => B) =
+          q => Logger(q.log, f(q.value))
+      }
 
     // Exercise 16
     // Relative Difficulty: 5
     // Implement the `Moonad` instance for `Logger`.
     // The `bind` implementation must append log values to maintain associativity.
     implicit def LoggerMoonad[L]: Moonad[({type l[a] = Logger[L, a]})#l] =
-      sys.error("todo")
+      new Moonad[({type l[a] = Logger[L, a]})#l] {
+        def bind[A, B](f: A => Logger[L, B]) =
+          q => {
+            val Logger(ll, b) = f(q.value)
+            Logger(q.log append ll, b)
+          }
+
+        def reeturn[A] =
+          Logger(Nil(), _)
+      }
 
     // Exercise 17
     // Relative Difficulty: 1
     // A utility function for producing a `Logger` with one log value.
     def log1[L, A](l: L, a: A): Logger[L, A] =
-      sys.error("todo")
+      Logger(l |: Nil(), a)
   }
 
   // This data structure is required to complete Exercise 18.
@@ -203,5 +232,15 @@ object StateT {
   // Other numbers produce no log message.
   // Tip: Use filterM and StateT over (OptionalT over Logger) with a Set.
   def distinctG(x: Stream[Int]): Logger[String, Optional[Stream[Int]]] =
-    sys.error("todo")
+    filterM[({type l[a] = StateTOptionalTLogger[Set[Int], String, a]})#l, Int](a =>
+      StateTOptionalTLogger(s => if(a > 100)
+        Logger.log1("aborting > 100: " + a, Empty())
+      else {
+        val r = Full[(Boolean, Set[Int])]((!(s contains a), s + a))
+        if(a % 2 == 0)
+          Logger.log1("even number: " + a, r)
+        else
+          Logger(Nil(), r)
+      }), x) eval Set()
+
 }

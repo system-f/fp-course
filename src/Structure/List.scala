@@ -33,7 +33,10 @@ sealed trait List[A] {
   // Elegance: 0.5 marks
   // Total: 3
   def headOr(a: => A): A =
-    sys.error("todo")
+    this match {
+      case Nil() => a
+      case h|:_ => h
+    }
 
   // Exercise 3
   // Relative Difficulty: 2
@@ -42,7 +45,7 @@ sealed trait List[A] {
   // Elegance: 0.5 marks
   // Total: 4
   def len: Int =
-    sys.error("todo")
+    foldLeft[Int](a => _ => a + 1, 0)
 
   // Exercise 4
   // Relative Difficulty: 5
@@ -51,7 +54,7 @@ sealed trait List[A] {
   // Elegance: 1.5 marks
   // Total: 7
   def map[B](f: A => B): List[B] =
-    sys.error("todo")
+    foldRight[List[B]](a => f(a) |: _, Nil())
 
   // Exercise 5
   // Relative Difficulty: 5
@@ -60,7 +63,7 @@ sealed trait List[A] {
   // Elegance: 1 mark
   // Total: 7
   def filter(f: A => Boolean): List[A] =
-    sys.error("todo")
+    foldRight[List[A]](a => if(f(a)) a |: _ else identity, Nil())
 
   // Exercise 6
   // Relative Difficulty: 5
@@ -69,7 +72,7 @@ sealed trait List[A] {
   // Elegance: 1 mark
   // Total: 7
   def append(x: List[A]): List[A] =
-    sys.error("todo")
+    x.foldRight[List[A]](a => a |: _, this)
 
   // Exercise 8
   // Relative Difficulty: 7
@@ -78,7 +81,7 @@ sealed trait List[A] {
   // Elegance: 1.5 mark
   // Total: 8
   def flatMap[B](f: A => List[B]): List[B] =
-    sys.error("todo")
+    List.flatten(map(f))
 
   // Exercise 10
   // Relative Difficulty: 10
@@ -87,7 +90,7 @@ sealed trait List[A] {
   // Elegance: 2.5 marks
   // Total: 10
   def rev: List[A] =
-    sys.error("todo")
+    foldLeft[List[A]](a => _ |: a, Nil())
 
   override def toString: String =
     foldRight[scala.List[A]](a => a :: _, scala.Nil).toString
@@ -103,7 +106,7 @@ object List {
   // Elegance: 0.5 marks
   // Total: 4
   def sum(x: List[Int]): Int =
-    sys.error("todo")
+    x.foldLeft[Int](a => a + _, 0)
 
   // Exercise 7
   // Relative Difficulty: 5
@@ -112,7 +115,7 @@ object List {
   // Elegance: 1 mark
   // Total: 7
   def flatten[A](x: List[List[A]]): List[A] =
-    sys.error("todo")
+    x.foldRight[List[A]](a => a append _, Nil())
 
   // Exercise 9
   // Relative Difficulty: 8
@@ -121,7 +124,7 @@ object List {
   // Elegance: 3.5 marks
   // Total: 9
   def seqf[A, B](x: List[A => B]): A => List[B] =
-    sys.error("todo")
+    x.foldRight[A => List[B]](f => g => a => f(a) |: g(a), _ => Nil())
 
   ///////////////////////
   // SUPPORT LIBRARIES //
