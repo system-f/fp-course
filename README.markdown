@@ -46,7 +46,7 @@ instructions are not contained herein.
   * What is the structure of ____ ?
 
   They are all answerable with the `:info` command. For example, suppose you
-  have the question, "*What does the `swiggletwoop` function mean?*" You may
+  have the question, "What does the `swiggletwoop` function mean?" You may
   answer this at GHCi with:
 
   `> :info swiggletwoop`
