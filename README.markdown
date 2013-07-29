@@ -84,7 +84,7 @@ instructions are not contained herein.
    `> readFile "/etc/pas"`
 
    Now hit the TAB key. If there is only one existing filename on a path that
-   begins with `/etc/pas`, that that name will auto-complete. Try it.
+   begins with `/etc/pas`, then that name will auto-complete. Try it.
 
    If there is more than one identifier that can complete, hit TAB twice
    quickly. This will present you with your options to complete.
