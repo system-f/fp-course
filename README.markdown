@@ -136,6 +136,7 @@ After this, the following progression of modules is recommended:
 * `Parser.MoreParser`
 * `Parser.JsonParser`
 * `IO.Interactive`
+* `Structure.Lens`
 * `Algorithm.Anagrams`
 * `Algorithm.FastAnagrams`
 * `Algorithm.EditDistance`

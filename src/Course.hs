@@ -19,6 +19,7 @@ module Course
 , module Parser.Parser
 , module Parser.Person
 , module Structure.BKTree
+, module Structure.Lens
 , module Structure.List
 , module Structure.ListZipper
 , module Structure.MetricSpace
@@ -43,6 +44,7 @@ import Parser.MoreParser
 import Parser.Parser
 import Parser.Person
 import Structure.BKTree
+import Structure.Lens
 import Structure.List
 import Structure.ListZipper
 import Structure.MetricSpace
