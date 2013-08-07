@@ -61,6 +61,7 @@ library
                     Parser.Parser
                     Parser.Person
                     Structure.BKTree
+                    Structure.Lens
                     Structure.List
                     Structure.ListZipper
                     Structure.MetricSpace
