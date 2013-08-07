@@ -133,8 +133,8 @@ getL ::
   Lens a b
   -> a
   -> b
-getL (Lens _ g) =
-  g
+getL =
+  error "todo"
 
 -- Exercise 2
 --
@@ -147,8 +147,8 @@ setL ::
   -> a
   -> b
   -> a
-setL (Lens s _) =
-  s
+setL =
+  error "todo"
 
 -- Exercise 3
 --
@@ -162,7 +162,7 @@ setL (Lens s _) =
 fstL ::
   Lens (a, b) a
 fstL =
-  Lens (\(_, b) a -> (a, b)) fst
+  error "todo"
 
 -- Exercise 4
 --
@@ -176,7 +176,7 @@ fstL =
 sndL ::
   Lens (a, b) b
 sndL =
-  Lens (\(a, _) b -> (a, b)) snd
+  error "todo"
 
 -- Exercise 5
 --
@@ -192,8 +192,8 @@ sndL =
   Lens a b
   -> Lens b c
   -> Lens a c
-Lens s1 g1 .@ Lens s2 g2 =
-  Lens (\a -> s1 a . s2 (g1 a)) (g2 . g1)
+(.@) =
+  error "todo"
 
 -- Exercise 6
 --
@@ -206,7 +206,7 @@ Lens s1 g1 .@ Lens s2 g2 =
 identityL ::
   Lens a a
 identityL =
-  Lens (const id) id
+  error "todo"
 
 -- Exercise 7
 --
@@ -221,8 +221,8 @@ modify ::
   -> (b -> b)
   -> a
   -> a
-modify (Lens s g) f a =
-  s a (f (g a))
+modify =
+  error "todo"
 
 -- Exercise 8
 --
@@ -239,8 +239,8 @@ modify (Lens s g) f a =
   -> (b -> b)
   -> a
   -> a
-l1 ..@ l2 =
-  modify l1 . fmap . modify l2
+(..@) =
+  error "todo"
 
 -- Exercise 9
 --
@@ -255,8 +255,8 @@ iso ::
   (a -> b)
   -> (b -> a)
   -> Lens a b
-iso f g =
-  Lens (const g) f
+iso =
+  error "todo"
 
 -- Exercise 10
 --
@@ -277,8 +277,8 @@ iso f g =
   Lens a c
   -> Lens b c
   -> Lens (Either a b) c
-Lens s1 g1 |.| Lens s2 g2 =
-  Lens (\e c -> either (\a -> Left (s1 a c)) (\b -> Right (s2 b c)) e) (either g1 g2)
+(|.|) =
+  error "todo"
 
 -- Exercise 11
 --
@@ -293,8 +293,8 @@ Lens s1 g1 |.| Lens s2 g2 =
   Lens a b
   -> Lens c d
   -> Lens (a, c) (b, d)
-Lens s1 g1 *.* Lens s2 g2 =
-  Lens (\(a, c) (b, d) -> (s1 a b, s2 c d)) (\(a, c) -> (g1 a, g2 c))
+(*.*) =
+  error "todo"
 
 -- Exercise 12
 --
@@ -308,8 +308,8 @@ Lens s1 g1 *.* Lens s2 g2 =
 stateL ::
   Lens a b
   -> State a b
-stateL (Lens _ g) =
-  State (\a -> (g a, a))
+stateL =
+  error "todo"
 
 -- Exercise 13
 --
@@ -321,7 +321,7 @@ updateSuburbs2 ::
   -> Company
   -> Company
 updateSuburbs2 =
-  companyEmployees ..@ employeeAddress .@ suburbAddress
+  error "todo"
 
 -- | A store is the pair of a function from field to target and a field.
 data Store a b =
@@ -348,20 +348,20 @@ strPut (Store s _) =
 --
 -- prop> strPos (fmaap (+10) (Store (*2) x)) == (x :: Int)
 instance Fuunctor (Store a) where
-  fmaap f (Store s g) =
-    Store (f . s) g
+  fmaap =
+    error "todo"
 
 -- Exercise 15
 -- | Store duplicates.
 instance Extend (Store a) where
-  f <<= Store s g =
-    Store (\k -> f (Store s k)) g
+  (<<=) =
+    error "todo"
 
 -- Exercise 16
 -- | Store is a comonad.
 instance Comonad (Store a) where
-  counit (Store s g) =
-    s g
+  counit =
+    error "todo"
 
 -- | An alternative representation of a lens.
 --
@@ -395,8 +395,8 @@ sgetL ::
   SLens a b
   -> a
   -> b
-sgetL (SLens q) a =
-  let Store _ g = q a in g
+sgetL =
+  error "todo"
 
 -- Exercise 18
 -- | Write the set function for the alternative lens.
@@ -408,8 +408,8 @@ ssetL ::
   -> a
   -> b
   -> a
-ssetL (SLens q) a =
-  let Store s _ = q a in s
+ssetL =
+  error "todo"
 
 -- Exercise 19
 -- | Write the isomorphism between the two lens structures.
@@ -427,10 +427,7 @@ equivalent ::
   , SLens a b -> Lens a b
   )
 equivalent =
-  (
-    \(Lens s g) -> SLens (\a -> Store (s a) (g a))
-  , \(SLens q) -> Lens (\a -> let Store s _ = q a in s) (\a -> let Store _ g = q a in g)
-  )
+  error "todo"
 
 infixr 1 ..@
 
