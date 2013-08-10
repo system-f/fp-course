@@ -56,10 +56,8 @@ headOr ::
   a
   -> List a
   -> a
-headOr a Nil =
-  a
-headOr _ (h:._) =
-  h
+headOr =
+  foldRight const
 
 -- Exercise 2
 -- Relative Difficulty: 2
