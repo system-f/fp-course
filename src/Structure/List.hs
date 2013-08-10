@@ -207,7 +207,7 @@ flatMap =
 -- Elegance: 3.5 marks
 -- Total: 9
 --
--- | Apply a list of functions to a value to a list of results.
+-- | Convert a list of optional values to an optional list of values
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
 -- Full [1,10]
