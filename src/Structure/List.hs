@@ -45,16 +45,16 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- | Returns the head of the list or the given default.
 --
--- >>> headOr (1 :. 2 :. Nil) 3
+-- >>> headOr 3 (1 :. 2 :. Nil)
 -- 1
 --
--- >>> headOr Nil 3
+-- >>> headOr 3 Nil
 -- 3
 --
--- prop> Nil `headOr` x == x
+-- prop> x `headOr` Nil == x
 headOr ::
-  List a
-  -> a
+  a
+  -> List a
   -> a
 headOr =
   error "todo"
