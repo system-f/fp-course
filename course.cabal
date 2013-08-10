@@ -1,7 +1,7 @@
 name:               course
 version:            0.0.7
 license:            BSD3
-license-File:       etc/LICENCE
+license-file:       etc/LICENCE
 author:             Tony Morris <tmorris@tmorris.net>
 maintainer:         Tony Morris
 copyright:          Copyright (C) 2010-2013 Tony Morris
