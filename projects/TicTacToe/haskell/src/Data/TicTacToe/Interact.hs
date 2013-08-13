@@ -111,7 +111,7 @@ printPositions ::
   -> b
   -> IO ()
 printPositions k b =
-  printEachPosition (\p -> maybe (k p) (return . toSymbol) (b `playerAt` p))
+  putStrLn (showEachPosition (\p -> maybe (k p) (return . toSymbol) (b `playerAt` p)))
 
 fromPosition ::
   Position

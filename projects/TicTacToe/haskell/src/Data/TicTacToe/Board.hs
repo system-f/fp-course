@@ -30,10 +30,8 @@ module Data.TicTacToe.Board
 , takenBackBoard
 -- * Operations common to boards in-play and completed
 , BoardLike(..)
-, printBoard
-, printEachPosition
 -- * Debugging
-, hPrintEachPosition
+, showEachPosition
 ) where
 
 import Prelude hiding (any, all, concat, foldr)
@@ -45,7 +43,6 @@ import qualified Data.Set as S
 import Data.Foldable
 import Data.List(intercalate)
 import Data.Maybe
-import System.IO
 
 data EmptyBoard =
   EmptyBoard
@@ -223,12 +220,11 @@ empty ::
 empty =
   EmptyBoard
 
--- | Prints out a board using ASCII notation and substituting the returned string for each position.
-hPrintEachPosition ::
-  Handle
-  -> (Position -> String) -- ^ The function returning the string to substitute each position.
-  -> IO ()
-hPrintEachPosition h k =
+-- | Shows a board using ASCII notation and substituting the returned string for each position.
+showEachPosition ::
+  (Position -> String) -- ^ The function returning the string to substitute each position.
+  -> String
+showEachPosition k =
   let z = ".===.===.===."
       each = [
                z
@@ -239,7 +235,7 @@ hPrintEachPosition h k =
              , concat ["| ", k SW, " | ", k S , " | ", k SE, " |"]
              , z
              ]
-  in forM_ each (hPutStrLn h)
+  in intercalate "\n" each
 
 -- | Functions that work on boards that are in play or have completed.
 --
@@ -317,11 +313,10 @@ class BoardLike b where
   isNotOccupied b p =
     not (isOccupied b p)
 
-  -- | Prints the board to standard output using an ASCII grid representation.
-  hPrintBoard ::
-    Handle
-    -> b
-    -> IO ()
+  -- | Show the board using an ASCII grid representation.
+  showBoard ::
+    b
+    -> String
 
 instance BoardLike EmptyBoard where
   whoseTurn _ =
@@ -345,8 +340,8 @@ instance BoardLike EmptyBoard where
   playerAt _ _ =
     Nothing
 
-  hPrintBoard h _ =
-    hPrintEachPosition h (pos M.empty " ")
+  showBoard _ =
+    showEachPosition (pos M.empty " ")
 
 -- |
 --
@@ -376,8 +371,8 @@ instance BoardLike Board where
   playerAt (Board _ m) p =
     p `M.lookup` m
 
-  hPrintBoard h (Board _ m) =
-    hPrintEachPosition h (pos m " ")
+  showBoard (Board _ m) =
+    showEachPosition (pos m " ")
 
 instance BoardLike FinishedBoard where
   isEmpty (FinishedBoard b _) =
@@ -398,21 +393,8 @@ instance BoardLike FinishedBoard where
   playerAt (FinishedBoard b _) p =
     b `playerAt` p
 
-  hPrintBoard h (FinishedBoard b _) =
-    hPrintBoard h b
-
-printBoard ::
-  BoardLike b =>
-  b
-  -> IO ()
-printBoard =
-  hPrintBoard stdout
-
-printEachPosition ::
-  (Position -> String) -- ^ The function returning the string to substitute each position.
-  -> IO ()
-printEachPosition =
-  hPrintEachPosition stdout
+  showBoard (FinishedBoard b _) =
+    showBoard b
 
 data Unfinished =
   UnfinishedEmpty EmptyBoard
@@ -468,8 +450,8 @@ instance BoardLike Unfinished where
     b `isProperSubboardOf` b'
   playerAt b p =
     unfinished (`playerAt` p) (`playerAt` p) b
-  hPrintBoard h =
-    unfinished (hPrintBoard h) (hPrintBoard h)
+  showBoard =
+    unfinished showBoard showBoard
 
 data Unempty =
   UnemptyBoard Board
@@ -517,8 +499,8 @@ instance BoardLike Unempty where
     b `isProperSubboardOf` b'
   playerAt b p =
     unempty (`playerAt` p) (`playerAt` p) b
-  hPrintBoard h =
-    unempty (hPrintBoard h) (hPrintBoard h)
+  showBoard =
+    unempty showBoard showBoard
 
 -- not exported
 
