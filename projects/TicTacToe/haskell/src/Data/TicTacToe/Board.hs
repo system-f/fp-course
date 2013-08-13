@@ -30,8 +30,9 @@ module Data.TicTacToe.Board
 , takenBackBoard
 -- * Operations common to boards in-play and completed
 , BoardLike(..)
--- * Debugging
+-- * Printing
 , showEachPosition
+, showLinePosition
 ) where
 
 import Prelude hiding (any, all, concat, foldr)
@@ -237,6 +238,21 @@ showEachPosition k =
              ]
   in intercalate "\n" each
 
+showLinePosition ::
+  (Position -> String)
+  -> String
+showLinePosition k =
+  concat ["|", k NW, k N, k NE, "|", k W, k C, k E, "|", k SW, k S, k SE, "|"]
+
+{-
+
+pos ::
+  Ord k =>
+  M.Map k Player
+  -> String
+  -> k
+  -> String
+ -}
 -- | Functions that work on boards that are in play or have completed.
 --
 -- This class specifically does not specify moving on a board, since this is illegal on a completed board.
@@ -318,6 +334,11 @@ class BoardLike b where
     b
     -> String
 
+  -- | Show the board using a single line.
+  showLine ::
+    b
+    -> String
+
 instance BoardLike EmptyBoard where
   whoseTurn _ =
     player1
@@ -342,6 +363,9 @@ instance BoardLike EmptyBoard where
 
   showBoard _ =
     showEachPosition (pos M.empty " ")
+
+  showLine _ =
+    showLinePosition (pos M.empty ".")
 
 -- |
 --
@@ -374,6 +398,9 @@ instance BoardLike Board where
   showBoard (Board _ m) =
     showEachPosition (pos m " ")
 
+  showLine (Board _ m) =
+    showLinePosition (pos m ".")
+
 instance BoardLike FinishedBoard where
   isEmpty (FinishedBoard b _) =
     isEmpty b
@@ -395,6 +422,9 @@ instance BoardLike FinishedBoard where
 
   showBoard (FinishedBoard b _) =
     showBoard b
+
+  showLine (FinishedBoard b _) =
+    showLine b
 
 data Unfinished =
   UnfinishedEmpty EmptyBoard
@@ -428,10 +458,13 @@ unfinished _ g (UnfinishedBoard b) =
 instance BoardLike Unfinished where
   isEmpty =
     unfinished isEmpty isEmpty
+
   occupiedPositions =
     unfinished occupiedPositions occupiedPositions
+
   moves =
     unfinished moves moves
+
   isSubboardOf (UnfinishedEmpty _) (UnfinishedEmpty _) =
     True
   isSubboardOf (UnfinishedEmpty _) (UnfinishedBoard _) =
@@ -440,6 +473,7 @@ instance BoardLike Unfinished where
     False
   isSubboardOf (UnfinishedBoard b) (UnfinishedBoard b') =
     b `isSubboardOf` b'
+
   isProperSubboardOf (UnfinishedEmpty _) (UnfinishedEmpty _) =
     False
   isProperSubboardOf (UnfinishedEmpty _) (UnfinishedBoard _) =
@@ -448,10 +482,15 @@ instance BoardLike Unfinished where
     False
   isProperSubboardOf (UnfinishedBoard b) (UnfinishedBoard b') =
     b `isProperSubboardOf` b'
+
   playerAt b p =
     unfinished (`playerAt` p) (`playerAt` p) b
+
   showBoard =
     unfinished showBoard showBoard
+
+  showLine =
+    unfinished showLine showLine
 
 data Unempty =
   UnemptyBoard Board
@@ -477,10 +516,13 @@ unempty _ g (UnemptyFinished b) =
 instance BoardLike Unempty where
   isEmpty =
     unempty isEmpty isEmpty
+
   occupiedPositions =
     unempty occupiedPositions occupiedPositions
+
   moves =
     unempty moves moves
+
   isSubboardOf (UnemptyBoard b) (UnemptyBoard b') =
     b `isSubboardOf` b'
   isSubboardOf (UnemptyBoard _) (UnemptyFinished _) =
@@ -489,6 +531,7 @@ instance BoardLike Unempty where
     False
   isSubboardOf (UnemptyFinished b) (UnemptyFinished b') =
     b `isSubboardOf` b'
+
   isProperSubboardOf (UnemptyBoard b) (UnemptyBoard b') =
     b `isProperSubboardOf` b'
   isProperSubboardOf (UnemptyBoard _) (UnemptyFinished _) =
@@ -497,10 +540,15 @@ instance BoardLike Unempty where
     False
   isProperSubboardOf (UnemptyFinished b) (UnemptyFinished b') =
     b `isProperSubboardOf` b'
+
   playerAt b p =
     unempty (`playerAt` p) (`playerAt` p) b
+
   showBoard =
     unempty showBoard showBoard
+
+  showLine =
+    unempty showLine showLine
 
 -- not exported
 
