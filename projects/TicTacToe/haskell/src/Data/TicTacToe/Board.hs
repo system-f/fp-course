@@ -9,6 +9,10 @@ module Data.TicTacToe.Board
   EmptyBoard
 , Board
 , FinishedBoard
+, Unfinished(..)
+, unfinished
+, Unempty(..)
+, unempty
 -- * Start new game
 , empty
 -- * Game completed
@@ -43,6 +47,10 @@ import Data.Maybe
 data EmptyBoard =
   EmptyBoard
   deriving Eq
+
+instance Show EmptyBoard where
+  show EmptyBoard =
+    ".=?=.=?=.=?=.=?=.=?=.=?=.=?=.=?=.=?=. [ Player 1 to move ]"
 
 class Move from to | from -> to where
   (-->) ::
@@ -387,6 +395,112 @@ instance BoardLike FinishedBoard where
 
   printBoard (FinishedBoard b _) =
     printBoard b
+
+data Unfinished =
+  UnfinishedEmpty EmptyBoard
+  | UnfinishedBoard Board
+  deriving Eq
+
+instance Show Unfinished where
+  show (UnfinishedEmpty b) =
+    show b
+  show (UnfinishedBoard b) =
+    show b
+
+instance Move Unfinished Unempty where
+  p --> UnfinishedEmpty b =
+    UnemptyBoard (p --> b)
+  p --> UnfinishedBoard b =
+    case p --> b of PositionAlreadyOccupied -> UnemptyBoard b
+                    KeepPlaying b' -> UnemptyBoard b'
+                    GameFinished b' -> UnemptyFinished b'
+
+unfinished ::
+  (EmptyBoard -> a)
+  -> (Board -> a)
+  -> Unfinished
+  -> a
+unfinished f _ (UnfinishedEmpty b) =
+  f b
+unfinished _ g (UnfinishedBoard b) =
+  g b
+
+instance BoardLike Unfinished where
+  isEmpty =
+    unfinished isEmpty isEmpty
+  occupiedPositions =
+    unfinished occupiedPositions occupiedPositions
+  moves =
+    unfinished moves moves
+  isSubboardOf (UnfinishedEmpty _) (UnfinishedEmpty _) =
+    True
+  isSubboardOf (UnfinishedEmpty _) (UnfinishedBoard _) =
+    True
+  isSubboardOf (UnfinishedBoard _) (UnfinishedEmpty _) =
+    False
+  isSubboardOf (UnfinishedBoard b) (UnfinishedBoard b') =
+    b `isSubboardOf` b'
+  isProperSubboardOf (UnfinishedEmpty _) (UnfinishedEmpty _) =
+    False
+  isProperSubboardOf (UnfinishedEmpty _) (UnfinishedBoard _) =
+    True
+  isProperSubboardOf (UnfinishedBoard _) (UnfinishedEmpty _) =
+    False
+  isProperSubboardOf (UnfinishedBoard b) (UnfinishedBoard b') =
+    b `isProperSubboardOf` b'
+  playerAt b p =
+    unfinished (`playerAt` p) (`playerAt` p) b
+  printBoard =
+    unfinished printBoard printBoard
+
+data Unempty =
+  UnemptyBoard Board
+  | UnemptyFinished FinishedBoard
+  deriving Eq
+
+instance Show Unempty where
+  show (UnemptyBoard b) =
+    show b
+  show (UnemptyFinished b) =
+    show b
+
+unempty ::
+  (Board -> a)
+  -> (FinishedBoard -> a)
+  -> Unempty
+  -> a
+unempty f _ (UnemptyBoard b) =
+  f b
+unempty _ g (UnemptyFinished b) =
+  g b
+
+instance BoardLike Unempty where
+  isEmpty =
+    unempty isEmpty isEmpty
+  occupiedPositions =
+    unempty occupiedPositions occupiedPositions
+  moves =
+    unempty moves moves
+  isSubboardOf (UnemptyBoard b) (UnemptyBoard b') =
+    b `isSubboardOf` b'
+  isSubboardOf (UnemptyBoard _) (UnemptyFinished _) =
+    True
+  isSubboardOf (UnemptyFinished _) (UnemptyBoard _) =
+    False
+  isSubboardOf (UnemptyFinished b) (UnemptyFinished b') =
+    b `isSubboardOf` b'
+  isProperSubboardOf (UnemptyBoard b) (UnemptyBoard b') =
+    b `isProperSubboardOf` b'
+  isProperSubboardOf (UnemptyBoard _) (UnemptyFinished _) =
+    False
+  isProperSubboardOf (UnemptyFinished _) (UnemptyBoard _) =
+    False
+  isProperSubboardOf (UnemptyFinished b) (UnemptyFinished b') =
+    b `isProperSubboardOf` b'
+  playerAt b p =
+    unempty (`playerAt` p) (`playerAt` p) b
+  printBoard =
+    unempty printBoard printBoard
 
 -- not exported
 
