@@ -234,7 +234,7 @@ lift3 =
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift3)
 --
--- | Apply a ternary function in the Moonad environment.
+-- | Apply a quaternary function in the Moonad environment.
 --
 -- >>> lift4 (\a b c d -> a + b + c + d) (Id 7) (Id 8) (Id 9) (Id 10)
 -- Id 34
