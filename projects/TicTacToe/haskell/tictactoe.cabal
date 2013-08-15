@@ -27,7 +27,6 @@ library
   default-language: Haskell2010
 
   build-depends:    base < 5 && >= 4
-                    , HUnit
                     , containers
 
   ghc-options:      -Wall
