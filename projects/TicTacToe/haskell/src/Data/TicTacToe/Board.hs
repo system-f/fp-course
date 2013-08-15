@@ -456,6 +456,12 @@ unfinished _ g (UnfinishedBoard b) =
   g b
 
 instance BoardLike Unfinished where
+  whoseTurn =
+    unfinished whoseTurn whoseTurn
+
+  whoseNotTurn =
+    unfinished whoseNotTurn whoseNotTurn
+
   isEmpty =
     unfinished isEmpty isEmpty
 
@@ -514,6 +520,12 @@ unempty _ g (UnemptyFinished b) =
   g b
 
 instance BoardLike Unempty where
+  whoseTurn =
+    unempty whoseTurn whoseTurn
+
+  whoseNotTurn =
+    unempty whoseNotTurn whoseNotTurn
+
   isEmpty =
     unempty isEmpty isEmpty
 
