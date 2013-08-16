@@ -2,6 +2,11 @@ module Network.TicTacToe.Command where
 
 import Prelude hiding (elem)
 import Data.TicTacToe
+import Data.Char(toUpper, isSpace, toLower)
+import Data.Function(on)
+import Data.Maybe(fromMaybe)
+import Data.Foldable(msum, find, elem)
+import Control.Applicative((<$), (<$>))
 
 data Command =
   Move Position
@@ -16,8 +21,20 @@ data Command =
 command ::
   String
   -> Command
-command =
-  error "todo"
+command z =
+  let p l = reverse . dropWhile isSpace . reverse . dropWhile isSpace <$> prefixThen ((==) `on` toLower) l z
+  in Unknown z `fromMaybe` msum [
+                                  do m <- p "MOVE "
+                                     q <- sPosition m
+                                     return (Move q)
+                                , Current <$ p "GAME"
+                                , Finished <$ p "FINISHED"
+                                , Chat <$> p "CHAT"
+                                , Turn <$ p "TURN"
+                                , do a <- p "AT"
+                                     q <- sPosition a
+                                     return (At q)
+                                ]
 
 -- |
 --
@@ -35,8 +52,8 @@ command =
 sPosition ::
   String
   -> Maybe Position
-sPosition =
-  let _     = [
+sPosition s =
+  let table = [
                 (
                   ["1", "NW"]
                 , NW
@@ -74,7 +91,8 @@ sPosition =
                 , SE
                 )
               ]
-  in error "todo"
+      toUppers = map toUpper
+  in fmap snd . find (\(t, _) -> elem (toUppers s) (toUppers <$> t)) $ table
 
 -- |
 --

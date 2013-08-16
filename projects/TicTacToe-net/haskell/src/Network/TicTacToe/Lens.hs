@@ -17,8 +17,8 @@ getL ::
   Lens a b
   -> a
   -> b
-getL =
-  error "todo"
+getL (Lens _ g) =
+  g
 
 -- Exercise 2
 --
@@ -31,8 +31,8 @@ setL ::
   -> a
   -> b
   -> a
-setL =
-  error "todo"
+setL (Lens s _) =
+  s
 
 -- Exercise 3
 --
@@ -46,7 +46,7 @@ setL =
 fstL ::
   Lens (a, b) a
 fstL =
-  error "todo"
+  Lens (\(_, b) a -> (a, b)) fst
 
 -- Exercise 4
 --
@@ -60,7 +60,7 @@ fstL =
 sndL ::
   Lens (a, b) b
 sndL =
-  error "todo"
+  Lens (\(a, _) b -> (a, b)) snd
 
 -- Exercise 5
 --
@@ -76,8 +76,8 @@ sndL =
   Lens a b
   -> Lens b c
   -> Lens a c
-(.@) =
-  error "todo"
+Lens s1 g1 .@ Lens s2 g2 =
+  Lens (\a -> s1 a . s2 (g1 a)) (g2 . g1)
 
 -- Exercise 6
 --
@@ -90,7 +90,7 @@ sndL =
 identityL ::
   Lens a a
 identityL =
-  error "todo"
+  Lens (const id) id
 
 -- Exercise 7
 --
@@ -105,13 +105,12 @@ modify ::
   -> (b -> b)
   -> a
   -> a
-modify =
-  error "todo"
+modify (Lens s g) f a =
+  s a (f (g a))
 
 iso ::
   (a -> b)
   -> (b -> a)
   -> Lens a b
-iso =
-  error "todo"
-
+iso f g =
+  Lens (const g) f

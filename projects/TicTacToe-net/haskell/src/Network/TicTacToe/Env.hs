@@ -23,28 +23,38 @@ data Env =
 acceptL ::
   Lens Env Accept
 acceptL =
-  error "todo"
+  Lens
+    (\(Env _ e b s f) a -> Env a e b s f)
+    (\(Env a _ _ _ _) -> a)
 
 boardL ::
   Lens Env Unfinished
 boardL =
-  error "todo"
+  Lens
+    (\(Env a _ b s f) e -> Env a e b s f)
+    (\(Env _ e _ _ _) -> e)
 
 boardrefL ::
   Lens Env (IORef Unfinished)
 boardrefL =
-  error "todo"
+  Lens
+    (\(Env a e _ s f) b -> Env a e b s f)
+    (\(Env _ _ b _ _) -> b)
 
 clientsL ::
   Lens Env (IORef (Set Ref))
 clientsL =
-  error "todo"
+  Lens
+    (\(Env a e b _ f) s -> Env a e b s f)
+    (\(Env _ _ _ s _) -> s)
 
 finishedGamesL ::
   Lens Env FinishedGames
 finishedGamesL =
-  error "todo"
+  Lens
+    (\(Env a e b s _) f -> Env a e b s f)
+    (\(Env _ _ _ _ f) -> f)
 
 instance HandleLens Env where
   handleL =
-    error "todo"
+    acceptL .@ handleL
