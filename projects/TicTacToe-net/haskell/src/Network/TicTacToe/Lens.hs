@@ -7,8 +7,6 @@ module Network.TicTacToe.Lens where
 data Lens a b =
   Lens (a -> b -> a) (a -> b)
 
--- Exercise 1
---
 -- | Given a lens and a target object, return its field object.
 getL ::
   Lens a b
@@ -17,8 +15,6 @@ getL ::
 getL (Lens _ g) =
   g
 
--- Exercise 2
---
 -- | Given a lens, a target object and a field object, return a new target object with the field set.
 setL ::
   Lens a b
@@ -28,8 +24,6 @@ setL ::
 setL (Lens s _) =
   s
 
--- Exercise 3
---
 -- | Produce the lens for the first element of a pair.
 --
 -- >>> getL fstL ("hi", 3)
@@ -42,8 +36,6 @@ fstL ::
 fstL =
   Lens (\(_, b) a -> (a, b)) fst
 
--- Exercise 4
---
 -- | Produce the lens for the second element of a pair.
 --
 -- >>> getL sndL ("hi", 3)
@@ -56,8 +48,6 @@ sndL ::
 sndL =
   Lens (\(a, _) b -> (a, b)) snd
 
--- Exercise 5
---
 -- | Lens composition.
 -- Given lens (a to b) and lens (b to c), produce lens (a to c).
 --
@@ -73,8 +63,6 @@ sndL =
 Lens s1 g1 .@ Lens s2 g2 =
   Lens (\a -> s1 a . s2 (g1 a)) (g2 . g1)
 
--- Exercise 6
---
 -- | Lens identity.
 -- Produce lens that /does nothing/.
 --
@@ -86,8 +74,6 @@ identityL ::
 identityL =
   Lens (const id) id
 
--- Exercise 7
---
 -- | Lens modification.
 -- Given a lens and a modification function on the field object
 -- and a target object, return a target with the function applied at that field.
