@@ -66,3 +66,39 @@ an `executable` section in the file for the server program.
 The final goal is to complete the `server` and `game` functions, so that the
 `main` function will execute.
 
+Game
+----
+
+Of note is the `Game` data type.
+
+    newtype Game f a =
+      Game (Env -> f (a, Unfinished, FinishedGames))
+
+This is a monad stack of reader (`(->) Env`) and state, that also includes an
+arbitrary monad on top (`f`). The inclusion of an arbitrary monad with the
+existing stack makes `Game` a _monad transformer_.
+
+A significant part of this exercise is to build library components that combine
+`Game` values to produce new values. For example, consider a `Game` value that
+might read and produce the `Accept` value from the environment `Env`.
+
+Such a function can be provided for any monad (`f`) on the stack. Notice the
+current game state (`getUnfinished env`) and finished games (`getFinished env`)
+are read from the environment and then returned unchanged.
+
+    accept ::
+      Game f Accept
+    accept =
+      Game $ \env -> return (getAccept env, getUnfinished env, getFinished env)
+
+As another example, consider a `Game` value that prints its environment, then
+removes all finished games. Such a function can only operate in `IO` over the
+existing stack:
+
+    printAndClear ::
+      Game IO ()
+    printAndClear =
+      Game $ \env -> print env >> return ((), getUnfinished env, [])
+
+As part of this exercise, you will be thinking about which values you need to
+achieve the requirement and creating them as they are needed.
