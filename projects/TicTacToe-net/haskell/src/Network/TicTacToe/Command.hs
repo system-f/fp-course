@@ -18,6 +18,37 @@ data Command =
   | Unknown String
   deriving (Eq, Show)
 
+-- |
+--
+-- >>> command "MOVE ne"
+-- Move NE
+--
+-- >>> command "MOVE 2"
+-- Move N
+--
+-- >>> command "GAME"
+-- Current
+--
+-- >>> command "FiniSHED"
+-- Finished
+--
+-- >>> command "CHAT hi"
+-- Chat "hi"
+--
+-- >>> command "Turn"
+-- Turn
+--
+-- >>> command "At 4"
+-- At W
+--
+-- >>> command "At C"
+-- At C
+--
+-- >>> command "At X"
+-- Unknown "At X"
+--
+-- >>> command "Move i"
+-- Unknown "Move i"
 command ::
   String
   -> Command
