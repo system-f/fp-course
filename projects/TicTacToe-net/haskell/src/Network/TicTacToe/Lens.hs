@@ -10,9 +10,6 @@ data Lens a b =
 -- Exercise 1
 --
 -- | Given a lens and a target object, return its field object.
---
--- >>> getL companyName company
--- "ACME"
 getL ::
   Lens a b
   -> a
@@ -23,9 +20,6 @@ getL =
 -- Exercise 2
 --
 -- | Given a lens, a target object and a field object, return a new target object with the field set.
---
--- >>> setL companyName company "Mickey"
--- Mickey located at Acme St, Acmeville with CEO Bob aged 13 from Bob St, Bobville and employees; [Mary aged 14 from Mary St, Maryville,Fred aged 15 from Fred St, Fredville]
 setL ::
   Lens a b
   -> a
