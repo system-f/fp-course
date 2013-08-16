@@ -40,6 +40,28 @@ executable tictactoe-net
 
   other-modules:    Network.TicTacToe
 
+library
+  default-language: Haskell2010
+
+  build-depends:    base < 5 && >= 4
+                    , tictactoe
+                    , mtl
+                    , containers
+                    , network
+
+  ghc-options:      -Wall
+
+  hs-source-dirs:   src
+
+  exposed-modules:
+                    Network.TicTacToe
+                    , Network.TicTacToe.Accept
+                    , Network.TicTacToe.Command
+                    , Network.TicTacToe.Env
+                    , Network.TicTacToe.Game
+                    , Network.TicTacToe.HandleLens
+                    , Network.TicTacToe.Lens
+                    , Network.TicTacToe.Ref
 
 test-suite          doctests
   type:
