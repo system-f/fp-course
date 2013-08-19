@@ -207,10 +207,25 @@ flatMap f =
 -- Elegance: 3.5 marks
 -- Total: 9
 --
--- | Convert a list of optional values to an optional list of values
+-- | Convert a list of optional values to an optional list of values.
+--
+-- * If the list contains all `Full` values, 
+-- then return `Full` list of values.
+--
+-- * If the list contains one or more `Empty` values,
+-- then return `Empty`.
+--
+-- * The only time `Empty` is returned is
+-- when the list contains one or more `Empty` values.
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
 -- Full [1,10]
+--
+-- >>> seqOptional Nil
+-- Full []
+--
+-- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
+-- Empty
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
