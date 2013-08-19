@@ -10,9 +10,9 @@ mapOptional :: (a -> b) -> Optional a -> Optional b
 mapOptional _ Empty    = Empty
 mapOptional f (Full a) = Full (f a)
 
-bindOptional :: Optional a -> (a -> Optional b) -> Optional b
-bindOptional Empty _    = Empty
-bindOptional (Full a) f = f a
+bindOptional :: (a -> Optional b) -> Optional a -> Optional b
+bindOptional _ Empty    = Empty
+bindOptional f (Full a) = f a
 
 (??) :: Optional a -> a -> a
 Empty ?? d  = d
@@ -23,4 +23,4 @@ Empty <+> o = o
 k <+> _     = k
 
 twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
-twiceOptional f a b = bindOptional a (\aa -> mapOptional (f aa) b)
+twiceOptional f a b = bindOptional (\aa -> mapOptional (f aa) b) a
