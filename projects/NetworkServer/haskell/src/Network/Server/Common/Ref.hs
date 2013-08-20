@@ -1,9 +1,9 @@
-module Network.TicTacToe.Ref where
+module Network.Server.Common.Ref where
 
-import Network.TicTacToe.HandleLens(HandleLens(..))
+import Network.Server.Common.HandleLens(HandleLens(..))
+import Network.Server.Common.Lens(iso)
 import System.IO(Handle)
 import Data.Function(on)
-import Network.TicTacToe.Lens(iso)
 
 newtype Ref =
   Ref Handle

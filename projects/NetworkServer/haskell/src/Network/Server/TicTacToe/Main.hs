@@ -3,9 +3,9 @@ module Main
   main
 ) where
 
-import Network.TicTacToe.Game
+import Network.Server.TicTacToe.Game
 
 main ::
   IO ()
 main =
-  server game
+  play

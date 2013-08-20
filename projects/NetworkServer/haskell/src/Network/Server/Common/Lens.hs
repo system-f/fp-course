@@ -1,4 +1,4 @@
-module Network.TicTacToe.Lens where
+module Network.Server.Common.Lens where
 
 -- | A lens is a pair of set and get.
 --
@@ -12,8 +12,8 @@ getL ::
   Lens a b
   -> a
   -> b
-getL =
-  error "todo"
+getL (Lens _ g) =
+  g
 
 -- | Given a lens, a target object and a field object, return a new target object with the field set.
 setL ::
@@ -21,8 +21,8 @@ setL ::
   -> a
   -> b
   -> a
-setL =
-  error "todo"
+setL (Lens s _) =
+  s
 
 -- | Produce the lens for the first element of a pair.
 --
@@ -34,7 +34,7 @@ setL =
 fstL ::
   Lens (a, b) a
 fstL =
-  error "todo"
+  Lens (\(_, b) a -> (a, b)) fst
 
 -- | Produce the lens for the second element of a pair.
 --
@@ -46,7 +46,7 @@ fstL =
 sndL ::
   Lens (a, b) b
 sndL =
-  error "todo"
+  Lens (\(a, _) b -> (a, b)) snd
 
 -- | Lens composition.
 -- Given lens (a to b) and lens (b to c), produce lens (a to c).
@@ -60,8 +60,8 @@ sndL =
   Lens a b
   -> Lens b c
   -> Lens a c
-(.@) =
-  error "todo"
+Lens s1 g1 .@ Lens s2 g2 =
+  Lens (\a -> s1 a . s2 (g1 a)) (g2 . g1)
 
 -- | Lens identity.
 -- Produce lens that /does nothing/.
@@ -72,7 +72,7 @@ sndL =
 identityL ::
   Lens a a
 identityL =
-  error "todo"
+  Lens (const id) id
 
 -- | Lens modification.
 -- Given a lens and a modification function on the field object
@@ -85,13 +85,12 @@ modify ::
   -> (b -> b)
   -> a
   -> a
-modify =
-  error "todo"
+modify (Lens s g) f a =
+  s a (f (g a))
 
 iso ::
   (a -> b)
   -> (b -> a)
   -> Lens a b
-iso =
-  error "todo"
-
+iso f g =
+  Lens (const g) f
