@@ -1,45 +1,104 @@
-TicTacToe
-=========
+TicTacToe Network Server
+========================
 
-Write an API for the tic-tac-toe game. Do not use variables -- they are not permitted. This includes libraries that expose in-line updates. No exceptions (or non-termination) in exposed functions -- all functions return a consistent value for every element of their domain. The follow API methods should exist:
+Using the TicTacToe project, produce a multi-user network server for the game
+tic-tac-toe. For simplicity, use `forkIO` and `IORef` structures for concurrent
+access. Game players will not be managed, so any user may be able to manipulate
+the game board at any time.
 
-* `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is in-play. Calling move on a game board that is finished is a *compile-time type error*.
+Protocol
+--------
 
-* `whoWon`: takes a tic-tac-toe board and returns the player that won the game (or a draw if neither). This function can only be called on a board that is finished. Calling move on a game board that is in-play is a *compile-time type error*.
+The game server will maintain a single game of tic-tac-toe and a history of
+completed games. Clients send line-terminated instructions to the game server.
 
-* `takeBack`: takes either a finished board or a board in-play that has had at least one move and returns a board in-play. It is a compile-time type error to call this function on an empty board.
+Instructions begin with a case-insensitive command:
 
-* `playerAt`: takes a tic-tac-toe board and position and returns the (possible) player at a given position. This function works on any type of board.
+* MOVE <position>
 
-* Other API functions that you may see fit. These can be determined by also writing an interactive console application that uses the API -- other useful functions are likely to arise.
+  Make a move on the current game board at the given position.
 
-You should write automated tests for your API. For example, the following universally quantified property holds true:
+* GAME
 
-`forall Board b. forall Position p. such that (not (positionIsOccupied
-p b)). takeBack(move(p, b)) == b`
+  View the current game board.
 
-You should encode this property in an automated specification test. For Scala, use ScalaCheck. For Haskell, QuickCheck. For Java, consider [Functional Java](http://functionaljava.org/). For .NET, use [FsCheck](https://github.com/fsharp/FsCheck). For other languages, you may need to search around.
+* FINISHED
 
-Haskell-specific
-----------------
+  View completed games.
 
-If you choose to use Haskell, also take advantage of its superior tooling:
+* CHAT <message>
 
-* Build with CABAL
-* Include a `.ghci` file for convenience when developing
-  * http://haskell.org/ghc/docs/6.12.2/html/users_guide/ghci-dot-files.html
-* API documented using Haddock
-  * [http://www.haskell.org/haddock/doc/html/index.html](http://haskell.org/ghc/docs/6.12.2/html/users_guide/ghci-dot-files.html)
-* Code style examined using hlint
-  * `cabal install hlint`
-  * Produce a report (`--report`)
-  * [http://community.haskell.org/~ndm/darcs/hlint/hlint.htm](http://community.haskell.org/~ndm/darcs/hlint/hlint.htm)
-* Use hoogle and hayoo to find library functions
-  * [http://haskell.org/hoogle/](http://haskell.org/hoogle/)
-  * [http://holumbus.fh-wedel.de/hayoo/hayoo.html](http://holumbus.fh-wedel.de/hayoo/hayoo.html)
+  Send a message to all connected tic-tac-toe players.
 
+* TURN
 
-Extra-curricular
-----------------
-* Write an opponent that never loses
-* Write an opponent with easy, medium, hard difficulty levels
+  View whose turn it is to play on the current game board.
+
+* AT <position>
+
+  View which player is at the given position.
+
+The position may be a digit [1-9] indicating a numeric position, or it may be a
+case-insensitive cardinal direction.
+
+    1 2 3
+    4 5 6
+    7 8 9
+
+    NW   N  NE
+    W    C   E
+    SW   S  SE
+
+Making a move at a position on a game board that has gone out of date with what
+that connected client believes to be the current game state fails. A client may
+update what they believe to be the game state with the `GAME` command.
+
+Getting Started
+---------------
+
+Some library code has been written for you. Some has been specified with types
+and some will need to be written from scratch. Use the wide array of tools
+available to achieve this.
+
+Start by creating the `.cabal` file for your project. You will need to specify
+an `executable` section in the file for the server program.
+
+The final goal is to complete the `server` and `game` functions, so that the
+`main` function will execute.
+
+Game
+----
+
+Of note is the `Game` data type.
+
+    newtype Game f a =
+      Game (Env -> f (a, Unfinished, FinishedGames))
+
+This is a monad stack of reader (`(->) Env`) and state, that also includes an
+arbitrary monad on top (`f`). The inclusion of an arbitrary monad with the
+existing stack makes `Game` a _monad transformer_.
+
+A significant part of this exercise is to build library components that combine
+`Game` values to produce new values. For example, consider a `Game` value that
+might read and produce the `Accept` value from the environment `Env`.
+
+Such a function can be provided for any monad (`f`) on the stack. Notice the
+current game state (`getUnfinished env`) and finished games (`getFinished env`)
+are read from the environment and then returned unchanged.
+
+    accept ::
+      Game f Accept
+    accept =
+      Game $ \env -> return (getAccept env, getUnfinished env, getFinished env)
+
+As another example, consider a `Game` value that prints its environment, then
+removes all finished games. Such a function can only operate in `IO` over the
+existing stack:
+
+    printAndClear ::
+      Game IO ()
+    printAndClear =
+      Game $ \env -> print env >> return ((), getUnfinished env, [])
+
+As part of this exercise, you will be thinking about which values you need to
+achieve the requirement and creating them as they are needed.
