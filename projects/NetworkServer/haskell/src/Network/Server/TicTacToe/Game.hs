@@ -21,7 +21,7 @@ type FinishedGames =
   [FinishedBoard]
 
 type Game a =
-  IORefLoop Unfinished (Unfinished, FinishedGames) a
+  IORefLoop Board (Board, FinishedGames) a
 
 data Command =
   Move Position
@@ -291,4 +291,3 @@ play ::
   IO a
 play =
   game (currentBoard >>= pPutStrLn . showBoard) (process . command)
-
