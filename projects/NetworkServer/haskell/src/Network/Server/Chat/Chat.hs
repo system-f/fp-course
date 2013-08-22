@@ -53,10 +53,5 @@ chatCommand z =
 process ::
   ChatCommand
   -> Chat ()
-process (Chat m) =
-  allClientsButThis ! "CHAT " ++ m
-process Incr =
-  do n <- incr
-     pPutStrLn ("INCR " ++ show n)
-process (Unknown s) =
-  pPutStrLn ("UNKNOWN " ++ s)
+process =
+  error "todo"

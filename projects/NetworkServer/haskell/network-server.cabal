@@ -32,10 +32,9 @@ executable network-tictactoe
                     , mtl
                     , containers
                     , network
+                    , QuickCheck
 
   ghc-options:      -Wall
-
-  other-modules:    Network.Server.TicTacToe
 
 executable network-chat
   default-language: Haskell2010
@@ -49,10 +48,9 @@ executable network-chat
                     , mtl
                     , containers
                     , network
+                    , QuickCheck
 
   ghc-options:      -Wall
-
-  other-modules:    Network.Server.Chat
 
 library
   default-language: Haskell2010

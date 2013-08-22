@@ -42,7 +42,7 @@ implementation):
 ```
 cabal configure
 cabal build
-./dist/build/network-server/network-chat
+./dist/build/network-chat/network-chat
 ```
 
 Start by taking a few minutes familiarising yourself with what is has
@@ -51,6 +51,9 @@ using functions provided in this project and those you have used to
 complete earlier course exercises. But remember this is _not_ an
 exercise to learn haskell APIs, so anything you think is missing or
 don't understand, ask straight away.
+
+Then you want to start by looking at the `error TODO` comments in
+`Network.Server.Chat.Loop` and `Network.Server.Chat.Chat`.
 
 Loop
 ----
@@ -136,6 +139,12 @@ simplifying assumptions for this problem:
 * Only one active game needs to be maintained by the server at a time.
 * Game players will not be manages, so any user may be able to manipulate the board at any time.
 
+
+```
+cabal configure
+cabal build
+./dist/build/network-tictactoe/network-tictactoe
+```
 
 Protocol
 --------

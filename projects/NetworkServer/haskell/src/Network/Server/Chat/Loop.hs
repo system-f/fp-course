@@ -79,12 +79,7 @@ perClient ::
   -> (String -> IOLoop v a) -- read line from client
   -> IOLoop v ()
 perClient q f =
-  let lp = do k <- etry lGetLine
-              case k of Left e -> xprint e
-                        Right [] -> lp
-                        Right l -> f l >> lp
-  in do _ <- q
-        lp
+  error "todo"
 
 loop ::
   IO w -- server initialise
@@ -177,4 +172,3 @@ modifyClients ::
 modifyClients f =
   Loop $ \env ->
     atomicModifyIORef_ (clientsL `getL` env) f
-

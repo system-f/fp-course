@@ -1,7 +1,6 @@
 module Network.Server.TicTacToe.Game where
 
 import Data.TicTacToe
-import qualified Data.TicTacToe as T
 import Network.Server.Common.Env
 import Network.Server.Common.HandleLens
 import Network.Server.Common.Lens
@@ -173,26 +172,26 @@ sPosition s =
   in fmap snd . find (\(t, _) -> elem (toUppers s) (toUppers <$> t)) $ table
 
 currentBoard ::
-  Game Unfinished
+  Game Board
 currentBoard =
   initLoop $ \env ->
     readIORef (envvalL `getL` env)
 
 withCurrentBoard ::
-  (Unfinished -> (Unfinished, a))
+  (Board -> (Board, a))
   -> Game a
 withCurrentBoard f =
   initLoop $ \env ->
     atomicModifyIORef (envvalL `getL` env) f
 
 lastBoard ::
-  Game Unfinished
+  Game Board
 lastBoard =
   Loop $ \_ (s, t) ->
     return (s, (s, t))
 
 putBoard ::
-  Unfinished
+  Board
   -> Game ()
 putBoard s =
   Loop $ \_ (_, t) ->
@@ -225,69 +224,20 @@ allClients ::
 allClients =
   initLoop $ \env -> (readIORef (clientsL `getL` env))
 
-data AtomicMove =
-  IsOccupied
-  | OutOfDate
-  | MoveMade Board
-  | GameOver FinishedBoard
-  deriving (Eq, Show)
-
 process ::
   Command
   -> Game ()
-process (Move p) =
-  do l <- lastBoard
-     r <- withCurrentBoard $ \b ->
-            if isOccupied b p
-              then
-                (b, IsOccupied)
-              else
-                if b == l
-                  then
-                    let r = p --> b
-                    in case r of UnemptyBoard b' -> (UnfinishedBoard b', MoveMade b')
-                                 UnemptyFinished f -> (UnfinishedEmpty T.empty, GameOver f)
-                  else
-                    (b, OutOfDate)
-     case r of IsOccupied ->
-                 ePutStrLn (concat ["MOVE ", show p, " is occupied"])
-               OutOfDate  ->
-                 ePutStrLn "MOVE board is out of date"
-               MoveMade b ->
-                 do putBoard (UnfinishedBoard b)
-                    ePutStrLn (showBoard b)
-               GameOver b ->
-                  do modifyFinishedGames (b:)
-                     putBoard (UnfinishedEmpty T.empty)
-                     allClients ! "MOVE GAME OVER " ++ show (getResult b)
-process Current =
-  do b <- currentBoard
-     putBoard b
-     ePutStrLn (showBoard b)
-process Finished =
-  do g <- finishedGames
-     mapM_ (ePutStrLn . showBoard) g
-process (Chat m) =
-  allClientsButThis ! "CHAT " ++ m
-process Turn =
-  do b <- currentBoard
-     putBoard b
-     ePutStrLn [toSymbol (whoseTurn b)]
-process (At p) =
-  do b <- currentBoard
-     putBoard b
-     ePutStrLn [fromMaybe '?' . fmap toSymbol . playerAt b $ p]
-process (Unknown s) =
-  ePutStrLn ("UNKNOWN " ++ s)
+process =
+  error "todo"
 
 game ::
   Game x -- client accepted (post)
   -> (String -> Game w) -- read line from client
   -> IO a
 game =
-  iorefLoop (UnfinishedEmpty T.empty) (UnfinishedEmpty T.empty, [])
+  error "todo"
 
 play ::
   IO a
 play =
-  game (currentBoard >>= pPutStrLn . showBoard) (process . command)
+  game (currentBoard >>= pPutStrLn . show) (process . command)
