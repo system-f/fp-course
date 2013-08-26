@@ -74,6 +74,9 @@ server i r (Loop f) =
        c <- newIORef S.empty
        hand s w c `finally` sClose s
 
+allClients :: IOLoop v (Set Ref)
+allClients = Loop $ \env -> readIORef (clientsL `getL` env)
+
 perClient ::
   IOLoop v x -- client accepted (post)
   -> (String -> IOLoop v a) -- read line from client
