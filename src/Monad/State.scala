@@ -7,10 +7,10 @@ import math.BigInt
 // A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 case class State[S, A](run: S => (A, S)) {
   def map[B](f: A => B): State[S, B] =
-    State.StateFuunctor.fmaap(f)(this)
+    State.StateFunctor.fmap(f)(this)
 
   def flatMap[B](f: A => State[S, B]): State[S, B] =
-    State.StateMoonad.bind(f)(this)
+    State.StateMonad.bind(f)(this)
 
   // Exercise 3
   // Relative Difficulty: 1
@@ -29,23 +29,23 @@ case class State[S, A](run: S => (A, S)) {
 object State {
   // Exercise 1
   // Relative Difficulty: 2
-  // Implement the `Fuunctor` instance for `State[S, _]`.
-  implicit def StateFuunctor[S]: Fuunctor[({type l[a] = State[S, a]})#l] =
-    new Fuunctor[({type l[a] = State[S, a]})#l] {
-      def fmaap[A, B](f: A => B) =
+  // Implement the `Functor` instance for `State[S, _]`.
+  implicit def StateFunctor[S]: Functor[({type l[a] = State[S, a]})#l] =
+    new Functor[({type l[a] = State[S, a]})#l] {
+      def fmap[A, B](f: A => B) =
         sys.error("todo")
     }
 
   // Exercise 2
   // Relative Difficulty: 3
-  // Implement the `Moonad` instance for `State[S, _]`.
+  // Implement the `Monad` instance for `State[S, _]`.
   // Make sure the state value is passed through in `bind`.
-  implicit def StateMoonad[S]: Moonad[({type l[a] = State[S, a]})#l] =
-    new Moonad[({type l[a] = State[S, a]})#l] {
+  implicit def StateMonad[S]: Monad[({type l[a] = State[S, a]})#l] =
+    new Monad[({type l[a] = State[S, a]})#l] {
       def bind[A, B](f: A => State[S, B]) =
         sys.error("todo")
 
-      def reeturn[A] =
+      def point[A] =
         sys.error("todo")
     }
 
@@ -65,13 +65,13 @@ object State {
   // Relative Difficulty: 5
   // Find the first element in a `Stream` that satisfies a given predicate.
   // It is possible that no element is found, hence an `Optional` result.
-  // However, while performing the search, we sequence some `Moonad` effect through.
+  // However, while performing the search, we sequence some `Monad` effect through.
   //
   // Note the similarity of the type signature to Stream#find
   // where the effect appears in every return position:
   //   find ::  (A =>   Bool ) => Stream[A] ->   Optional[A]
   //   findM :: (A => F[Bool]) => Stream[A] -> F[Optional[A]]
-  def findM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Moonad[F]): F[Optional[A]] =
+  def findM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Monad[F]): F[Optional[A]] =
     sys.error("todo")
 
   // Exercise 8
@@ -85,13 +85,13 @@ object State {
   // Exercise 9
   // Relative Difficulty: 5
   // Remove all elements in a `Stream` that fail a given predicate.
-  // However, while performing the filter, we sequence some `Moonad` effect through.
+  // However, while performing the filter, we sequence some `Monad` effect through.
   //
   // Note the similarity of the type signature to Stream#filter
   // where the effect appears in every return position:
   //   filter ::  (A =>   Bool ) => Stream[A] =>   Stream[A]
   //   filterM :: (A => F[Bool]) => Stream[A] => F[Stream[A]]
-  def filterM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Moonad[F]): F[Stream[A]] =
+  def filterM[F[_], A](p: A => F[Boolean], x: Stream[A])(implicit M: Monad[F]): F[Stream[A]] =
     sys.error("todo")
 
   // Exercise 10

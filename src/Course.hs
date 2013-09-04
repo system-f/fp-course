@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Course
 (
   module Algorithm.Anagrams
@@ -9,8 +11,8 @@ module Course
 , module Intro.Validation
 , module IO.Interactive
 , module Monad.Compose
-, module Monad.Fuunctor
-, module Monad.Moonad
+, module Monad.Functor
+, module Monad.Monad
 , module Monad.State
 , module Monad.StateT
 , module Parser.JsonParser
@@ -34,8 +36,8 @@ import Intro.Optional
 import Intro.Validation
 import IO.Interactive
 import Monad.Compose
-import Monad.Fuunctor
-import Monad.Moonad
+import Monad.Functor
+import Monad.Monad
 import Monad.State
 import Monad.StateT
 import Parser.JsonParser

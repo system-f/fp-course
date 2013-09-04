@@ -1,21 +1,24 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module IO.Interactive where
 
-import Monad.Fuunctor
-import Monad.Moonad
+import Prelude(error, flip, const, (.), putStr, putStrLn, getChar, (==), Maybe(..), Bool(..), IO, String)
+import Monad.Functor
+import Monad.Monad
 import Data.Char
 import Data.List(find)
 
 -- | Eliminates any value over which a functor is defined.
 vooid ::
-  Fuunctor m =>
+  Functor m =>
   m a
   -> m ()
 vooid =
-  fmaap (const ())
+  fmap (const ())
 
 -- | A version of @bind@ that ignores the result of the effect.
 (>-) ::
-  Moonad m =>
+  Monad m =>
   m a
   -> m b
   -> m b
@@ -24,7 +27,7 @@ vooid =
 
 -- | An infix, flipped version of @bind@.
 (>>-) ::
-  Moonad m =>
+  Monad m =>
   m a
   -> (a -> m b)
   -> m b
@@ -33,7 +36,7 @@ vooid =
 
 -- | Runs an action until a result of that action satisfies a given predicate.
 untilM ::
-  Moonad m =>
+  Monad m =>
   (a -> m Bool) -- ^ The predicate to satisfy to stop running the action.
   -> m a -- ^ The action to run until the predicate satisfies.
   -> m a
@@ -42,7 +45,7 @@ untilM p a =
   p r >>- \q ->
   if q
     then
-      reeturn r
+      return r
     else
       untilM p a
 
@@ -55,14 +58,14 @@ echo =
             if c == 'q'
               then
                 putStrLn "Bye!" >-
-                reeturn True
+                return True
               else
-                reeturn False)
+                return False)
           (putStr "Enter a character: " >-
            getChar >>- \c ->
            putStrLn "" >-
            putStrLn [c] >-
-           reeturn c))
+           return c))
 
 data Op =
   Op Char String (IO ()) -- keyboard entry, description, program
@@ -158,9 +161,9 @@ interactive =
                if c == 'q'
                  then
                    putStrLn "Bye!" >-
-                   reeturn True
+                   return True
                  else
-                   reeturn False)
+                   return False)
              (putStrLn "Select: " >-
               traaverse (\(Op c s _) ->
                 putStr [c] >-

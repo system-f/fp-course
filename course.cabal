@@ -1,5 +1,5 @@
 name:               course
-version:            0.0.7
+version:            0.0.8
 license:            BSD3
 license-file:       etc/LICENCE
 author:             Tony Morris <tmorris@tmorris.net>
@@ -51,8 +51,8 @@ library
                     Intro.Validation
                     IO.Interactive
                     Monad.Compose
-                    Monad.Fuunctor
-                    Monad.Moonad
+                    Monad.Functor
+                    Monad.Monad
                     Monad.State
                     Monad.StateT
                     Parser.JsonParser

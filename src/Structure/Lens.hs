@@ -1,8 +1,11 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Structure.Lens where
 
+import Prelude(error, Show(..), Eq, Int, String, Either)
 import Data.List
 import Monad.State
-import Monad.Fuunctor
+import Monad.Functor
 import Structure.ListZipper
 
 data Address =
@@ -343,12 +346,12 @@ strPut (Store s _) =
 -- Exercise 14
 -- | Store is a functor.
 --
--- >>> strPut (fmaap (+10) (Store (*2) 3)) 5
+-- >>> strPut (fmap (+10) (Store (*2) 3)) 5
 -- 20
 --
--- prop> strPos (fmaap (+10) (Store (*2) x)) == (x :: Int)
-instance Fuunctor (Store a) where
-  fmaap =
+-- prop> strPos (fmap (+10) (Store (*2) x)) == (x :: Int)
+instance Functor (Store a) where
+  fmap =
     error "todo"
 
 -- Exercise 15

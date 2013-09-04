@@ -6,45 +6,45 @@ import State.filterM
 
 // A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 case class StateT[S, F[_], A](run: S => F[(A, S)]) {
-  def map[B](f: A => B)(implicit F: Fuunctor[F]): StateT[S, F, B] =
-    StateT.StateTFuunctor.fmaap(f)(this)
+  def map[B](f: A => B)(implicit F: Functor[F]): StateT[S, F, B] =
+    StateT.StateTFunctor.fmap(f)(this)
 
-  def flatMap[B](f: A => StateT[S, F, B])(implicit M: Moonad[F]): StateT[S, F, B] =
-    StateT.StateTMoonad.bind(f)(this)
+  def flatMap[B](f: A => StateT[S, F, B])(implicit M: Monad[F]): StateT[S, F, B] =
+    StateT.StateTMonad.bind(f)(this)
 
   // Exercise 5
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting state.
-  def exec(s: S)(implicit F: Fuunctor[F]): F[S] =
+  def exec(s: S)(implicit F: Functor[F]): F[S] =
     sys.error("todo")
 
   // Exercise 7
   // Relative Difficulty: 2
   // Run the `StateT` seeded with `s` and retrieve the resulting value.
-  def eval(s: S)(implicit F: Fuunctor[F]): F[A] =
+  def eval(s: S)(implicit F: Functor[F]): F[A] =
     sys.error("todo")
 }
 
 object StateT {
   // Exercise 1
   // Relative Difficulty: 2
-  // Implement the `Fuunctor` instance for `StateT[S, F, _]` given a Fuunctor[F].
-  implicit def StateTFuunctor[S, F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = StateT[S, F, a]})#l] =
-    new Fuunctor[({type l[a] = StateT[S, F, a]})#l] {
-      def fmaap[A, B](f: A => B) =
+  // Implement the `Functor` instance for `StateT[S, F, _]` given a Functor[F].
+  implicit def StateTFunctor[S, F[_]](implicit F: Functor[F]): Functor[({type l[a] = StateT[S, F, a]})#l] =
+    new Functor[({type l[a] = StateT[S, F, a]})#l] {
+      def fmap[A, B](f: A => B) =
         sys.error("todo")
     }
 
   // Exercise 2
   // Relative Difficulty: 5
-  // Implement the `Moonad` instance for `StateT[S, F, _]`.
-  // Make sure the state value is passed through in `bind` given a Moonad[F].
-  implicit def StateTMoonad[S, F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = StateT[S, F, a]})#l] =
-    new Moonad[({type l[a] = StateT[S, F, a]})#l] {
+  // Implement the `Monad` instance for `StateT[S, F, _]`.
+  // Make sure the state value is passed through in `bind` given a Monad[F].
+  implicit def StateTMonad[S, F[_]](implicit M: Monad[F]): Monad[({type l[a] = StateT[S, F, a]})#l] =
+    new Monad[({type l[a] = StateT[S, F, a]})#l] {
       def bind[A, B](f: A => StateT[S, F, B]) =
         sys.error("todo")
 
-      def reeturn[A] =
+      def point[A] =
         sys.error("todo")
     }
 
@@ -79,13 +79,13 @@ object StateT {
   // Exercise 9
   // Relative Difficulty: 2
   // A `StateT` where the state also distributes into the produced value.
-  def get[S, F[_]](implicit M: Moonad[F]): StateT[S, F, S] =
+  def get[S, F[_]](implicit M: Monad[F]): StateT[S, F, S] =
     sys.error("todo")
 
   // Exercise 10
   // Relative Difficulty: 2
   // A `StateT` where the resulting state is seeded with the given value.
-  def put[S, F[_]](s: S)(implicit M: Moonad[F]): StateT[S, F, Unit] =
+  def put[S, F[_]](s: S)(implicit M: Monad[F]): StateT[S, F, Unit] =
     sys.error("todo")
 
   // Exercise 11
@@ -110,14 +110,14 @@ object StateT {
   object OptionalT {
     // Exercise 13
     // Relative Difficulty: 3
-    // Implement the `Fuunctor` instance for `OptionalT[F, _]` given a Fuunctor[F].
-    implicit def OptionalTFuunctor[F[_]](implicit F: Fuunctor[F]): Fuunctor[({type l[a] = OptionalT[F, a]})#l] =
+    // Implement the `Functor` instance for `OptionalT[F, _]` given a Functor[F].
+    implicit def OptionalTFunctor[F[_]](implicit F: Functor[F]): Functor[({type l[a] = OptionalT[F, a]})#l] =
       sys.error("todo")
 
     // Exercise 14
     // Relative Difficulty: 5
-    // Implement the `Moonad` instance for `OptionalT[F, _]` given a Moonad[F].
-    implicit def OptionalTMoonad[F[_]](implicit M: Moonad[F]): Moonad[({type l[a] = OptionalT[F, a]})#l] =
+    // Implement the `Monad` instance for `OptionalT[F, _]` given a Monad[F].
+    implicit def OptionalTMonad[F[_]](implicit M: Monad[F]): Monad[({type l[a] = OptionalT[F, a]})#l] =
       sys.error("todo")
   }
 
@@ -127,15 +127,15 @@ object StateT {
   object Logger {
     // Exercise 15
     // Relative Difficulty: 4
-    // Implement the `Fuunctor` instance for `Logger`.
-    implicit def LoggerFuunctor[L]: Fuunctor[({type l[a] = Logger[L, a]})#l] =
+    // Implement the `Functor` instance for `Logger`.
+    implicit def LoggerFunctor[L]: Functor[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
     // Exercise 16
     // Relative Difficulty: 5
-    // Implement the `Moonad` instance for `Logger`.
+    // Implement the `Monad` instance for `Logger`.
     // The `bind` implementation must append log values to maintain associativity.
-    implicit def LoggerMoonad[L]: Moonad[({type l[a] = Logger[L, a]})#l] =
+    implicit def LoggerMonad[L]: Monad[({type l[a] = Logger[L, a]})#l] =
       sys.error("todo")
 
     // Exercise 17
@@ -161,10 +161,10 @@ object StateT {
   }
 
   object StateTOptionalTLogger {
-    // StateTOptionalTLogger is a Fuunctor.
-    implicit def StateTOptionalTLoggerFuunctor[S, L]: Fuunctor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
-      new Fuunctor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
-        def fmaap[A, B](f: A => B) =
+    // StateTOptionalTLogger is a Functor.
+    implicit def StateTOptionalTLoggerFunctor[S, L]: Functor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Functor[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+        def fmap[A, B](f: A => B) =
           q => StateTOptionalTLogger(s => {
             val r = q run s
             Logger(r.log, r.value map {
@@ -173,9 +173,9 @@ object StateT {
           })
       }
 
-    // StateTOptionalTLogger is a Moonad.
-    implicit def StateTOptionalTLoggerMoonad[S, L]: Moonad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
-      new Moonad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
+    // StateTOptionalTLogger is a Monad.
+    implicit def StateTOptionalTLoggerMonad[S, L]: Monad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] =
+      new Monad[({type l[a] = StateTOptionalTLogger[S, L, a]})#l] {
         def bind[A, B](f: A => StateTOptionalTLogger[S, L, B]) =
           q => StateTOptionalTLogger(s => {
             val r = q run s
@@ -188,7 +188,7 @@ object StateT {
             }
           })
 
-        def reeturn[A] =
+        def point[A] =
           a => StateTOptionalTLogger(s => Logger(Nil(), Full((a, s))))
       }
   }

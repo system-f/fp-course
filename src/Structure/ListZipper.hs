@@ -1,9 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Structure.ListZipper where
 
+import Prelude(error, flip, id, ($), (.), Int, Maybe, Either, Bool, Show(..), Eq)
 import Data.List
-import Monad.Fuunctor
+import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
@@ -35,23 +37,23 @@ data MaybeListZipper a =
 -- Exercise 1
 -- Relative Difficulty: 2
 --
--- | Implement the `Fuunctor` instance for `ListZipper`.
+-- | Implement the `Functor` instance for `ListZipper`.
 --
--- >>> fmaap (+1) (ListZipper [3,2,1] 4 [5,6,7])
+-- >>> fmap (+1) (ListZipper [3,2,1] 4 [5,6,7])
 -- [2,3,4]⋙5⋘[6,7,8]
-instance Fuunctor ListZipper where
-  fmaap =
+instance Functor ListZipper where
+  fmap =
     error "todo"
 
 -- Exercise 2
 -- Relative Difficulty: 2
 --
--- | Implement the `Fuunctor` instance for `MaybeListZipper`.
+-- | Implement the `Functor` instance for `MaybeListZipper`.
 --
--- >>> fmaap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
+-- >>> fmap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
 -- [2,3,4]⋙5⋘[6,7,8]
-instance Fuunctor MaybeListZipper where
-  fmaap =
+instance Functor MaybeListZipper where
+  fmap =
     error "todo"
 
 -- Exercise 3
@@ -79,7 +81,7 @@ toMaybe =
   error "todo"
 
 -- The `ListZipper'` type-class that will permit overloading operations.
-class Fuunctor f => ListZipper' f where
+class Functor f => ListZipper' f where
   toMaybeListZipper ::
     f a
     -> MaybeListZipper a
@@ -572,7 +574,7 @@ insertPushRight =
 -- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
 -- However, it is much more flexible, which we exploit here.
 
-class Fuunctor f => Apply f where
+class Functor f => Apply f where
   (<*>) ::
     f (a -> b)
     -> f a
@@ -582,7 +584,7 @@ class Apply f => Applicative f where
   unit ::
     a -> f a
 
-class Fuunctor f => Extend f where
+class Functor f => Extend f where
   (<<=) ::
     (f a -> b)
     -> f a
@@ -593,7 +595,7 @@ class Extend f => Comonad f where
     f a
     -> a
 
-class Fuunctor t => Traversable t where
+class Functor t => Traversable t where
   traverse ::
     Applicative f =>
     (a -> f b)
@@ -604,7 +606,7 @@ class Fuunctor t => Traversable t where
 -- It will also come in use later.
 instance Traversable [] where
   traverse f =
-    foldr (\a b -> fmaap (:) (f a) <*> b) (unit [])
+    foldr (\a b -> fmap (:) (f a) <*> b) (unit [])
 
 -- Exercise 32
 -- Relative Difficulty: 6
