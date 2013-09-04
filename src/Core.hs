@@ -1,0 +1,84 @@
+module Core(
+    ($)
+  , (.)
+  , (=<<)
+  , (||)
+  , (&&)
+  , const
+  , id
+  , flip
+  , not
+  , otherwise
+  , pred
+  , fst
+  , snd
+  , error
+  , even
+  , either
+  , String
+  , Int
+  , Integer
+  , IO
+  , Bool(..)
+  , Maybe(..)
+  , Either(..)
+  , Eq(..)
+  , Ord(..)
+  , Show(..)
+  , Num(..)
+  , Integral(..)
+  , putStr
+  , putStrLn
+  , getChar
+  , concatMap
+  , length
+  , sum
+  , product
+  , filter
+  , replicate
+  , foldr
+  , (++)
+  )
+ where
+
+import Prelude(
+    ($)
+  , (.)
+  , (=<<)
+  , (||)
+  , (&&)
+  , const
+  , id
+  , flip
+  , not
+  , otherwise
+  , pred
+  , fst
+  , snd
+  , error
+  , even
+  , either
+  , String
+  , Int
+  , Integer
+  , IO
+  , Bool(..)
+  , Maybe(..)
+  , Either(..)
+  , Eq(..)
+  , Ord(..)
+  , Show(..)
+  , Num(..)
+  , Integral(..)
+  , putStr
+  , putStrLn
+  , getChar
+  , concatMap
+  , length
+  , sum
+  , product
+  , filter
+  , replicate
+  , foldr
+  , (++)
+  )

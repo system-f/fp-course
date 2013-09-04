@@ -3,7 +3,7 @@
 
 module Monad.State where
 
-import Prelude(error, Bool, Integer, Ord)
+import Core
 import Intro.Optional
 import Structure.List
 import Monad.Functor

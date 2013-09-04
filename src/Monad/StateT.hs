@@ -2,7 +2,7 @@
 
 module Monad.StateT where
 
-import Prelude(error, String, Show, Eq, Ord, Num, Integral)
+import Core
 import Intro.Id
 import Intro.Optional
 import Structure.List

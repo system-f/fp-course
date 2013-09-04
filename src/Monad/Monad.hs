@@ -2,7 +2,7 @@
 
 module Monad.Monad where
 
-import Prelude(error, concatMap, Bool, Int, IO)
+import Core
 import qualified Prelude as P
 import Intro.Id
 import Intro.Optional

@@ -2,7 +2,7 @@
 
 module IO.Interactive where
 
-import Prelude(error, flip, const, (.), putStr, putStrLn, getChar, (==), Maybe(..), Bool(..), IO, String)
+import Core
 import Monad.Functor
 import Monad.Monad
 import Data.Char

@@ -42,6 +42,7 @@ library
   hs-source-dirs:   src
 
   exposed-modules:  Course
+                    Core
                     Algorithm.Anagrams
                     Algorithm.Cheque
                     Algorithm.EditDistance

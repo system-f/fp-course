@@ -2,7 +2,7 @@
 
 module Monad.Functor where
 
-import Prelude(error, IO, fmap)
+import Core
 import qualified Prelude as P
 import Intro.Id
 import Intro.Optional
@@ -78,5 +78,9 @@ instance Functor IO where
 -----------------------
 
 instance Functor [] where
+  fmap =
+    P.fmap
+
+instance Functor Maybe where
   fmap =
     P.fmap

@@ -2,7 +2,7 @@
 
 module Structure.Lens where
 
-import Prelude(error, Show(..), Eq, Int, String, Either)
+import Core
 import Data.List
 import Monad.State
 import Monad.Functor

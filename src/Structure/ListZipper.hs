@@ -3,7 +3,7 @@
 
 module Structure.ListZipper where
 
-import Prelude(error, flip, id, ($), (.), Int, Maybe, Either, Bool, Show(..), Eq)
+import Core
 import Data.List
 import Monad.Functor
 
