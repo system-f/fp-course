@@ -9,6 +9,7 @@
 
 module Structure.List where
 
+import Core
 import Control.Applicative
 import Intro.Optional
 
@@ -68,14 +69,14 @@ headOr =
 --
 -- | Sum the elements of the list.
 --
--- >>> suum (1 :. 2 :. 3 :. Nil)
+-- >>> sum (1 :. 2 :. 3 :. Nil)
 -- 6
 --
--- prop> foldLeft (-) (suum x) x == 0
-suum ::
+-- prop> foldLeft (-) (sum x) x == 0
+sum ::
   List Int
   -> Int
-suum =
+sum =
   error "todo"
 
 -- Exercise 3
@@ -90,7 +91,7 @@ suum =
 -- >>> len (1 :. 2 :. 3 :. Nil)
 -- 3
 --
--- prop> suum (maap (const 1) x) == len x
+-- prop> sum (map (const 1) x) == len x
 len ::
   List a
   -> Int
@@ -106,15 +107,15 @@ len =
 --
 -- | Map the given function on each element of the list.
 --
--- >>> maap (+10) (1 :. 2 :. 3 :. Nil)
+-- >>> map (+10) (1 :. 2 :. 3 :. Nil)
 -- [11,12,13]
 --
--- prop> maap id x == x
-maap ::
+-- prop> map id x == x
+map ::
   (a -> b)
   -> List a
   -> List b
-maap =
+map =
   error "todo"
 
 -- Exercise 5
@@ -126,17 +127,17 @@ maap =
 --
 -- | Return elements satisfying the given predicate.
 --
--- >>> fiilter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
+-- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
 -- [2,4]
 --
--- prop> fiilter (const True) x == x
+-- prop> filter (const True) x == x
 --
--- prop> fiilter (const False) x == Nil
-fiilter ::
+-- prop> filter (const False) x == Nil
+filter ::
   (a -> Bool)
   -> List a
   -> List a
-fiilter =
+filter =
   error "todo"
 
 -- Exercise 6
@@ -173,7 +174,7 @@ append =
 -- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
 -- [1,2,3,4,5,6,7,8,9]
 --
--- prop> suum (maap len x) == len (flatten x)
+-- prop> sum (map len x) == len (flatten x)
 flatten ::
   List (List a)
   -> List a
