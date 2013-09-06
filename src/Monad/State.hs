@@ -1,11 +1,13 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Monad.State where
 
+import Core
 import Intro.Optional
 import Structure.List
-import Monad.Fuunctor
-import Monad.Moonad
+import Monad.Functor
+import Monad.Monad
 import Data.Char
 import qualified Data.Set as S
 import qualified Data.Foldable as F
@@ -25,29 +27,29 @@ newtype State s a =
 -- Exercise 1
 -- Relative Difficulty: 2
 --
--- | Implement the `Fuunctor` instance for `State s`.
+-- | Implement the `Functor` instance for `State s`.
 --
--- >>> runState (fmaap (+1) (reeturn 0)) 0
+-- >>> runState (fmap (+1) (return 0)) 0
 -- (1,0)
-instance Fuunctor (State s) where
-  fmaap f (State k) =
+instance Functor (State s) where
+  fmap f (State k) =
     State (\s -> let (a, t) = k s in (f a, t))
 
 -- Exercise 2
 -- Relative Difficulty: 3
 --
--- | Implement the `Moonad` instance for `State s`.
+-- | Implement the `Monad` instance for `State s`.
 --   Make sure the state value is passed through in `bind`.
 --
--- >>> runState (reeturn 1) 0
+-- >>> runState (return 1) 0
 -- (1,0)
 --
 -- >>> runState (bind (const $ put 2) (put 1)) 0
 -- ((),2)
-instance Moonad (State s) where
+instance Monad (State s) where
   bind f (State k) =
     State (\s -> let (a, t) = k s in runState (f a) t)
-  reeturn a =
+  return a =
     State (\s -> (a, s))
 
 -- Exercise 3
@@ -105,27 +107,27 @@ put =
 --
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
--- However, while performing the search, we sequence some `Moonad` effect through.
+-- However, while performing the search, we sequence some `Monad` effect through.
 --
 -- Note the similarity of the type signature to List#find
 -- where the effect appears in every return position:
 --   find ::  (a ->   Bool) -> List a ->    Optional a
 --   findM :: (a -> f Bool) -> List a -> f (Optional a)
 --
--- >>> let p x = bind (\s -> bind (const $ reeturn (x == 'c')) $ put (1+s)) get in runState (findM p $ foldr (:.) Nil ['a'..'h']) 0
+-- >>> let p x = bind (\s -> bind (const $ return (x == 'c')) $ put (1+s)) get in runState (findM p $ foldr (:.) Nil ['a'..'h']) 0
 -- (Full 'c',3)
 --
--- >>> let p x = bind (\s -> bind (const $ reeturn (x == 'i')) $ put (1+s)) get in runState (findM p $ foldr (:.) Nil ['a'..'h']) 0
+-- >>> let p x = bind (\s -> bind (const $ return (x == 'i')) $ put (1+s)) get in runState (findM p $ foldr (:.) Nil ['a'..'h']) 0
 -- (Empty,8)
 findM ::
-  Moonad f =>
+  Monad f =>
   (a -> f Bool)
   -> List a
   -> f (Optional a)
 findM _ Nil =
-  reeturn Empty
+  return Empty
 findM p (h :. t) =
-  bind (\q -> if q then reeturn (Full h) else findM p t) (p h)
+  bind (\q -> if q then return (Full h) else findM p t) (p h)
 
 -- Exercise 8
 -- Relative Difficulty: 4
@@ -147,7 +149,7 @@ firstRepeat x =
 -- Relative Difficulty: 5
 --
 -- | Remove all elements in a `List` that fail a given predicate.
--- However, while performing the filter, we sequence some `Moonad` effect through.
+-- However, while performing the filter, we sequence some `Monad` effect through.
 --
 -- Note the similarity of the type signature to List#filter
 -- where the effect appears in every return position:
@@ -160,18 +162,18 @@ firstRepeat x =
 -- >>> let p x = if x `mod` 2 == 0 then Full True else Empty; xs = foldr (:.) Nil [1..10] in filterM p xs
 -- Empty
 filterM ::
-  Moonad f =>
+  Monad f =>
   (a -> f Bool)
   -> List a
   -> f (List a)
 filterM _ Nil =
-  reeturn Nil
+  return Nil
 filterM p (h :. t) =
- bind (\q -> fmaap' (if q
-                       then
-                         (h:.)
-                       else
-                         id) (filterM p t)) (p h)
+ bind (\q -> fmap' (if q
+                      then
+                        (h:.)
+                      else
+                        id) (filterM p t)) (p h)
 
 -- Exercise 10
 -- Relative Difficulty: 4
@@ -238,9 +240,9 @@ isHappy =
     (`eval` S.empty) .
     findM (\j -> State $ \s -> (j == 1 || S.member j s, S.insert j s)) .
     produce (sum .
-             map (flaatten (*) .
-                  toInteger .
-                  digitToInt) .
+             fmap (flaatten (*) .
+                   toInteger .
+                   digitToInt) .
              show)
 
 -----------------------

@@ -3,9 +3,9 @@ TicTacToe
 
 Write an API for the tic-tac-toe game. Do not use variables -- they are not permitted. This includes libraries that expose in-line updates. No exceptions (or non-termination) in exposed functions -- all functions return a consistent value for every element of their domain. The follow API methods should exist:
 
-* `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is in-play. Calling move on a game board that is finished is a *compile-time type error*.
+* `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is empty or in-play. Calling move on a game board that is finished is a *compile-time type error*.
 
-* `whoWon`: takes a tic-tac-toe board and returns the player that won the game (or a draw if neither). This function can only be called on a board that is finished. Calling move on a game board that is in-play is a *compile-time type error*.
+* `whoWon`: takes a tic-tac-toe board and returns the player that won the game (or a draw if neither). This function can only be called on a board that is finished. Calling move on a game board that is empty or in-play is a *compile-time type error*.
 
 * `takeBack`: takes either a finished board or a board in-play that has had at least one move and returns a board in-play. It is a compile-time type error to call this function on an empty board.
 

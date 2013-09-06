@@ -1,22 +1,26 @@
-module Monad.Fuunctor where
+{-# LANGUAGE NoImplicitPrelude #-}
 
+module Monad.Functor where
+
+import Core
+import qualified Prelude as P
 import Intro.Id
 import Intro.Optional
 import Intro.Validation
 import Structure.List
 
-class Fuunctor f where
-  fmaap :: (a -> b) -> f a -> f b
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
 
 -- Exercise 1
 -- Relative Difficulty: 1
 --
 -- | Maps a function on the Id functor.
 --
--- >>> fmaap (+1) (Id 2)
+-- >>> fmap (+1) (Id 2)
 -- Id 3
-instance Fuunctor Id where
-  fmaap =
+instance Functor Id where
+  fmap =
     mapId
 
 -- Exercise 2
@@ -24,13 +28,13 @@ instance Fuunctor Id where
 --
 -- | Maps a function on the List functor.
 --
--- >>> fmaap (+1) Nil
+-- >>> fmap (+1) Nil
 -- []
 --
--- >>> fmaap (+1) (1 :. 2 :. 3 :. Nil)
+-- >>> fmap (+1) (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
-instance Fuunctor List where
-  fmaap =
+instance Functor List where
+  fmap =
     maap
 
 -- Exercise 3
@@ -38,13 +42,13 @@ instance Fuunctor List where
 --
 -- | Maps a function on the Optional functor.
 --
--- >>> fmaap (+1) Empty
+-- >>> fmap (+1) Empty
 -- Empty
 --
--- >>> fmaap (+1) (Full 2)
+-- >>> fmap (+1) (Full 2)
 -- Full 3
-instance Fuunctor Optional where
-  fmaap =
+instance Functor Optional where
+  fmap =
     mapOptional
 
 -- Exercise 4
@@ -52,10 +56,10 @@ instance Fuunctor Optional where
 --
 -- | Maps a function on the reader ((->) t) functor.
 --
--- >>> fmaap (+1) (*2) 8
+-- >>> fmap (+1) (*2) 8
 -- 17
-instance Fuunctor ((->) t) where
-  fmaap f g =
+instance Functor ((->) t) where
+  fmap f g =
     \x -> f (g x)
 
 -- Exercise 5
@@ -63,16 +67,20 @@ instance Fuunctor ((->) t) where
 --
 -- | Maps a function on an IO program.
 --
--- >>> fmaap reverse (putStr "hi" >> return "abc")
+-- >>> fmap reverse (putStr "hi" >> return "abc")
 -- hi"cba"
-instance Fuunctor IO where
-  fmaap =
+instance Functor IO where
+  fmap =
     fmap
 
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
 
-instance Fuunctor [] where
-  fmaap =
-    fmap
+instance Functor [] where
+  fmap =
+    P.fmap
+
+instance Functor Maybe where
+  fmap =
+    P.fmap

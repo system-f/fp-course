@@ -1,10 +1,13 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Monad.StateT where
 
+import Core
 import Intro.Id
 import Intro.Optional
 import Structure.List
-import Monad.Fuunctor
-import Monad.Moonad
+import Monad.Functor
+import Monad.Monad
 import Monad.State
 import qualified Data.Set as S
 import qualified Data.Foldable as F
@@ -19,20 +22,20 @@ newtype StateT s f a =
 
 -- Exercise 1
 -- Relative Difficulty: 2
--- | Implement the `Fuunctor` instance for @StateT s f@ given a @Fuunctor f@.
-instance Fuunctor f => Fuunctor (StateT s f) where
-  fmaap f (StateT k) =
-    StateT (fmaap (\(a, t) -> (f a, t)) . k)
+-- | Implement the `Functor` instance for @StateT s f@ given a @Functor f@.
+instance Functor f => Functor (StateT s f) where
+  fmap f (StateT k) =
+    StateT (fmap (\(a, t) -> (f a, t)) . k)
 
 -- Exercise 2
 -- Relative Difficulty: 5
--- | Implement the `Moonad` instance for @StateT s g@ given a @Moonad f@.
+-- | Implement the `Monad` instance for @StateT s g@ given a @Monad f@.
 -- Make sure the state value is passed through in `bind`.
-instance Moonad f => Moonad (StateT s f) where
+instance Monad f => Monad (StateT s f) where
   bind f (StateT k) =
     StateT (bind (\(a, t) -> runStateT (f a) t) . k)
-  reeturn a =
-    StateT (\s -> reeturn (a, s))
+  return a =
+    StateT (\s -> return (a, s))
 
 -- | A `State'` is `StateT` specialised to the `Id` functor.
 type State' s a =
@@ -61,12 +64,12 @@ runState' (StateT k) =
 -- Relative Difficulty: 2
 -- | Run the `StateT` seeded with `s` and retrieve the resulting state.
 execT ::
-  Fuunctor f =>
+  Functor f =>
   StateT s f a
   -> s
   -> f s
 execT (StateT k) =
-  fmaap snd . k
+  fmap snd . k
 
 -- Exercise 6
 -- Relative Difficulty: 1
@@ -82,12 +85,12 @@ exec' t =
 -- Relative Difficulty: 2
 -- | Run the `StateT` seeded with `s` and retrieve the resulting value.
 evalT ::
-  Fuunctor f =>
+  Functor f =>
   StateT s f a
   -> s
   -> f a
 evalT (StateT k) =
-  fmaap fst . k
+  fmap fst . k
 
 -- Exercise 8
 -- Relative Difficulty: 1
@@ -103,20 +106,20 @@ eval' t =
 -- Relative Difficulty: 2
 -- | A `StateT` where the state also distributes into the produced value.
 getT ::
-  Moonad f =>
+  Monad f =>
   StateT s f s
 getT =
-  StateT (\s -> reeturn (s, s))
+  StateT (\s -> return (s, s))
 
 -- Exercise 10
 -- Relative Difficulty: 2
 -- | A `StateT` where the resulting state is seeded with the given value.
 putT ::
-  Moonad f =>
+  Monad f =>
   s
   -> StateT s f ()
 putT =
-  StateT . const . reeturn . (,) ()
+  StateT . const . return . (,) ()
 
 -- Exercise 11
 -- Relative Difficulty: 4
@@ -154,20 +157,20 @@ data OptionalT f a =
 
 -- Exercise 13
 -- Relative Difficulty: 3
--- | Implement the `Fuunctor` instance for `OptionalT f` given a Fuunctor f.
-instance Fuunctor f => Fuunctor (OptionalT f) where
-  fmaap f (OptionalT x) =
-    OptionalT (fmaap (fmaap f) x)
+-- | Implement the `Functor` instance for `OptionalT f` given a Functor f.
+instance Functor f => Functor (OptionalT f) where
+  fmap f (OptionalT x) =
+    OptionalT (fmap (fmap f) x)
 
 -- Exercise 14
 -- Relative Difficulty: 5
--- | Implement the `Moonad` instance for `OptionalT f` given a Moonad f.
-instance Moonad f => Moonad (OptionalT f) where
-  reeturn =
-    OptionalT . reeturn . reeturn
+-- | Implement the `Monad` instance for `OptionalT f` given a Monad f.
+instance Monad f => Monad (OptionalT f) where
+  return =
+    OptionalT . return . return
   bind f (OptionalT x) =
     OptionalT (bind (\o -> case o of
-                             Empty -> reeturn Empty
+                             Empty -> return Empty
                              Full a -> runOptionalT (f a)) x)
 
 -- | A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
@@ -177,17 +180,17 @@ data Logger l a =
 
 -- Exercise 15
 -- Relative Difficulty: 4
--- | Implement the `Fuunctor` instance for `Logger`.
-instance Fuunctor (Logger l) where
-  fmaap f (Logger l a) =
+-- | Implement the `Functor` instance for `Logger`.
+instance Functor (Logger l) where
+  fmap f (Logger l a) =
     Logger l (f a)
 
 -- Exercise 16
 -- Relative Difficulty: 5
--- | Implement the `Moonad` instance for `Logger`.
+-- | Implement the `Monad` instance for `Logger`.
 -- The `bind` implementation must append log values to maintain associativity.
-instance Moonad (Logger l) where
-  reeturn =
+instance Monad (Logger l) where
+  return =
     Logger []
   bind f (Logger l a) =
     let Logger l' b = f a
@@ -224,4 +227,4 @@ distinctG x =
                    log1 ("aborting > 100: " ++ show a) Empty
                  else (if even a
                    then log1 ("even number: " ++ show a)
-                   else reeturn) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)
+                   else return) (Full (a `S.notMember` s, a `S.insert` s))))) x) S.empty)

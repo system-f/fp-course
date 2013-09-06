@@ -1,9 +1,11 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Structure.ListZipper where
 
+import Core
 import Data.List
-import Monad.Fuunctor
+import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
@@ -35,25 +37,25 @@ data MaybeListZipper a =
 -- Exercise 1
 -- Relative Difficulty: 2
 --
--- | Implement the `Fuunctor` instance for `ListZipper`.
+-- | Implement the `Functor` instance for `ListZipper`.
 --
--- >>> fmaap (+1) (ListZipper [3,2,1] 4 [5,6,7])
+-- >>> fmap (+1) (ListZipper [3,2,1] 4 [5,6,7])
 -- [2,3,4]⋙5⋘[6,7,8]
-instance Fuunctor ListZipper where
-  fmaap f (ListZipper l x r) =
+instance Functor ListZipper where
+  fmap f (ListZipper l x r) =
     ListZipper (fmap f l) (f x) (fmap f r)
 
 -- Exercise 2
 -- Relative Difficulty: 2
 --
--- | Implement the `Fuunctor` instance for `MaybeListZipper`.
+-- | Implement the `Functor` instance for `MaybeListZipper`.
 --
--- >>> fmaap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
+-- >>> fmap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
 -- [2,3,4]⋙5⋘[6,7,8]
-instance Fuunctor MaybeListZipper where
-  fmaap f (IsZ z) =
-    IsZ (fmaap f z)
-  fmaap _ IsNotZ =
+instance Functor MaybeListZipper where
+  fmap f (IsZ z) =
+    IsZ (fmap f z)
+  fmap _ IsNotZ =
     IsNotZ
 
 -- Exercise 3
@@ -85,7 +87,7 @@ toMaybe (IsZ z) =
   Just z
 
 -- The `ListZipper'` type-class that will permit overloading operations.
-class Fuunctor f => ListZipper' f where
+class Functor f => ListZipper' f where
   toMaybeListZipper ::
     f a
     -> MaybeListZipper a
@@ -674,7 +676,7 @@ insertPushRight a z =
 -- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
 -- However, it is much more flexible, which we exploit here.
 
-class Fuunctor f => Apply f where
+class Functor f => Apply f where
   (<*>) ::
     f (a -> b)
     -> f a
@@ -684,7 +686,7 @@ class Apply f => Applicative f where
   unit ::
     a -> f a
 
-class Fuunctor f => Extend f where
+class Functor f => Extend f where
   (<<=) ::
     (f a -> b)
     -> f a
@@ -695,7 +697,7 @@ class Extend f => Comonad f where
     f a
     -> a
 
-class Fuunctor t => Traversable t where
+class Functor t => Traversable t where
   traverse ::
     Applicative f =>
     (a -> f b)
@@ -706,7 +708,7 @@ class Fuunctor t => Traversable t where
 -- It will also come in use later.
 instance Traversable [] where
   traverse f =
-    foldr (\a b -> fmaap (:) (f a) <*> b) (unit [])
+    foldr (\a b -> fmap (:) (f a) <*> b) (unit [])
 
 -- Exercise 31
 -- Relative Difficulty: 6
@@ -779,7 +781,7 @@ instance Comonad ListZipper where
 -- An effectful zipper is returned.
 instance Traversable ListZipper where
   traverse f (ListZipper l x r) =
-    fmaap (ListZipper . reverse) (traverse f $ reverse l) <*> f x <*> traverse f r
+    fmap (ListZipper . reverse) (traverse f $ reverse l) <*> f x <*> traverse f r
 
 -- Exercise 38
 -- Relative Difficulty: 5
@@ -790,7 +792,7 @@ instance Traversable MaybeListZipper where
   traverse _ IsNotZ =
     unit IsNotZ
   traverse f (IsZ z) =
-    fmaap IsZ (traverse f z)
+    fmap IsZ (traverse f z)
 
 -----------------------
 -- SUPPORT LIBRARIES --

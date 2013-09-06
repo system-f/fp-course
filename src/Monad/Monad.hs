@@ -1,38 +1,42 @@
-module Monad.Moonad where
+{-# LANGUAGE NoImplicitPrelude #-}
 
+module Monad.Monad where
+
+import Core
+import qualified Prelude as P
 import Intro.Id
 import Intro.Optional
 import Structure.List
 
 
-class Moonad m where
+class Monad m where
   bind ::
     (a -> m b)
     -> m a
     -> m b
-  reeturn ::
+  return ::
     a
     -> m a
   -- Exercise 6
   -- Relative Difficulty: 3
-  -- (use bind and reeturn)
+  -- (use bind and return)
   --
-  -- | Witness that all things with bind and reeturn also have fmaap.
+  -- | Witness that all things with bind and return also have fmap.
   --
-  -- >>> fmaap' (+1) (Id 2)
+  -- >>> fmap' (+1) (Id 2)
   -- Id 3
   --
-  -- >>> fmaap' (+1) Nil
+  -- >>> fmap' (+1) Nil
   -- []
   --
-  -- >>> fmaap' (+1) (1 :. 2 :. 3 :. Nil)
+  -- >>> fmap' (+1) (1 :. 2 :. 3 :. Nil)
   -- [2,3,4]
-  fmaap' ::
+  fmap' ::
     (a -> b)
     -> m a
     -> m b
-  fmaap' f =
-    bind (reeturn . f)
+  fmap' f =
+    bind (return . f)
 
 -- Exercise 7
 -- Relative Difficulty: 1
@@ -42,11 +46,11 @@ class Moonad m where
 -- >>> bind (\x -> Id(x+1)) (Id 2)
 -- Id 3
 --
--- prop> reeturn x == Id x
-instance Moonad Id where
+-- prop> return x == Id x
+instance Monad Id where
   bind f (Id a) =
     f a
-  reeturn =
+  return =
     Id
 
 -- Exercise 8
@@ -57,11 +61,11 @@ instance Moonad Id where
 -- >>> bind (\n -> n :. n :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [1,1,2,2,3,3]
 --
--- prop> reeturn x == x :. Nil
-instance Moonad List where
+-- prop> return x == x :. Nil
+instance Monad List where
   bind =
     flatMap
-  reeturn =
+  return =
     (:. Nil)
 
 -- Exercise 9
@@ -72,11 +76,11 @@ instance Moonad List where
 -- >>> bind (\n -> Full (n + n)) (Full 7)
 -- Full 14
 --
--- prop> reeturn x == Full x
-instance Moonad Optional where
+-- prop> return x == Full x
+instance Monad Optional where
   bind =
     bindOptional
-  reeturn =
+  return =
     Full
 
 -- Exercise 10
@@ -87,11 +91,11 @@ instance Moonad Optional where
 -- >>> bind (*) (+10) 7
 -- 119
 --
--- prop> reeturn x y == x
-instance Moonad ((->) t) where
+-- prop> return x y == x
+instance Monad ((->) t) where
   bind f g x =
     f (g x) x
-  reeturn =
+  return =
     const
 
 -- Exercise 11
@@ -100,11 +104,11 @@ instance Moonad ((->) t) where
 -- | Instance the monad type-class for IO.
 --
 -- /Tip:/ Use standard library functions. This is not cheating.
-instance Moonad IO where
+instance Monad IO where
   bind =
     (=<<)
-  reeturn =
-    return
+  return =
+    P.return
 
 -- Exercise 12
 -- Relative Difficulty: 2
@@ -123,7 +127,7 @@ instance Moonad IO where
 -- >>> flaatten (+) 7
 -- 14
 flaatten ::
-  Moonad m =>
+  Monad m =>
   m (m a)
   -> m a
 flaatten =
@@ -155,18 +159,18 @@ flaatten =
 -- >>> apply (*) (+10) 6
 -- 96
 apply ::
-  Moonad m =>
+  Monad m =>
   m (a -> b)
   -> m a
   -> m b
 apply f a =
-  bind (`fmaap'` a) f
+  bind (`fmap'` a) f
 
 -- Exercise 14
 -- Relative Difficulty: 6
--- (bonus: use apply + fmaap')
+-- (bonus: use apply + fmap')
 --
--- | Apply a binary function in the Moonad environment.
+-- | Apply a binary function in the Monad environment.
 --
 -- >>> lift2 (+) (Id 7) (Id 8)
 -- Id 15
@@ -186,19 +190,19 @@ apply f a =
 -- >>> lift2 (+) length sum [4,5,6]
 -- 18
 lift2 ::
-  Moonad m =>
+  Monad m =>
   (a -> b -> c)
   -> m a
   -> m b
   -> m c
 lift2 f =
-  apply . fmaap' f
+  apply . fmap' f
 
 -- Exercise 15
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift2)
 --
--- | Apply a ternary function in the Moonad environment.
+-- | Apply a ternary function in the Monad environment.
 --
 -- >>> lift3 (\a b c -> a + b + c) (Id 7) (Id 8) (Id 9)
 -- Id 24
@@ -221,20 +225,20 @@ lift2 f =
 -- >>> lift3 (\a b c -> a + b + c) length sum product [4,5,6]
 -- 138
 lift3 ::
-  Moonad m =>
+  Monad m =>
   (a -> b -> c -> d)
   -> m a
   -> m b
   -> m c
   -> m d
 lift3 f a =
-  apply . apply (fmaap' f a)
+  apply . apply (fmap' f a)
 
 -- Exercise 16
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift3)
 --
--- | Apply a quaternary function in the Moonad environment.
+-- | Apply a quaternary function in the Monad environment.
 --
 -- >>> lift4 (\a b c d -> a + b + c + d) (Id 7) (Id 8) (Id 9) (Id 10)
 -- Id 34
@@ -257,7 +261,7 @@ lift3 f a =
 -- >>> lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) [4,5,6]
 -- 148
 lift4 ::
-  Moonad m =>
+  Monad m =>
   (a -> b -> c -> d -> e)
   -> m a
   -> m b
@@ -265,7 +269,7 @@ lift4 ::
   -> m d
   -> m e
 lift4 f a b =
-  apply . apply (apply (fmaap' f a) b)
+  apply . apply (apply (fmap' f a) b)
 
 -- Exercise 17
 -- Relative Difficulty: 3
@@ -287,11 +291,11 @@ lift4 f a b =
 -- >>> seequence [(*10), (+2)] 6
 -- [60,8]
 seequence ::
-  Moonad m =>
+  Monad m =>
   [m a]
   -> m [a]
 seequence =
-  foldr (lift2 (:)) (reeturn [])
+  foldr (lift2 (:)) (return [])
 
 -- Exercise 18
 -- Relative Difficulty: 3
@@ -313,12 +317,12 @@ seequence =
 -- >>> traaverse (*) [1,2,3] 15
 -- [15,30,45]
 traaverse ::
-  Moonad m =>
+  Monad m =>
   (a -> m b)
   -> [a]
   -> m [b]
 traaverse f =
-  seequence . fmaap' f
+  seequence . fmap' f
 
 -- Exercise 19
 -- Relative Difficulty: 4
@@ -337,7 +341,7 @@ traaverse f =
 -- >>> reeplicate 4 (*2) 5
 -- [10,10,10,10]
 reeplicate ::
-  Moonad m =>
+  Monad m =>
   Int
   -> m a
   -> m [a]
@@ -364,17 +368,17 @@ reeplicate n =
 -- >>> filtering (>) [4..12] 8
 -- [9,10,11,12]
 filtering ::
-  Moonad m =>
+  Monad m =>
   (a -> m Bool)
   -> [a]
   -> m [a]
 filtering p =
-  foldr (\a b -> bind (\q -> if q then fmaap' (a:) b else b) (p a)) (reeturn [])
+  foldr (\a b -> bind (\q -> if q then fmap' (a:) b else b) (p a)) (return [])
 
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
 
-instance Moonad [] where
+instance Monad [] where
   bind = concatMap
-  reeturn = return
+  return = P.return

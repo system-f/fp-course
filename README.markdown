@@ -127,8 +127,8 @@ contain examples of data structures and Haskell syntax. The next step is to comp
 
 After this, the following progression of modules is recommended:
 
-* `Monad.Fuunctor`
-* `Monad.Moonad`
+* `Monad.Functor`
+* `Monad.Monad`
 * `Monad.State`
 * `Monad.StateT`
 * `Structure.ListZipper`
