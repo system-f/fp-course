@@ -2,7 +2,8 @@
 
 module Course
 (
-  module Algorithm.Anagrams
+  module Core
+, module Algorithm.Anagrams
 , module Algorithm.Cheque
 , module Algorithm.EditDistance
 , module Algorithm.FastAnagrams
@@ -27,6 +28,7 @@ module Course
 , module Structure.MetricSpace
 ) where
 
+import Core
 import Algorithm.Anagrams
 import Algorithm.Cheque
 import Algorithm.EditDistance
