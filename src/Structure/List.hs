@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, FlexibleInstances #-}
 
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo") with an appropriate solution.
@@ -255,3 +255,19 @@ rev =
   error "todo"
 
 -- END Exercises
+
+hlist ::
+  List a
+  -> [a]
+hlist =
+  foldRight (:) []
+
+listh ::
+  [a]
+  -> List a
+listh =
+  foldr (:.) Nil
+
+instance IsString (List Char) where
+  fromString =
+    listh
