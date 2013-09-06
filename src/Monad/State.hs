@@ -4,6 +4,7 @@
 module Monad.State where
 
 import Core
+import qualified Prelude as P
 import Intro.Optional
 import Structure.List
 import Monad.Functor
@@ -239,7 +240,7 @@ isHappy =
   F.elem 1 .
     (`eval` S.empty) .
     findM (\j -> State $ \s -> (j == 1 || S.member j s, S.insert j s)) .
-    produce (sum .
+    produce (P.sum .
              fmap (flaatten (*) .
                    toInteger .
                    digitToInt) .

@@ -35,7 +35,7 @@ instance Functor Id where
 -- [2,3,4]
 instance Functor List where
   fmap =
-    maap
+    map
 
 -- Exercise 3
 -- Relative Difficulty: 2
