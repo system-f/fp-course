@@ -5,6 +5,7 @@ module Core(
   , (||)
   , (&&)
   , const
+  , seq
   , id
   , flip
   , not
@@ -52,6 +53,7 @@ import Prelude(
   , (||)
   , (&&)
   , const
+  , seq
   , id
   , flip
   , not
