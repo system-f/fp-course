@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo") with an appropriate solution.
 -- + These exercises may be done in any order, however:
@@ -21,7 +23,7 @@ data List t = Nil | t :. List t deriving Eq
 -- Right-associative
 infixr 5 :.
 
-instance (Show t) => Show (List t) where
+instance Show t => Show (List t) where
   show = show . foldRight (:) []
 
 -- functions over List that you may consider using
