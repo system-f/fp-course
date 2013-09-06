@@ -16,6 +16,7 @@ module Core(
   , error
   , even
   , either
+  , succ
   , String
   , Int
   , Integer
@@ -60,6 +61,7 @@ import Prelude(
   , error
   , even
   , either
+  , succ
   , String
   , Int
   , Integer
