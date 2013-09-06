@@ -37,9 +37,7 @@ module Core(
   , writeFile
   , concatMap
   , length
-  , sum
   , product
-  , filter
   , replicate
   , reverse
   , foldr
@@ -86,9 +84,7 @@ import Prelude(
   , writeFile
   , concatMap
   , length
-  , sum
   , product
-  , filter
   , replicate
   , reverse
   , foldr
