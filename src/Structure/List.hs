@@ -12,8 +12,13 @@
 module Structure.List where
 
 import Core
+import qualified Prelude as P
 import Control.Applicative
 import Intro.Optional
+
+-- $setup
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- BEGIN Helper functions and data types
 

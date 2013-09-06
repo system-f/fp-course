@@ -9,6 +9,8 @@ import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --

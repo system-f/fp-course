@@ -1,13 +1,17 @@
 module Intro.Validation where
 
-type Err = String
-
 --  class Validation<A> {
 --    Validation(String error) {} // Error
 --    Validation(A value) {} // Value
 --  }
+
+-- $setup
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (Validation a) where arbitrary = fmap (either Error Value) arbitrary
 data Validation a = Error Err | Value a
   deriving (Eq, Show)
+
+type Err = String
 
 -- | Returns whether or not the given validation is an error.
 --
@@ -91,4 +95,3 @@ errorOr (Value _) a = a
 
 valueValidation :: a -> Validation a
 valueValidation = Value
-

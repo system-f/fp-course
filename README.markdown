@@ -111,7 +111,7 @@ the code for that exercise. Examples begin with `>>>` while properties begin
 with `prop>`.
 
 The solution to the exercise must satisfy these tests. You can check if you have
-satisfied these tests with cabal-install and doctest. From the base directory of
+satisfied all tests with cabal-install and doctest. From the base directory of
 this source code:
 
     > cabal update
@@ -119,6 +119,15 @@ this source code:
     > cabal configure --enable-tests
     > cabal build
     > cabal test
+
+Alternatively, you may run the tests in a single source file by using `doctest`
+explicitly. From the base directory of this source code:
+
+    > doctest -isrc <filename.hs>
+
+Note: There is a [bug in GHC 7.4.1](http://ghc.haskell.org/trac/ghc/ticket/5820)
+where for some configurations, running the tests will cause an unjustified
+compiler error.
 
 ### Progression
 
