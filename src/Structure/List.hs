@@ -12,6 +12,7 @@
 module Structure.List where
 
 import Core
+import qualified Prelude as P
 import Control.Applicative
 import Intro.Optional
 
@@ -255,3 +256,40 @@ rev =
   error "todo"
 
 -- END Exercises
+
+hlist ::
+  List a
+  -> [a]
+hlist =
+  foldRight (:) []
+
+listh ::
+  [a]
+  -> List a
+listh =
+  P.foldr (:.) Nil
+
+putStr ::
+  List Char
+  -> IO ()
+putStr =
+  P.putStr . hlist
+
+putStrLn ::
+  List Char
+  -> IO ()
+putStrLn =
+  P.putStrLn . hlist
+
+product ::
+  List Integer
+  -> Integer
+product =
+  P.product . hlist
+
+replicate ::
+  Int
+  -> a
+  -> List a
+replicate n =
+  listh . P.replicate n

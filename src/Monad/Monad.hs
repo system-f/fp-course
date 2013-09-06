@@ -380,5 +380,5 @@ filtering =
 -----------------------
 
 instance Monad [] where
-  bind = concatMap
+  bind = (P.=<<)
   return = P.return

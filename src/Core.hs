@@ -18,7 +18,8 @@ module Core(
   , even
   , either
   , succ
-  , String
+  , getChar
+  , Char
   , Int
   , Integer
   , IO
@@ -30,15 +31,6 @@ module Core(
   , Show(..)
   , Num(..)
   , Integral(..)
-  , putStr
-  , putStrLn
-  , getChar
-  , concatMap
-  , length
-  , product
-  , replicate
-  , foldr
-  , (++)
   )
  where
 
@@ -62,7 +54,8 @@ import Prelude(
   , even
   , either
   , succ
-  , String
+  , getChar
+  , Char
   , Int
   , Integer
   , IO
@@ -74,13 +67,4 @@ import Prelude(
   , Show(..)
   , Num(..)
   , Integral(..)
-  , putStr
-  , putStrLn
-  , getChar
-  , concatMap
-  , length
-  , product
-  , replicate
-  , foldr
-  , (++)
   )
