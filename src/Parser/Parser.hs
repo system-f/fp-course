@@ -271,7 +271,8 @@ digit =
 --
 --   * The input does not produce a value series of digits
 --
--- /Tip:/ Use the @bindParser@, @valueParser@, @list@ and @digit@ functions.
+-- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @reads@ and @digit@
+-- functions.
 natural ::
   Parser Int
 natural =

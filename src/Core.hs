@@ -19,6 +19,7 @@ module Core(
   , even
   , either
   , succ
+  , reads
   , String
   , Char
   , Int
@@ -66,6 +67,7 @@ import Prelude(
   , even
   , either
   , succ
+  , reads
   , String
   , Char
   , Int
