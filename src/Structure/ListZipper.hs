@@ -697,8 +697,8 @@ instance Traversable MaybeListZipper where
 
 instance Show a => Show (ListZipper a) where
   show (ListZipper l x r) =
-    (show . reverse $ l) ++ ('⋙':show x ++ "⋘") ++ show r
+    show l ++ " >" ++ show x ++ "< " ++ show r
 
 instance Show a => Show (MaybeListZipper a) where
   show (IsZ z) = show z
-  show IsNotZ = "∅"
+  show IsNotZ = "><"
