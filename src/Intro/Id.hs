@@ -8,5 +8,5 @@ runId (Id a) = a
 mapId :: (a -> b) -> Id a -> Id b
 mapId f (Id a)    = Id (f a)
 
-bindId :: Id a -> (a -> Id b) -> Id b
-bindId (Id a) f = f a
+bindId :: (a -> Id b) -> Id a -> Id b
+bindId f (Id a) = f a

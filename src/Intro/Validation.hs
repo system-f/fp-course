@@ -53,19 +53,19 @@ mapValidation f (Value a) = Value (f a)
 
 -- | Binds a function on a validation's value side to a new validation.
 --
--- >>> bindValidation (Error "message") (\n -> if even n then Value (n + 10) else Error "odd")
+-- >>> bindValidation (\n -> if even n then Value (n + 10) else Error "odd") (Error "message")
 -- Error "message"
 --
--- >>> bindValidation (Value 7) (\n -> if even n then Value (n + 10) else Error "odd")
+-- >>> bindValidation (\n -> if even n then Value (n + 10) else Error "odd") (Value 7)
 -- Error "odd"
 --
--- >>> bindValidation (Value 8) (\n -> if even n then Value (n + 10) else Error "odd")
+-- >>> bindValidation (\n -> if even n then Value (n + 10) else Error "odd") (Value 8)
 -- Value 18
 --
--- prop> bindValidation x Value == x
-bindValidation :: Validation a -> (a -> Validation b) -> Validation b
-bindValidation (Error s) _ = Error s
-bindValidation (Value a) f = f a
+-- prop> bindValidation Value x == x
+bindValidation :: (a -> Validation b) -> Validation a -> Validation b
+bindValidation _ (Error s) = Error s
+bindValidation f (Value a) = f a
 
 -- | Returns a validation's value side or the given default if it is an error.
 --
