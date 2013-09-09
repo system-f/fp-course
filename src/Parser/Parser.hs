@@ -107,23 +107,23 @@ character =
 --
 -- /Tip:/ Use @withResultInput@.
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "abc"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "abc"
 -- Result >bc< 'v'
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "a"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "a"
 -- Result >< 'v'
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "xabc"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "xabc"
 -- Result >bc< 'a'
 --
--- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "")
+-- >>> isErrorResult (parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "")
 -- True
 --
--- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
+-- >>> isErrorResult (parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "x")
 -- True
 bindParser ::
-  Parser a
-  -> (a -> Parser b)
+  (a -> Parser b)
+  -> Parser a
   -> Parser b
 bindParser =
   error "todo"
