@@ -29,19 +29,19 @@ instance Show a => Show (ParseResult a) where
     "Result >" ++ i ++ "< " ++ show a
 
 -- Function to also access the input while binding parsers.
-bindResult ::
+withResultInput ::
   (Input -> a -> ParseResult b)
   -> ParseResult a
   -> ParseResult b
-bindResult _ UnexpectedEof =
+withResultInput _ UnexpectedEof =
   UnexpectedEof
-bindResult _ (ExpectedEof i) =
+withResultInput _ (ExpectedEof i) =
   ExpectedEof i
-bindResult _ (UnexpectedChar c) =
+withResultInput _ (UnexpectedChar c) =
   UnexpectedChar c
-bindResult _ Failed =
+withResultInput _ Failed =
   Failed
-bindResult f (Result i a) =
+withResultInput f (Result i a) =
   f i a
 
 -- Function to determine is a parse result is an error.
@@ -105,7 +105,7 @@ character =
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- /Tip:/ Use @bindResult@.
+-- /Tip:/ Use @withResultInput@.
 --
 -- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "abc"
 -- Result >bc< 'v'
