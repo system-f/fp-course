@@ -41,7 +41,7 @@ data MaybeListZipper a =
 -- | Implement the `Functor` instance for `ListZipper`.
 --
 -- >>> fmap (+1) (ListZipper [3,2,1] 4 [5,6,7])
--- [2,3,4]⋙5⋘[6,7,8]
+-- [4,3,2] >5< [6,7,8]
 instance Functor ListZipper where
   fmap =
     error "todo"
@@ -51,7 +51,7 @@ instance Functor ListZipper where
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
 -- >>> fmap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
--- [2,3,4]⋙5⋘[6,7,8]
+-- [4,3,2] >5< [6,7,8]
 instance Functor MaybeListZipper where
   fmap =
     error "todo"
@@ -114,10 +114,10 @@ toList =
 -- | Update the focus of the zipper with the given function on the current focus.
 --
 -- >>> withFocus (+1) (ListZipper [] 0 [1])
--- []⋙1⋘[1]
+-- [] >1< [1]
 --
 -- >>> withFocus (+1) (ListZipper [1,0] 2 [3,4])
--- [0,1]⋙3⋘[3,4]
+-- [1,0]> 3 <[3,4]
 withFocus ::
   ListZipper' f =>
   (a -> a)
@@ -132,10 +132,10 @@ withFocus =
 -- /Tip:/ Use `withFocus`.
 --
 -- >>> setFocus 1 (ListZipper [] 0 [1])
--- []⋙1⋘[1]
+-- [] >1< [1]
 --
 -- >>> setFocus 1 (ListZipper [1,0] 2 [3,4])
--- [0,1]⋙1⋘[3,4]
+-- [1,0] >1< [3,4]
 setFocus ::
   ListZipper' f =>
   a
@@ -225,10 +225,10 @@ findRight =
 -- CAUTION: This function is non-total, why?
 --
 -- >>> moveLeftLoop (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[4,5,6,7]
+-- [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeftLoop (ListZipper [] 1 [2,3,4])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 moveLeftLoop ::
   ListZipper' f =>
   f a
@@ -241,10 +241,10 @@ moveLeftLoop =
 -- | Move the zipper right, or if there are no elements to the right, go to the far left.
 --
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙5⋘[6,7]
+-- [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [])
--- []⋙1⋘[2,3,4]
+-- [] >1< [2,3,4]
 moveRightLoop ::
   ListZipper' f =>
   f a
@@ -257,10 +257,10 @@ moveRightLoop =
 -- | Move the zipper one position to the left.
 --
 -- >>> moveLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[4,5,6,7]
+-- [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 moveLeft ::
   ListZipper' f =>
   f a
@@ -273,10 +273,10 @@ moveLeft =
 -- | Move the zipper one position to the right.
 --
 -- >>> moveRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙5⋘[6,7]
+-- [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 moveRight ::
   ListZipper' f =>
   f a
@@ -289,10 +289,10 @@ moveRight =
 -- | Swap the current focus with the value to the left of focus.
 --
 -- >>> swapLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,4]⋙3⋘[5,6,7]
+-- [4,2,1] >3< [5,6,7]
 --
 -- >>> swapLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 swapLeft ::
   ListZipper' f =>
   f a
@@ -305,10 +305,10 @@ swapLeft =
 -- | Swap the current focus with the value to the right of focus.
 --
 -- >>> swapRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙5⋘[4,6,7]
+-- [3,2,1] >5< [4,6,7]
 --
 -- >>> swapRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 swapRight ::
   ListZipper' f =>
   f a
@@ -321,10 +321,10 @@ swapRight =
 -- | Drop all values to the left of the focus.
 --
 -- >>> dropLefts (ListZipper [3,2,1] 4 [5,6,7])
--- []⋙4⋘[5,6,7]
+-- [] >4< [5,6,7]
 --
 -- >>> dropLefts (ListZipper [] 1 [2,3,4])
--- []⋙1⋘[2,3,4]
+-- [] >1< [2,3,4]
 --
 -- prop> dropLefts (ListZipper l x r) == ListZipper [] x r
 dropLefts ::
@@ -339,10 +339,10 @@ dropLefts =
 -- | Drop all values to the right of the focus.
 --
 -- >>> dropRights (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 --
 -- >>> dropRights (ListZipper [3,2,1] 4 [])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 --
 -- prop> dropRights (ListZipper l x r) == ListZipper l x []
 dropRights ::
@@ -383,13 +383,13 @@ moveRightN =
 -- Left 3
 --
 -- >>> moveLeftN' 1 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2]⋙3⋘[4,5,6,7]
+-- Right [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeftN' 0 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3]⋙4⋘[5,6,7]
+-- Right [3,2,1] >4< [5,6,7]
 --
 -- >>> moveLeftN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3,4,5]⋙6⋘[7]
+-- Right [5,4,3,2,1] >6< [7]
 --
 -- >>> moveLeftN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
@@ -410,13 +410,13 @@ moveLeftN' =
 -- Left 3
 --
 -- >>> moveRightN' 1 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3,4]⋙5⋘[6,7]
+-- Right [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRightN' 0 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3]⋙4⋘[5,6,7]
+-- Right [3,2,1] >4< [5,6,7]
 --
 -- >>> moveRightN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1]⋙2⋘[3,4,5,6,7]
+-- Right [1] >2< [3,4,5,6,7]
 --
 -- >>> moveRightN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
@@ -433,13 +433,13 @@ moveRightN' =
 -- | Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
 --
 -- >>> nth 1 (ListZipper [3,2,1] 4 [5,6,7])
--- [1]⋙2⋘[3,4,5,6,7]
+-- [1] >2< [3,4,5,6,7]
 --
 -- >>> nth 5 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5]⋙6⋘[7]
+-- [5,4,3,2,1] >6< [7]
 --
 -- >>> nth 8 (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- ><
 nth ::
   ListZipper' f =>
   Int
@@ -469,7 +469,7 @@ index =
 -- CAUTION: This function is non-total, why?
 --
 -- >>> end (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5,6]⋙7⋘[]
+-- [6,5,4,3,2,1] >7< []
 end ::
   ListZipper' f =>
   f a
@@ -482,7 +482,7 @@ end =
 -- | Move the focus to the start of the zipper.
 --
 -- >>> start (ListZipper [3,2,1] 4 [5,6,7])
--- []⋙1⋘[2,3,4,5,6,7]
+-- [] >1< [2,3,4,5,6,7]
 start ::
   ListZipper' f =>
   f a
@@ -495,10 +495,10 @@ start =
 -- | Delete the current focus and pull the left values to take the empty position.
 --
 -- >>> deletePullLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[5,6,7]
+-- [2,1] >3< [5,6,7]
 --
 -- >>> deletePullLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 deletePullLeft ::
   ListZipper' f =>
   f a
@@ -511,10 +511,10 @@ deletePullLeft =
 -- | Delete the current focus and pull the right values to take the empty position.
 --
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙5⋘[6,7]
+-- [3,2,1] >5< [6,7]
 --
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 deletePullRight ::
   ListZipper' f =>
   f a
@@ -527,10 +527,10 @@ deletePullRight =
 -- | Insert at the current focus and push the left values to make way for the new position.
 --
 -- >>> insertPushLeft 15 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙15⋘[5,6,7]
+-- [4,3,2,1] >15< [5,6,7]
 --
 -- >>> insertPushLeft 15 (ListZipper [] 1 [2,3,4])
--- [1]⋙15⋘[2,3,4]
+-- [1] >15< [2,3,4]
 --
 -- prop> maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
 insertPushLeft ::
@@ -546,10 +546,10 @@ insertPushLeft =
 -- | Insert at the current focus and push the right values to make way for the new position.
 --
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙15⋘[4,5,6,7]
+-- [3,2,1] >15< [4,5,6,7]
 --
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [])
--- [1,2,3]⋙15⋘[4]
+-- [3,2,1] >15< [4]
 --
 -- prop> maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
 insertPushRight ::
@@ -605,7 +605,7 @@ instance Traversable [] where
 -- This implementation zips functions with values by function application.
 --
 -- >>> ListZipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> ListZipper [3,2,1] 4 [5,6,7]
--- [12,5]⋙8⋘[15,24,12]
+-- [5,12] >8< [15,24,12]
 instance Apply ListZipper where
   (<*>) =
     error "todo"
@@ -646,7 +646,7 @@ instance Applicative MaybeListZipper where
 -- /Tip:/ Use @Data.List#unfoldr@.
 --
 -- >>> id <<= (ListZipper [2,1] 3 [4,5])
--- [[]⋙1⋘[2,3,4,5],[1]⋙2⋘[3,4,5]]⋙[1,2]⋙3⋘[4,5]⋘[[1,2,3]⋙4⋘[5],[1,2,3,4]⋙5⋘[]]
+-- [[] >1< [2,3,4,5],[1] >2< [3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
 instance Extend ListZipper where
   (<<=) =
     error "todo"
