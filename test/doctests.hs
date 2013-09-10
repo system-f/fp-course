@@ -24,7 +24,6 @@ sourceDirectories ::
 sourceDirectories =
   [
     "src"
-  , "test" </> "src"
   ]
 
 isSourceFile ::

@@ -4,13 +4,14 @@
 module Structure.ListZipper where
 
 import Core
+import qualified Prelude as P
 import Data.List
 import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
 -- >>> import Test.QuickCheck
--- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; return (ListZipper l x r)
+-- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -60,7 +61,7 @@ instance Functor MaybeListZipper where
 --
 -- | Create a `MaybeListZipper` positioning the focus at the head.
 --
--- prop> xs == toList (fromList xs)
+-- prop> xs == toListZ (fromList xs)
 fromList ::
   [a]
   -> MaybeListZipper a
@@ -72,42 +73,69 @@ fromList =
 -- | Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
 --
 -- prop> null xs == isNothing (toMaybe (fromList xs))
+--
+-- prop> toMaybe (fromMaybe z) == z
 toMaybe ::
   MaybeListZipper a
   -> Maybe (ListZipper a)
 toMaybe =
   error "todo"
 
--- The `ListZipper'` type-class that will permit overloading operations.
-class Functor f => ListZipper' f where
-  toMaybeListZipper ::
-    f a
-    -> MaybeListZipper a
-  fromListZipper ::
-    ListZipper a
-    -> f a
+fromMaybe ::
+  Maybe (ListZipper a)
+  -> MaybeListZipper a
+fromMaybe Nothing =
+  IsNotZ
+fromMaybe (Just z) =
+  IsZ z
 
-instance ListZipper' ListZipper where
-  toMaybeListZipper =
-    IsZ
-  fromListZipper =
-    id
+asZipper ::
+  (ListZipper a -> ListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+asZipper f =
+  asMaybeZipper (IsZ . f)
 
-instance ListZipper' MaybeListZipper where
-  toMaybeListZipper =
-    id
-  fromListZipper =
-    IsZ
+(>$>)::
+  (ListZipper a -> ListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+(>$>) =
+  asZipper
+
+asMaybeZipper ::
+  (ListZipper a -> MaybeListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+asMaybeZipper _ IsNotZ =
+  IsNotZ
+asMaybeZipper f (IsZ z) =
+  f z
+
+(>->) ::
+  (ListZipper a -> MaybeListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+(>->) =
+  asMaybeZipper
 
 -- Exercise 5
 --
 -- | Convert the given zipper back to a list.
 toList ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> [a]
 toList =
   error "todo"
+
+-- | Convert the given (maybe) zipper back to a list.
+toListZ ::
+  MaybeListZipper a
+  -> [a]
+toListZ IsNotZ =
+  []
+toListZ (IsZ z) =
+  toList z
 
 -- Exercise 6
 --
@@ -117,12 +145,11 @@ toList =
 -- [] >1< [1]
 --
 -- >>> withFocus (+1) (ListZipper [1,0] 2 [3,4])
--- [1,0]> 3 <[3,4]
+-- [1,0] >3< [3,4]
 withFocus ::
-  ListZipper' f =>
   (a -> a)
-  -> f a
-  -> f a
+  -> ListZipper a
+  -> ListZipper a
 withFocus =
   error "todo"
 
@@ -137,10 +164,9 @@ withFocus =
 -- >>> setFocus 1 (ListZipper [1,0] 2 [3,4])
 -- [1,0] >1< [3,4]
 setFocus ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
+  -> ListZipper a
+  -> ListZipper a
 setFocus =
   error "todo"
 
@@ -148,10 +174,9 @@ setFocus =
 --
 -- z := "abc" -- sets the focus on the zipper z to the value "abc".
 (.=) ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> a
-  -> f a
+  -> ListZipper a
 (.=) =
   flip setFocus
 
@@ -165,8 +190,7 @@ setFocus =
 -- >>> hasLeft (ListZipper [] 0 [1,2])
 -- False
 hasLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Bool
 hasLeft =
   error "todo"
@@ -181,8 +205,7 @@ hasLeft =
 -- >>> hasRight (ListZipper [1,0] 2 [])
 -- False
 hasRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Bool
 hasRight =
   error "todo"
@@ -192,13 +215,12 @@ hasRight =
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findLeft (const True) (fromList xs) == fromList xs
+-- prop> findLeft (const True) >-> fromList xs == fromList xs
 --
--- prop> case xs of [] -> findLeft (const False) IsNotZ == IsNotZ; (x:xs') -> findLeft (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
+-- prop> findLeft (const False) (ListZipper l x r) == IsNotZ
 findLeft ::
-  ListZipper' f =>
   (a -> Bool)
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 findLeft =
   error "todo"
@@ -208,13 +230,12 @@ findLeft =
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findRight (const True) (fromList xs) == fromList xs
+-- prop> findRight (const True) >-> fromList xs == fromList xs
 --
--- prop> case xs of [] -> findRight (const False) IsNotZ == IsNotZ; (x:xs') -> findRight (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
+-- prop> findRight (const False) (ListZipper l x r) == IsNotZ
 findRight ::
-  ListZipper' f =>
   (a -> Bool)
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 findRight =
   error "todo"
@@ -230,9 +251,8 @@ findRight =
 -- >>> moveLeftLoop (ListZipper [] 1 [2,3,4])
 -- [3,2,1] >4< []
 moveLeftLoop ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 moveLeftLoop =
   error "todo"
 
@@ -246,9 +266,8 @@ moveLeftLoop =
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [])
 -- [] >1< [2,3,4]
 moveRightLoop ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 moveRightLoop =
   error "todo"
 
@@ -262,8 +281,7 @@ moveRightLoop =
 -- >>> moveLeft (ListZipper [] 1 [2,3,4])
 -- ><
 moveLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 moveLeft =
   error "todo"
@@ -278,8 +296,7 @@ moveLeft =
 -- >>> moveRight (ListZipper [3,2,1] 4 [])
 -- ><
 moveRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 moveRight =
   error "todo"
@@ -294,8 +311,7 @@ moveRight =
 -- >>> swapLeft (ListZipper [] 1 [2,3,4])
 -- ><
 swapLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 swapLeft =
   error "todo"
@@ -310,8 +326,7 @@ swapLeft =
 -- >>> swapRight (ListZipper [3,2,1] 4 [])
 -- ><
 swapRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 swapRight =
   error "todo"
@@ -328,9 +343,8 @@ swapRight =
 --
 -- prop> dropLefts (ListZipper l x r) == ListZipper [] x r
 dropLefts ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 dropLefts =
   error "todo"
 
@@ -346,9 +360,8 @@ dropLefts =
 --
 -- prop> dropRights (ListZipper l x r) == ListZipper l x []
 dropRights ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 dropRights =
   error "todo"
 
@@ -356,9 +369,8 @@ dropRights =
 --
 -- Move the focus left the given number of positions. If the value is negative, move right instead.
 moveLeftN ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 moveLeftN =
   error "todo"
@@ -367,9 +379,8 @@ moveLeftN =
 --
 -- Move the focus right the given number of positions. If the value is negative, move left instead.
 moveRightN ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 moveRightN =
   error "todo"
@@ -394,10 +405,9 @@ moveRightN =
 -- >>> moveLeftN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
 moveLeftN' ::
-  ListZipper' f =>
   Int
-  -> f a
-  -> Either Int (f a)
+  -> ListZipper a
+  -> Either Int (ListZipper a)
 moveLeftN' =
   error "todo"
 
@@ -421,10 +431,9 @@ moveLeftN' =
 -- >>> moveRightN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
 moveRightN' ::
-  ListZipper' f =>
   Int
-  -> f a
-  -> Either Int (f a)
+  -> ListZipper a
+  -> Either Int (ListZipper a)
 moveRightN' =
   error "todo"
 
@@ -441,9 +450,8 @@ moveRightN' =
 -- >>> nth 8 (ListZipper [3,2,1] 4 [5,6,7])
 -- ><
 nth ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 nth =
   error "todo"
@@ -455,10 +463,9 @@ nth =
 -- >>> index (ListZipper [3,2,1] 4 [5,6,7])
 -- Just 3
 --
--- prop> maybe True (\i -> maybe False (==z) (toMaybe (nth i z))) (index z)
+-- prop> P.maybe True (\i -> P.maybe False (==z) (toMaybe (nth i z))) (index z)
 index ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Maybe Int
 index =
   error "todo"
@@ -471,9 +478,8 @@ index =
 -- >>> end (ListZipper [3,2,1] 4 [5,6,7])
 -- [6,5,4,3,2,1] >7< []
 end ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 end =
   error "todo"
 
@@ -484,9 +490,8 @@ end =
 -- >>> start (ListZipper [3,2,1] 4 [5,6,7])
 -- [] >1< [2,3,4,5,6,7]
 start ::
-  ListZipper' f =>
-  f a
-  -> f a
+  ListZipper a
+  -> ListZipper a
 start =
   error "todo"
 
@@ -500,8 +505,7 @@ start =
 -- >>> deletePullLeft (ListZipper [] 1 [2,3,4])
 -- ><
 deletePullLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 deletePullLeft =
   error "todo"
@@ -516,8 +520,7 @@ deletePullLeft =
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [])
 -- ><
 deletePullRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
 deletePullRight =
   error "todo"
@@ -532,12 +535,11 @@ deletePullRight =
 -- >>> insertPushLeft 15 (ListZipper [] 1 [2,3,4])
 -- [1] >15< [2,3,4]
 --
--- prop> maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
+-- prop> P.maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
 insertPushLeft ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
+  -> ListZipper a
+  -> ListZipper a
 insertPushLeft =
   error "todo"
 
@@ -551,12 +553,11 @@ insertPushLeft =
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [])
 -- [3,2,1] >15< [4]
 --
--- prop> maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
+-- prop> P.maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
 insertPushRight ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
+  -> ListZipper a
+  -> ListZipper a
 insertPushRight =
   error "todo"
 
@@ -646,7 +647,7 @@ instance Applicative MaybeListZipper where
 -- /Tip:/ Use @Data.List#unfoldr@.
 --
 -- >>> id <<= (ListZipper [2,1] 3 [4,5])
--- [[] >1< [2,3,4,5],[1] >2< [3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
+-- [[1] >2< [3,4,5],[] >1< [2,3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
 instance Extend ListZipper where
   (<<=) =
     error "todo"

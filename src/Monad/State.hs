@@ -15,6 +15,8 @@ import qualified Data.Foldable as F
 -- $setup
 -- >>> import Test.QuickCheck.Function
 -- >>> import Data.List(nub)
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 newtype State s a =
@@ -135,7 +137,7 @@ findM =
 --
 -- /Tip:/ Use `findM` and `State` with a @Data.Set#Set@.
 --
--- prop> case firstRepeat xs of Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'; Full x -> len (fiilter (== x) xs) > 1
+-- prop> case firstRepeat xs of Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'; Full x -> len (filter (== x) xs) > 1
 firstRepeat ::
   Ord a =>
   List a
