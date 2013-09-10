@@ -15,10 +15,13 @@ module Core(
   , fst
   , snd
   , error
+  , undefined
   , even
   , either
   , succ
+  , reads
   , String
+  , Char
   , Int
   , Integer
   , IO
@@ -30,6 +33,7 @@ module Core(
   , Show(..)
   , Num(..)
   , Integral(..)
+  , IsString(..)
   , putStr
   , putStrLn
   , getChar
@@ -63,10 +67,13 @@ import Prelude(
   , fst
   , snd
   , error
+  , undefined
   , even
   , either
   , succ
+  , reads
   , String
+  , Char
   , Int
   , Integer
   , IO
@@ -91,4 +98,8 @@ import Prelude(
   , reverse
   , foldr
   , (++)
+  )
+
+import GHC.Exts(
+  IsString(..)
   )

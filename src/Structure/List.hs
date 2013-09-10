@@ -1,4 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, FlexibleInstances #-}
 
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo") with an appropriate solution.
@@ -12,8 +12,13 @@
 module Structure.List where
 
 import Core
+import qualified Prelude as P
 import Control.Applicative
 import Intro.Optional
+
+-- $setup
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- BEGIN Helper functions and data types
 
@@ -255,3 +260,19 @@ rev =
   foldLeft (flip (:.)) Nil
 
 -- END Exercises
+
+hlist ::
+  List a
+  -> [a]
+hlist =
+  foldRight (:) []
+
+listh ::
+  [a]
+  -> List a
+listh =
+  foldr (:.) Nil
+
+instance IsString (List Char) where
+  fromString =
+    listh

@@ -380,5 +380,9 @@ filtering p =
 -----------------------
 
 instance Monad [] where
-  bind = concatMap
+  bind = (P.=<<)
+  return = P.return
+
+instance Monad Maybe where
+  bind = (P.=<<)
   return = P.return

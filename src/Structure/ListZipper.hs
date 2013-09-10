@@ -9,6 +9,8 @@ import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
+-- >>> import Test.QuickCheck
+-- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -35,23 +37,21 @@ data MaybeListZipper a =
   deriving Eq
 
 -- Exercise 1
--- Relative Difficulty: 2
 --
 -- | Implement the `Functor` instance for `ListZipper`.
 --
 -- >>> fmap (+1) (ListZipper [3,2,1] 4 [5,6,7])
--- [2,3,4]⋙5⋘[6,7,8]
+-- [4,3,2] >5< [6,7,8]
 instance Functor ListZipper where
   fmap f (ListZipper l x r) =
     ListZipper (fmap f l) (f x) (fmap f r)
 
 -- Exercise 2
--- Relative Difficulty: 2
 --
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
 -- >>> fmap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
--- [2,3,4]⋙5⋘[6,7,8]
+-- [4,3,2] >5< [6,7,8]
 instance Functor MaybeListZipper where
   fmap f (IsZ z) =
     IsZ (fmap f z)
@@ -59,7 +59,6 @@ instance Functor MaybeListZipper where
     IsNotZ
 
 -- Exercise 3
--- Relative Difficulty: 2
 --
 -- | Create a `MaybeListZipper` positioning the focus at the head.
 --
@@ -72,8 +71,7 @@ fromList [] =
 fromList (h:t) =
   IsZ (ListZipper [] h t)
 
--- Exercise 3
--- Relative Difficulty: 2
+-- Exercise 4
 --
 -- | Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
 --
@@ -108,7 +106,6 @@ instance ListZipper' MaybeListZipper where
     IsZ
 
 -- Exercise 5
--- Relative Difficulty: 2
 --
 -- | Convert the given zipper back to a list.
 toList ::
@@ -121,15 +118,14 @@ toList z =
     IsNotZ -> []
 
 -- Exercise 6
--- Relative Difficulty: 3
 --
 -- | Update the focus of the zipper with the given function on the current focus.
 --
 -- >>> withFocus (+1) (ListZipper [] 0 [1])
--- []⋙1⋘[1]
+-- [] >1< [1]
 --
 -- >>> withFocus (+1) (ListZipper [1,0] 2 [3,4])
--- [0,1]⋙3⋘[3,4]
+-- [1,0]> 3 <[3,4]
 withFocus ::
   ListZipper' f =>
   (a -> a)
@@ -141,16 +137,15 @@ withFocus f z =
     IsNotZ -> z
 
 -- Exercise 7
--- Relative Difficulty: 2
 --
 -- | Set the focus of the zipper to the given value.
 -- /Tip:/ Use `withFocus`.
 --
 -- >>> setFocus 1 (ListZipper [] 0 [1])
--- []⋙1⋘[1]
+-- [] >1< [1]
 --
 -- >>> setFocus 1 (ListZipper [1,0] 2 [3,4])
--- [0,1]⋙1⋘[3,4]
+-- [1,0] >1< [3,4]
 setFocus ::
   ListZipper' f =>
   a
@@ -171,7 +166,6 @@ setFocus =
   flip setFocus
 
 -- Exercise 8
--- Relative Difficulty: 2
 --
 -- | Returns whether there are values to the left of focus.
 --
@@ -190,7 +184,6 @@ hasLeft z =
     IsNotZ -> False
 
 -- Exercise 9
--- Relative Difficulty: 2
 --
 -- | Returns whether there are values to the right of focus.
 --
@@ -209,7 +202,6 @@ hasRight z =
     IsNotZ -> False
 
 -- Exercise 10
--- Relative Difficulty: 3
 --
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
@@ -229,7 +221,6 @@ findLeft p z = case toMaybeListZipper z of
     _ -> IsNotZ
 
 -- Exercise 11
--- Relative Difficulty: 3
 --
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
@@ -250,15 +241,15 @@ findRight p z = case toMaybeListZipper z of
       _ -> IsNotZ
 
 -- Exercise 12
--- Relative Difficulty: 4
+--
 -- | Move the zipper left, or if there are no elements to the left, go to the far right.
 -- CAUTION: This function is non-total, why?
 --
 -- >>> moveLeftLoop (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[4,5,6,7]
+-- [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeftLoop (ListZipper [] 1 [2,3,4])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 moveLeftLoop ::
   ListZipper' f =>
   f a
@@ -271,14 +262,14 @@ moveLeftLoop z =
     IsNotZ -> z
 
 -- Exercise 13
--- Relative Difficulty: 4
+--
 -- | Move the zipper right, or if there are no elements to the right, go to the far left.
 --
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙5⋘[6,7]
+-- [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [])
--- []⋙1⋘[2,3,4]
+-- [] >1< [2,3,4]
 moveRightLoop ::
   ListZipper' f =>
   f a
@@ -292,14 +283,14 @@ moveRightLoop z =
 
 
 -- Exercise 14
--- Relative Difficulty: 3
+--
 -- | Move the zipper one position to the left.
 --
 -- >>> moveLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[4,5,6,7]
+-- [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 moveLeft ::
   ListZipper' f =>
   f a
@@ -311,14 +302,14 @@ moveLeft z =
     IsNotZ -> IsNotZ
 
 -- Exercise 15
--- Relative Difficulty: 3
+--
 -- | Move the zipper one position to the right.
 --
 -- >>> moveRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙5⋘[6,7]
+-- [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 moveRight ::
   ListZipper' f =>
   f a
@@ -330,14 +321,14 @@ moveRight z =
     IsNotZ -> IsNotZ
 
 -- Exercise 16
--- Relative Difficulty: 3
+--
 -- | Swap the current focus with the value to the left of focus.
 --
 -- >>> swapLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,4]⋙3⋘[5,6,7]
+-- [4,2,1] >3< [5,6,7]
 --
 -- >>> swapLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 swapLeft ::
   ListZipper' f =>
   f a
@@ -349,14 +340,14 @@ swapLeft z =
     IsNotZ -> IsNotZ
 
 -- Exercise 17
--- Relative Difficulty: 3
+--
 -- | Swap the current focus with the value to the right of focus.
 --
 -- >>> swapRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙5⋘[4,6,7]
+-- [3,2,1] >5< [4,6,7]
 --
 -- >>> swapRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 swapRight ::
   ListZipper' f =>
   f a
@@ -368,14 +359,14 @@ swapRight z =
     IsNotZ -> IsNotZ
 
 -- Exercise 18
--- Relative Difficulty: 3
+--
 -- | Drop all values to the left of the focus.
 --
 -- >>> dropLefts (ListZipper [3,2,1] 4 [5,6,7])
--- []⋙4⋘[5,6,7]
+-- [] >4< [5,6,7]
 --
 -- >>> dropLefts (ListZipper [] 1 [2,3,4])
--- []⋙1⋘[2,3,4]
+-- [] >1< [2,3,4]
 --
 -- prop> dropLefts (ListZipper l x r) == ListZipper [] x r
 dropLefts ::
@@ -388,14 +379,14 @@ dropLefts z =
     IsNotZ -> z
 
 -- Exercise 19
--- Relative Difficulty: 3
+--
 -- | Drop all values to the right of the focus.
 --
 -- >>> dropRights (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 --
 -- >>> dropRights (ListZipper [3,2,1] 4 [])
--- [1,2,3]⋙4⋘[]
+-- [3,2,1] >4< []
 --
 -- prop> dropRights (ListZipper l x r) == ListZipper l x []
 dropRights ::
@@ -408,7 +399,7 @@ dropRights z =
     IsNotZ -> z
 
 -- Exercise 20
--- Relative Difficulty: 4
+--
 -- Move the focus left the given number of positions. If the value is negative, move right instead.
 moveLeftN ::
   ListZipper' f =>
@@ -422,7 +413,7 @@ moveLeftN n z = case toMaybeListZipper z of
          | otherwise -> moveLeftN (pred n) (moveLeft z')
 
 -- Exercise 21
--- Relative Difficulty: 4
+--
 -- Move the focus right the given number of positions. If the value is negative, move left instead.
 moveRightN ::
   ListZipper' f =>
@@ -436,7 +427,7 @@ moveRightN n z = case toMaybeListZipper z of
          | otherwise -> moveRightN (pred n) (moveRight z')
 
 -- Exercise 22
--- Relative Difficulty: 6
+--
 -- | Move the focus left the given number of positions. If the value is negative, move right instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
 --
@@ -444,13 +435,13 @@ moveRightN n z = case toMaybeListZipper z of
 -- Left 3
 --
 -- >>> moveLeftN' 1 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2]⋙3⋘[4,5,6,7]
+-- Right [2,1] >3< [4,5,6,7]
 --
 -- >>> moveLeftN' 0 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3]⋙4⋘[5,6,7]
+-- Right [3,2,1] >4< [5,6,7]
 --
 -- >>> moveLeftN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3,4,5]⋙6⋘[7]
+-- Right [5,4,3,2,1] >6< [7]
 --
 -- >>> moveLeftN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
@@ -475,7 +466,7 @@ moveLeftN' n z =
   in moveLeftN'' n z 0
 
 -- Exercise 23
--- Relative Difficulty: 6
+--
 -- | Move the focus right the given number of positions. If the value is negative, move left instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.
 --
@@ -483,13 +474,13 @@ moveLeftN' n z =
 -- Left 3
 --
 -- >>> moveRightN' 1 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3,4]⋙5⋘[6,7]
+-- Right [4,3,2,1] >5< [6,7]
 --
 -- >>> moveRightN' 0 (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1,2,3]⋙4⋘[5,6,7]
+-- Right [3,2,1] >4< [5,6,7]
 --
 -- >>> moveRightN' (-2) (ListZipper [3,2,1] 4 [5,6,7])
--- Right [1]⋙2⋘[3,4,5,6,7]
+-- Right [1] >2< [3,4,5,6,7]
 --
 -- >>> moveRightN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
@@ -514,17 +505,17 @@ moveRightN' n z =
   in moveRightN'' n z 0
 
 -- Exercise 24
--- Relative Difficulty: 7
+--
 -- | Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
 --
 -- >>> nth 1 (ListZipper [3,2,1] 4 [5,6,7])
--- [1]⋙2⋘[3,4,5,6,7]
+-- [1] >2< [3,4,5,6,7]
 --
 -- >>> nth 5 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5]⋙6⋘[7]
+-- [5,4,3,2,1] >6< [7]
 --
 -- >>> nth 8 (ListZipper [3,2,1] 4 [5,6,7])
--- ∅
+-- ><
 nth ::
   ListZipper' f =>
   Int
@@ -542,7 +533,7 @@ nth i z =
         z'@IsNotZ -> z'
 
 -- Exercise 25
--- Relative Difficulty: 4
+--
 -- | Return the absolute position of the current focus in the zipper.
 --
 -- >>> index (ListZipper [3,2,1] 4 [5,6,7])
@@ -559,12 +550,12 @@ index z =
     IsNotZ -> Nothing
 
 -- Exercise 26
--- Relative Difficulty: 5
+--
 -- | Move the focus to the end of the zipper.
 -- CAUTION: This function is non-total, why?
 --
 -- >>> end (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4,5,6]⋙7⋘[]
+-- [6,5,4,3,2,1] >7< []
 end ::
   ListZipper' f =>
   f a
@@ -576,11 +567,11 @@ end z =
     IsNotZ -> z
 
 -- Exercise 27
--- Relative Difficulty: 5
+--
 -- | Move the focus to the start of the zipper.
 --
 -- >>> start (ListZipper [3,2,1] 4 [5,6,7])
--- []⋙1⋘[2,3,4,5,6,7]
+-- [] >1< [2,3,4,5,6,7]
 start ::
   ListZipper' f =>
   f a
@@ -592,14 +583,14 @@ start z =
     IsNotZ -> z
 
 -- Exercise 28
--- Relative Difficulty: 5
+--
 -- | Delete the current focus and pull the left values to take the empty position.
 --
 -- >>> deletePullLeft (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2]⋙3⋘[5,6,7]
+-- [2,1] >3< [5,6,7]
 --
 -- >>> deletePullLeft (ListZipper [] 1 [2,3,4])
--- ∅
+-- ><
 deletePullLeft ::
   ListZipper' f =>
   f a
@@ -611,14 +602,14 @@ deletePullLeft z =
     IsNotZ -> IsNotZ
 
 -- Exercise 29
--- Relative Difficulty: 5
+--
 -- | Delete the current focus and pull the right values to take the empty position.
 --
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙5⋘[6,7]
+-- [3,2,1] >5< [6,7]
 --
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [])
--- ∅
+-- ><
 deletePullRight ::
   ListZipper' f =>
   f a
@@ -630,14 +621,14 @@ deletePullRight z =
     IsNotZ -> IsNotZ
 
 -- Exercise 30
--- Relative Difficulty: 5
+--
 -- | Insert at the current focus and push the left values to make way for the new position.
 --
 -- >>> insertPushLeft 15 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3,4]⋙15⋘[5,6,7]
+-- [4,3,2,1] >15< [5,6,7]
 --
 -- >>> insertPushLeft 15 (ListZipper [] 1 [2,3,4])
--- [1]⋙15⋘[2,3,4]
+-- [1] >15< [2,3,4]
 --
 -- prop> maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
 insertPushLeft ::
@@ -651,14 +642,14 @@ insertPushLeft a z =
     IsNotZ -> z
 
 -- Exercise 31
--- Relative Difficulty: 5
+--
 -- | Insert at the current focus and push the right values to make way for the new position.
 --
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [5,6,7])
--- [1,2,3]⋙15⋘[4,5,6,7]
+-- [3,2,1] >15< [4,5,6,7]
 --
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [])
--- [1,2,3]⋙15⋘[4]
+-- [3,2,1] >15< [4]
 --
 -- prop> maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
 insertPushRight ::
@@ -710,19 +701,19 @@ instance Traversable [] where
   traverse f =
     foldr (\a b -> fmap (:) (f a) <*> b) (unit [])
 
--- Exercise 31
--- Relative Difficulty: 6
+-- Exercise 32
+--
 -- | Implement the `Apply` instance for `ListZipper`.
 -- This implementation zips functions with values by function application.
 --
 -- >>> ListZipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> ListZipper [3,2,1] 4 [5,6,7]
--- [12,5]⋙8⋘[15,24,12]
+-- [5,12] >8< [15,24,12]
 instance Apply ListZipper where
   ListZipper fl fx fr <*> ListZipper al ax ar =
     ListZipper (zipWith ($) fl al) (fx ax) (zipWith ($) fr ar)
 
--- Exercise 32
--- Relative Difficulty: 4
+-- Exercise 33
+--
 -- | Implement the `Apply` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use `<*>` for `ListZipper`.
@@ -731,8 +722,8 @@ instance Apply MaybeListZipper where
   _ <*> IsNotZ = IsNotZ
   IsZ f <*> IsZ a = IsZ (f <*> a)
 
--- Exercise 33
--- Relative Difficulty: 5
+-- Exercise 34
+--
 -- | Implement the `Applicative` instance for `ListZipper`.
 -- This implementation produces an infinite list zipper (to both left and right).
 --
@@ -741,8 +732,8 @@ instance Applicative ListZipper where
   unit a =
     ListZipper (repeat a) a (repeat a)
 
--- Exercise 34
--- Relative Difficulty: 4
+-- Exercise 35
+--
 -- | Implement the `Applicative` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use @unit@ for `ListZipper`.
@@ -750,21 +741,21 @@ instance Applicative MaybeListZipper where
   unit =
     IsZ . unit
 
--- Exercise 35
--- Relative Difficulty: 7
+-- Exercise 36
+--
 -- | Implement the `Extend` instance for `ListZipper`.
 -- This implementation "visits" every possible zipper value derivable from a given zipper (i.e. all zippers to the left and right).
 --
 -- /Tip:/ Use @Data.List#unfoldr@.
 --
 -- >>> id <<= (ListZipper [2,1] 3 [4,5])
--- [[]⋙1⋘[2,3,4,5],[1]⋙2⋘[3,4,5]]⋙[1,2]⋙3⋘[4,5]⋘[[1,2,3]⋙4⋘[5],[1,2,3,4]⋙5⋘[]]
+-- [[] >1< [2,3,4,5],[1] >2< [3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
 instance Extend ListZipper where
   f <<= z =
     ListZipper (unfoldr (fmap (\z' -> (f z', z')) . toMaybe . moveLeft) z) (f z) (unfoldr (fmap (\z' -> (f z', z')) . toMaybe . moveRight) z)
 
--- Exercise 36
--- Relative Difficulty: 3
+-- Exercise 37
+--
 -- | Implement the `Comonad` instance for `ListZipper`.
 -- This implementation returns the current focus of the zipper.
 --
@@ -774,8 +765,8 @@ instance Comonad ListZipper where
   counit (ListZipper _ x _) =
     x
 
--- Exercise 37
--- Relative Difficulty: 10
+-- Exercise 38
+--
 -- | Implement the `Traversable` instance for `ListZipper`.
 -- This implementation traverses a zipper while running some `Applicative` effect through the zipper.
 -- An effectful zipper is returned.
@@ -783,8 +774,8 @@ instance Traversable ListZipper where
   traverse f (ListZipper l x r) =
     fmap (ListZipper . reverse) (traverse f $ reverse l) <*> f x <*> traverse f r
 
--- Exercise 38
--- Relative Difficulty: 5
+-- Exercise 39
+--
 -- | Implement the `Traversable` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use `traverse` for `ListZipper`.
@@ -800,8 +791,8 @@ instance Traversable MaybeListZipper where
 
 instance Show a => Show (ListZipper a) where
   show (ListZipper l x r) =
-    (show . reverse $ l) ++ ('⋙':show x ++ "⋘") ++ show r
+    show l ++ " >" ++ show x ++ "< " ++ show r
 
 instance Show a => Show (MaybeListZipper a) where
   show (IsZ z) = show z
-  show IsNotZ = "∅"
+  show IsNotZ = "><"

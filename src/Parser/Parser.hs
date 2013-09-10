@@ -29,19 +29,19 @@ instance Show a => Show (ParseResult a) where
     "Result >" ++ i ++ "< " ++ show a
 
 -- Function to also access the input while binding parsers.
-bindResult ::
+withResultInput ::
   (Input -> a -> ParseResult b)
   -> ParseResult a
   -> ParseResult b
-bindResult _ UnexpectedEof =
+withResultInput _ UnexpectedEof =
   UnexpectedEof
-bindResult _ (ExpectedEof i) =
+withResultInput _ (ExpectedEof i) =
   ExpectedEof i
-bindResult _ (UnexpectedChar c) =
+withResultInput _ (UnexpectedChar c) =
   UnexpectedChar c
-bindResult _ Failed =
+withResultInput _ Failed =
   Failed
-bindResult f (Result i a) =
+withResultInput f (Result i a) =
   f i a
 
 -- Function to determine is a parse result is an error.
@@ -106,28 +106,35 @@ character =
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- /Tip:/ Use @bindResult@.
+-- /Tip:/ Use @withResultInput@.
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "abc"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "abc"
 -- Result >bc< 'v'
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "a"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "a"
 -- Result >< 'v'
 --
--- >>> parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "xabc"
+-- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "xabc"
 -- Result >bc< 'a'
 --
--- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "")
+-- >>> isErrorResult (parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "")
 -- True
 --
--- >>> isErrorResult (parse (bindParser character (\c -> if c == 'x' then character else valueParser 'v')) "x")
+-- >>> isErrorResult (parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "x")
 -- True
 bindParser ::
+  (a -> Parser b)
+  -> Parser a
+  -> Parser b
+bindParser f (P p) =
+  P (withResultInput (\r c -> parse (f c) r) . p)
+
+fbindParser ::
   Parser a
   -> (a -> Parser b)
   -> Parser b
-bindParser (P p) f =
-  P (bindResult (\r c -> parse (f c) r) . p)
+fbindParser =
+  flip bindParser
 
 -- Exercise 5
 -- | Return a parser that puts its input into the given parser and
@@ -149,7 +156,7 @@ bindParser (P p) f =
   -> Parser b
   -> Parser b
 p >>> q =
-  bindParser p (\_ -> q)
+  bindParser (\_ -> q) p
 
 -- Exercise 6
 -- | Return a parser that tries the first parser for a successful value.
@@ -221,8 +228,8 @@ many1 ::
   Parser a
   -> Parser [a]
 many1 k =
-  bindParser k (\k' ->
-  bindParser (list k) (\kk' ->
+  fbindParser k (\k' ->
+  fbindParser (list k) (\kk' ->
   valueParser (k' : kk')))
 
 -- Exercise 9
@@ -243,8 +250,8 @@ satisfy ::
   (Char -> Bool)
   -> Parser Char
 satisfy p =
-  bindParser character (\c ->
-  if p c then valueParser c else failed)
+  bindParser (\c ->
+    if p c then valueParser c else failed) character
 
 -- Exercise 10.1
 -- | Return a parser that produces the given character but fails if
@@ -279,12 +286,13 @@ digit =
 --
 --   * The input does not produce a value series of digits
 --
--- /Tip:/ Use the @bindParser@, @valueParser@, @list@ and @digit@ functions.
+-- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @reads@ and @digit@
+-- functions.
 natural ::
   Parser Int
 natural =
-  bindParser (list digit) (\k -> case reads k of []    -> failed
-                                                 ((h,_):_) -> valueParser h)
+  bindParser (\k -> case reads k of []    -> failed
+                                    ((h,_):_) -> valueParser h) (list digit)
 
 -- Exercise 10.4
 --
@@ -371,8 +379,8 @@ sequenceParser ::
 sequenceParser []    =
   valueParser []
 sequenceParser (h:t) =
-  bindParser h (\a ->
-  bindParser (sequenceParser t) (\as ->
+  fbindParser h (\a ->
+  fbindParser (sequenceParser t) (\as ->
   valueParser (a : as)))
 
 -- Exercise 12
@@ -427,8 +435,8 @@ ageParser =
 firstNameParser ::
   Parser String
 firstNameParser =
-  bindParser upper (\c ->
-  bindParser (list lower) (\cs ->
+  fbindParser upper (\c ->
+  fbindParser (list lower) (\cs ->
   valueParser (c : cs)))
 
 -- Exercise 15
@@ -449,9 +457,9 @@ firstNameParser =
 surnameParser ::
   Parser String
 surnameParser =
-  bindParser upper (\c ->
-  bindParser (thisMany 5 lower) (\cs ->
-  bindParser (list lower) (\t ->
+  fbindParser upper (\c ->
+  fbindParser (thisMany 5 lower) (\cs ->
+  fbindParser (list lower) (\t ->
   valueParser (c : cs ++ t))))
 
 -- Exercise 16
@@ -518,9 +526,9 @@ phoneBodyParser =
 phoneParser ::
   Parser String
 phoneParser =
-  bindParser digit (\d ->
-  bindParser phoneBodyParser (\z ->
-  bindParser (is '#') (\_ ->
+  fbindParser digit (\d ->
+  fbindParser phoneBodyParser (\z ->
+  fbindParser (is '#') (\_ ->
   valueParser (d : z))))
 
 -- Exercise 19
@@ -570,15 +578,15 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  bindParser ageParser (\a ->
+  fbindParser ageParser (\a ->
   spaces1 >>>
-  bindParser firstNameParser (\f ->
+  fbindParser firstNameParser (\f ->
   spaces1 >>>
-  bindParser surnameParser (\s ->
+  fbindParser surnameParser (\s ->
   spaces1 >>>
-  bindParser genderParser (\g ->
+  fbindParser genderParser (\g ->
   spaces1 >>>
-  bindParser phoneParser (\p ->
+  fbindParser phoneParser (\p ->
   valueParser (Person a f s g p))))))
 
 -- Exercise 20
@@ -589,8 +597,8 @@ personParser =
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Functor Parser where
-  fmap f x =
-    bindParser x (valueParser . f)
+  fmap f =
+    bindParser (valueParser . f)
 
 -- Exercise 20.2
 -- | Write an Applicative functor instance for a @Parser@.
@@ -600,7 +608,7 @@ instance Applicative Parser where
   pure =
     valueParser
   p <*> q =
-    bindParser p (\f -> bindParser q (\a -> valueParser (f a)))
+    bindParser (\f -> bindParser (\a -> valueParser (f a)) q) p
 
 -- Exercise 20.3
 -- | Write a Monad instance for a @Parser@.
@@ -608,4 +616,4 @@ instance Monad Parser where
   return =
     valueParser
   (>>=) =
-    bindParser
+    fbindParser
