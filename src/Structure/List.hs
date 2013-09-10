@@ -67,6 +67,19 @@ headOr ::
 headOr =
   error "todo"
 
+-- | The product of the elements of a list.
+--
+-- >>> product (1 :. 2 :. 3 :. Nil)
+-- 6
+--
+-- >>> product (1 :. 2 :. 3 :. 4 :. Nil)
+-- 24
+product ::
+  List Int
+  -> Int
+product =
+  foldLeft (*) 1
+
 -- Exercise 2
 -- Relative Difficulty: 2
 -- Correctness:   2.5 marks
@@ -78,6 +91,9 @@ headOr =
 --
 -- >>> sum (1 :. 2 :. 3 :. Nil)
 -- 6
+--
+-- >>> sum (1 :. 2 :. 3 :. 4 :. Nil)
+-- 10
 --
 -- prop> foldLeft (-) (sum x) x == 0
 sum ::

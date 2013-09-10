@@ -187,7 +187,7 @@ apply =
 -- >>> lift2 (+) Empty (Full 8)
 -- Empty
 --
--- >>> lift2 (+) length sum [4,5,6]
+-- >>> lift2 (+) len sum (listh [4,5,6])
 -- 18
 lift2 ::
   Monad m =>
@@ -222,7 +222,7 @@ lift2 =
 -- >>> lift3 (\a b c -> a + b + c) Empty Empty (Full 9)
 -- Empty
 --
--- >>> lift3 (\a b c -> a + b + c) length sum product [4,5,6]
+-- >>> lift3 (\a b c -> a + b + c) len sum product (listh [4,5,6])
 -- 138
 lift3 ::
   Monad m =>
@@ -258,7 +258,7 @@ lift3 =
 -- >>> lift4 (\a b c d -> a + b + c + d) Empty Empty (Full 9) (Full 10)
 -- Empty
 --
--- >>> lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) [4,5,6]
+-- >>> lift4 (\a b c d -> a + b + c + d) len sum product (sum . filter even) (listh [4,5,6])
 -- 148
 lift4 ::
   Monad m =>

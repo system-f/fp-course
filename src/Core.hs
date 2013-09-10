@@ -39,7 +39,6 @@ module Core(
   , getChar
   , concatMap
   , length
-  , product
   , replicate
   , foldr
   , (++)
@@ -86,7 +85,6 @@ import Prelude(
   , getChar
   , concatMap
   , length
-  , product
   , replicate
   , foldr
   , (++)
