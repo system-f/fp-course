@@ -21,7 +21,7 @@ class Functor f where
 -- Id 3
 instance Functor Id where
   fmap =
-    error "todo"
+    mapId
 
 -- Exercise 2
 -- Relative Difficulty: 2
@@ -35,7 +35,7 @@ instance Functor Id where
 -- [2,3,4]
 instance Functor List where
   fmap =
-    error "todo"
+    map
 
 -- Exercise 3
 -- Relative Difficulty: 2
@@ -49,7 +49,7 @@ instance Functor List where
 -- Full 3
 instance Functor Optional where
   fmap =
-    error "todo"
+    mapOptional
 
 -- Exercise 4
 -- Relative Difficulty: 3
@@ -59,8 +59,8 @@ instance Functor Optional where
 -- >>> fmap (+1) (*2) 8
 -- 17
 instance Functor ((->) t) where
-  fmap =
-    error "todo"
+  fmap f g =
+    \x -> f (g x)
 
 -- Exercise 5
 -- Relative Difficulty: 2
@@ -71,7 +71,7 @@ instance Functor ((->) t) where
 -- hi"cba"
 instance Functor IO where
   fmap =
-    error "todo"
+    fmap
 
 -----------------------
 -- SUPPORT LIBRARIES --

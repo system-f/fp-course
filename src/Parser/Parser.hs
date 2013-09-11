@@ -201,7 +201,7 @@ list =
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
 -- The returned parser fails if The input is empty.
 --
--- /Tip:/ Use @bindParser@, @list@ and @value@.
+-- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
 --
 -- >>> parse (many1 (character)) "abc"
 -- Result >< "abc"

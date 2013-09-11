@@ -37,9 +37,13 @@ module Core(
   , putStr
   , putStrLn
   , getChar
+  , getLine
+  , readFile
+  , writeFile
   , concatMap
   , length
   , replicate
+  , reverse
   , foldr
   , (++)
   )
@@ -83,9 +87,13 @@ import Prelude(
   , putStr
   , putStrLn
   , getChar
+  , getLine
+  , readFile
+  , writeFile
   , concatMap
   , length
   , replicate
+  , reverse
   , foldr
   , (++)
   )

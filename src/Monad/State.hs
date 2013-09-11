@@ -4,6 +4,7 @@
 module Monad.State where
 
 import Core
+import qualified Prelude as P
 import Intro.Optional
 import Structure.List
 import Monad.Functor
@@ -32,8 +33,8 @@ newtype State s a =
 -- >>> runState (fmap (+1) (return 0)) 0
 -- (1,0)
 instance Functor (State s) where
-  fmap =
-      error "todo"
+  fmap f (State k) =
+    State (\s -> let (a, t) = k s in (f a, t))
 
 -- Exercise 2
 -- Relative Difficulty: 3
@@ -47,10 +48,10 @@ instance Functor (State s) where
 -- >>> runState (bind (const $ put 2) (put 1)) 0
 -- ((),2)
 instance Monad (State s) where
-  bind =
-    error "todo"
-  return =
-    error "todo"
+  bind f (State k) =
+    State (\s -> let (a, t) = k s in runState (f a) t)
+  return a =
+    State (\s -> (a, s))
 
 -- Exercise 3
 -- Relative Difficulty: 1
@@ -61,8 +62,8 @@ exec ::
   State s a
   -> s
   -> s
-exec =
-  error "todo"
+exec (State k) =
+  snd . k
 
 -- Exercise 4
 -- Relative Difficulty: 1
@@ -74,8 +75,8 @@ eval ::
   State s a
   -> s
   -> a
-eval =
-  error "todo"
+eval (State k) =
+  fst . k
 
 -- Exercise 5
 -- Relative Difficulty: 2
@@ -87,7 +88,7 @@ eval =
 get ::
   State s s
 get =
-  error "todo"
+  State (\s -> (s, s))
 
 -- Exercise 6
 -- Relative Difficulty: 2
@@ -100,7 +101,7 @@ put ::
   s
   -> State s ()
 put =
-  error "todo"
+  State . const . (,) ()
 
 -- Exercise 7
 -- Relative Difficulty: 5
@@ -124,8 +125,10 @@ findM ::
   (a -> f Bool)
   -> List a
   -> f (Optional a)
-findM =
-  error "todo"
+findM _ Nil =
+  return Empty
+findM p (h :. t) =
+  bind (\q -> if q then return (Full h) else findM p t) (p h)
 
 -- Exercise 8
 -- Relative Difficulty: 4
@@ -140,8 +143,8 @@ firstRepeat ::
   Ord a =>
   List a
   -> Optional a
-firstRepeat =
-  error "todo"
+firstRepeat x =
+  eval (findM (\a -> State (\s -> (a `S.member` s, a `S.insert` s))) x) S.empty
 
 -- Exercise 9
 -- Relative Difficulty: 5
@@ -164,8 +167,14 @@ filterM ::
   (a -> f Bool)
   -> List a
   -> f (List a)
-filterM =
-  error "todo"
+filterM _ Nil =
+  return Nil
+filterM p (h :. t) =
+ bind (\q -> fmap' (if q
+                      then
+                        (h:.)
+                      else
+                        id) (filterM p t)) (p h)
 
 -- Exercise 10
 -- Relative Difficulty: 4
@@ -180,8 +189,8 @@ distinct ::
   Ord a =>
   List a
   -> List a
-distinct =
-  error "todo"
+distinct x =
+  eval (filterM (\a -> State (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
 
 -- Exercise 11
 -- Relative Difficulty: 3
@@ -198,8 +207,8 @@ produce ::
   (a -> a)
   -> a
   -> List a
-produce =
-  error "todo"
+produce f a =
+  a :. produce f (f a)
 
 -- Exercise 12
 -- Relative Difficulty: 10
@@ -228,7 +237,14 @@ isHappy ::
   Integer
   -> Bool
 isHappy =
-  error "todo"
+  F.elem 1 .
+    (`eval` S.empty) .
+    findM (\j -> State $ \s -> (j == 1 || S.member j s, S.insert j s)) .
+    produce (P.sum .
+             fmap (flaatten (*) .
+                   toInteger .
+                   digitToInt) .
+             show)
 
 -----------------------
 -- SUPPORT LIBRARIES --
