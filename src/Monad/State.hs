@@ -220,7 +220,7 @@ produce f a =
 --
 -- /Tip:/ Use `findM` with `State` and `produce`.
 --
--- /Tip:/ Use `flaatten` to write a @square@ function.
+-- /Tip:/ Use `flatten'` to write a @square@ function.
 --
 -- /Tip:/ Use library functions: @Data.Foldable#elem@, @Data.Char#digitToInt@.
 --
@@ -243,7 +243,7 @@ isHappy =
     (`eval` S.empty) .
     findM (\j -> State $ \s -> (j == 1 || S.member j s, S.insert j s)) .
     produce (P.sum .
-             fmap (flaatten (*) .
+             fmap (flatten' (*) .
                    toInteger .
                    digitToInt) .
              show)
