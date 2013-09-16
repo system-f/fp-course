@@ -2,11 +2,11 @@
 
 module Structure.Lens where
 
-import Core
-import Data.List
-import Monad.State
-import Monad.Functor
-import Structure.ListZipper
+import Core(Eq(..), Show(..), Int, String, Either(..), error)
+import Data.List(concat, intercalate, map)
+import Monad.State(State(..))
+import Monad.Functor(Functor(..))
+import Structure.ListZipper(Extend(..), Comonad(..))
 
 data Address =
   Address
