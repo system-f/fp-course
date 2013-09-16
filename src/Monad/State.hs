@@ -3,14 +3,12 @@
 
 module Monad.State where
 
-import Core
-import Intro.Optional
-import Structure.List
-import Monad.Functor
-import Monad.Monad
-import Data.Char
-import qualified Data.Set as S
-import qualified Data.Foldable as F
+import Core(Ord, Integer, Bool, error)
+import Intro.Optional(Optional(..))
+import Structure.List(List)
+import Monad.Functor(Functor(..))
+import Monad.Monad(Monad(..))
+import qualified Data.Foldable as F(Foldable(..))
 
 -- $setup
 -- >>> import Test.QuickCheck.Function

@@ -2,12 +2,11 @@
 
 module Monad.Functor where
 
-import Core
-import qualified Prelude as P
-import Intro.Id
-import Intro.Optional
-import Intro.Validation
-import Structure.List
+import Core(IO, Maybe, error)
+import qualified Prelude as P(fmap)
+import Intro.Id(Id)
+import Intro.Optional(Optional)
+import Structure.List(List)
 
 class Functor f where
   fmap :: (a -> b) -> f a -> f b
