@@ -3,7 +3,7 @@
 
 module Monad.State where
 
-import Core(Ord(..), Integer(..), Bool(..), error)
+import Core(Ord(..), Integer, Bool(..), error)
 import Intro.Optional(Optional(..))
 import Structure.List(List(..))
 import Monad.Functor(Functor(..))

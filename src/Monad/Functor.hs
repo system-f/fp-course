@@ -2,7 +2,7 @@
 
 module Monad.Functor where
 
-import Core(IO(..), Maybe(..), error)
+import Core(IO, Maybe(..), error)
 import qualified Prelude as P(fmap)
 import Intro.Id(Id(..))
 import Intro.Optional(Optional(..))
