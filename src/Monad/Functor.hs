@@ -67,11 +67,11 @@ instance Functor ((->) t) where
 --
 -- | Maps a function on an IO program.
 --
--- >>> fmap reverse (putStr "hi" >> return "abc")
+-- >>> fmap reverse (putStr "hi" >> P.return "abc")
 -- hi"cba"
 instance Functor IO where
   fmap =
-    fmap
+    P.fmap
 
 -----------------------
 -- SUPPORT LIBRARIES --
