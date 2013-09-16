@@ -58,14 +58,12 @@ import Prelude(
   , flip
   , not
   , otherwise
-  , pred
   , fst
   , snd
   , error
   , undefined
   , even
   , either
-  , succ
   , reads
   , String
   , Char
@@ -78,6 +76,7 @@ import Prelude(
   , Eq(..)
   , Ord(..)
   , Show(..)
+  , Enum(..)
   , Num(..)
   , Integral(..)
   , putStr
