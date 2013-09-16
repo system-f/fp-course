@@ -1,11 +1,6 @@
 module Parser.MoreParser where
 
-import Intro.Validation
-import Parser.Parser
-import Data.Char
-import Numeric
-import Control.Applicative
-import Control.Monad
+import Parser.Parser(Parser(..), Input, ParseResult(..))
 
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.

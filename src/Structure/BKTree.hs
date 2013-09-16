@@ -14,7 +14,7 @@ module Structure.BKTree
 ) where
 
 import Structure.MetricSpace(MetricSpace(..))
-import Data.Map (Map)
+import Data.Map(Map)
 import qualified Data.Map as M(toList, split)
 import Data.Foldable(Foldable(..))
 import Data.Monoid(Monoid(..))
