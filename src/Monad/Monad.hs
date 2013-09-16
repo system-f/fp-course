@@ -103,22 +103,22 @@ instance Monad ((->) t) where
 --
 -- | Flattens a combined structure to a single structure.
 --
--- >>> flaatten ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
+-- >>> flatten' ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
 -- [1,2,3,1,2]
 --
--- >>> flaatten (Full Empty)
+-- >>> flatten' (Full Empty)
 -- Empty
 --
--- >>> flaatten (Full (Full 7))
+-- >>> flatten' (Full (Full 7))
 -- Full 7
 --
--- >>> flaatten (+) 7
+-- >>> flatten' (+) 7
 -- 14
-flaatten ::
+flatten' ::
   Monad m =>
   m (m a)
   -> m a
-flaatten =
+flatten' =
   error "todo"
 
 -- Exercise 12
