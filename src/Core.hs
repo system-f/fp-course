@@ -11,14 +11,12 @@ module Core(
   , flip
   , not
   , otherwise
-  , pred
   , fst
   , snd
   , error
   , undefined
   , even
   , either
-  , succ
   , reads
   , String
   , Char
@@ -31,6 +29,7 @@ module Core(
   , Eq(..)
   , Ord(..)
   , Show(..)
+  , Enum(..)
   , Num(..)
   , Integral(..)
   , IsString(..)
