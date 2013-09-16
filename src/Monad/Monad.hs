@@ -2,7 +2,7 @@
 
 module Monad.Monad where
 
-import Core(IO, Maybe, Bool, Int, (=<<), error)
+import Core(IO(..), Maybe(..), Bool(..), Int(..), (=<<), error)
 import qualified Prelude as P(return, (=<<))
 import Intro.Id(Id(..))
 import Intro.Optional(Optional(..))

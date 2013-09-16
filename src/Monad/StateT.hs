@@ -2,10 +2,10 @@
 
 module Monad.StateT where
 
-import Core(Ord, Num, Eq, Show, Integral, String, error)
-import Intro.Id(Id)
-import Intro.Optional(Optional)
-import Structure.List(List)
+import Core(Ord(..), Num(..), Eq(..), Show(..), Integral(..), String(..), error)
+import Intro.Id(Id(..))
+import Intro.Optional(Optional(..))
+import Structure.List(List(..))
 import Monad.Functor(Functor(..))
 import Monad.Monad(Monad(..))
 
