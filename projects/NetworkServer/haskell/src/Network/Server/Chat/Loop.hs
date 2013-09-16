@@ -81,7 +81,7 @@ perClient ::
   IOLoop v x -- client accepted (post)
   -> (String -> IOLoop v a) -- read line from client
   -> IOLoop v ()
-perClient q f =
+perClient =
   error "todo"
 
 loop ::

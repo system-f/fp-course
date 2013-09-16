@@ -1,10 +1,10 @@
 module Network.Server.Chat.Chat where
 
-import Network.Server.Common.Env
 import Network.Server.Common.Line
 import Network.Server.Chat.Loop
 import Data.Maybe(fromMaybe)
 import Data.Foldable(msum)
+import Data.IORef(atomicModifyIORef)
 import Control.Applicative((<$), (<$>))
 import Control.Monad.Trans(MonadIO(..))
 
@@ -21,7 +21,7 @@ incr ::
   Chat Integer
 incr =
   do e <- readEnvval
-     liftIO $ atomicModifyIORef_ e (+1)
+     liftIO $ atomicModifyIORef e (\n -> (n + 1, n + 1))
 
 chat ::
   IO a
