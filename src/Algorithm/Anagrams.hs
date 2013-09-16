@@ -1,9 +1,5 @@
 module Algorithm.Anagrams where
 
-import Data.Char
-import Data.List
-import Data.Function
-
 
 {-
 

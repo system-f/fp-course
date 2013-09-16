@@ -11,10 +11,8 @@
 
 module Structure.List where
 
-import Core
-import qualified Prelude as P
-import Control.Applicative
-import Intro.Optional
+import Core(Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), (*), seq, foldr, error)
+import Intro.Optional(Optional(..))
 
 -- $setup
 -- >>> import Test.QuickCheck

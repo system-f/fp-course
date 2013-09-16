@@ -1,9 +1,7 @@
 module Algorithm.FastAnagrams where
 
-import Data.Char
-import Data.List
-import Data.Function
-import qualified Data.Set as S
+import Data.Char(toLower)
+import Data.Function(on)
 
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.

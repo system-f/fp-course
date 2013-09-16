@@ -7,8 +7,7 @@ module Algorithm.EditDistance
 , applyDiff
 ) where
 
-import Data.Array
-import Data.Foldable hiding (minimum)
+import Data.Array(Array, array, range, (!))
 
 editDistance ::
   Eq a =>

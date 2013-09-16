@@ -3,10 +3,10 @@
 
 module Structure.ListZipper where
 
-import Core
-import qualified Prelude as P
-import Data.List
-import Monad.Functor
+import Core(Eq(..), Show(..), Int, Bool(..), Maybe(..), Either(..), (.), flip, error)
+import qualified Prelude as P()
+import Data.List((++), foldr)
+import Monad.Functor(Functor(..))
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)

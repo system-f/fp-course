@@ -5,7 +5,6 @@ module IO.Interactive where
 import Core
 import Monad.Functor
 import Monad.Monad
-import Data.Char
 import Data.List(find)
 
 -- | Eliminates any value over which a functor is defined.
