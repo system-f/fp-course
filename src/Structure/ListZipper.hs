@@ -4,13 +4,14 @@
 module Structure.ListZipper where
 
 import Core
+import qualified Prelude as P
 import Data.List
 import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
 -- >>> import Test.QuickCheck
--- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; return (ListZipper l x r)
+-- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
 --
@@ -62,7 +63,7 @@ instance Functor MaybeListZipper where
 --
 -- | Create a `MaybeListZipper` positioning the focus at the head.
 --
--- prop> xs == toList (fromList xs)
+-- prop> xs == toListZ (fromList xs)
 fromList ::
   [a]
   -> MaybeListZipper a
@@ -76,6 +77,8 @@ fromList (h:t) =
 -- | Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
 --
 -- prop> null xs == isNothing (toMaybe (fromList xs))
+--
+-- prop> toMaybe (fromMaybe z) == z
 toMaybe ::
   MaybeListZipper a
   -> Maybe (ListZipper a)
@@ -84,38 +87,61 @@ toMaybe IsNotZ =
 toMaybe (IsZ z) =
   Just z
 
--- The `ListZipper'` type-class that will permit overloading operations.
-class Functor f => ListZipper' f where
-  toMaybeListZipper ::
-    f a
-    -> MaybeListZipper a
-  fromListZipper ::
-    ListZipper a
-    -> f a
+fromMaybe ::
+  Maybe (ListZipper a)
+  -> MaybeListZipper a
+fromMaybe Nothing =
+  IsNotZ
+fromMaybe (Just z) =
+  IsZ z
 
-instance ListZipper' ListZipper where
-  toMaybeListZipper =
-    IsZ
-  fromListZipper =
-    id
+asZipper ::
+  (ListZipper a -> ListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+asZipper f =
+  asMaybeZipper (IsZ . f)
 
-instance ListZipper' MaybeListZipper where
-  toMaybeListZipper =
-    id
-  fromListZipper =
-    IsZ
+(>$>)::
+  (ListZipper a -> ListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+(>$>) =
+  asZipper
+
+asMaybeZipper ::
+  (ListZipper a -> MaybeListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+asMaybeZipper _ IsNotZ =
+  IsNotZ
+asMaybeZipper f (IsZ z) =
+  f z
+
+(>->) ::
+  (ListZipper a -> MaybeListZipper a)
+  -> MaybeListZipper a
+  -> MaybeListZipper a
+(>->) =
+  asMaybeZipper
 
 -- Exercise 5
 --
 -- | Convert the given zipper back to a list.
 toList ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> [a]
-toList z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> reverse l ++ x:r
-    IsNotZ -> []
+toList (ListZipper l x r) =
+  reverse l ++ x:r
+
+-- | Convert the given (maybe) zipper back to a list.
+toListZ ::
+  MaybeListZipper a
+  -> [a]
+toListZ IsNotZ =
+  []
+toListZ (IsZ z) =
+  toList z
 
 -- Exercise 6
 --
@@ -125,16 +151,13 @@ toList z =
 -- [] >1< [1]
 --
 -- >>> withFocus (+1) (ListZipper [1,0] 2 [3,4])
--- [1,0]> 3 <[3,4]
+-- [1,0] >3< [3,4]
 withFocus ::
-  ListZipper' f =>
   (a -> a)
-  -> f a
-  -> f a
-withFocus f z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> fromListZipper (ListZipper l (f x) r)
-    IsNotZ -> z
+  -> ListZipper a
+  -> ListZipper a
+withFocus f (ListZipper l x r) =
+  ListZipper l (f x) r
 
 -- Exercise 7
 --
@@ -147,10 +170,9 @@ withFocus f z =
 -- >>> setFocus 1 (ListZipper [1,0] 2 [3,4])
 -- [1,0] >1< [3,4]
 setFocus ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
+  -> ListZipper a
+  -> ListZipper a
 setFocus =
   withFocus . const
 
@@ -158,10 +180,9 @@ setFocus =
 --
 -- z := "abc" -- sets the focus on the zipper z to the value "abc".
 (.=) ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> a
-  -> f a
+  -> ListZipper a
 (.=) =
   flip setFocus
 
@@ -175,13 +196,10 @@ setFocus =
 -- >>> hasLeft (ListZipper [] 0 [1,2])
 -- False
 hasLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Bool
-hasLeft z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l _ _) -> not (null l)
-    IsNotZ -> False
+hasLeft (ListZipper l _ _) =
+  not (null l)
 
 -- Exercise 9
 --
@@ -193,30 +211,25 @@ hasLeft z =
 -- >>> hasRight (ListZipper [1,0] 2 [])
 -- False
 hasRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Bool
-hasRight z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper _ _ r) -> not (null r)
-    IsNotZ -> False
+hasRight (ListZipper _ _ r) =
+  not (null r)
 
 -- Exercise 10
 --
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findLeft (const True) (fromList xs) == fromList xs
+-- prop> findLeft (const True) >-> fromList xs == fromList xs
 --
--- prop> case xs of [] -> findLeft (const False) IsNotZ == IsNotZ; (x:xs') -> findLeft (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
+-- prop> findLeft (const False) (ListZipper l x r) == IsNotZ
 findLeft ::
-  ListZipper' f =>
   (a -> Bool)
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
-findLeft p z = case toMaybeListZipper z of
-  IsNotZ -> IsNotZ
-  IsZ (ListZipper ls x rs) -> case break p (x:ls) of
+findLeft p (ListZipper ls x rs) =
+  case break p (x:ls) of
     (rs', x':ls') -> IsZ (ListZipper ls' x' (reverse rs' ++ rs))
     _ -> IsNotZ
 
@@ -225,20 +238,17 @@ findLeft p z = case toMaybeListZipper z of
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findRight (const True) (fromList xs) == fromList xs
+-- prop> findRight (const True) >-> fromList xs == fromList xs
 --
--- prop> case xs of [] -> findRight (const False) IsNotZ == IsNotZ; (x:xs') -> findRight (const False) (IsZ (ListZipper [] x xs')) == IsNotZ
+-- prop> findRight (const False) (ListZipper l x r) == IsNotZ
 findRight ::
-  ListZipper' f =>
   (a -> Bool)
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
-findRight p z = case toMaybeListZipper z of
-  IsNotZ -> IsNotZ
-  IsZ (ListZipper ls x rs) ->
-    case break p (x:rs) of
-      (ls', x':rs') -> IsZ (ListZipper (reverse ls' ++ ls) x' rs')
-      _ -> IsNotZ
+findRight p (ListZipper ls x rs) =
+  case break p (x:rs) of
+    (ls', x':rs') -> IsZ (ListZipper (reverse ls' ++ ls) x' rs')
+    _ -> IsNotZ
 
 -- Exercise 12
 --
@@ -251,15 +261,13 @@ findRight p z = case toMaybeListZipper z of
 -- >>> moveLeftLoop (ListZipper [] 1 [2,3,4])
 -- [3,2,1] >4< []
 moveLeftLoop ::
-  ListZipper' f =>
-  f a
-  -> f a
-moveLeftLoop z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper [] x r) -> let (x':r') = (reverse (x:r))
-                               in fromListZipper (ListZipper r' x' [])
-    IsZ (ListZipper (h:t) x r) -> fromListZipper (ListZipper t h (x:r))
-    IsNotZ -> z
+  ListZipper a
+  -> ListZipper a
+moveLeftLoop (ListZipper [] x r) =
+  let (x':r') = (reverse (x:r))
+  in ListZipper r' x' []
+moveLeftLoop (ListZipper (h:t) x r) =
+  ListZipper t h (x:r)
 
 -- Exercise 13
 --
@@ -271,16 +279,13 @@ moveLeftLoop z =
 -- >>> moveRightLoop (ListZipper [3,2,1] 4 [])
 -- [] >1< [2,3,4]
 moveRightLoop ::
-  ListZipper' f =>
-  f a
-  -> f a
-moveRightLoop z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x []) -> let (x':l') = reverse (x:l)
-                               in fromListZipper (ListZipper [] x' l')
-    IsZ (ListZipper l x (h:t)) -> fromListZipper (ListZipper (x:l) h t)
-    IsNotZ -> z
-
+  ListZipper a
+  -> ListZipper a
+moveRightLoop (ListZipper l x []) =
+   let (x':l') = reverse (x:l)
+   in ListZipper [] x' l'
+moveRightLoop (ListZipper l x (h:t)) =
+   ListZipper (x:l) h t
 
 -- Exercise 14
 --
@@ -292,14 +297,12 @@ moveRightLoop z =
 -- >>> moveLeft (ListZipper [] 1 [2,3,4])
 -- ><
 moveLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-moveLeft z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper [] _ _) -> IsNotZ
-    IsZ (ListZipper (h:t) x r) -> IsZ (ListZipper t h (x:r))
-    IsNotZ -> IsNotZ
+moveLeft (ListZipper [] _ _) =
+  IsNotZ
+moveLeft (ListZipper (h:t) x r) =
+  IsZ (ListZipper t h (x:r))
 
 -- Exercise 15
 --
@@ -311,14 +314,12 @@ moveLeft z =
 -- >>> moveRight (ListZipper [3,2,1] 4 [])
 -- ><
 moveRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-moveRight z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper _ _ []) -> IsNotZ
-    IsZ (ListZipper l x (h:t)) -> IsZ (ListZipper (x:l) h t)
-    IsNotZ -> IsNotZ
+moveRight (ListZipper _ _ []) =
+  IsNotZ
+moveRight (ListZipper l x (h:t)) =
+  IsZ (ListZipper (x:l) h t)
 
 -- Exercise 16
 --
@@ -330,14 +331,12 @@ moveRight z =
 -- >>> swapLeft (ListZipper [] 1 [2,3,4])
 -- ><
 swapLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-swapLeft z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper [] _ _) -> IsNotZ
-    IsZ (ListZipper (h:t) x r) -> IsZ (ListZipper (x:t) h r)
-    IsNotZ -> IsNotZ
+swapLeft (ListZipper [] _ _) =
+  IsNotZ
+swapLeft (ListZipper (h:t) x r) =
+  IsZ (ListZipper (x:t) h r)
 
 -- Exercise 17
 --
@@ -349,14 +348,12 @@ swapLeft z =
 -- >>> swapRight (ListZipper [3,2,1] 4 [])
 -- ><
 swapRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-swapRight z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper _ _ []) -> IsNotZ
-    IsZ (ListZipper l x (h:t)) -> IsZ (ListZipper l h (x:t))
-    IsNotZ -> IsNotZ
+swapRight (ListZipper _ _ []) =
+  IsNotZ
+swapRight (ListZipper l x (h:t)) =
+  IsZ (ListZipper l h (x:t))
 
 -- Exercise 18
 --
@@ -370,13 +367,10 @@ swapRight z =
 --
 -- prop> dropLefts (ListZipper l x r) == ListZipper [] x r
 dropLefts ::
-  ListZipper' f =>
-  f a
-  -> f a
-dropLefts z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper _ x r) -> fromListZipper (ListZipper [] x r)
-    IsNotZ -> z
+  ListZipper a
+  -> ListZipper a
+dropLefts (ListZipper _ x r) =
+  ListZipper [] x r
 
 -- Exercise 19
 --
@@ -390,41 +384,38 @@ dropLefts z =
 --
 -- prop> dropRights (ListZipper l x r) == ListZipper l x []
 dropRights ::
-  ListZipper' f =>
-  f a
-  -> f a
-dropRights z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x _) -> fromListZipper (ListZipper l x [])
-    IsNotZ -> z
+  ListZipper a
+  -> ListZipper a
+dropRights (ListZipper l x _) =
+  ListZipper l x []
 
 -- Exercise 20
 --
 -- Move the focus left the given number of positions. If the value is negative, move right instead.
 moveLeftN ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
-moveLeftN n z = case toMaybeListZipper z of
-  IsNotZ -> IsNotZ
-  IsZ z' | n == 0    -> fromListZipper z'
-         | n < 0     -> moveRightN (negate n) z'
-         | otherwise -> moveLeftN (pred n) (moveLeft z')
+moveLeftN n z | n == 0 =
+  IsZ z
+moveLeftN n z | n < 0 =
+  moveRightN (negate n) z
+moveLeftN n z | otherwise =
+  moveLeftN (pred n) >-> moveLeft z
 
 -- Exercise 21
 --
 -- Move the focus right the given number of positions. If the value is negative, move left instead.
 moveRightN ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
-moveRightN n z = case toMaybeListZipper z of
-  IsNotZ -> IsNotZ
-  IsZ z' | n == 0    -> fromListZipper z'
-         | n < 0     -> moveLeftN (negate n) z'
-         | otherwise -> moveRightN (pred n) (moveRight z')
+moveRightN n z | n == 0 =
+  IsZ z
+moveRightN n z | n < 0 =
+  moveLeftN (negate n) z
+moveRightN n z | otherwise =
+  moveRightN (pred n) >-> moveRight z
 
 -- Exercise 22
 --
@@ -446,10 +437,9 @@ moveRightN n z = case toMaybeListZipper z of
 -- >>> moveLeftN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
 moveLeftN' ::
-  ListZipper' f =>
   Int
-  -> f a
-  -> Either Int (f a)
+  -> ListZipper a
+  -> Either Int (ListZipper a)
 moveLeftN' n z =
   let moveLeftN'' n' z' q =
         if n' == 0
@@ -461,7 +451,7 @@ moveLeftN' n z =
                 moveRightN' (negate n') z
               else
                 case moveLeft z' of
-                  IsZ zz -> moveLeftN'' (n' - 1) (fromListZipper zz) (q + 1)
+                  IsZ zz -> moveLeftN'' (n' - 1) zz (q + 1)
                   IsNotZ -> Left q
   in moveLeftN'' n z 0
 
@@ -485,10 +475,9 @@ moveLeftN' n z =
 -- >>> moveRightN' (-4) (ListZipper [3,2,1] 4 [5,6,7])
 -- Left 3
 moveRightN' ::
-  ListZipper' f =>
   Int
-  -> f a
-  -> Either Int (f a)
+  -> ListZipper a
+  -> Either Int (ListZipper a)
 moveRightN' n z =
   let moveRightN'' n' z' q =
         if n' == 0
@@ -500,7 +489,7 @@ moveRightN' n z =
                 moveLeftN' (negate n') z
               else
                 case moveRight z' of
-                  IsZ zz -> moveRightN'' (n' - 1) (fromListZipper zz) (q + 1)
+                  IsZ zz -> moveRightN'' (n' - 1) zz (q + 1)
                   IsNotZ -> Left q
   in moveRightN'' n z 0
 
@@ -517,20 +506,17 @@ moveRightN' n z =
 -- >>> nth 8 (ListZipper [3,2,1] 4 [5,6,7])
 -- ><
 nth ::
-  ListZipper' f =>
   Int
-  -> f a
+  -> ListZipper a
   -> MaybeListZipper a
 nth i z =
   if i < 0
     then
       IsNotZ
     else
-      case toMaybeListZipper z of
-        g@(IsZ z') -> case moveLeftN' i z' of
-                                 Left a -> moveRightN (i-a) z
-                                 Right (ListZipper l _ _) -> moveLeftN (length l) g
-        z'@IsNotZ -> z'
+      case moveLeftN' i z of
+             Left a -> moveRightN (i-a) z
+             Right (ListZipper l _ _) -> moveLeftN (length l) z
 
 -- Exercise 25
 --
@@ -539,15 +525,12 @@ nth i z =
 -- >>> index (ListZipper [3,2,1] 4 [5,6,7])
 -- Just 3
 --
--- prop> maybe True (\i -> maybe False (==z) (toMaybe (nth i z))) (index z)
+-- prop> P.maybe True (\i -> P.maybe False (==z) (toMaybe (nth i z))) (index z)
 index ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> Maybe Int
-index z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l _ _) -> Just (length l)
-    IsNotZ -> Nothing
+index (ListZipper l _ _) =
+  Just (length l)
 
 -- Exercise 26
 --
@@ -557,14 +540,11 @@ index z =
 -- >>> end (ListZipper [3,2,1] 4 [5,6,7])
 -- [6,5,4,3,2,1] >7< []
 end ::
-  ListZipper' f =>
-  f a
-  -> f a
-end z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> let (x':r') = reverse (x:r)
-                                       in fromListZipper (ListZipper (r' ++ l) x' [])
-    IsNotZ -> z
+  ListZipper a
+  -> ListZipper a
+end (ListZipper l x r) =
+  let (x':r') = reverse (x:r)
+  in ListZipper (r' ++ l) x' []
 
 -- Exercise 27
 --
@@ -573,14 +553,11 @@ end z =
 -- >>> start (ListZipper [3,2,1] 4 [5,6,7])
 -- [] >1< [2,3,4,5,6,7]
 start ::
-  ListZipper' f =>
-  f a
-  -> f a
-start z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> let (x':r') = reverse (x:l)
-                                       in fromListZipper (ListZipper [] x' (r' ++ r))
-    IsNotZ -> z
+  ListZipper a
+  -> ListZipper a
+start (ListZipper l x r) =
+  let (x':r') = reverse (x:l)
+  in ListZipper [] x' (r' ++ r)
 
 -- Exercise 28
 --
@@ -592,14 +569,12 @@ start z =
 -- >>> deletePullLeft (ListZipper [] 1 [2,3,4])
 -- ><
 deletePullLeft ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-deletePullLeft z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper [] _ _) -> IsNotZ
-    IsZ (ListZipper (h:t) _ r) -> IsZ (ListZipper t h r)
-    IsNotZ -> IsNotZ
+deletePullLeft (ListZipper [] _ _) =
+  IsNotZ
+deletePullLeft (ListZipper (h:t) _ r) =
+  IsZ (ListZipper t h r)
 
 -- Exercise 29
 --
@@ -611,14 +586,12 @@ deletePullLeft z =
 -- >>> deletePullRight (ListZipper [3,2,1] 4 [])
 -- ><
 deletePullRight ::
-  ListZipper' f =>
-  f a
+  ListZipper a
   -> MaybeListZipper a
-deletePullRight z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper _ _ []) -> IsNotZ
-    IsZ (ListZipper l _ (h:t)) -> IsZ (ListZipper l h t)
-    IsNotZ -> IsNotZ
+deletePullRight (ListZipper _ _ []) =
+  IsNotZ
+deletePullRight (ListZipper l _ (h:t)) =
+  IsZ (ListZipper l h t)
 
 -- Exercise 30
 --
@@ -630,16 +603,13 @@ deletePullRight z =
 -- >>> insertPushLeft 15 (ListZipper [] 1 [2,3,4])
 -- [1] >15< [2,3,4]
 --
--- prop> maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
+-- prop> P.maybe False (==z) (toMaybe (deletePullLeft (insertPushLeft i z)))
 insertPushLeft ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
-insertPushLeft a z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> fromListZipper (ListZipper (x:l) a r)
-    IsNotZ -> z
+  -> ListZipper a
+  -> ListZipper a
+insertPushLeft a (ListZipper l x r) =
+  ListZipper (x:l) a r
 
 -- Exercise 31
 --
@@ -651,16 +621,13 @@ insertPushLeft a z =
 -- >>> insertPushRight 15 (ListZipper [3,2,1] 4 [])
 -- [3,2,1] >15< [4]
 --
--- prop> maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
+-- prop> P.maybe False (==z) (toMaybe (deletePullRight (insertPushRight i z)))
 insertPushRight ::
-  ListZipper' f =>
   a
-  -> f a
-  -> f a
-insertPushRight a z =
-  case toMaybeListZipper z of
-    IsZ (ListZipper l x r) -> fromListZipper (ListZipper l a (x:r))
-    IsNotZ -> z
+  -> ListZipper a
+  -> ListZipper a
+insertPushRight a (ListZipper l x r) =
+  ListZipper l a (x:r)
 
 -- Let's start using proper type-class names.
 --
@@ -749,7 +716,7 @@ instance Applicative MaybeListZipper where
 -- /Tip:/ Use @Data.List#unfoldr@.
 --
 -- >>> id <<= (ListZipper [2,1] 3 [4,5])
--- [[] >1< [2,3,4,5],[1] >2< [3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
+-- [[1] >2< [3,4,5],[] >1< [2,3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
 instance Extend ListZipper where
   f <<= z =
     ListZipper (unfoldr (fmap (\z' -> (f z', z')) . toMaybe . moveLeft) z) (f z) (unfoldr (fmap (\z' -> (f z', z')) . toMaybe . moveRight) z)
