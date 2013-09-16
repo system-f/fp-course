@@ -101,18 +101,6 @@ instance Monad ((->) t) where
 -- Exercise 11
 -- Relative Difficulty: 2
 --
--- | Instance the monad type-class for IO.
---
--- /Tip:/ Use standard library functions. This is not cheating.
-instance Monad IO where
-  bind =
-    (=<<)
-  return =
-    P.return
-
--- Exercise 12
--- Relative Difficulty: 2
---
 -- | Flattens a combined structure to a single structure.
 --
 -- >>> flaatten ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
@@ -133,7 +121,7 @@ flaatten ::
 flaatten =
   bind id
 
--- Exercise 13
+-- Exercise 12
 -- Relative Difficulty: 10
 --
 -- | Applies a structure on functions to a structure on values.
@@ -166,7 +154,7 @@ apply ::
 apply f a =
   bind (`fmap'` a) f
 
--- Exercise 14
+-- Exercise 13
 -- Relative Difficulty: 6
 -- (bonus: use apply + fmap')
 --
@@ -198,7 +186,7 @@ lift2 ::
 lift2 f =
   apply . fmap' f
 
--- Exercise 15
+-- Exercise 14
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift2)
 --
@@ -234,7 +222,7 @@ lift3 ::
 lift3 f a =
   apply . apply (fmap' f a)
 
--- Exercise 16
+-- Exercise 15
 -- Relative Difficulty: 6
 -- (bonus: use apply + lift3)
 --
@@ -271,7 +259,7 @@ lift4 ::
 lift4 f a b =
   apply . apply (apply (fmap' f a) b)
 
--- Exercise 17
+-- Exercise 16
 -- Relative Difficulty: 3
 --
 -- | Sequences a list of structures to a structure of list.
@@ -297,7 +285,7 @@ seequence ::
 seequence =
   foldr (lift2 (:)) (return [])
 
--- Exercise 18
+-- Exercise 17
 -- Relative Difficulty: 3
 --
 -- | Traverse (map) a list of values with an effect.
@@ -324,7 +312,7 @@ traaverse ::
 traaverse f =
   seequence . fmap' f
 
--- Exercise 19
+-- Exercise 18
 -- Relative Difficulty: 4
 --
 -- | Replicate an effect a given number of times.
@@ -348,7 +336,7 @@ reeplicate ::
 reeplicate n =
   seequence . replicate n
 
--- Exercise 20
+-- Exercise 19
 -- Relative Difficulty: 9
 --
 -- | Filter a list with a predicate that produces an effect.
@@ -378,6 +366,12 @@ filtering p =
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
+
+instance Monad IO where
+  bind =
+    (=<<)
+  return =
+    P.return
 
 instance Monad [] where
   bind = (P.=<<)

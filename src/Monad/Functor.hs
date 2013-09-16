@@ -62,9 +62,10 @@ instance Functor ((->) t) where
   fmap f g =
     \x -> f (g x)
 
--- Exercise 5
--- Relative Difficulty: 2
---
+-----------------------
+-- SUPPORT LIBRARIES --
+-----------------------
+
 -- | Maps a function on an IO program.
 --
 -- >>> fmap reverse (putStr "hi" >> P.return "abc")
@@ -72,10 +73,6 @@ instance Functor ((->) t) where
 instance Functor IO where
   fmap =
     P.fmap
-
------------------------
--- SUPPORT LIBRARIES --
------------------------
 
 instance Functor [] where
   fmap =
