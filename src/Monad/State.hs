@@ -3,15 +3,15 @@
 
 module Monad.State where
 
-import Core
-import qualified Prelude as P
-import Intro.Optional
-import Structure.List
-import Monad.Functor
-import Monad.Monad
-import Data.Char
-import qualified Data.Set as S
-import qualified Data.Foldable as F
+import Core(Eq(..), Ord(..), Integer, Bool(..), Show(..), Integral(..), (.), ($), (||), (*), snd, fst, const, id)
+import qualified Prelude as P(sum)
+import Data.Char(digitToInt)
+import Intro.Optional(Optional(..))
+import Structure.List(List(..))
+import Monad.Functor(Functor(..))
+import Monad.Monad(Monad(..), flatten')
+import qualified Data.Foldable as F(Foldable(..), elem)
+import qualified Data.Set as S(member, insert, empty, notMember)
 
 -- $setup
 -- >>> import Test.QuickCheck.Function

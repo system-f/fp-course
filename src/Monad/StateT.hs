@@ -2,15 +2,14 @@
 
 module Monad.StateT where
 
-import Core
-import Intro.Id
-import Intro.Optional
-import Structure.List
-import Monad.Functor
-import Monad.Monad
-import Monad.State
-import qualified Data.Set as S
-import qualified Data.Foldable as F
+import Core(Ord(..), Num(..), Eq(..), Show(..), Integral(..), String, (.), (++), even, const, fst, snd)
+import Intro.Id(Id(..), runId)
+import Intro.Optional(Optional(..))
+import Structure.List(List(..))
+import Monad.Functor(Functor(..))
+import Monad.Monad(Monad(..))
+import Monad.State(filterM)
+import qualified Data.Set as S(insert, empty, notMember)
 
 -- | A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 newtype StateT s f a =

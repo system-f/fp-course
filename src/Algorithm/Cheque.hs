@@ -15,11 +15,10 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 module Algorithm.Cheque where
 
-import Data.Char
-import Data.List
-import Data.Maybe
-import Control.Monad
-import Control.Monad.Instances
+import Data.Maybe(mapMaybe)
+import Data.Char(toLower)
+import Data.List(isPrefixOf)
+import Control.Applicative(liftA2)
 
 -- The representation of the grouping of each exponent of one thousand. ["thousand", "million", ...]
 illion ::
@@ -165,7 +164,7 @@ illion =
      , "septendecillion"
      , "octodecillion"
      , "novemdecillion"
-     ] ++ liftM2 ((++) =<<) preillion postillion
+     ] ++ liftA2 ((++) =<<) preillion postillion
 
 -- A data type representing the digits zero to nine.
 data Digit =

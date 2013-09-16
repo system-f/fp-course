@@ -1,11 +1,9 @@
 module Parser.MoreParser where
 
-import Intro.Validation
-import Parser.Parser
-import Data.Char
-import Numeric
-import Control.Applicative
-import Control.Monad
+import Parser.Parser(Parser(..), Input, ParseResult(..), space, digit, many1, list, is, satisfy, (|||))
+import Data.Char(chr, isHexDigit)
+import Numeric(readHex)
+import Control.Monad(replicateM)
 
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.

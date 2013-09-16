@@ -13,12 +13,12 @@ module Structure.BKTree
 , fromDictionaryFile
 ) where
 
-import Structure.MetricSpace
-import Data.Map (Map)
-import qualified Data.Map as M
-import Prelude hiding (any, foldr)
-import Data.Foldable
-import Data.Monoid
+import Structure.MetricSpace(MetricSpace(..))
+import Data.Map(Map)
+import qualified Data.Map as M(toList, split, empty, alter, lookup)
+import Data.Foldable(Foldable(..))
+import qualified Data.Foldable as F(foldr, any)
+import Data.Monoid(Monoid(..))
 
 data BKTree a =
   Node a !Int (BMap a)
@@ -42,7 +42,7 @@ instance Foldable BKTree where
   foldl f z =
     foldl' f z . asList
   foldr f z =
-    foldr f z . asList
+    F.foldr f z . asList
 
 bktree ::
   (MetricSpace a, Foldable f) =>
@@ -91,7 +91,7 @@ member _ Leaf =
   False
 member a (Node z _ m) =
   let d = z <--> a
-  in d == 0 || any (member a) (d `M.lookup` m)
+  in d == 0 || F.any (member a) (d `M.lookup` m)
 
 withinDistance ::
   MetricSpace a =>

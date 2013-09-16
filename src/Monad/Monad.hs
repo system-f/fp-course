@@ -2,11 +2,11 @@
 
 module Monad.Monad where
 
-import Core
-import qualified Prelude as P
-import Intro.Id
-import Intro.Optional
-import Structure.List
+import Core(IO, Maybe(..), Bool(..), Int, (=<<), (.), const, id, foldr, replicate)
+import qualified Prelude as P(return, (=<<))
+import Intro.Id(Id(..))
+import Intro.Optional(Optional(..), bindOptional)
+import Structure.List(List(..), flatMap)
 
 
 class Monad m where

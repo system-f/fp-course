@@ -1,9 +1,8 @@
 module Algorithm.Anagrams where
 
-import Data.Char
-import Data.List
-import Data.Function
-
+import Data.Function(on)
+import Data.Char(toLower)
+import Data.List(permutations, intersectBy)
 
 {-
 

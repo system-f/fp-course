@@ -1,11 +1,10 @@
 module Parser.JsonParser where
 
-import Numeric
-import Control.Applicative
-import Intro.Validation
-import Parser.Parser
-import Parser.JsonValue
-import Parser.MoreParser
+import Parser.Parser(Parser(..), ParseResult(..), (|||), list, is)
+import Parser.MoreParser(satisfyAll, stringTok, charTok, spaces, hex, oneof, betweenCharTok, betweenSepbyComma)
+import Numeric(readSigned, readFloat)
+import Parser.JsonValue(JsonValue(..), Assoc)
+import Control.Applicative((<$>), (<$), (*>), (<*), (<*>))
 
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.

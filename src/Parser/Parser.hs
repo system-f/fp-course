@@ -1,10 +1,8 @@
 module Parser.Parser where
 
-import Control.Applicative
-import Data.Char
-import Intro.Validation
-import Parser.Person
-
+import Control.Applicative(Applicative(..))
+import Parser.Person(Person(..))
+import Data.Char(isLower, isUpper, isAlpha, isSpace, isDigit)
 
 type Input = String
 

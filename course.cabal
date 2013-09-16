@@ -34,7 +34,6 @@ library
                     , array
 
   ghc-options:      -Wall
-                    -fno-warn-unused-imports
                     -fno-warn-unused-binds
                     -fno-warn-unused-do-bind
                     -fno-warn-type-defaults

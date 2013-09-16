@@ -1,6 +1,6 @@
 module Monad.Compose where
 
-import Control.Applicative
+import Control.Applicative(Applicative(..), liftA2)
 
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
 
