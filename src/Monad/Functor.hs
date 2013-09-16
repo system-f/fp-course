@@ -62,20 +62,17 @@ instance Functor ((->) t) where
   fmap =
     error "todo"
 
--- Exercise 5
--- Relative Difficulty: 2
---
+-----------------------
+-- SUPPORT LIBRARIES --
+-----------------------
+
 -- | Maps a function on an IO program.
 --
 -- >>> fmap reverse (putStr "hi" >> return "abc")
 -- hi"cba"
 instance Functor IO where
   fmap =
-    error "todo"
-
------------------------
--- SUPPORT LIBRARIES --
------------------------
+    P.fmap
 
 instance Functor [] where
   fmap =
