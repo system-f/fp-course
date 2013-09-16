@@ -4,9 +4,9 @@ module Monad.Monad where
 
 import Core(IO, Maybe, Bool, Int, (=<<), error)
 import qualified Prelude as P(return, (=<<))
-import Intro.Id(Id)
-import Intro.Optional(Optional)
-import Structure.List(List)
+import Intro.Id(Id(..))
+import Intro.Optional(Optional(..))
+import Structure.List(List(..))
 
 
 class Monad m where
