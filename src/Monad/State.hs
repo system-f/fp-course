@@ -18,7 +18,7 @@ import qualified Data.Set as S(member, insert, empty, notMember)
 -- >>> import Data.List(nub)
 -- >>> import Test.QuickCheck
 -- >>> import qualified Prelude as P(fmap)
--- >>> import Core(foldr, Num(..))
+-- >>> import Core(foldr, Num(..), Integral(..))
 -- >>> import Structure.List(flatMap, len, filter, foldRight)
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 

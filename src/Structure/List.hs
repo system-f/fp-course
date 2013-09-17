@@ -11,7 +11,7 @@
 
 module Structure.List where
 
-import Core(Num(..), Enum(..), Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), (*), seq, foldr, const, id, flip)
+import Core(Num(..), Enum(..), Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), seq, foldr, const, id, flip)
 import Intro.Optional(Optional(..), twiceOptional)
 
 -- $setup
