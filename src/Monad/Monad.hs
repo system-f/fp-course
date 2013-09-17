@@ -347,10 +347,10 @@ reeplicate =
 -- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6]
 -- Full [4,5,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6,7,8,9]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (if a <= 7)) [4,5,6,7,8,9]
 -- Full [4,5,6,7]
 --
--- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6,13,14]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (if a <= 7)) [4,5,6,13,14]
 -- Empty
 --
 -- >>> filtering (>) [4..12] 8
