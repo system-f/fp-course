@@ -8,6 +8,9 @@ import Monad.State(State(..))
 import Monad.Functor(Functor(..))
 import Structure.ListZipper(Extend(..), Comonad(..))
 
+-- $setup
+-- >>> import Core(Num(..), reverse)
+
 data Address =
   Address
     String -- street

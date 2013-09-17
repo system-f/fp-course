@@ -5,6 +5,10 @@ import Data.Char(chr, isHexDigit)
 import Numeric(readHex)
 import Control.Monad(replicateM)
 
+-- $setup
+-- >>> import Parser.Parser(isErrorResult, character, lower)
+-- >>> import Data.Char(isUpper, isLower)
+
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.
 (<.>) ::

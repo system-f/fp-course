@@ -8,6 +8,9 @@ import Intro.Id(Id(..))
 import Intro.Optional(Optional(..), bindOptional)
 import Structure.List(List(..), flatMap)
 
+-- $setup
+-- >>> import Core(Eq(..), Num(..), Ord(..), even)
+-- >>> import Structure.List(product, sum, len, filter, listh)
 
 class Monad m where
   bind ::
@@ -344,13 +347,13 @@ reeplicate n =
 -- >>> filtering (Id . even) [4,5,6]
 -- Id [4,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6]
 -- Full [4,5,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else Full (if a <= 7)) [4,5,6,7,8,9]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6,7,8,9]
 -- Full [4,5,6,7]
 --
--- >>> filtering (\a -> if a > 13 then Empty else Full (if a <= 7)) [4,5,6,13,14]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6,13,14]
 -- Empty
 --
 -- >>> filtering (>) [4..12] 8

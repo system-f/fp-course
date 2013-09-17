@@ -3,7 +3,7 @@
 
 module Monad.State where
 
-import Core(Eq(..), Ord(..), Integer, Bool(..), Show(..), Integral(..), (.), ($), (||), (*), snd, fst, const, id)
+import Core(Eq(..), Ord(..), Num(..), Integer, Bool(..), Show(..), Integral(..), (.), ($), (||), snd, fst, const, id)
 import qualified Prelude as P(sum)
 import Data.Char(digitToInt)
 import Intro.Optional(Optional(..))
@@ -17,6 +17,9 @@ import qualified Data.Set as S(member, insert, empty, notMember)
 -- >>> import Test.QuickCheck.Function
 -- >>> import Data.List(nub)
 -- >>> import Test.QuickCheck
+-- >>> import qualified Prelude as P(fmap)
+-- >>> import Core(foldr, Num(..))
+-- >>> import Structure.List(flatMap, len, filter, foldRight)
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
