@@ -36,7 +36,6 @@ module Core(
   , putStr
   , putStrLn
   , getChar
-  , concatMap
   , length
   , reverse
   , foldr
@@ -81,7 +80,6 @@ import Prelude(
   , putStr
   , putStrLn
   , getChar
-  , concatMap
   , length
   , reverse
   , foldr
