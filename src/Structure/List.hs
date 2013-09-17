@@ -257,6 +257,30 @@ seqOptional =
   foldRight (twiceOptional (:.)) (Full Nil)
 
 -- Exercise 10
+--
+-- | Find the first element in the list matching the predicate.
+--
+-- >>> find even (1 :. 3 :. 5 :. Nil)
+-- Empty
+--
+-- >>> find even Nil
+-- Empty
+--
+-- >>> find even (1 :. 2 :. 3 :. 5 :. Nil)
+-- Full 2
+--
+-- >>> find even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
+-- Full 2
+find ::
+  (a -> Bool)
+  -> List a
+  -> Optional a
+find p x =
+  case filter p x of
+    Nil -> Empty
+    h:._ -> Full h
+
+-- Exercise 11
 -- Relative Difficulty: 10
 -- Correctness: 5.0 marks
 -- Performance: 2.5 marks
