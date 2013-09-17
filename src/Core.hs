@@ -39,7 +39,6 @@ module Core(
   , getLine
   , readFile
   , writeFile
-  , concatMap
   , length
   , reverse
   , foldr
@@ -87,7 +86,6 @@ import Prelude(
   , getLine
   , readFile
   , writeFile
-  , concatMap
   , length
   , reverse
   , foldr
