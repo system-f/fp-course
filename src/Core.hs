@@ -36,6 +36,9 @@ module Core(
   , putStr
   , putStrLn
   , getChar
+  , getLine
+  , readFile
+  , writeFile
   , length
   , reverse
   , foldr
@@ -80,6 +83,9 @@ import Prelude(
   , putStr
   , putStrLn
   , getChar
+  , getLine
+  , readFile
+  , writeFile
   , length
   , reverse
   , foldr
