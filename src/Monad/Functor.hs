@@ -11,6 +11,10 @@ import Structure.List(List(..))
 class Functor f where
   fmap :: (a -> b) -> f a -> f b
 
+-- $setup
+-- >>> import Core(Num(..), putStr, reverse, (>>))
+-- >>> import qualified Prelude as P(return)
+
 -- Exercise 1
 -- Relative Difficulty: 1
 --
@@ -67,7 +71,7 @@ instance Functor ((->) t) where
 
 -- | Maps a function on an IO program.
 --
--- >>> fmap reverse (putStr "hi" >> return "abc")
+-- >>> fmap reverse (putStr "hi" >> P.return "abc")
 -- hi"cba"
 instance Functor IO where
   fmap =

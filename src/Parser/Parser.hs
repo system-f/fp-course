@@ -3,6 +3,9 @@ module Parser.Parser where
 import Control.Applicative(Applicative(..))
 import Parser.Person(Person(..))
 
+-- $setup
+-- >>> import Data.Char(isUpper)
+
 type Input = String
 
 data ParseResult a =

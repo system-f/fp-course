@@ -8,6 +8,9 @@ import Intro.Id(Id(..))
 import Intro.Optional(Optional(..))
 import Structure.List(List(..))
 
+-- $setup
+-- >>> import Core(Eq(..), Num(..), Ord(..), even, (.))
+-- >>> import Structure.List(product, sum, len, filter, listh)
 
 class Monad m where
   bind ::

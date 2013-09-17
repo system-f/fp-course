@@ -11,11 +11,13 @@
 
 module Structure.List where
 
-import Core(Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), (*), seq, foldr, error)
+import Core(Num(..), Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), seq, foldr, error)
 import Intro.Optional(Optional(..))
 
 -- $setup
 -- >>> import Test.QuickCheck
+-- >>> import Core(even, id, const)
+-- >>> import qualified Prelude as P(fmap)
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- BEGIN Helper functions and data types

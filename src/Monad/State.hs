@@ -14,6 +14,9 @@ import qualified Data.Foldable as F(Foldable(..))
 -- >>> import Test.QuickCheck.Function
 -- >>> import Data.List(nub)
 -- >>> import Test.QuickCheck
+-- >>> import qualified Prelude as P(fmap)
+-- >>> import Core(Integral(..), Num(..), Eq(..), foldr, const, ($), fst, snd)
+-- >>> import Structure.List(flatMap, len, filter, foldRight)
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 
 -- A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).

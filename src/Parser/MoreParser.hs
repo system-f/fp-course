@@ -2,6 +2,10 @@ module Parser.MoreParser where
 
 import Parser.Parser(Parser(..), Input, ParseResult(..))
 
+-- $setup
+-- >>> import Parser.Parser(isErrorResult, character, lower, is)
+-- >>> import Data.Char(isUpper, isLower)
+
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.
 (<.>) ::
