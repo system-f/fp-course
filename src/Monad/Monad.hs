@@ -2,7 +2,7 @@
 
 module Monad.Monad where
 
-import Core(IO, Maybe(..), Bool(..), Int, (=<<), (.), const, id, foldr, replicate)
+import Core(IO, Num(..), Ord(..), Maybe(..), Bool(..), Int, (=<<), (.), const, id, foldr)
 import qualified Prelude as P(return, (=<<))
 import Intro.Id(Id(..))
 import Intro.Optional(Optional(..), bindOptional)
@@ -336,8 +336,12 @@ reeplicate ::
   Int
   -> m a
   -> m [a]
-reeplicate n =
-  seequence . replicate n
+reeplicate n a =
+  if n <= 0 
+    then 
+      return [] 
+    else 
+      lift2 (:) a (reeplicate (n - 1) a) 
 
 -- Exercise 19
 -- Relative Difficulty: 9
