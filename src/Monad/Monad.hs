@@ -267,24 +267,24 @@ lift4 =
 --
 -- | Sequences a list of structures to a structure of list.
 --
--- >>> seequence [Id 7, Id 8, Id 9]
+-- >>> seequence (Id 7 :. Id 8 :. Id 9 :. Nil)
 -- Id [7,8,9]
 --
--- >>> seequence [1 :. 2 :. 3 :. Nil, 1 :. 2 :. Nil]
+-- >>> seequence ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
 -- [[1,1],[1,2],[2,1],[2,2],[3,1],[3,2]]
 --
--- >>> seequence [Full 7, Empty]
+-- >>> seequence (Full 7 :. Empty :. Nil)
 -- Empty
 --
--- >>> seequence [Full 7, Full 8]
+-- >>> seequence (Full 7 :. Full 8 :. Nil)
 -- Full [7,8]
 --
--- >>> seequence [(*10), (+2)] 6
+-- >>> seequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
 seequence ::
   Monad m =>
-  [m a]
-  -> m [a]
+  List (m a)
+  -> m (List a)
 seequence =
   error "todo"
 
@@ -293,25 +293,25 @@ seequence =
 --
 -- | Traverse (map) a list of values with an effect.
 --
--- >>> traaverse (\n -> Id (n + 4)) [1,2,3]
+-- >>> traaverse (\n -> Id (n + 4)) (1 :. 2 :. 3 :. Nil)
 -- Id [5,6,7]
 --
--- >>> traaverse (\n -> n :. n * 2 :. Nil) [1,2,3]
+-- >>> traaverse (\n -> n :. n * 2 :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [[1,2,3],[1,2,6],[1,4,3],[1,4,6],[2,2,3],[2,2,6],[2,4,3],[2,4,6]]
 --
--- >>> traaverse (\n -> if n < 7 then Full (n * 3) else Empty) [1,2,3]
+-- >>> traaverse (\n -> if n < 7 then Full (n * 3) else Empty) (1 :. 2 :. 3 :. Nil)
 -- Full [3,6,9]
 --
--- >>> traaverse (\n -> if n < 7 then Full (n * 3) else Empty) [1,2,3,14]
+-- >>> traaverse (\n -> if n < 7 then Full (n * 3) else Empty) (1 :. 2 :. 3 :. 14 :. Nil)
 -- Empty
 --
--- >>> traaverse (*) [1,2,3] 15
+-- >>> traaverse (*) (1 :. 2 :. 3 :. Nil) 15
 -- [15,30,45]
 traaverse ::
   Monad m =>
   (a -> m b)
-  -> [a]
-  -> m [b]
+  -> List a
+  -> m (List b)
 traaverse =
   error "todo"
 
@@ -335,7 +335,7 @@ reeplicate ::
   Monad m =>
   Int
   -> m a
-  -> m [a]
+  -> m (List a)
 reeplicate =
   error "todo"
 
@@ -344,25 +344,25 @@ reeplicate =
 --
 -- | Filter a list with a predicate that produces an effect.
 --
--- >>> filtering (Id . even) [4,5,6]
+-- >>> filtering (Id . even) (4 :. 5 :. 6 :. Nil)
 -- Id [4,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. Nil)
 -- Full [4,5,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6,7,8,9]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. Nil)
 -- Full [4,5,6,7]
 --
--- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6,13,14]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. 13 :. 14 :. Nil)
 -- Empty
 --
--- >>> filtering (>) [4..12] 8
+-- >>> filtering (>) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. 10 :. 11 :. 12 :. Nil) 8
 -- [9,10,11,12]
 filtering ::
   Monad m =>
   (a -> m Bool)
-  -> [a]
-  -> m [a]
+  -> List a
+  -> m (List a)
 filtering =
   error "todo"
 

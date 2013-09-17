@@ -2,10 +2,11 @@
 
 module IO.Interactive where
 
-import Core(Eq(..), Bool(..), Maybe(..), IO, String, Char, putStr, putStrLn, getChar, const, flip, error, (.))
+import Core(Eq(..), Bool(..), IO, String, Char, putStr, putStrLn, getChar, const, flip, error, (.))
 import Monad.Functor(Functor(..))
 import Monad.Monad(Monad(..), traaverse)
-import Data.List(find)
+import Structure.List(List(..), find)
+import Intro.Optional(Optional(..))
 
 -- | Eliminates any value over which a functor is defined.
 vooid ::
@@ -149,12 +150,13 @@ encodeInteractive =
 interactive ::
   IO ()
 interactive =
-  let ops = [
-              Op 'c' "Convert a string to upper-case" convertInteractive
-            , Op 'r' "Reverse a file" reverseInteractive
-            , Op 'e' "Encode a URL" encodeInteractive
-            , Op 'q' "Quit" (return ())
-            ]
+  let ops = (
+               Op 'c' "Convert a string to upper-case" convertInteractive
+            :. Op 'r' "Reverse a file" reverseInteractive
+            :. Op 'e' "Encode a URL" encodeInteractive
+            :. Op 'q' "Quit" (return ())
+            :. Nil
+            )
   in vooid (untilM
              (\c ->
                if c == 'q'
@@ -172,6 +174,6 @@ interactive =
               putStrLn "" >-
               let o = find (\(Op c' _ _) -> c' == c) ops
                   r = case o of
-                        Nothing -> (putStrLn "Not a valid selection. Try again." >-)
-                        Just (Op _ _ k) -> (k >-)
+                        Empty -> (putStrLn "Not a valid selection. Try again." >-)
+                        Full (Op _ _ k) -> (k >-)
               in r (return c)))
