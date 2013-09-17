@@ -4,6 +4,9 @@ import Control.Applicative(Applicative(..))
 import Parser.Person(Person(..))
 import Data.Char(isLower, isUpper, isAlpha, isSpace, isDigit)
 
+-- $setup
+-- >>> import Data.Char(isUpper)
+
 type Input = String
 
 data ParseResult a =

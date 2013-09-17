@@ -9,6 +9,10 @@ import Control.Monad(replicateM)
 -- >>> import Parser.Parser(isErrorResult, character, lower)
 -- >>> import Data.Char(isUpper, isLower)
 
+-- $setup
+-- >>> import Parser.Parser(isErrorResult, character, lower, is)
+-- >>> import Data.Char(isUpper, isLower)
+
 -- | Parses the given input and returns the result.
 -- The remaining input is ignored.
 (<.>) ::
