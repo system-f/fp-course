@@ -123,7 +123,7 @@ this source code:
 Alternatively, you may run the tests in a single source file by using `doctest`
 explicitly. From the base directory of this source code:
 
-    > doctest -isrc <filename.hs>
+    > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
 
 Note: There is a [bug in GHC 7.4.1](http://ghc.haskell.org/trac/ghc/ticket/5820)
 where for some configurations, running the tests will cause an unjustified
