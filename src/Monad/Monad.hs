@@ -344,7 +344,7 @@ reeplicate =
 -- >>> filtering (Id . even) [4,5,6]
 -- Id [4,6]
 --
--- >>> filtering (\a -> if a > 13 then Empty else if a > 7 then Full False else Full True) [4,5,6]
+-- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6]
 -- Full [4,5,6]
 --
 -- >>> filtering (\a -> if a > 13 then Empty else Full (a <= 7)) [4,5,6,7,8,9]
