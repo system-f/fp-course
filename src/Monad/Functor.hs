@@ -3,7 +3,7 @@
 module Monad.Functor where
 
 import Core(IO, Maybe(..))
-import qualified Prelude as P(fmap, return)
+import qualified Prelude as P(fmap)
 import Intro.Id(Id(..), mapId)
 import Intro.Optional(Optional(..), mapOptional)
 import Structure.List(List(..), map)
@@ -13,6 +13,7 @@ class Functor f where
 
 -- $setup
 -- >>> import Core(Num(..), putStr, reverse, (>>))
+-- >>> import qualified Prelude as P(return)
 
 -- Exercise 1
 -- Relative Difficulty: 1
