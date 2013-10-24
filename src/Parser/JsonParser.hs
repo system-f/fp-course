@@ -1,7 +1,7 @@
 module Parser.JsonParser where
 
-import Parser.Parser(Parser(..), ParseResult(..))
-import Parser.JsonValue(JsonValue(..), Assoc)
+import Parser.Parser
+import Parser.JsonValue
 
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.

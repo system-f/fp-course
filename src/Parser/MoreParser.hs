@@ -1,6 +1,6 @@
 module Parser.MoreParser where
 
-import Parser.Parser(Parser(..), Input, ParseResult(..))
+import Parser.Parser
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower, is)

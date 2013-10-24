@@ -11,8 +11,8 @@
 
 module Structure.List where
 
-import Core(Num(..), Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), seq, foldr, error)
-import Intro.Optional(Optional(..))
+import Core
+import Intro.Optional
 
 -- $setup
 -- >>> import Test.QuickCheck

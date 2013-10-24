@@ -7,7 +7,7 @@ module Algorithm.EditDistance
 , applyDiff
 ) where
 
-import Data.Array(Array, array, range, (!))
+import Data.Array
 
 editDistance ::
   Eq a =>

@@ -2,11 +2,11 @@
 
 module Structure.Lens where
 
-import Core(Eq(..), Show(..), Int, String, Either(..), error)
-import Data.List(concat, intercalate, map)
-import Monad.State(State(..))
-import Monad.Functor(Functor(..))
-import Structure.ListZipper(Extend(..), Comonad(..))
+import Core
+import Data.List
+import Monad.State
+import Monad.Functor
+import Structure.ListZipper
 
 -- $setup
 -- >>> import Core(Num(..), reverse, fst, snd)

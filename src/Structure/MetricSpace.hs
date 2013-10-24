@@ -1,6 +1,6 @@
 module Structure.MetricSpace where
 
-import Algorithm.EditDistance(editDistance)
+import Algorithm.EditDistance
 
 class Eq a => MetricSpace a where
   (<-->) ::

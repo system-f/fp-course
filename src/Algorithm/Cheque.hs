@@ -15,8 +15,8 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 module Algorithm.Cheque where
 
-import Data.List(isPrefixOf)
-import Control.Applicative(liftA2)
+import Data.List
+import Control.Applicative
 
 -- The representation of the grouping of each exponent of one thousand. ["thousand", "million", ...]
 illion ::

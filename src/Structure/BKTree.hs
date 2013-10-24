@@ -13,11 +13,11 @@ module Structure.BKTree
 , fromDictionaryFile
 ) where
 
-import Structure.MetricSpace(MetricSpace(..))
+import Structure.MetricSpace
 import Data.Map(Map)
-import qualified Data.Map as M(toList, split)
-import Data.Foldable(Foldable(..))
-import Data.Monoid(Monoid(..))
+import qualified Data.Map as M
+import Data.Foldable
+import Data.Monoid
 
 data BKTree a =
   Node a !Int (BMap a)

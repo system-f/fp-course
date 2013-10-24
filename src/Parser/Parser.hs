@@ -1,7 +1,7 @@
 module Parser.Parser where
 
-import Control.Applicative(Applicative(..))
-import Parser.Person(Person(..))
+import Control.Applicative
+import Parser.Person
 
 -- $setup
 -- >>> import Data.Char(isUpper)

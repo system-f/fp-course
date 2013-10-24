@@ -2,11 +2,11 @@
 
 module IO.Interactive where
 
-import Core(Eq(..), Bool(..), IO, String, Char, putStr, putStrLn, getChar, const, flip, error, (.))
-import Monad.Functor(Functor(..))
-import Monad.Monad(Monad(..), traaverse)
-import Structure.List(List(..), find)
-import Intro.Optional(Optional(..))
+import Core
+import Monad.Functor
+import Monad.Monad
+import Structure.List
+import Intro.Optional
 
 -- | Eliminates any value over which a functor is defined.
 vooid ::
