@@ -92,6 +92,6 @@ import Prelude(
   , (++)
   )
 
-import GHC.Exts(
+import Data.String(
   IsString(..)
   )
