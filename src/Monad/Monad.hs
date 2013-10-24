@@ -2,14 +2,14 @@
 
 module Monad.Monad where
 
-import Core(IO, Num(..), Ord(..), Maybe(..), Bool(..), Int, (=<<), (.), const, id)
-import qualified Prelude as P(return, (=<<))
-import Intro.Id(Id(..))
-import Intro.Optional(Optional(..), bindOptional)
-import Structure.List(List(..), flatMap, foldRight)
+import Core
+import qualified Prelude as P
+import Intro.Id
+import Intro.Optional
+import Structure.List
 
 -- $setup
--- >>> import Core(Eq(..), Num(..), Ord(..), even)
+-- >>> import Core(Eq(..), Num(..), Ord(..), even, (.))
 -- >>> import Structure.List(product, sum, len, filter, listh)
 
 class Monad m where

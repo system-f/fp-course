@@ -3,16 +3,16 @@
 
 module Structure.ListZipper where
 
-import Core(Num(..), Enum(..), Ord(..), Eq(..), Show(..), Int, Bool(..), Maybe(..), Either(..), (.), ($), reverse, flip, const, not, otherwise, error)
-import qualified Prelude as P()
-import Data.List((++), foldr, unfoldr, repeat, zipWith, null, length, break)
-import Monad.Functor(Functor(..))
+import Core
+import Data.List
+import Monad.Functor
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
 -- >>> import Test.QuickCheck
 -- >>> import qualified Prelude as P(return, maybe)
--- >>> import Core(id)
+-- >>> import Core(Num(..), id, const)
+-- >>> import Data.List(null)
 -- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.

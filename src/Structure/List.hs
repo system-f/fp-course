@@ -11,12 +11,12 @@
 
 module Structure.List where
 
-import Core(Num(..), Enum(..), Eq(..), Show(..), IsString(..), Int, Char, Bool(..), (.), seq, foldr, const, id, flip)
-import Intro.Optional(Optional(..), twiceOptional)
+import Core
+import Intro.Optional
 
 -- $setup
 -- >>> import Test.QuickCheck
--- >>> import Core(even)
+-- >>> import Core(even, id, const)
 -- >>> import qualified Prelude as P(fmap)
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
 

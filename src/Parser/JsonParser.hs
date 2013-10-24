@@ -1,10 +1,10 @@
 module Parser.JsonParser where
 
-import Parser.Parser(Parser(..), ParseResult(..), (|||), list, is)
-import Parser.MoreParser(satisfyAll, stringTok, charTok, spaces, hex, oneof, betweenCharTok, betweenSepbyComma)
-import Numeric(readSigned, readFloat)
-import Parser.JsonValue(JsonValue(..), Assoc)
-import Control.Applicative((<$>), (<$), (*>), (<*), (<*>))
+import Parser.Parser
+import Parser.MoreParser
+import Numeric
+import Parser.JsonValue
+import Control.Applicative
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult)

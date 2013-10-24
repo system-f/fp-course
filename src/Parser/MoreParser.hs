@@ -1,9 +1,9 @@
 module Parser.MoreParser where
 
-import Parser.Parser(Parser(..), Input, ParseResult(..), space, digit, many1, list, is, satisfy, (|||))
-import Data.Char(chr, isHexDigit)
-import Numeric(readHex)
-import Control.Monad(replicateM)
+import Parser.Parser
+import Data.Char
+import Numeric
+import Control.Monad
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower)
