@@ -6,9 +6,6 @@ import Numeric
 import Parser.JsonValue
 import Control.Applicative
 
--- $setup
--- >>> import Parser.Parser(isErrorResult)
-
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
 --

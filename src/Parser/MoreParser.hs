@@ -6,10 +6,6 @@ import Numeric
 import Control.Monad
 
 -- $setup
--- >>> import Parser.Parser(isErrorResult, character, lower)
--- >>> import Data.Char(isUpper, isLower)
-
--- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower, is)
 -- >>> import Data.Char(isUpper, isLower)
 
