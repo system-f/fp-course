@@ -1,5 +1,6 @@
 module Parser.Parser where
 
+import Data.Char
 import Control.Applicative
 import Parser.Person
 

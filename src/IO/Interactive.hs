@@ -5,6 +5,7 @@ module IO.Interactive where
 import Core
 import Monad.Functor
 import Monad.Monad
+import Data.Char
 import Structure.List
 import Intro.Optional
 

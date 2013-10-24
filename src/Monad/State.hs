@@ -4,11 +4,14 @@
 module Monad.State where
 
 import Core
+import qualified Prelude as P
+import Data.Char
 import Intro.Optional
 import Structure.List
 import Monad.Functor
 import Monad.Monad
 import qualified Data.Foldable as F
+import qualified Data.Set as S
 
 -- $setup
 -- >>> import Test.QuickCheck.Function

@@ -17,6 +17,7 @@ import Structure.MetricSpace
 import Data.Map(Map)
 import qualified Data.Map as M
 import Data.Foldable
+import qualified Data.Foldable as F
 import Data.Monoid
 
 data BKTree a =

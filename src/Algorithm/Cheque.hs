@@ -15,6 +15,8 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 module Algorithm.Cheque where
 
+import Data.Maybe
+import Data.Char
 import Data.List
 import Control.Applicative
 

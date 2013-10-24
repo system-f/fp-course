@@ -1,6 +1,9 @@
 module Parser.MoreParser where
 
 import Parser.Parser
+import Data.Char
+import Numeric
+import Control.Monad
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower, is)

@@ -8,6 +8,8 @@ import Intro.Optional
 import Structure.List
 import Monad.Functor
 import Monad.Monad
+import Monad.State
+import qualified Data.Set as S
 
 -- | A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 newtype StateT s f a =
