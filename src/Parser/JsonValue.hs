@@ -1,4 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Parser.JsonValue where
+
+import Core
 
 type Assoc = [(String, JsonValue)]
 

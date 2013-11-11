@@ -1,5 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Parser.JsonParser where
 
+import Core
 import Parser.Parser
 import Parser.MoreParser
 import Numeric

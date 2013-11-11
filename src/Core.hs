@@ -19,6 +19,7 @@ module Core(
   , either
   , reads
   , String
+  , FilePath
   , Char
   , Int
   , Integer
@@ -31,7 +32,9 @@ module Core(
   , Show(..)
   , Enum(..)
   , Num(..)
+  , Bounded(..)
   , Integral(..)
+  , Rational
   , IsString(..)
   , putStr
   , putStrLn
@@ -42,6 +45,8 @@ module Core(
   , length
   , reverse
   , foldr
+  , zip
+  , minimum
   , (++)
   )
  where
@@ -67,6 +72,7 @@ import Prelude(
   , either
   , reads
   , String
+  , FilePath
   , Char
   , Int
   , Integer
@@ -79,7 +85,9 @@ import Prelude(
   , Show(..)
   , Enum(..)
   , Num(..)
+  , Bounded(..)
   , Integral(..)
+  , Rational
   , putStr
   , putStrLn
   , getChar
@@ -89,6 +97,8 @@ import Prelude(
   , length
   , reverse
   , foldr
+  , zip
+  , minimum
   , (++)
   )
 

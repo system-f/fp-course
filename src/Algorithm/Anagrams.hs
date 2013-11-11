@@ -1,5 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Algorithm.Anagrams where
 
+import Core
 
 {-
 

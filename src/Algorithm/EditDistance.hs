@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Algorithm.EditDistance
 (
   editDistance
@@ -7,7 +9,9 @@ module Algorithm.EditDistance
 , applyDiff
 ) where
 
+import Core
 import Data.Array
+import qualified Prelude as P
 
 editDistance ::
   Eq a =>
@@ -63,5 +67,5 @@ table xs ys  =
       distance (i,0) = i
       distance (i,j) =
         let track = [(1,0,1),(0,1,1),(1,1, if x ! i == y ! j then 0 else 1)]
-        in minimum . fmap (\(p, q, o) -> t ! (i-p,j-q) + o) $ track
+        in minimum . P.map (\(p, q, o) -> t ! (i-p,j-q) + o) $ track
   in t

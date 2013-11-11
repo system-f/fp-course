@@ -1,4 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Intro.Validation where
+
+import Core
 
 --  class Validation<A> {
 --    Validation(String error) {} // Error

@@ -1,8 +1,12 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Parser.Parser where
 
+import Core
 import Data.Char
 import Control.Applicative
 import Parser.Person
+import qualified Prelude as P
 
 -- $setup
 -- >>> import Data.Char(isUpper)
@@ -560,7 +564,7 @@ personParser =
 -- Exercise 20.1
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Functor Parser where
+instance P.Functor Parser where
   fmap =
     error "todo"
 
@@ -576,7 +580,7 @@ instance Applicative Parser where
 
 -- Exercise 20.3
 -- | Write a Monad instance for a @Parser@.
-instance Monad Parser where
+instance P.Monad Parser where
   return =
     error "todo"
   (>>=) =

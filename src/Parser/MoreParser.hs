@@ -1,5 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Parser.MoreParser where
 
+import Core
 import Parser.Parser
 import Data.Char
 import Numeric

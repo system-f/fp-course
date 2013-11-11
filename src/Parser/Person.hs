@@ -1,4 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Parser.Person where
+
+import Core
 
 -- Suppose we have a data structure to represent a person. The person data structure has these attributes:
 --     * Age: positive integer

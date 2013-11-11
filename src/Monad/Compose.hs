@@ -1,8 +1,20 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Monad.Compose where
 
-import Control.Applicative
+import Core
+import Monad.Functor
+import Monad.Monad
 
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
+
+class Functor f => Applicable f where
+  pure ::
+    a
+    -> f a
+  ap ::
+    f (a -> b)
+    -> f a
+    -> f b
 
 newtype Compose f g a =
   Compose (f (g a))
@@ -14,15 +26,15 @@ instance (Functor f, Functor g) =>
   fmap =
     error "todo"
 
-instance (Applicative f, Applicative g) =>
-    Applicative (Compose f g) where
+instance (Applicable f, Applicable g) =>
+    Applicable (Compose f g) where
 -- Exercise 2
--- Implement the pure function for an Applicative instance for Compose
+-- Implement the pure function for an Applicable instance for Compose
   pure =
     error "todo"
 -- Exercise 3
--- Implement the (<*>) function for an Applicative instance for Compose
-  (<*>) =
+-- Implement the ap function for an Applicable instance for Compose
+  ap =
     error "todo"
 
 instance (Monad f, Monad g) =>
@@ -33,5 +45,5 @@ instance (Monad f, Monad g) =>
     error "todo"
 -- Exercise 5
 -- Implement the (>>=) function for a Monad instance for Compose
-  (>>=) =
+  bind =
     error "todo"

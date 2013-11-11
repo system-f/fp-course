@@ -1,10 +1,11 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Structure.BKTree
 (
   BKTree
 , empty
 , bktree
 , isEmpty
-, null
 , size
 , (.:.)
 , member
@@ -13,12 +14,14 @@ module Structure.BKTree
 , fromDictionaryFile
 ) where
 
+import Core
 import Structure.MetricSpace
 import Data.Map(Map)
 import qualified Data.Map as M
 import Data.Foldable
 import qualified Data.Foldable as F
 import Data.Monoid
+import qualified Prelude as P
 
 data BKTree a =
   Node a !Int (BMap a)
@@ -113,7 +116,7 @@ asList ::
 asList Leaf =
   []
 asList (Node a _ m) =
-  a : (fmap snd (M.toList m) >>= asList)
+  a : (asList `concatMap` P.map snd (M.toList m))
 
 usingMap ::
   (BMap a -> x)

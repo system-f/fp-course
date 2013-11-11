@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 {-
 
 Write a function (dollars) that accepts a `String` and returns a `String`.
@@ -15,6 +17,7 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 module Algorithm.Cheque where
 
+import Core
 import Data.Maybe
 import Data.Char
 import Data.List

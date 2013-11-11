@@ -1,4 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Intro.Id where
+
+import Core
 
 data Id a = Id a deriving (Eq, Show)
 

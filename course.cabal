@@ -43,6 +43,7 @@ library
                       -fno-warn-type-defaults
 
   default-extensions: Safe
+                      NoImplicitPrelude
 
   hs-source-dirs:     src
 

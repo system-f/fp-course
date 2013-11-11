@@ -1,5 +1,8 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Algorithm.FastAnagrams where
 
+import Core
 import Data.Char
 import Data.Function
 import qualified Data.Set as S
