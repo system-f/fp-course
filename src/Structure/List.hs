@@ -31,6 +31,13 @@ infixr 5 :.
 instance Show t => Show (List t) where
   show = show . foldRight (:) []
 
+-- The list of integers from zero to infinity.
+infinity ::
+  List Integer
+infinity =
+  let inf x = x :. inf (x+1)
+  in inf 0
+
 -- functions over List that you may consider using
 foldRight :: (a -> b -> b) -> b -> List a -> b
 foldRight _ b Nil      = b
@@ -58,6 +65,8 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- >>> headOr 3 Nil
 -- 3
+--
+-- prop> x `headOr` infinity == 0
 --
 -- prop> x `headOr` Nil == x
 headOr ::
@@ -133,6 +142,8 @@ len =
 -- >>> map (+10) (1 :. 2 :. 3 :. Nil)
 -- [11,12,13]
 --
+-- prop> headOr x (map (+1) infinity) == 1
+--
 -- prop> map id x == x
 map ::
   (a -> b)
@@ -152,6 +163,8 @@ map =
 --
 -- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
 -- [2,4]
+--
+-- prop> headOr x (filter (const True) infinity) == 0
 --
 -- prop> filter (const True) x == x
 --
@@ -175,6 +188,10 @@ filter =
 -- >>> append (1 :. 2 :. 3 :. Nil) (4 :. 5 :. 6 :. Nil)
 -- [1,2,3,4,5,6]
 --
+-- prop> headOr x (Nil `append` infinity) == 0
+--
+-- prop> headOr x (y `append` infinity) == headOr 0 y
+--
 -- prop> (x `append` y) `append` z == x `append` (y `append` z)
 --
 -- prop> append x Nil == x
@@ -197,6 +214,10 @@ append =
 -- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
 -- [1,2,3,4,5,6,7,8,9]
 --
+-- prop> headOr x (flatten (infinity :. y :. Nil)) == 0
+--
+-- prop> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y
+--
 -- prop> sum (map len x) == len (flatten x)
 flatten ::
   List (List a)
@@ -215,6 +236,10 @@ flatten =
 --
 -- >>> flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil)
 -- [1,2,3,2,3,4,3,4,5]
+--
+-- prop> headOr x (flatMap id (infinity :. y :. Nil)) == 0
+--
+-- prop> headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y
 --
 -- prop> flatMap id (x :: List (List Int)) == flatten x
 flatMap ::
@@ -250,6 +275,9 @@ flatMap =
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
 -- Empty
+--
+-- >>> seqOptional (Empty :. map Full infinity)
+-- Empty
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
@@ -271,6 +299,9 @@ seqOptional =
 --
 -- >>> find even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
 -- Full 2
+--
+-- >>> find (const True) infinity
+-- Full 0
 find ::
   (a -> Bool)
   -> List a
