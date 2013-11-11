@@ -1,12 +1,21 @@
-module Parser.JsonParser where
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-import Parser.Parser
-import Parser.MoreParser
-import Numeric
-import Parser.JsonValue
-import Control.Applicative
+module Course.JsonParser where
 
--- Exercise 1
+import Course.Core
+import Course.Parser
+import Course.MoreParser
+import Course.JsonValue
+import Course.Functor
+import Course.Apply
+import Course.Applicative
+import Course.List
+import Course.Optional
+
+-- $setup
+-- >>> :set -XOverloadedStrings
+
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
 --
 -- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `betweenCharTok`, `list`.
@@ -35,14 +44,13 @@ import Control.Applicative
 -- >>> isErrorResult (parse jsonString "\"\\abc\"def")
 -- True
 jsonString ::
-  Parser String
+  Parser Str
 jsonString =
   error "todo"
 
--- Exercise 2
 -- | Parse a JSON rational.
 --
--- /Tip:/ Use @Numeric#readSigned@ and @Numeric#readFloat@.
+-- /Tip:/ Use @readFloats@.
 --
 -- >>> parse jsonNumber "234"
 -- Result >< 234 % 1
@@ -69,7 +77,6 @@ jsonNumber ::
 jsonNumber =
   error "todo"
 
--- Exercise 3
 -- | Parse a JSON true literal.
 --
 -- /Tip:/ Use `stringTok`.
@@ -80,11 +87,10 @@ jsonNumber =
 -- >>> isErrorResult (parse jsonTrue "TRUE")
 -- True
 jsonTrue ::
-  Parser String
+  Parser Str
 jsonTrue =
   error "todo"
 
--- Exercise 4
 -- | Parse a JSON false literal.
 --
 -- /Tip:/ Use `stringTok`.
@@ -95,11 +101,10 @@ jsonTrue =
 -- >>> isErrorResult (parse jsonFalse "FALSE")
 -- True
 jsonFalse ::
-  Parser String
+  Parser Str
 jsonFalse =
   error "todo"
 
--- Exercise 5
 -- | Parse a JSON null literal.
 --
 -- /Tip:/ Use `stringTok`.
@@ -110,11 +115,10 @@ jsonFalse =
 -- >>> isErrorResult (parse jsonNull "NULL")
 -- True
 jsonNull ::
-  Parser String
+  Parser Str
 jsonNull =
   error "todo"
 
--- Exercise 6
 -- | Parse a JSON array.
 --
 -- /Tip:/ Use `betweenSepbyComma` and `jsonValue`.
@@ -134,11 +138,10 @@ jsonNull =
 -- >>> parse jsonArray "[true, \"abc\", [false]]"
 -- Result >< [JsonTrue,JsonString "abc",JsonArray [JsonFalse]]
 jsonArray ::
-  Parser [JsonValue]
+  Parser (List JsonValue)
 jsonArray =
   error "todo"
 
--- Exercise 7
 -- | Parse a JSON object.
 --
 -- /Tip:/ Use `jsonString`, `charTok`, `betweenSepbyComma` and `jsonValue`.
@@ -159,7 +162,6 @@ jsonObject ::
 jsonObject =
   error "todo"
 
--- Exercise 8
 -- | Parse a JSON value.
 --
 -- /Tip:/ Use `spaces`, `jsonNull`, `jsonTrue`, `jsonFalse`, `jsonArray`, `jsonString`, `jsonObject` and `jsonNumber`.
@@ -177,12 +179,11 @@ jsonValue ::
 jsonValue =
    error "todo"
 
--- Exercise 9
 -- | Read a file into a JSON value.
 --
 -- /Tip:/ Use @System.IO#readFile@ and `jsonValue`.
 readJsonValue ::
-  FilePath
+  Filename
   -> IO (ParseResult JsonValue)
 readJsonValue =
   error "todo"

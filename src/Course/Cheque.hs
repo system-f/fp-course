@@ -1,3 +1,6 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+
 {-
 
 Write a function (dollars) that accepts a `String` and returns a `String`.
@@ -13,21 +16,23 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 -}
 
-module Algorithm.Cheque where
+module Course.Cheque where
 
-import Data.Maybe
-import Data.Char
-import Data.List
-import Control.Applicative
+import Course.Core
+import Course.Optional
+import Course.List
+import Course.Functor
+import Course.Apply
+import Course.Bind
 
 -- The representation of the grouping of each exponent of one thousand. ["thousand", "million", ...]
 illion ::
-  [String]
+  List Str
 illion =
   let preillion ::
-        [String -> String]
+        List (Str -> Str)
       preillion =
-        [
+        listh [
           const ""
         , const "un"
         , const "do"
@@ -40,9 +45,9 @@ illion =
         , \q -> if "n" `isPrefixOf` q then "novem" else "noven"
         ]
       postillion ::
-        [String]
+        List Str
       postillion =
-        [
+        listh [
           "vigintillion"
         , "trigintillion"
         , "quadragintillion"
@@ -142,7 +147,7 @@ illion =
         , "octogintanongentillion"
         , "nonagintanongentillion"
         ]
-  in [
+  in listh [
        ""
      , "thousand"
      , "million"
@@ -164,7 +169,7 @@ illion =
      , "septendecillion"
      , "octodecillion"
      , "novemdecillion"
-     ] ++ liftA2 ((++) =<<) preillion postillion
+     ] ++ lift2 ((++) =<<) preillion postillion
 
 -- A data type representing the digits zero to nine.
 data Digit =
@@ -178,7 +183,31 @@ data Digit =
   | Seven
   | Eight
   | Nine
-  deriving (Show, Eq, Enum, Bounded)
+  deriving (Eq, Enum, Bounded)
+
+showDigit ::
+  Digit
+  -> Str
+showDigit Zero =
+  "zero"
+showDigit One =
+  "one"
+showDigit Two =
+  "two"
+showDigit Three =
+  "three"
+showDigit Four =
+  "four"
+showDigit Five =
+  "five"
+showDigit Six =
+  "six"
+showDigit Seven =
+  "seven"
+showDigit Eight =
+  "eight"
+showDigit Nine =
+  "nine"
 
 -- A data type representing one, two or three digits, which may be useful for grouping.
 data Digit3 =
@@ -190,29 +219,29 @@ data Digit3 =
 -- Possibly convert a character to a digit.
 fromChar ::
   Char
-  -> Maybe Digit
+  -> Optional Digit
 fromChar '0' =
-  Just Zero
+  Full Zero
 fromChar '1' =
-  Just One
+  Full One
 fromChar '2' =
-  Just Two
+  Full Two
 fromChar '3' =
-  Just Three
+  Full Three
 fromChar '4' =
-  Just Four
+  Full Four
 fromChar '5' =
-  Just Five
+  Full Five
 fromChar '6' =
-  Just Six
+  Full Six
 fromChar '7' =
-  Just Seven
+  Full Seven
 fromChar '8' =
-  Just Eight
+  Full Eight
 fromChar '9' =
-  Just Nine
+  Full Nine
 fromChar _ =
-  Nothing
+  Empty
 
 -- | Take a numeric value and produce its English output.
 --
@@ -288,7 +317,7 @@ fromChar _ =
 -- >>> dollars "456789123456789012345678901234567890123456789012345678901234567890.12"
 -- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
 dollars ::
-  String
-  -> String
+  Str
+  -> Str
 dollars =
   error "todo"

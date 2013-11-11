@@ -1,4 +1,9 @@
-module Parser.Person where
+{-# LANGUAGE NoImplicitPrelude #-}
+
+module Course.Person where
+
+import Course.Core
+import Course.List
 
 -- Suppose we have a data structure to represent a person. The person data structure has these attributes:
 --     * Age: positive integer
@@ -8,9 +13,9 @@ module Parser.Person where
 --     * Phone: string of digits, dots or hyphens but must start with a digit and end with a hash (#)
 data Person = Person {
   age :: Int,
-  firstName :: String,
-  surname :: String,
+  firstName :: Str,
+  surname :: Str,
   gender :: Char,
-  phone :: String
+  phone :: Str
 } deriving (Eq, Show)
 

@@ -1,22 +1,24 @@
-module Algorithm.FastAnagrams where
+{-# LANGUAGE NoImplicitPrelude #-}
 
-import Data.Char
-import Data.Function
+module Course.FastAnagrams where
+
+import Course.Core
+import Course.List
+import Course.Functor
 import qualified Data.Set as S
-import Data.List
 
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
 fastAnagrams ::
-  String
-  -> FilePath
-  -> IO [String]
+  Str
+  -> Filename
+  -> IO (List Str)
 fastAnagrams =
   error "todo"
 
 newtype NoCaseString =
   NoCaseString {
-    ncString :: String
+    ncString :: Str
   }
 
 instance Eq NoCaseString where

@@ -1,4 +1,9 @@
-module Intro.Optional where
+{-# LANGUAGE NoImplicitPrelude #-}
+
+module Course.Optional where
+
+import Course.Core
+import qualified Prelude as P
 
 --  class Optional<A> {
 --    Optional(A a) {} // Full
@@ -24,3 +29,13 @@ k <+> _     = k
 
 twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
 twiceOptional f a b = bindOptional (\aa -> mapOptional (f aa) b) a
+
+contains :: Eq a => a -> Optional a -> Bool
+contains _ Empty = False
+contains a (Full z) = a == z
+
+instance P.Monad Optional where
+  (>>=) =
+    flip bindOptional
+  return =
+    Full

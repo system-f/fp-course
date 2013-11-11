@@ -1,13 +1,19 @@
-module Algorithm.Anagrams where
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
+module Course.Anagrams where
+
+import Course.Core
+import Course.List
+import Course.Functor
 
 {-
 
 Functions you will need
 --
 * fmap :: (a -> b) -> IO a -> IO b
-* readFile :: FilePath -> IO String
-* lines :: String -> [String]
+* readFile :: FilePath -> IO Str
+* lines :: Str -> [Str]
 * permutations :: [a] -> [[a]]
 * intersectBy :: (a -> a -> Bool) -> [a] -> [a] -> [a]
 * toLower :: Char -> Char
@@ -22,16 +28,16 @@ Functions that might help
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
 anagrams ::
-  String
-  -> FilePath
-  -> IO [String]
+  Str
+  -> Filename
+  -> IO (List Str)
 anagrams =
   error "todo"
 
 -- Compare two strings for equality, ignoring case
 equalIgnoringCase ::
-  String
-  -> String
+  Str
+  -> Str
   -> Bool
 equalIgnoringCase =
   error "todo"

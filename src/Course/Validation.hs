@@ -1,4 +1,8 @@
-module Intro.Validation where
+{-# LANGUAGE NoImplicitPrelude #-}
+
+module Course.Validation where
+
+import Course.Core
 
 --  class Validation<A> {
 --    Validation(String error) {} // Error
@@ -7,11 +11,12 @@ module Intro.Validation where
 
 -- $setup
 -- >>> import Test.QuickCheck
--- >>> instance Arbitrary a => Arbitrary (Validation a) where arbitrary = fmap (either Error Value) arbitrary
+-- >>> import qualified Prelude as P(fmap, either)
+-- >>> instance Arbitrary a => Arbitrary (Validation a) where arbitrary = P.fmap (P.either Error Value) arbitrary
 data Validation a = Error Err | Value a
   deriving (Eq, Show)
 
-type Err = String
+type Err = [Char]
 
 -- | Returns whether or not the given validation is an error.
 --
