@@ -15,7 +15,9 @@ vooid ::
   m a
   -> m ()
 vooid =
-  fmap (const ())
+  let m = fmap
+  -- to avoid hlint warning
+  in m (const ())
 
 -- | A version of @bind@ that ignores the result of the effect.
 (>-) ::

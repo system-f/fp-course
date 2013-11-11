@@ -53,18 +53,18 @@ company =
         "Bob St"
         "Bobville"))
     [
-      (Employee
-        "Mary"
-        14
-        (Address
-          "Mary St"
-          "Maryville"))
-    , (Employee
-          "Fred"
-          15
-          (Address
-            "Fred St"
-            "Fredville"))
+      Employee
+       "Mary"
+       14
+       (Address
+         "Mary St"
+         "Maryville")
+    , Employee
+         "Fred"
+         15
+         (Address
+           "Fred St"
+           "Fredville")
     ]
 
 instance Show Address where
@@ -73,11 +73,11 @@ instance Show Address where
 
 instance Show Employee where
   show (Employee name age address) =
-    intercalate " " [name, "aged", show age, "from", show address]
+    unwords [name, "aged", show age, "from", show address]
 
 instance Show Company where
   show (Company name address ceo employees) =
-    intercalate " " [name, "located at", show address, "with CEO", show ceo, "and employees;", show employees]
+    unwords [name, "located at", show address, "with CEO", show ceo, "and employees;", show employees]
 
 -- Problem
 -- Modify the suburb of the address of the employees of a company
