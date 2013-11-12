@@ -563,35 +563,6 @@ insertPushRight ::
 insertPushRight =
   error "todo"
 
--- Let's start using proper type-class names.
---
--- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
--- However, it is much more flexible, which we exploit here.
-
-class Functor f => Extend f where
-  (<<=) ::
-    (f a -> b)
-    -> f a
-    -> f b
-
-class Extend f => Comonad f where
-  counit ::
-    f a
-    -> a
-
-class Functor t => Traversable t where
-  traverse ::
-    Applicative f =>
-    (a -> f b)
-    -> t a
-    -> f (t b)
-
--- The `Traversable` instance for `[]` is implemented for demonstration.
--- It will also come in use later.
-instance Traversable [] where
-  traverse f =
-    foldr (\a b -> fmap (:) (f a) <*> b) (unit [])
-
 -- Exercise 32
 --
 -- | Implement the `Apply` instance for `ListZipper`.

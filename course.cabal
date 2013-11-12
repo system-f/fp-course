@@ -76,6 +76,9 @@ library
                       Course.Applicative
                       Course.Bind
                       Course.Monad
+                      Course.Extend
+                      Course.Comonad
+                      Course.Traversable
                       Course.Wrapped
 
 test-suite            doctests
