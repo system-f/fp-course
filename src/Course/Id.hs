@@ -1,8 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Intro.Id where
+module Course.Id where
 
-import Core
+import Course.Core
 
 data Id a = Id a deriving (Eq, Show)
 

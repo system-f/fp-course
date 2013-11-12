@@ -16,7 +16,6 @@ class Functor f where
 -- >>> import qualified Prelude as P(return)
 
 -- Exercise 1
--- Relative Difficulty: 1
 --
 -- | Maps a function on the Id functor.
 --
@@ -27,7 +26,6 @@ instance Functor Id where
     error "todo"
 
 -- Exercise 2
--- Relative Difficulty: 2
 --
 -- | Maps a function on the List functor.
 --
@@ -41,7 +39,6 @@ instance Functor List where
     error "todo"
 
 -- Exercise 3
--- Relative Difficulty: 2
 --
 -- | Maps a function on the Optional functor.
 --

@@ -53,9 +53,9 @@ library
                       -- Algorithm.Cheque
                       -- Algorithm.EditDistance
                       -- Algorithm.FastAnagrams
-                      -- Intro.Id
+                      Course.Id
                       Course.Optional
-                      -- Intro.Validation
+                      Course.Validation
                       -- IO.Interactive
                       -- Monad.Compose
                       -- Monad.Functor

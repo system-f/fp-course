@@ -10,6 +10,7 @@ module Course.Core(
 , error
 , undefined
 , (.)
+, not
 , IsString(..)
 ) where
 
@@ -25,6 +26,7 @@ import Prelude(
   , seq
   , error
   , (.)
+  , not
   , undefined
   )
 import Data.String(

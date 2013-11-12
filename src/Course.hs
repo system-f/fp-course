@@ -8,11 +8,11 @@ import Algorithm.Anagrams as X
 import Algorithm.Cheque as X
 import Algorithm.EditDistance as X
 import Algorithm.FastAnagrams as X
-import Intro.Id as X
 -}
+import Course.Id as X
 import Course.Optional as X
+import Course.Validation as X
 {-
-import Intro.Validation as X
 import IO.Interactive as X
 import Monad.Compose as X
 import Monad.Functor as X
