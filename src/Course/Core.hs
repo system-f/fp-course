@@ -10,6 +10,9 @@ module Course.Core(
 , seq
 , error
 , undefined
+, const
+, flip
+, id
 , (.)
 , not
 , IsString(..)
