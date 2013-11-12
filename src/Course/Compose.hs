@@ -35,7 +35,6 @@ instance (Applicative f, Applicative g) =>
   pure =
     error "todo"
 
-
 instance (Bind f, Bind g) =>
   Bind (Compose f g) where
 -- Exercise 4
