@@ -70,6 +70,7 @@ library
                       -- Structure.BKTree
                       -- Structure.Lens
                       Course.List
+                      Course.Compose
                       -- Structure.ListZipper
                       -- Structure.MetricSpace
                       Course.Apply
