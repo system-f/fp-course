@@ -23,14 +23,14 @@ instance (Functor f, Functor g) =>
 
 instance (Apply f, Apply g) =>
   Apply (Compose f g) where
--- Exercise 3
+-- Exercise 2
 -- Implement the (<*>) function for an Apply instance for Compose
   (<*>) =
     error "todo"
 
 instance (Applicative f, Applicative g) =>
   Applicative (Compose f g) where
--- Exercise 2
+-- Exercise 3
 -- Implement the pure function for an Applicative instance for Compose
   pure =
     error "todo"
@@ -38,6 +38,7 @@ instance (Applicative f, Applicative g) =>
 
 instance (Bind f, Bind g) =>
   Bind (Compose f g) where
+-- Exercise 4
 -- Implement the (=<<) function for a Bind instance for Compose
   (=<<) =
     error "todo"
