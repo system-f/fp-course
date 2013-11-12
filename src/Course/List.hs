@@ -1,4 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude, OverloadedStrings, FlexibleInstances #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE FlexibleInstances #-}
 
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo") with an appropriate solution.
@@ -18,9 +20,9 @@ import qualified Prelude as P
 
 -- $setup
 -- >>> import Test.QuickCheck
--- >>> import Core(even, id, const)
--- >>> import qualified Prelude as P(fmap)
--- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (foldr (:.) Nil) arbitrary
+-- >>> import Course.Core(even, id, const)
+-- >>> import qualified Prelude as P(fmap, foldr)
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (P.foldr (:.) Nil) arbitrary
 
 -- BEGIN Helper functions and data types
 
@@ -338,6 +340,9 @@ listh ::
   -> List a
 listh =
   P.foldr (:.) Nil
+
+putStr :: List Char -> IO ()
+putStr = P.putStr . hlist
 
 instance IsString (List Char) where
   fromString =

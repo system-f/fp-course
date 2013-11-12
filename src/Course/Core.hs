@@ -7,6 +7,7 @@ module Course.Core(
 , Char
 , Int
 , Integer
+, IO
 , seq
 , error
 , undefined
@@ -15,6 +16,9 @@ module Course.Core(
 , id
 , (.)
 , not
+, even
+, odd
+, (>>)
 , IsString(..)
 ) where
 
@@ -28,14 +32,18 @@ import Prelude(
   , Char
   , Int
   , Integer
+  , IO
   , seq
   , error
+  , undefined
   , const
   , flip
   , id
   , (.)
   , not
-  , undefined
+  , even
+  , odd
+  , (>>)
   )
 import Data.String(
   IsString(..)
