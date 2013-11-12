@@ -9,8 +9,6 @@
 -- + Bonus for using the provided functions or for using one exercise solution to help solve another.
 -- + Approach with your best available intuition; just dive in and do what you can!
 
--- TOTAL marks:    /66
-
 module Course.List where
 
 import Course.Core
@@ -56,11 +54,6 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- BEGIN Exercises
 
 -- Exercise 1
--- Relative Difficulty: 1
--- Correctness: 2.0 marks
--- Performance: 0.5 mark
--- Elegance: 0.5 marks
--- Total: 3
 --
 -- | Returns the head of the list or the given default.
 --
@@ -94,11 +87,6 @@ product =
   foldLeft (*) 1
 
 -- Exercise 2
--- Relative Difficulty: 2
--- Correctness:   2.5 marks
--- Performance: 1 mark
--- Elegance: 0.5 marks
--- Total: 4
 --
 -- | Sum the elements of the list.
 --
@@ -116,11 +104,6 @@ sum =
   error "todo"
 
 -- Exercise 3
--- Relative Difficulty: 2
--- Correctness: 2.5 marks
--- Performance: 1 mark
--- Elegance: 0.5 marks
--- Total: 4
 --
 -- | Return the length of the list.
 --
@@ -135,11 +118,6 @@ len =
   error "todo"
 
 -- Exercise 4
--- Relative Difficulty: 5
--- Correctness: 4.5 marks
--- Performance: 1.0 mark
--- Elegance: 1.5 marks
--- Total: 7
 --
 -- | Map the given function on each element of the list.
 --
@@ -157,11 +135,6 @@ map =
   error "todo"
 
 -- Exercise 5
--- Relative Difficulty: 5
--- Correctness: 4.5 marks
--- Performance: 1.5 marks
--- Elegance: 1 mark
--- Total: 7
 --
 -- | Return elements satisfying the given predicate.
 --
@@ -181,11 +154,6 @@ filter =
   error "todo"
 
 -- Exercise 6
--- Relative Difficulty: 5
--- Correctness: 4.5 marks
--- Performance: 1.5 marks
--- Elegance: 1 mark
--- Total: 7
 --
 -- | Append two lists to a new list.
 --
@@ -207,11 +175,6 @@ append =
   error "todo"
 
 -- Exercise 7
--- Relative Difficulty: 5
--- Correctness: 4.5 marks
--- Performance: 1.5 marks
--- Elegance: 1 mark
--- Total: 7
 --
 -- | Flatten a list of lists to a list.
 --
@@ -230,11 +193,6 @@ flatten =
   error "todo"
 
 -- Exercise 8
--- Relative Difficulty: 7
--- Correctness: 5.0 marks
--- Performance: 1.5 marks
--- Elegance: 1.5 mark
--- Total: 8
 --
 -- | Map a function then flatten to a list.
 --
@@ -254,11 +212,6 @@ flatMap =
   error "todo"
 
 -- Exercise 9
--- Relative Difficulty: 8
--- Correctness: 3.5 marks
--- Performance: 2.0 marks
--- Elegance: 3.5 marks
--- Total: 9
 --
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -341,8 +294,11 @@ listh ::
 listh =
   P.foldr (:.) Nil
 
-putStr :: List Char -> IO ()
-putStr = P.putStr . hlist
+putStr ::
+  List Char
+  -> IO ()
+putStr =
+  P.putStr . hlist
 
 instance IsString (List Char) where
   fromString =

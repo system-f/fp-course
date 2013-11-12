@@ -18,7 +18,6 @@ module Course.Core(
 , not
 , even
 , odd
-, (>>)
 , IsString(..)
 ) where
 
@@ -43,7 +42,6 @@ import Prelude(
   , not
   , even
   , odd
-  , (>>)
   )
 import Data.String(
   IsString(..)

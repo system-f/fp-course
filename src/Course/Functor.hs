@@ -17,7 +17,7 @@ class Functor f where
 -- $setup
 -- >>> :set -XOverloadedStrings
 -- >>> import Course.Core
--- >>> import qualified Prelude as P(return)
+-- >>> import qualified Prelude as P(return, (>>))
 
 -- Exercise 1
 --
@@ -71,7 +71,7 @@ instance Functor ((->) t) where
 
 -- | Maps a function on an IO program.
 --
--- >>> rev <$> (putStr "hi" >> P.return ("abc" :: List Char))
+-- >>> rev <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
 -- hi"cba"
 instance Functor IO where
   (<$>) =
