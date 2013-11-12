@@ -1,6 +1,7 @@
 module Course.Core(
   Eq(..)
 , Show(..)
+, Enum(..)
 , Num(..)
 , Bool(..)
 , Char
@@ -18,6 +19,7 @@ module Course.Core(
 import Prelude(
     Eq(..)
   , Show(..)
+  , Enum(..)
   , Num(..)
   , Bool(..)
   , Char
@@ -25,6 +27,9 @@ import Prelude(
   , Integer
   , seq
   , error
+  , const
+  , flip
+  , id
   , (.)
   , not
   , undefined
