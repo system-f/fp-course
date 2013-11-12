@@ -76,6 +76,7 @@ library
                       Course.Applicative
                       Course.Bind
                       Course.Monad
+                      Course.Wrapped
 
 test-suite            doctests
   type:

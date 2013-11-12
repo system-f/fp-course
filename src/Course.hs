@@ -33,6 +33,7 @@ import Course.Apply as X
 import Course.Applicative as X
 import Course.Bind as X
 import Course.Monad as X
+import Course.Wrapped as X
 {-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X

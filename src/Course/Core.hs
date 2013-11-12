@@ -15,6 +15,7 @@ module Course.Core(
 , flip
 , id
 , (.)
+, ($)
 , not
 , even
 , odd
@@ -39,6 +40,7 @@ import Prelude(
   , flip
   , id
   , (.)
+  , ($)
   , not
   , even
   , odd
