@@ -568,16 +568,6 @@ insertPushRight =
 -- The following type-class hierarchy does not correspond to the GHC base library hierarchy.
 -- However, it is much more flexible, which we exploit here.
 
-class Functor f => Apply f where
-  (<*>) ::
-    f (a -> b)
-    -> f a
-    -> f b
-
-class Apply f => Applicative f where
-  unit ::
-    a -> f a
-
 class Functor f => Extend f where
   (<<=) ::
     (f a -> b)

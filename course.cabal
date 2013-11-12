@@ -72,6 +72,10 @@ library
                       Course.List
                       -- Structure.ListZipper
                       -- Structure.MetricSpace
+                      Course.Apply
+                      Course.Applicative
+                      Course.Bind
+                      Course.Monad
 
 test-suite            doctests
   type:
