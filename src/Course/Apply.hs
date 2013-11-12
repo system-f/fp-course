@@ -13,6 +13,8 @@ class Functor f => Apply f where
     -> f a
     -> f b
 
+infixl 4 <*>
+
 instance Apply Id where
   (<*>) =
     error "todo"

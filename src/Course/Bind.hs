@@ -16,6 +16,8 @@ class Apply f => Bind f where
     -> f a
     -> f b
 
+infixr 1 =<<
+
 -- todo exercise
 (<*>) ::
   f (a -> b)
@@ -31,6 +33,8 @@ class Apply f => Bind f where
   -> f b
 (>>=) =
   flip (=<<)
+
+infixr 1 >>=
 
 instance Bind Id where
   (=<<) =

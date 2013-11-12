@@ -14,6 +14,8 @@ class Functor f where
     -> f a
     -> f b
 
+infixl 4 <$>
+
 -- $setup
 -- >>> :set -XOverloadedStrings
 -- >>> import Course.Core
