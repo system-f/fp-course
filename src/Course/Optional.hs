@@ -3,6 +3,7 @@
 module Course.Optional where
 
 import Course.Core
+import qualified Prelude as P
 
 --  class Optional<A> {
 --    Optional(A a) {} // Full
@@ -28,3 +29,9 @@ k <+> _     = k
 
 twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
 twiceOptional f a b = bindOptional (\aa -> mapOptional (f aa) b) a
+
+instance P.Monad Optional where
+  (>>=) =
+    flip bindOptional
+  return =
+    Full

@@ -33,7 +33,6 @@ import Course.Apply as X
 import Course.Applicative as X
 import Course.Bind as X
 import Course.Monad as X
-import Course.Wrapped as X
 import Course.Extend as X
 import Course.Comonad as X
 import Course.Traversable as X

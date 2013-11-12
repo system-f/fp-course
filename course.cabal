@@ -79,7 +79,6 @@ library
                       Course.Extend
                       Course.Comonad
                       Course.Traversable
-                      Course.Wrapped
 
 test-suite            doctests
   type:

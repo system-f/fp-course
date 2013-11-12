@@ -27,6 +27,3 @@ instance Monad IO where
 instance Monad [] where
 
 instance Monad P.Maybe where
-
--- instance Monad f => Monad (WrappedMonad f) where
-

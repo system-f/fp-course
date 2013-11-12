@@ -33,6 +33,9 @@ infixr 5 :.
 instance Show t => Show (List t) where
   show = show . foldRight (:) []
 
+type Str =
+  List Char
+
 -- The list of integers from zero to infinity.
 infinity ::
   List Integer
@@ -303,3 +306,9 @@ putStr =
 instance IsString (List Char) where
   fromString =
     listh
+
+instance P.Monad List where
+  (>>=) =
+    flip flatMap
+  return =
+    (:. Nil)
