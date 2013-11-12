@@ -1,8 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Intro.Optional where
+module Course.Optional where
 
-import Core
+import Course.Core
 
 --  class Optional<A> {
 --    Optional(A a) {} // Full

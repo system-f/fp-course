@@ -48,30 +48,30 @@ library
   hs-source-dirs:     src
 
   exposed-modules:    Course
-                      Core
-                      Algorithm.Anagrams
-                      Algorithm.Cheque
-                      Algorithm.EditDistance
-                      Algorithm.FastAnagrams
-                      Intro.Id
-                      Intro.Optional
-                      Intro.Validation
-                      IO.Interactive
-                      Monad.Compose
-                      Monad.Functor
-                      Monad.Monad
-                      Monad.State
-                      Monad.StateT
-                      Parser.JsonParser
-                      Parser.JsonValue
-                      Parser.MoreParser
-                      Parser.Parser
-                      Parser.Person
-                      Structure.BKTree
-                      Structure.Lens
-                      Structure.List
-                      Structure.ListZipper
-                      Structure.MetricSpace
+                      Course.Core
+                      -- Algorithm.Anagrams
+                      -- Algorithm.Cheque
+                      -- Algorithm.EditDistance
+                      -- Algorithm.FastAnagrams
+                      -- Intro.Id
+                      Course.Optional
+                      -- Intro.Validation
+                      -- IO.Interactive
+                      -- Monad.Compose
+                      -- Monad.Functor
+                      -- Monad.Monad
+                      -- Monad.State
+                      -- Monad.StateT
+                      -- Parser.JsonParser
+                      -- Parser.JsonValue
+                      -- Parser.MoreParser
+                      -- Parser.Parser
+                      -- Parser.Person
+                      -- Structure.BKTree
+                      -- Structure.Lens
+                      Course.List
+                      -- Structure.ListZipper
+                      -- Structure.MetricSpace
 
 test-suite            doctests
   type:

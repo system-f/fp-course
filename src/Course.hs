@@ -2,13 +2,16 @@
 
 module Course (module X) where
 
-import Core as X
+import Course.Core as X
+{-
 import Algorithm.Anagrams as X
 import Algorithm.Cheque as X
 import Algorithm.EditDistance as X
 import Algorithm.FastAnagrams as X
 import Intro.Id as X
-import Intro.Optional as X
+-}
+import Course.Optional as X
+{-
 import Intro.Validation as X
 import IO.Interactive as X
 import Monad.Compose as X
@@ -23,6 +26,9 @@ import Parser.Parser as X
 import Parser.Person as X
 import Structure.BKTree as X
 import Structure.Lens as X
-import Structure.List as X
+-}
+import Course.List as X
+{-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X
+-}

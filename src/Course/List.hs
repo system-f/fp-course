@@ -9,10 +9,12 @@
 
 -- TOTAL marks:    /66
 
-module Structure.List where
+module Course.List where
 
-import Core
-import Intro.Optional
+import Course.Core
+import Course.Optional
+import qualified Prelude as P
+
 
 -- $setup
 -- >>> import Test.QuickCheck
@@ -310,11 +312,6 @@ find =
   error "todo"
 
 -- Exercise 11
--- Relative Difficulty: 10
--- Correctness: 5.0 marks
--- Performance: 2.5 marks
--- Elegance: 2.5 marks
--- Total: 10
 --
 -- | Reverse a list.
 --
@@ -340,7 +337,7 @@ listh ::
   [a]
   -> List a
 listh =
-  foldr (:.) Nil
+  P.foldr (:.) Nil
 
 instance IsString (List Char) where
   fromString =
