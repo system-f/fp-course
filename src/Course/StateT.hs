@@ -1,14 +1,17 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Monad.StateT where
+module Course.StateT where
 
-import Core
-import Intro.Id
-import Intro.Optional
-import Structure.List
-import Monad.Functor
-import Monad.Monad
-import Monad.State
+import Course.Core
+import Course.Id
+import Course.Optional
+import Course.List
+import Course.Functor
+import Course.Apply
+import Course.Applicative
+import Course.Bind
+import Course.Monad
+import Course.State
 import qualified Data.Set as S
 
 -- | A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
@@ -20,21 +23,28 @@ newtype StateT s f a =
   }
 
 -- Exercise 1
--- Relative Difficulty: 2
 -- | Implement the `Functor` instance for @StateT s f@ given a @Functor f@.
 instance Functor f => Functor (StateT s f) where
-  fmap =
+  (<$>) =
     error "todo"
 
--- Exercise 2
--- Relative Difficulty: 5
--- | Implement the `Monad` instance for @StateT s g@ given a @Monad f@.
+-- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
+instance Applicative f => Apply (StateT s f) where
+  (<*>) =
+    error "todo"
+
+-- | Implement the `Applicative` instance for @StateT s f@ given a @Applicative f@.
+instance Applicative f => Applicative (StateT s f) where
+  pure =
+    error "todo"
+
+-- | Implement the `Bind` instance for @StateT s f@ given a @Monad f@.
 -- Make sure the state value is passed through in `bind`.
+instance Monad f => Bind (StateT s f) where
+  (=<<) =
+    error "todo"
+
 instance Monad f => Monad (StateT s f) where
-  bind =
-    error "todo"
-  return =
-    error "todo"
 
 -- | A `State'` is `StateT` specialised to the `Id` functor.
 type State' s a =
@@ -157,17 +167,25 @@ data OptionalT f a =
 -- Relative Difficulty: 3
 -- | Implement the `Functor` instance for `OptionalT f` given a Functor f.
 instance Functor f => Functor (OptionalT f) where
-  fmap =
+  (<$>) =
     error "todo"
 
--- Exercise 14
--- Relative Difficulty: 5
--- | Implement the `Monad` instance for `OptionalT f` given a Monad f.
+-- | Implement the `Apply` instance for `OptionalT f` given a Apply f.
+instance Apply f => Apply (OptionalT f) where
+  (<*>) =
+    error "todo"
+
+-- | Implement the `Applicative` instance for `OptionalT f` given a Applicative f.
+instance Applicative f => Applicative (OptionalT f) where
+  pure =
+    error "todo"
+
+-- | Implement the `Bind` instance for `OptionalT f` given a Bind f.
+instance Bind f => Bind (OptionalT f) where
+  (=<<) =
+    error "todo"
+
 instance Monad f => Monad (OptionalT f) where
-  return =
-    error "todo"
-  bind =
-    error "todo"
 
 -- | A `Logger` is a pair of a list of log values (`[l]`) and an arbitrary value (`a`).
 data Logger l a =
@@ -178,18 +196,26 @@ data Logger l a =
 -- Relative Difficulty: 4
 -- | Implement the `Functor` instance for `Logger`.
 instance Functor (Logger l) where
-  fmap =
+  (<$>) =
     error "todo"
 
--- Exercise 16
--- Relative Difficulty: 5
--- | Implement the `Monad` instance for `Logger`.
+-- | Implement the `Apply` instance for `Logger`.
+instance Apply (Logger l) where
+  (<*>) =
+    error "todo"
+
+-- | Implement the `Applicative` instance for `Logger`.
+instance Applicative (Logger l) where
+  pure =
+    error "todo"
+
+-- | Implement the `Bind` instance for `Logger`.
 -- The `bind` implementation must append log values to maintain associativity.
+instance Bind (Logger l) where
+  (=<<) =
+    error "todo"
+
 instance Monad (Logger l) where
-  return =
-    error "todo"
-  bind =
-    error "todo"
 
 -- Exercise 17
 -- Relative Difficulty: 1
@@ -214,6 +240,6 @@ log1 =
 distinctG ::
   (Integral a, Show a) =>
   List a
-  -> Logger String (Optional (List a))
+  -> Logger Str (Optional (List a))
 distinctG =
   error "todo"

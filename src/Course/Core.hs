@@ -3,6 +3,7 @@ module Course.Core(
 , Ord(..)
 , Show(..)
 , Enum(..)
+, Integral(..)
 , Num(..)
 , Bool(..)
 , Char
@@ -29,6 +30,7 @@ import Prelude(
   , Ord(..)
   , Show(..)
   , Enum(..)
+  , Integral(..)
   , Num(..)
   , Bool(..)
   , Char

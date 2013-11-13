@@ -80,6 +80,7 @@ library
                       Course.Extend
                       Course.Comonad
                       Course.State
+                      Course.StateT
                       Course.Traversable
 
 test-suite            doctests
