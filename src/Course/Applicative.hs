@@ -16,7 +16,6 @@ class Apply f => Applicative f where
 -- todo fix Exercise
 
 -- Exercise 6
--- Relative Difficulty: 3
 --
 -- | Witness that all things with bind and return also have fmap.
 --
@@ -64,7 +63,6 @@ instance Applicative Optional where
     error "todo"
 
 -- Exercise 10
--- Relative Difficulty: 3
 --
 -- | Insert into a constant function.
 --
@@ -99,7 +97,6 @@ sequence =
   error "todo"
 
 -- Exercise 18
--- Relative Difficulty: 4
 --
 -- | Replicate an effect a given number of times.
 --
@@ -123,7 +120,6 @@ replicate =
   error "todo"
 
 -- Exercise 19
--- Relative Difficulty: 9
 --
 -- | Filter a list with a predicate that produces an effect.
 --

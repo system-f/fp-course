@@ -51,7 +51,6 @@ type State' s a =
   StateT s Id a
 
 -- Exercise 3
--- Relative Difficulty: 1
 -- | Provide a constructor for `State'` values.
 state' ::
   (s -> (a, s))
@@ -60,7 +59,7 @@ state' =
   error "todo"
 
 -- Exercise 4
--- Relative Difficulty: 1
+--
 -- | Provide an unwrapper for `State'` values.
 runState' ::
   State' s a
@@ -70,7 +69,6 @@ runState' =
   error "todo"
 
 -- Exercise 5
--- Relative Difficulty: 2
 -- | Run the `StateT` seeded with `s` and retrieve the resulting state.
 execT ::
   Functor f =>
@@ -81,7 +79,6 @@ execT =
   error "todo"
 
 -- Exercise 6
--- Relative Difficulty: 1
 -- | Run the `State` seeded with `s` and retrieve the resulting state.
 exec' ::
   State' s a
@@ -91,7 +88,6 @@ exec' =
   error "todo"
 
 -- Exercise 7
--- Relative Difficulty: 2
 -- | Run the `StateT` seeded with `s` and retrieve the resulting value.
 evalT ::
   Functor f =>
@@ -102,7 +98,6 @@ evalT =
   error "todo"
 
 -- Exercise 8
--- Relative Difficulty: 1
 -- | Run the `State` seeded with `s` and retrieve the resulting value.
 eval' ::
   State' s a
@@ -112,7 +107,6 @@ eval' =
   error "todo"
 
 -- Exercise 9
--- Relative Difficulty: 2
 -- | A `StateT` where the state also distributes into the produced value.
 getT ::
   Monad f =>
@@ -121,7 +115,6 @@ getT =
   error "todo"
 
 -- Exercise 10
--- Relative Difficulty: 2
 -- | A `StateT` where the resulting state is seeded with the given value.
 putT ::
   Monad f =>
@@ -131,7 +124,6 @@ putT =
   error "todo"
 
 -- Exercise 11
--- Relative Difficulty: 4
 -- | Remove all duplicate elements in a `List`.
 --
 -- /Tip:/ Use `filterM` and `State'` with a @Data.Set#Set@.
@@ -143,7 +135,6 @@ distinct' =
   error "todo"
 
 -- Exercise 12
--- Relative Difficulty: 5
 -- | Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
 -- abort the computation by producing `Empty`.
@@ -164,7 +155,6 @@ data OptionalT f a =
   }
 
 -- Exercise 13
--- Relative Difficulty: 3
 -- | Implement the `Functor` instance for `OptionalT f` given a Functor f.
 instance Functor f => Functor (OptionalT f) where
   (<$>) =
@@ -193,7 +183,6 @@ data Logger l a =
   deriving (Eq, Show)
 
 -- Exercise 15
--- Relative Difficulty: 4
 -- | Implement the `Functor` instance for `Logger`.
 instance Functor (Logger l) where
   (<$>) =
@@ -218,7 +207,6 @@ instance Bind (Logger l) where
 instance Monad (Logger l) where
 
 -- Exercise 17
--- Relative Difficulty: 1
 -- | A utility function for producing a `Logger` with one log value.
 log1 ::
   l
@@ -228,7 +216,6 @@ log1 =
   error "todo"
 
 -- Exercise 18
--- Relative Difficulty: 10
 -- | Remove all duplicate integers from a list. Produce a log as you go.
 -- If there is an element above 100, then abort the entire computation and produce no result.
 -- However, always keep a log. If you abort the computation, produce a log with the value,

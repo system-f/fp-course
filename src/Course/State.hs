@@ -34,7 +34,6 @@ newtype State s a =
   }
 
 -- Exercise 1
--- Relative Difficulty: 2
 --
 -- | Implement the `Functor` instance for `State s`.
 --
@@ -79,7 +78,6 @@ exec =
   error "todo"
 
 -- Exercise 4
--- Relative Difficulty: 1
 --
 -- | Run the `State` seeded with `s` and retrieve the resulting value.
 --
@@ -92,7 +90,6 @@ eval =
   error "todo"
 
 -- Exercise 5
--- Relative Difficulty: 2
 --
 -- | A `State` where the state also distributes into the produced value.
 --
@@ -104,7 +101,6 @@ get =
   error "todo"
 
 -- Exercise 6
--- Relative Difficulty: 2
 --
 -- | A `State` where the resulting state is seeded with the given value.
 --
@@ -117,7 +113,6 @@ put =
   error "todo"
 
 -- Exercise 7
--- Relative Difficulty: 5
 --
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
@@ -142,7 +137,6 @@ findM =
   error "todo"
 
 -- Exercise 8
--- Relative Difficulty: 4
 --
 -- | Find the first element in a `List` that repeats.
 -- It is possible that no element repeats, hence an `Optional` result.
@@ -158,7 +152,6 @@ firstRepeat =
   error "todo"
 
 -- Exercise 9
--- Relative Difficulty: 5
 --
 -- | Remove all elements in a `List` that fail a given predicate.
 -- However, while performing the filter, we sequence some `Monad` effect through.
@@ -182,7 +175,6 @@ filterM =
   error "todo"
 
 -- Exercise 10
--- Relative Difficulty: 4
 --
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filterM` and `State` with a @Data.Set#Set@.
@@ -198,7 +190,6 @@ distinct =
   error "todo"
 
 -- Exercise 11
--- Relative Difficulty: 3
 --
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -216,7 +207,7 @@ produce =
   error "todo"
 
 -- Exercise 12
--- Relative Difficulty: 10
+--
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
 -- because it results in a recurring sequence.

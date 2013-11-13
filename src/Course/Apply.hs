@@ -62,7 +62,6 @@ lift2 =
   error "todo"
 
 -- Exercise 14
--- Relative Difficulty: 6
 -- (bonus: use apply + lift2)
 --
 -- | Apply a ternary function in the Monad environment.

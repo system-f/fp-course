@@ -58,7 +58,6 @@ instance Bind List where
     error "todo"
 
 -- Exercise 9
--- Relative Difficulty: 2
 --
 -- | Binds a function on an Optional.
 --
