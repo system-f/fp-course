@@ -82,6 +82,7 @@ library
                       Course.State
                       Course.StateT
                       Course.Traversable
+                      Course.Person
 
 test-suite            doctests
   type:

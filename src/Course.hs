@@ -39,6 +39,7 @@ import Course.Compose as X
 import Course.State as X
 import Course.StateT as X
 import Course.Traversable as X
+import Course.Person as X
 {-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X
