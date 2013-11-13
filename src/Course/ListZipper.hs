@@ -1,11 +1,18 @@
-{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Structure.ListZipper where
+module Course.ListZipper where
 
-import Core
-import Data.List
-import Monad.Functor
+import Course.Core
+import Course.List
+import Course.Optional
+import Course.Functor
+import Course.Apply
+import Course.Applicative
+import Course.Bind
+import Course.Extend
+import Course.Comonad
+import Course.Traversable
+import qualified Prelude as P
 
 -- $setup
 -- >>> import Data.Maybe(isNothing)
@@ -43,20 +50,20 @@ data MaybeListZipper a =
 --
 -- | Implement the `Functor` instance for `ListZipper`.
 --
--- >>> fmap (+1) (ListZipper [3,2,1] 4 [5,6,7])
+-- >>> (+1) <$> (ListZipper [3,2,1] 4 [5,6,7])
 -- [4,3,2] >5< [6,7,8]
 instance Functor ListZipper where
-  fmap =
+  (<$>) =
     error "todo"
 
 -- Exercise 2
 --
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
--- >>> fmap (+1) (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
+-- >>> (+1) <$> (IsZ (ListZipper [3,2,1] 4 [5,6,7]))
 -- [4,3,2] >5< [6,7,8]
 instance Functor MaybeListZipper where
-  fmap =
+  (<$>) =
     error "todo"
 
 -- Exercise 3
@@ -77,18 +84,18 @@ fromList =
 -- prop> null xs == isNothing (toMaybe (fromList xs))
 --
 -- prop> toMaybe (fromMaybe z) == z
-toMaybe ::
+toOptional ::
   MaybeListZipper a
-  -> Maybe (ListZipper a)
-toMaybe =
+  -> Optional (ListZipper a)
+toOptional =
   error "todo"
 
 fromMaybe ::
-  Maybe (ListZipper a)
+  Optional (ListZipper a)
   -> MaybeListZipper a
-fromMaybe Nothing =
+fromMaybe Empty =
   IsNotZ
-fromMaybe (Just z) =
+fromMaybe (Full z) =
   IsZ z
 
 asZipper ::
@@ -468,7 +475,7 @@ nth =
 -- prop> P.maybe True (\i -> P.maybe False (==z) (toMaybe (nth i z))) (index z)
 index ::
   ListZipper a
-  -> Maybe Int
+  -> Optional Int
 index =
   error "todo"
 
@@ -590,16 +597,16 @@ instance Apply MaybeListZipper where
 --
 -- /Tip:/ Use @Data.List#repeat@.
 instance Applicative ListZipper where
-  unit =
+  pure =
     error "todo"
 
 -- Exercise 35
 --
 -- | Implement the `Applicative` instance for `MaybeListZipper`.
 --
--- /Tip:/ Use @unit@ for `ListZipper`.
+-- /Tip:/ Use @pure@ for `ListZipper`.
 instance Applicative MaybeListZipper where
-  unit =
+  pure =
     error "todo"
 
 -- Exercise 36
@@ -620,10 +627,10 @@ instance Extend ListZipper where
 -- | Implement the `Comonad` instance for `ListZipper`.
 -- This implementation returns the current focus of the zipper.
 --
--- >>> counit (ListZipper [2,1] 3 [4,5])
+-- >>> copure (ListZipper [2,1] 3 [4,5])
 -- 3
 instance Comonad ListZipper where
-  counit =
+  copure =
     error "todo"
 
 -- Exercise 38
@@ -650,7 +657,7 @@ instance Traversable MaybeListZipper where
 
 instance Show a => Show (ListZipper a) where
   show (ListZipper l x r) =
-    show l ++ " >" ++ show x ++ "< " ++ show r
+    show l P.++ " >" P.++ show x P.++ "< " P.++ show r
 
 instance Show a => Show (MaybeListZipper a) where
   show (IsZ z) = show z

@@ -87,6 +87,7 @@ library
                       Course.MoreParser
                       Course.JsonValue
                       Course.JsonParser
+                      Course.ListZipper
 
 test-suite            doctests
   type:

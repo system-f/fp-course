@@ -6,6 +6,7 @@ module Course.Core(
 , Integral(..)
 , Num(..)
 , Bool(..)
+, Either(..)
 , Char
 , Int
 , Integer
@@ -34,6 +35,7 @@ import Prelude(
   , Integral(..)
   , Num(..)
   , Bool(..)
+  , Either(..)
   , Char
   , Int
   , Integer

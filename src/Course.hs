@@ -44,6 +44,7 @@ import Course.Parser as X
 import Course.MoreParser as X
 import Course.JsonValue as X
 import Course.JsonParser as X
+import Course.ListZipper as X
 {-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X
