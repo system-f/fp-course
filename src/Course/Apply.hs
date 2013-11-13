@@ -130,6 +130,23 @@ lift4 ::
   -> f e
 lift4 =
   error "todo"
+
+(*>) ::
+  Apply f =>
+  f a
+  -> f b
+  -> f b
+(*>) =
+  error "todo"
+
+(<*) ::
+  Apply f =>
+  f b
+  -> f a
+  -> f b
+(<*) =
+  error "todo"
+
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
