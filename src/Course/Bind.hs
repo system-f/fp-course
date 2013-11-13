@@ -1,6 +1,7 @@
 module Course.Bind(
   Bind(..)
 , (>>=)
+, flatten'
 ) where
 
 import Course.Core
