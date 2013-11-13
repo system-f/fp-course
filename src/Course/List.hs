@@ -306,6 +306,12 @@ putStr ::
 putStr =
   P.putStr . hlist
 
+putStrLn ::
+  List Char
+  -> IO ()
+putStrLn =
+  P.putStrLn . hlist
+
 instance IsString (List Char) where
   fromString =
     listh

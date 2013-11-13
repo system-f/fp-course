@@ -1,13 +1,17 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module IO.Interactive where
+module Course.Interactive where
 
-import Core
-import Monad.Functor
-import Monad.Monad
+import Course.Core
+import Course.Functor
+import Course.Applicative
+import Course.Bind
+import Course.Monad
+import Course.Traversable
+import Course.List
+import Course.Optional
 import Data.Char
-import Structure.List
-import Intro.Optional
 
 -- | Eliminates any value over which a functor is defined.
 vooid ::
@@ -15,9 +19,7 @@ vooid ::
   m a
   -> m ()
 vooid =
-  let m = fmap
-  -- to avoid hlint warning
-  in m (const ())
+  (<$>) (const ())
 
 -- | A version of @bind@ that ignores the result of the effect.
 (>-) ::
@@ -26,16 +28,7 @@ vooid =
   -> m b
   -> m b
 (>-) a =
-  (>>-) a . const
-
--- | An infix, flipped version of @bind@.
-(>>-) ::
-  Monad m =>
-  m a
-  -> (a -> m b)
-  -> m b
-(>>-) =
-  flip bind
+  (>>=) a . const
 
 -- | Runs an action until a result of that action satisfies a given predicate.
 untilM ::
@@ -44,11 +37,11 @@ untilM ::
   -> m a -- ^ The action to run until the predicate satisfies.
   -> m a
 untilM p a =
-  a >>- \r ->
-  p r >>- \q ->
+  a >>= \r ->
+  p r >>= \q ->
   if q
     then
-      return r
+      pure r
     else
       untilM p a
 
@@ -61,17 +54,17 @@ echo =
             if c == 'q'
               then
                 putStrLn "Bye!" >-
-                return True
+                pure True
               else
-                return False)
+                pure False)
           (putStr "Enter a character: " >-
-           getChar >>- \c ->
+           getChar >>= \c ->
            putStrLn "" >-
-           putStrLn [c] >-
-           return c))
+           putStrLn (c :. Nil) >-
+           pure c))
 
 data Op =
-  Op Char String (IO ()) -- keyboard entry, description, program
+  Op Char Str (IO ()) -- keyboard entry, description, program
 
 -- Exercise 1
 -- |
@@ -157,7 +150,7 @@ interactive =
                Op 'c' "Convert a string to upper-case" convertInteractive
             :. Op 'r' "Reverse a file" reverseInteractive
             :. Op 'e' "Encode a URL" encodeInteractive
-            :. Op 'q' "Quit" (return ())
+            :. Op 'q' "Quit" (pure ())
             :. Nil
             )
   in vooid (untilM
@@ -165,18 +158,18 @@ interactive =
                if c == 'q'
                  then
                    putStrLn "Bye!" >-
-                   return True
+                   pure True
                  else
-                   return False)
+                   pure False)
              (putStrLn "Select: " >-
-              traaverse (\(Op c s _) ->
-                putStr [c] >-
+              traverse (\(Op c s _) ->
+                putStr (c :. Nil) >-
                 putStr ". " >-
                 putStrLn s) ops >-
-              getChar >>- \c ->
+              getChar >>= \c ->
               putStrLn "" >-
               let o = find (\(Op c' _ _) -> c' == c) ops
                   r = case o of
                         Empty -> (putStrLn "Not a valid selection. Try again." >-)
                         Full (Op _ _ k) -> (k >-)
-              in r (return c)))
+              in r (pure c)))
