@@ -1,17 +1,23 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Parser.Parser where
+module Course.Parser where
 
-import Core
+import Course.Core
 import Data.Char
-import Control.Applicative
-import Parser.Person
+import Course.Person
+import Course.Functor
+import Course.Apply
+import Course.Applicative
+import Course.Bind
+import Course.Monad
+import Course.List
 import qualified Prelude as P
 
 -- $setup
 -- >>> import Data.Char(isUpper)
 
-type Input = String
+type Input = Str
 
 data ParseResult a =
   UnexpectedEof
@@ -25,13 +31,13 @@ instance Show a => Show (ParseResult a) where
   show UnexpectedEof =
     "Expected end of stream"
   show (ExpectedEof i) =
-    "Expected end of stream, but got >" ++ i ++ "<"
+    "Expected end of stream, but got >" P.++ show i P.++ "<"
   show (UnexpectedChar c) =
-    "Unexpected character" ++ [c]
+    "Unexpected character" P.++ show [c]
   show Failed =
     "Parse failed"
   show (Result i a) =
-    "Result >" ++ i ++ "< " ++ show a
+    "Result >" P.++ show i P.++ "< " P.++ show a
 
 -- Function to also access the input while binding parsers.
 withResultInput ::
@@ -307,7 +313,7 @@ space =
 --
 -- /Tip:/ Use the @many1@ and @space@ functions.
 spaces1 ::
-  Parser String
+  Parser Str
 spaces1 =
   error "todo"
 
@@ -418,7 +424,7 @@ ageParser =
 -- λ> isErrorResult (parse firstNameParser "abc")
 -- True
 firstNameParser ::
-  Parser String
+  Parser Str
 firstNameParser =
   error "todo"
 
@@ -438,7 +444,7 @@ firstNameParser =
 -- >>> isErrorResult (parse surnameParser "abc")
 -- True
 surnameParser ::
-  Parser String
+  Parser Str
 surnameParser =
   error "todo"
 
@@ -481,7 +487,7 @@ genderParser =
 -- >>> parse phoneBodyParser "a123-456"
 -- Result >a123-456< ""
 phoneBodyParser ::
-  Parser String
+  Parser Str
 phoneBodyParser =
   error "todo"
 
@@ -504,7 +510,7 @@ phoneBodyParser =
 -- >>> isErrorResult (parse phoneParser "a123-456")
 -- True
 phoneParser ::
-  Parser String
+  Parser Str
 phoneParser =
   error "todo"
 
@@ -564,24 +570,32 @@ personParser =
 -- Exercise 20.1
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
-instance P.Functor Parser where
-  fmap =
+instance Functor Parser where
+  (<$>) =
+    error "todo"
+
+-- | Write a Apply instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Apply Parser where
+  (<*>) =
     error "todo"
 
 -- Exercise 20.2
 -- | Write an Applicative functor instance for a @Parser@.
---
--- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Applicative Parser where
   pure =
     error "todo"
-  (<*>) =
-    error "todo"
 
 -- Exercise 20.3
--- | Write a Monad instance for a @Parser@.
+-- | Write a Bind instance for a @Parser@.
+instance Bind Parser where
+  (=<<) =
+    error "todo"
+
+instance Monad Parser where
+
 instance P.Monad Parser where
-  return =
-    error "todo"
   (>>=) =
-    error "todo"
+    flip (=<<)
+  return =
+    pure

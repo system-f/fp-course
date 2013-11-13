@@ -1,13 +1,14 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Parser.JsonValue where
+module Course.JsonValue where
 
-import Core
+import Course.Core
+import Course.List
 
-type Assoc = [(String, JsonValue)]
+type Assoc = [(Str, JsonValue)]
 
 data JsonValue =
-     JsonString String
+     JsonString Str
    | JsonRational  Bool !Rational
    | JsonObject Assoc
    | JsonArray  [JsonValue]

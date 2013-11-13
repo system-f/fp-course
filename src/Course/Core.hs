@@ -10,6 +10,7 @@ module Course.Core(
 , Int
 , Integer
 , IO
+, Rational
 , seq
 , error
 , undefined
@@ -37,6 +38,7 @@ import Prelude(
   , Int
   , Integer
   , IO
+  , Rational
   , seq
   , error
   , undefined

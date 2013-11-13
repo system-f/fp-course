@@ -83,6 +83,10 @@ library
                       Course.StateT
                       Course.Traversable
                       Course.Person
+                      Course.Parser
+                      Course.MoreParser
+                      Course.JsonValue
+                      Course.JsonParser
 
 test-suite            doctests
   type:

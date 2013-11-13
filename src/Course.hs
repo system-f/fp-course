@@ -40,6 +40,10 @@ import Course.State as X
 import Course.StateT as X
 import Course.Traversable as X
 import Course.Person as X
+import Course.Parser as X
+import Course.MoreParser as X
+import Course.JsonValue as X
+import Course.JsonParser as X
 {-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X

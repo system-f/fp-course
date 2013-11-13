@@ -1,13 +1,13 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Parser.JsonParser where
+module Course.JsonParser where
 
-import Core
-import Parser.Parser
-import Parser.MoreParser
+import Course.Core
+import Course.Parser
+import Course.MoreParser
+import Course.JsonValue
+import Course.List
 import Numeric
-import Parser.JsonValue
-import Control.Applicative
 
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
@@ -38,7 +38,7 @@ import Control.Applicative
 -- >>> isErrorResult (parse jsonString "\"\\abc\"def")
 -- True
 jsonString ::
-  Parser String
+  Parser Str
 jsonString =
   error "todo"
 
@@ -83,7 +83,7 @@ jsonNumber =
 -- >>> isErrorResult (parse jsonTrue "TRUE")
 -- True
 jsonTrue ::
-  Parser String
+  Parser Str
 jsonTrue =
   error "todo"
 
@@ -98,7 +98,7 @@ jsonTrue =
 -- >>> isErrorResult (parse jsonFalse "FALSE")
 -- True
 jsonFalse ::
-  Parser String
+  Parser Str
 jsonFalse =
   error "todo"
 
@@ -113,7 +113,7 @@ jsonFalse =
 -- >>> isErrorResult (parse jsonNull "NULL")
 -- True
 jsonNull ::
-  Parser String
+  Parser Str
 jsonNull =
   error "todo"
 
@@ -185,7 +185,7 @@ jsonValue =
 --
 -- /Tip:/ Use @System.IO#readFile@ and `jsonValue`.
 readJsonValue ::
-  FilePath
+  Filename
   -> IO (ParseResult JsonValue)
 readJsonValue =
   error "todo"

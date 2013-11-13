@@ -1,12 +1,13 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Parser.MoreParser where
+module Course.MoreParser where
 
-import Core
-import Parser.Parser
+import Course.Core
+import Course.Parser
+import Course.List
+import Course.Optional
 import Data.Char
 import Numeric
-import Control.Monad
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower, is)
@@ -17,17 +18,16 @@ import Control.Monad
 (<.>) ::
   Parser a
   -> Input
-  -> Maybe a
+  -> Optional a
 P p <.> i =
   case p i of
-    Result _ a -> Just a
-    _          -> Nothing
-
+    Result _ a -> Full a
+    _          -> Empty
 
 -- Exercise 1
 -- | Write a parser that will parse zero or more spaces.
 spaces ::
-  Parser String
+  Parser Str
 spaces =
   error "todo"
 
@@ -90,8 +90,8 @@ quote =
 -- >>> isErrorResult (parse (string "abc") "bcdef")
 -- True
 string ::
-  String
-  -> Parser String
+  Str
+  -> Parser Str
 string =
   error "todo"
 
@@ -106,8 +106,8 @@ string =
 -- >>> isErrorResult (parse (stringTok "abc") "bc  ")
 -- True
 stringTok ::
-  String
-  -> Parser String
+  Str
+  -> Parser Str
 stringTok =
   error "todo"
 
@@ -139,7 +139,7 @@ option =
 -- >>> isErrorResult (parse digits1 "abc123")
 -- True
 digits1 ::
-  Parser String
+  Parser Str
 digits1 =
   error "todo"
 
@@ -154,7 +154,7 @@ digits1 =
 -- >>> isErrorResult (parse (oneof "abc") "def")
 -- True
 oneof ::
-  String
+  Str
   -> Parser Char
 oneof =
   error "todo"
@@ -170,7 +170,7 @@ oneof =
 -- >>> isErrorResult (parse (noneof "abcd") "abc")
 -- True
 noneof ::
-  String
+  Str
   -> Parser Char
 noneof =
   error "todo"

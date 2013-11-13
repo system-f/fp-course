@@ -36,6 +36,9 @@ instance Show t => Show (List t) where
 type Str =
   List Char
 
+type Filename =
+  Str
+
 -- The list of integers from zero to infinity.
 infinity ::
   List Integer
@@ -160,21 +163,21 @@ filter =
 --
 -- | Append two lists to a new list.
 --
--- >>> append (1 :. 2 :. 3 :. Nil) (4 :. 5 :. 6 :. Nil)
+-- >>> (1 :. 2 :. 3 :. Nil) ++ (4 :. 5 :. 6 :. Nil)
 -- [1,2,3,4,5,6]
 --
--- prop> headOr x (Nil `append` infinity) == 0
+-- prop> headOr x (Nil ++ infinity) == 0
 --
--- prop> headOr x (y `append` infinity) == headOr 0 y
+-- prop> headOr x (y ++ infinity) == headOr 0 y
 --
--- prop> (x `append` y) `append` z == x `append` (y `append` z)
+-- prop> (x ++ y) ++ z == x ++ (y ++ z)
 --
--- prop> append x Nil == x
-append ::
+-- prop> x ++ Nil == x
+(++) ::
   List a
   -> List a
   -> List a
-append =
+(++) =
   error "todo"
 
 -- Exercise 7
