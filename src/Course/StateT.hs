@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateT where
 
@@ -29,12 +30,12 @@ instance Functor f => Functor (StateT s f) where
     error "todo"
 
 -- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
-instance Applicative f => Apply (StateT s f) where
+instance Bind f => Apply (StateT s f) where
   (<*>) =
     error "todo"
 
 -- | Implement the `Applicative` instance for @StateT s f@ given a @Applicative f@.
-instance Applicative f => Applicative (StateT s f) where
+instance Monad f => Applicative (StateT s f) where
   pure =
     error "todo"
 

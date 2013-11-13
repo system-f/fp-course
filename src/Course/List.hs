@@ -369,6 +369,44 @@ intersectBy ::
 intersectBy e xs ys =
   filter (\x -> any (e x) ys) xs
 
+take ::
+  (Num n, Ord n) =>
+  n
+  -> List a
+  -> List a
+take n _  | n <= 0 =
+  Nil
+take _ Nil =
+  Nil
+take n (x:.xs) =
+  x :. take (n - 1) xs
+
+drop ::
+  (Num n, Ord n) =>
+  n
+  -> List a
+  -> List a
+drop n xs | n <= 0 =
+  xs
+drop _ Nil =
+  Nil
+drop n (_:.xs) =
+  drop (n-1) xs
+
+repeat ::
+  a
+  -> List a
+repeat x =
+  x :. repeat x
+
+replicate ::
+  (Num n, Ord n) =>
+  n
+  -> a
+  -> List a
+replicate n x =
+  take n (repeat x)
+
 instance IsString (List Char) where
   fromString =
     listh

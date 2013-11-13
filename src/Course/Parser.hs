@@ -203,7 +203,7 @@ infixl 3 |||
 -- Result >< ""
 list ::
   Parser a
-  -> Parser [a]
+  -> Parser (List a)
 list =
   error "todo"
 
@@ -224,7 +224,7 @@ list =
 -- True
 many1 ::
   Parser a
-  -> Parser [a]
+  -> Parser (List a)
 many1 =
   error "todo"
 
@@ -369,8 +369,8 @@ alpha =
 -- >>> isErrorResult (parse (sequenceParser [character, is 'x', upper]) "abCdef")
 -- True
 sequenceParser ::
-  [Parser a]
-  -> Parser [a]
+  List (Parser a)
+  -> Parser (List a)
 sequenceParser =
   error "todo"
 
@@ -388,7 +388,7 @@ sequenceParser =
 thisMany ::
   Int
   -> Parser a
-  -> Parser [a]
+  -> Parser (List a)
 thisMany =
   error "todo"
 

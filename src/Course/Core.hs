@@ -27,6 +27,7 @@ module Course.Core(
 , odd
 , fst
 , snd
+, reads
 , getChar
 , on
 , IsString(..)
@@ -64,6 +65,7 @@ import Prelude(
   , odd
   , fst
   , snd
+  , reads
   )
 import Data.String(
   IsString(..)
