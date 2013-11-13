@@ -8,7 +8,6 @@ module Course.Core(
 , Num(..)
 , Bool(..)
 , Either(..)
-, Char
 , Int
 , Integer
 , IO
@@ -26,8 +25,12 @@ module Course.Core(
 , not
 , even
 , odd
+, fst
+, snd
 , getChar
+, on
 , IsString(..)
+, module Data.Char
 ) where
 
 
@@ -59,6 +62,8 @@ import Prelude(
   , not
   , even
   , odd
+  , fst
+  , snd
   )
 import Data.String(
   IsString(..)
@@ -67,3 +72,7 @@ import Data.String(
 import System.IO(
     getChar
   )
+import Data.Function(
+    on
+  )
+import Data.Char

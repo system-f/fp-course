@@ -333,6 +333,42 @@ zip (a:.as) (b:.bs) =
 zip _  _ =
   Nil
 
+any ::
+  (a -> Bool)
+  -> List a
+  -> Bool
+any p =
+  foldRight ((||) . p) False
+
+all ::
+  (a -> Bool)
+  -> List a
+  -> Bool
+all p =
+  foldRight ((&&) . p) True
+
+permutations
+  :: List a -> List (List a)
+permutations xs0 =
+  let perms Nil _ =
+        Nil
+      perms (t:.ts) is =
+        let interleave' _ Nil r =
+              (ts, r)
+            interleave' f (y:.ys) r =
+               let (us,zs) = interleave' (f . (y:.)) ys r
+               in  (y:.us, f (t:.y:.us):.zs)
+        in foldRight (\xs -> snd . interleave' id xs) (perms ts (t:.is)) (permutations is)
+  in xs0 :. perms xs0 Nil
+
+intersectBy ::
+  (a -> b -> Bool)
+  -> List a
+  -> List b
+  -> List a
+intersectBy e xs ys =
+  filter (\x -> any (e x) ys) xs
+
 instance IsString (List Char) where
   fromString =
     listh
