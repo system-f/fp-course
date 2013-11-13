@@ -4,6 +4,7 @@ module Course.Core(
 , Show(..)
 , Enum(..)
 , Integral(..)
+, Bounded(..)
 , Num(..)
 , Bool(..)
 , Either(..)
@@ -20,6 +21,8 @@ module Course.Core(
 , id
 , (.)
 , ($)
+, (&&)
+, (||)
 , not
 , even
 , odd
@@ -34,6 +37,7 @@ import Prelude(
   , Show(..)
   , Enum(..)
   , Integral(..)
+  , Bounded(..)
   , Num(..)
   , Bool(..)
   , Either(..)
@@ -50,6 +54,8 @@ import Prelude(
   , id
   , (.)
   , ($)
+  , (&&)
+  , (||)
   , not
   , even
   , odd

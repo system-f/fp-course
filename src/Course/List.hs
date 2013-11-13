@@ -113,14 +113,14 @@ sum =
 --
 -- | Return the length of the list.
 --
--- >>> len (1 :. 2 :. 3 :. Nil)
+-- >>> length (1 :. 2 :. 3 :. Nil)
 -- 3
 --
 -- prop> sum (map (const 1) x) == len x
-len ::
+length ::
   List a
   -> Int
-len =
+length =
   error "todo"
 
 -- Exercise 4
@@ -311,6 +311,27 @@ putStrLn ::
   -> IO ()
 putStrLn =
   P.putStrLn . hlist
+
+isPrefixOf ::
+  Eq a =>
+  List a
+  -> List a
+  -> Bool
+isPrefixOf Nil _ =
+  True
+isPrefixOf _  Nil =
+  False
+isPrefixOf (x:.xs) (y:.ys) =
+  x == y && isPrefixOf xs ys
+
+zip ::
+  List a
+  -> List b
+  -> List (a, b)
+zip (a:.as) (b:.bs) =
+  (a,b) :. zip as bs
+zip _  _ =
+  Nil
 
 instance IsString (List Char) where
   fromString =

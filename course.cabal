@@ -89,6 +89,9 @@ library
                       Course.JsonParser
                       Course.ListZipper
                       Course.Interactive
+                      Course.Anagrams
+                      Course.Cheque
+                      Course.FastAnagrams
 
 test-suite            doctests
   type:

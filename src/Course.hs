@@ -46,6 +46,9 @@ import Course.JsonValue as X
 import Course.JsonParser as X
 import Course.ListZipper as X
 import Course.Interactive as X
+import Course.Anagrams as X
+import Course.Cheque as X
+import Course.FastAnagrams as X
 {-
 import Structure.ListZipper as X
 import Structure.MetricSpace as X
