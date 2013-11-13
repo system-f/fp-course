@@ -1,5 +1,6 @@
 module Course.Core(
   Eq(..)
+, Ord(..)
 , Show(..)
 , Enum(..)
 , Num(..)
@@ -25,6 +26,7 @@ module Course.Core(
 
 import Prelude(
     Eq(..)
+  , Ord(..)
   , Show(..)
   , Enum(..)
   , Num(..)

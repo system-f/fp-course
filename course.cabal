@@ -79,6 +79,7 @@ library
                       Course.Monad
                       Course.Extend
                       Course.Comonad
+                      Course.State
                       Course.Traversable
 
 test-suite            doctests

@@ -1,15 +1,18 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Monad.State where
+module Course.State where
 
-import Core
+import Course.Core
 import qualified Prelude as P
 import Data.Char
-import Intro.Optional
-import Structure.List
-import Monad.Functor
-import Monad.Monad
+import Course.Optional
+import Course.List
+import Course.Functor
+import Course.Apply
+import Course.Applicative
+import Course.Bind
+import Course.Monad
 import qualified Data.Foldable as F
 import qualified Data.Set as S
 
@@ -35,31 +38,36 @@ newtype State s a =
 --
 -- | Implement the `Functor` instance for `State s`.
 --
--- >>> runState (fmap (+1) (return 0)) 0
+-- >>> runState ((+1) <$> pure 0) 0
 -- (1,0)
 instance Functor (State s) where
-  fmap =
+  (<$>) =
       error "todo"
 
 -- Exercise 2
--- Relative Difficulty: 3
 --
--- | Implement the `Monad` instance for `State s`.
---   Make sure the state value is passed through in `bind`.
---
--- >>> runState (return 1) 0
--- (1,0)
---
--- >>> runState (bind (const $ put 2) (put 1)) 0
--- ((),2)
-instance Monad (State s) where
-  bind =
-    error "todo"
-  return =
+-- | Implement the `Apply` instance for `State s`.
+instance Apply (State s) where
+  (<*>) =
     error "todo"
 
+-- Exercise 2
+--
+-- | Implement the `Applicative` instance for `State s`.
+instance Applicative (State s) where
+  pure =
+    error "todo"
+
+-- Exercise 2
+--
+-- | Implement the `Bind` instance for `State s`.
+instance Bind (State s) where
+  (=<<) =
+    error "todo"
+
+instance Monad (State s) where
+
 -- Exercise 3
--- Relative Difficulty: 1
 -- | Run the `State` seeded with `s` and retrieve the resulting state.
 --
 -- prop> \(Fun _ f) -> exec (State f) s == snd (runState (State f) s)

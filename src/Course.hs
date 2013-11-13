@@ -36,6 +36,7 @@ import Course.Monad as X
 import Course.Extend as X
 import Course.Comonad as X
 import Course.Compose as X
+import Course.State as X
 import Course.Traversable as X
 {-
 import Structure.ListZipper as X
