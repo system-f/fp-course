@@ -271,14 +271,14 @@ find =
 --
 -- | Reverse a list.
 --
--- >>> rev (1 :. 2 :. 3 :. Nil)
+-- >>> reverse (1 :. 2 :. 3 :. Nil)
 -- [3,2,1]
 --
--- prop> (rev . rev) x == x
-rev ::
+-- prop> (reverse . reverse) x == x
+reverse ::
   List a
   -> List a
-rev =
+reverse =
   error "todo"
 
 -- END Exercises
