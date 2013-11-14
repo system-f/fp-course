@@ -1,7 +1,7 @@
 module Course.Applicative(
   Applicative(..)
 , sequence
-, replicate
+, replicateA
 , filtering
 ) where
 
