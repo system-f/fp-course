@@ -81,21 +81,21 @@ fromList =
 --
 -- | Retrieve the `ListZipper` from the `MaybeListZipper` if there is one.
 --
--- prop> null xs == isNothing (toMaybe (fromList xs))
+-- prop> null xs == isNothing (toOptional (fromList xs))
 --
--- prop> toMaybe (fromMaybe z) == z
+-- prop> toOptional (fromOptional z) == z
 toOptional ::
   MaybeListZipper a
   -> Optional (ListZipper a)
 toOptional =
   error "todo"
 
-fromMaybe ::
+fromOptional ::
   Optional (ListZipper a)
   -> MaybeListZipper a
-fromMaybe Empty =
+fromOptional Empty =
   IsNotZ
-fromMaybe (Full z) =
+fromOptional (Full z) =
   IsZ z
 
 asZipper ::

@@ -19,6 +19,7 @@ module Course.Core(
 , const
 , flip
 , id
+, otherwise
 , (.)
 , ($)
 , (&&)
@@ -57,6 +58,7 @@ import Prelude(
   , const
   , flip
   , id
+  , otherwise
   , (.)
   , ($)
   , (&&)
