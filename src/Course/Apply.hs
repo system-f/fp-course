@@ -133,6 +133,16 @@ lift4 =
   error "todo"
 
 -- | Sequence, discarding the value of the first argument.
+--
+-- [1,2,3] *> [4,5,6]
+-- [4,5,6,4,5,6,4,5,6]
+--
+-- Full 7 *> Full 8
+-- Full 8
+--
+-- prop> [a,b,c] *> [x,y,z] == [x,y,z,x,y,z,x,y,z]
+--
+-- prop> Full x *> Full y == Full y
 (*>) ::
   Apply f =>
   f a
@@ -142,6 +152,16 @@ lift4 =
   error "todo"
 
 -- | Sequence, discarding the value of the second argument.
+--
+-- [1,2,3] *> [4,5,6]
+-- [1,2,3,1,2,3,1,2,3]
+--
+-- Full 7 *> Full 8
+-- Full 7
+--
+-- prop> [x,y,z] *> [a,b,c] == [x,y,z,x,y,z,x,y,z]
+--
+-- prop> Full x *> Full y == Full x
 (<*) ::
   Apply f =>
   f b
