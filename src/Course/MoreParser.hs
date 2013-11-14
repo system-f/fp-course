@@ -268,7 +268,7 @@ hex =
 sepby1 ::
   Parser a
   -> Parser s
-  -> Parser [a]
+  -> Parser (List a)
 sepby1 =
   error "todo"
 
@@ -292,7 +292,7 @@ sepby1 =
 sepby ::
   Parser a
   -> Parser s
-  -> Parser [a]
+  -> Parser (List a)
 sepby =
   error "todo"
 
@@ -329,7 +329,7 @@ eof =
 -- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "abc")
 -- True
 satisfyAll ::
-  [Char -> Bool]
+  List (Char -> Bool)
   -> Parser Char
 satisfyAll =
   error "todo"
@@ -351,7 +351,7 @@ satisfyAll =
 -- >>> isErrorResult (parse (satisfyAny [isLower, (/= 'X')]) "")
 -- True
 satisfyAny ::
-  [Char -> Bool]
+  List (Char -> Bool)
   -> Parser Char
 satisfyAny =
   error "todo"
@@ -382,6 +382,6 @@ betweenSepbyComma ::
   Char
   -> Char
   -> Parser a
-  -> Parser [a]
+  -> Parser (List a)
 betweenSepbyComma =
   error "todo"
