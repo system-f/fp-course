@@ -29,7 +29,7 @@ Functions that might help
 anagrams ::
   Str
   -> Filename
-  -> IO [Str]
+  -> IO (List Str)
 anagrams =
   error "todo"
 
