@@ -1,3 +1,5 @@
+{-# LANGUAGE NoImplicitPrelude #-}
+
 module Course.Bind(
   Bind(..)
 , (>>=)
