@@ -52,7 +52,7 @@ instance Apply ((->) t) where
 -- >>> lift2 (+) Empty (Full 8)
 -- Empty
 --
--- >>> lift2 (+) len sum (listh [4,5,6])
+-- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
 lift2 ::
   Apply f =>
@@ -64,7 +64,6 @@ lift2 =
   error "todo"
 
 -- Exercise 14
--- (bonus: use apply + lift2)
 --
 -- | Apply a ternary function in the Monad environment.
 --
@@ -86,7 +85,7 @@ lift2 =
 -- >>> lift3 (\a b c -> a + b + c) Empty Empty (Full 9)
 -- Empty
 --
--- >>> lift3 (\a b c -> a + b + c) len sum product (listh [4,5,6])
+-- >>> lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6])
 -- 138
 lift3 ::
   Apply f =>
@@ -120,7 +119,7 @@ lift3 =
 -- >>> lift4 (\a b c d -> a + b + c + d) Empty Empty (Full 9) (Full 10)
 -- Empty
 --
--- >>> lift4 (\a b c d -> a + b + c + d) len sum product (sum . filter even) (listh [4,5,6])
+-- >>> lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6])
 -- 148
 lift4 ::
   Apply f =>

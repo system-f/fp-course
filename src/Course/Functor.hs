@@ -83,7 +83,7 @@ instance Functor ((->) t) where
 
 -- | Maps a function on an IO program.
 --
--- >>> rev <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
+-- >>> reverse <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
 -- hi"cba"
 instance Functor IO where
   (<$>) =
