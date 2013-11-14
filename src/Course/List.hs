@@ -14,6 +14,7 @@ module Course.List where
 import Course.Core
 import Course.Optional
 import qualified Prelude as P
+import qualified Numeric as N
 
 
 -- $setup
@@ -444,6 +445,22 @@ read ::
   -> Optional a
 read =
   mapOptional fst . reads
+
+readHexs ::
+  (Eq a, Num a) =>
+  Str
+  -> Optional (a, Str)
+readHexs s =
+  case N.readHex (hlist s) of
+    [] -> Empty
+    ((a, q):_) -> Full (a, listh q)
+
+readHex ::
+  (Eq a, Num a) =>
+  Str
+  -> Optional a
+readHex =
+  mapOptional fst . readHexs
 
 instance IsString (List Char) where
   fromString =
