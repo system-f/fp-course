@@ -276,10 +276,8 @@ find =
 --
 -- | Reverse a list.
 --
--- >>> reverse (1 :. 2 :. 3 :. Nil)
--- [3,2,1]
---
--- prop> let types = x :: List Int in (reverse . reverse) x == x
+-- >>> reverse Nil
+-- []
 --
 -- prop> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
