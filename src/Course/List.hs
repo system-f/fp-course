@@ -307,6 +307,19 @@ putStrLn ::
 putStrLn =
   P.putStrLn . hlist
 
+readFile ::
+  Filename
+  -> IO Str
+readFile =
+  P.fmap listh . P.readFile . hlist
+
+writeFile ::
+  Filename
+  -> Str
+  -> IO ()
+writeFile n s =
+  P.writeFile (hlist n) (hlist s)
+
 isPrefixOf ::
   Eq a =>
   List a
