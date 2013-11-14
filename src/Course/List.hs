@@ -336,6 +336,14 @@ isPrefixOf _  Nil =
 isPrefixOf (x:.xs) (y:.ys) =
   x == y && isPrefixOf xs ys
 
+isEmpty ::
+  List a
+  -> Bool
+isEmpty Nil =
+  True
+isEmpty (_:._) =
+  False
+
 zip ::
   List a
   -> List b
