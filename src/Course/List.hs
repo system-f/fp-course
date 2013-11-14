@@ -175,6 +175,8 @@ filter =
 (++) =
   error "todo"
 
+infixr 5 ++
+
 -- Exercise 7
 --
 -- | Flatten a list of lists to a list.
