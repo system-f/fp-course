@@ -234,11 +234,3 @@ isHappy ::
   -> Bool
 isHappy =
   error "todo"
-
------------------------
--- SUPPORT LIBRARIES --
------------------------
-
-instance F.Foldable Optional where
-  foldr _ z Empty = z
-  foldr f z (Full a) = f a z
