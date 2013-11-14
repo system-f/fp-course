@@ -326,6 +326,11 @@ writeFile ::
 writeFile n s =
   P.writeFile (hlist n) (hlist s)
 
+getLine ::
+  IO Str
+getLine =
+  P.fmap listh P.getLine
+
 isPrefixOf ::
   Eq a =>
   List a
