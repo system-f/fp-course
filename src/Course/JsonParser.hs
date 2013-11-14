@@ -7,7 +7,6 @@ import Course.Parser
 import Course.MoreParser
 import Course.JsonValue
 import Course.List
-import Numeric
 
 -- Exercise 1
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
