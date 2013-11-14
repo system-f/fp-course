@@ -345,6 +345,16 @@ zip (a:.as) (b:.bs) =
 zip _  _ =
   Nil
 
+zipWith ::
+  (a -> b -> c)
+  -> List a
+  -> List b
+  -> List c
+zipWith f (a:.as) (b:.bs) =
+  f a b :. zipWith f as bs
+zipWith _ _  _ =
+  Nil
+
 unfoldr ::
   (a -> Optional (b, a))
   -> a
