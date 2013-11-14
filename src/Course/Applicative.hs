@@ -1,5 +1,8 @@
 module Course.Applicative(
- Applicative(..)
+  Applicative(..)
+, sequence
+, replicate
+, filtering
 ) where
 
 import Course.Core
@@ -100,23 +103,23 @@ sequence =
 --
 -- | Replicate an effect a given number of times.
 --
--- >>> replicate 4 (Id "hi")
+-- >>> replicateA 4 (Id "hi")
 -- Id ["hi","hi","hi","hi"]
 --
--- >>> replicate 4 (Full "hi")
+-- >>> replicateA 4 (Full "hi")
 -- Full ["hi","hi","hi","hi"]
 --
--- >>> replicate 4 Empty
+-- >>> replicateA 4 Empty
 -- Empty
 --
--- >>> replicate 4 (*2) 5
+-- >>> replicateA 4 (*2) 5
 -- [10,10,10,10]
-replicate ::
+replicateA ::
   Applicative f =>
   Int
   -> f a
   -> f (List a)
-replicate =
+replicateA =
   error "todo"
 
 -- Exercise 19
