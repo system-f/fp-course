@@ -433,6 +433,7 @@ listOptional f (h:.t) =
   in case f h of
        Empty -> r
        Full q -> q :. r
+
 any ::
   (a -> Bool)
   -> List a
