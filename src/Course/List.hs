@@ -340,10 +340,8 @@ zip ::
   List a
   -> List b
   -> List (a, b)
-zip (a:.as) (b:.bs) =
-  (a,b) :. zip as bs
-zip _  _ =
-  Nil
+zip =
+  zipWith (,)
 
 zipWith ::
   (a -> b -> c)
