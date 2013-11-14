@@ -31,13 +31,13 @@ instance Show a => Show (ParseResult a) where
   show UnexpectedEof =
     "Expected end of stream"
   show (ExpectedEof i) =
-    "Expected end of stream, but got >" P.++ show i P.++ "<"
+    stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
-    "Unexpected character" P.++ show [c]
+    stringconcat ["Unexpected character", show [c]]
   show Failed =
     "Parse failed"
   show (Result i a) =
-    "Result >" P.++ show i P.++ "< " P.++ show a
+    stringconcat ["Result >", show i, "< ", show a]
 
 -- Function to also access the input while binding parsers.
 withResultInput ::

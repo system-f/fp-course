@@ -657,7 +657,7 @@ instance Traversable MaybeListZipper where
 
 instance Show a => Show (ListZipper a) where
   show (ListZipper l x r) =
-    show l P.++ " >" P.++ show x P.++ "< " P.++ show r
+    stringconcat [show l, " >", show x, "< ", show r]
 
 instance Show a => Show (MaybeListZipper a) where
   show (IsZ z) = show z

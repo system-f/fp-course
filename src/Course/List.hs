@@ -33,12 +33,6 @@ infixr 5 :.
 instance Show t => Show (List t) where
   show = show . foldRight (:) []
 
-type Str =
-  List Char
-
-type Filename =
-  Str
-
 -- The list of integers from zero to infinity.
 infinity ::
   List Integer
@@ -454,6 +448,24 @@ read =
 instance IsString (List Char) where
   fromString =
     listh
+
+type Str =
+  List Char
+
+type Filename =
+  Str
+
+strconcat ::
+  [Str]
+  -> P.String
+strconcat =
+  P.concatMap hlist
+
+stringconcat ::
+  [P.String]
+  -> P.String
+stringconcat =
+  P.concat
 
 instance P.Monad List where
   (>>=) =
