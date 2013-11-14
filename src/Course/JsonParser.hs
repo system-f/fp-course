@@ -44,7 +44,7 @@ jsonString =
 -- Exercise 2
 -- | Parse a JSON rational.
 --
--- /Tip:/ Use @Numeric#readFloat@.
+-- /Tip:/ Use @Numeric#readFloats@.
 --
 -- >>> parse jsonNumber "234"
 -- Result >< 234 % 1
