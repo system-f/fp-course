@@ -274,7 +274,11 @@ find =
 -- >>> reverse (1 :. 2 :. 3 :. Nil)
 -- [3,2,1]
 --
--- prop> (reverse . reverse) x == x
+-- prop> (reverse . reverse) x == x where types = x :: List Int
+--
+-- prop> reverse x ++ reverse y == reverse (y ++ x) where types = x :: List Int
+--
+-- prop> reverse (x :. Nil) == Int :. Nil where types = x :: Int
 reverse ::
   List a
   -> List a
