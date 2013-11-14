@@ -422,6 +422,17 @@ unwords ::
 unwords =
   listh . P.unwords . hlist . map hlist
 
+listOptional ::
+  (a -> Optional b)
+  -> List a
+  -> List b
+listOptional _ Nil =
+  Nil
+listOptional f (h:.t) =
+  let r = listOptional f t
+  in case f h of
+       Empty -> r
+       Full q -> q :. r
 any ::
   (a -> Bool)
   -> List a
