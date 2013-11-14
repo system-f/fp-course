@@ -33,7 +33,7 @@ import qualified Prelude as P
 -- then suppose we add 17 to the focus of this zipper:
 -- ListZipper [1,0] 19 [3,4,5,6]
 data ListZipper a =
-  ListZipper [a] a [a]
+  ListZipper (List a) a (List a)
   deriving Eq
 
 -- A `MaybeListZipper` is a data structure that allows us to "fail" zipper operations.
@@ -72,7 +72,7 @@ instance Functor MaybeListZipper where
 --
 -- prop> xs == toListZ (fromList xs)
 fromList ::
-  [a]
+  List a
   -> MaybeListZipper a
 fromList =
   error "todo"
@@ -133,14 +133,14 @@ asMaybeZipper f (IsZ z) =
 -- | Convert the given zipper back to a list.
 toList ::
   ListZipper a
-  -> [a]
+  -> List a
 toList =
   error "todo"
 
 -- | Convert the given (maybe) zipper back to a list.
 toListZ ::
   MaybeListZipper a
-  -> [a]
+  -> List a
 toListZ IsNotZ =
   Nil
 toListZ (IsZ z) =
