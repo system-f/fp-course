@@ -68,7 +68,15 @@ instance Functor ((->) t) where
     error "todo"
 
 -- Exercise 5
--- Anonymous map
+--
+-- | Anonymous map. Maps a constant value on a functor.
+--
+-- >>> 7 <$ [1,2,3]
+-- [7,7,7]
+--
+-- prop> x <$ [a,b,c] == [x,x,x]
+--
+-- prop> x <$ Full q == Full x
 (<$) ::
   Functor f =>
   a
