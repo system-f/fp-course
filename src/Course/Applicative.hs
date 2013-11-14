@@ -18,11 +18,7 @@ class Apply f => Applicative f where
   pure ::
     a -> f a
 
--- todo fix Exercise
-
--- Exercise 6
---
--- | Witness that all things with bind and return also have fmap.
+-- | Witness that all things with (<*>) and pure also have (<$>).
 --
 -- >>> (+1) <$> (Id 2)
 -- Id 3
@@ -40,44 +36,34 @@ class Apply f => Applicative f where
 (<$>) =
   error "todo"
 
--- Exercise 7
---
 -- | Insert into the Id monad.
 --
--- prop> return x == Id x
+-- prop> pure x == Id x
 instance Applicative Id where
   pure =
     error "todo"
 
--- Exercise 8
---
 -- | Insert into a List.
 --
--- prop> return x == x :. Nil
+-- prop> pure x == x :. Nil
 instance Applicative List where
   pure =
     error "todo"
 
--- Exercise 9
---
 -- | Insert into an Optional.
 --
--- prop> return x == Full x
+-- prop> pure x == Full x
 instance Applicative Optional where
   pure =
     error "todo"
 
--- Exercise 10
---
 -- | Insert into a constant function.
 --
--- prop> return x y == x
+-- prop> pure x y == x
 instance Applicative ((->) t) where
   pure =
     error "todo"
 
--- Exercise 16
---
 -- | Sequences a list of structures to a structure of list.
 --
 -- >>> sequence (Id 7 :. Id 8 :. Id 9 :. Nil)
@@ -101,8 +87,6 @@ sequence ::
 sequence =
   error "todo"
 
--- Exercise 18
---
 -- | Replicate an effect a given number of times.
 --
 -- >>> replicateA 4 (Id "hi")
@@ -124,8 +108,6 @@ replicateA ::
 replicateA =
   error "todo"
 
--- Exercise 19
---
 -- | Filter a list with a predicate that produces an effect.
 --
 -- >>> filtering (Id . even) (4 :. 5 :. 6 :. Nil)
