@@ -344,6 +344,27 @@ isEmpty Nil =
 isEmpty (_:._) =
   False
 
+span ::
+  (a -> Bool)
+  -> List a
+  -> (List a, List a)
+span _ Nil =
+  (Nil, Nil)
+span p xs@(x:.xs') =
+  if p x
+    then
+      let (ys,zs) = span p xs'
+      in (x:.ys,zs)
+    else
+      (Nil,xs)
+
+break ::
+  (a -> Bool)
+  -> List a
+  -> (List a, List a)
+break p =
+  span (not . p)
+
 zip ::
   List a
   -> List b
