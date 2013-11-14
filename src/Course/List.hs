@@ -345,6 +345,15 @@ zip (a:.as) (b:.bs) =
 zip _  _ =
   Nil
 
+unfoldr ::
+  (a -> Optional (b, a))
+  -> a
+  -> List b
+unfoldr f b  =
+  case f b of
+    Full (a, z) -> a :. unfoldr f z
+    Empty -> Nil
+
 any ::
   (a -> Bool)
   -> List a
