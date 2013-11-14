@@ -407,8 +407,20 @@ lines =
 unlines ::
   List Str
   -> Str
-unlines s =
-  listh (P.unlines (hlist (map hlist s)))
+unlines =
+  listh . P.unlines . hlist . map hlist
+
+words ::
+  Str
+  -> List Str
+words =
+  listh . P.fmap listh . P.words . hlist
+
+unwords ::
+  List Str
+  -> Str
+unwords =
+  listh . P.unwords . hlist . map hlist
 
 any ::
   (a -> Bool)
