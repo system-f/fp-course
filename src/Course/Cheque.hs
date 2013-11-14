@@ -183,7 +183,31 @@ data Digit =
   | Seven
   | Eight
   | Nine
-  deriving (Show, Eq, Enum, Bounded)
+  deriving (Eq, Enum, Bounded)
+
+showDigit ::
+  Digit
+  -> Str
+showDigit Zero =
+  "zero"
+showDigit One =
+  "one"
+showDigit Two =
+  "two"
+showDigit Three =
+  "three"
+showDigit Four =
+  "four"
+showDigit Five =
+  "five"
+showDigit Six =
+  "six"
+showDigit Seven =
+  "seven"
+showDigit Eight =
+  "eight"
+showDigit Nine =
+  "nine"
 
 -- A data type representing one, two or three digits, which may be useful for grouping.
 data Digit3 =
