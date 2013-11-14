@@ -355,15 +355,8 @@ span ::
   (a -> Bool)
   -> List a
   -> (List a, List a)
-span _ Nil =
-  (Nil, Nil)
-span p xs@(x:.xs') =
-  if p x
-    then
-      let (ys,zs) = span p xs'
-      in (x:.ys,zs)
-    else
-      (Nil,xs)
+span p x =
+  (takeWhile p x, dropWhile p x)
 
 break ::
   (a -> Bool)
@@ -371,6 +364,32 @@ break ::
   -> (List a, List a)
 break p =
   span (not . p)
+
+dropWhile ::
+  (a -> Bool)
+  -> List a
+  -> List a
+dropWhile _ Nil =
+  Nil
+dropWhile p xs@(x:.xs') =
+  if p x
+    then
+      dropWhile p xs'
+    else
+      xs
+
+takeWhile ::
+  (a -> Bool)
+  -> List a
+  -> List a
+takeWhile _ Nil =
+  Nil
+takeWhile p (x:.xs) =
+  if p x
+    then
+      x :. takeWhile p xs
+    else
+      Nil
 
 zip ::
   List a
