@@ -136,7 +136,7 @@ jsonNull =
 -- >>> parse jsonArray "[true, \"abc\", [false]]"
 -- Result >< [JsonTrue,JsonString "abc",JsonArray [JsonFalse]]
 jsonArray ::
-  Parser [JsonValue]
+  Parser (List JsonValue)
 jsonArray =
   error "todo"
 
