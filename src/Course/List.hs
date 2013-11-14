@@ -111,7 +111,7 @@ sum =
 -- >>> length (1 :. 2 :. 3 :. Nil)
 -- 3
 --
--- prop> sum (map (const 1) x) == len x
+-- prop> sum (map (const 1) x) == length x
 length ::
   List a
   -> Int
@@ -186,7 +186,7 @@ filter =
 --
 -- prop> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y
 --
--- prop> sum (map len x) == len (flatten x)
+-- prop> sum (map length x) == length (flatten x)
 flatten ::
   List (List a)
   -> List a
@@ -274,11 +274,11 @@ find =
 -- >>> reverse (1 :. 2 :. 3 :. Nil)
 -- [3,2,1]
 --
--- prop> (reverse . reverse) x == x where types = x :: List Int
+-- prop> let types = x :: List Int in (reverse . reverse) x == x
 --
--- prop> reverse x ++ reverse y == reverse (y ++ x) where types = x :: List Int
+-- prop> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
--- prop> reverse (x :. Nil) == Int :. Nil where types = x :: Int
+-- prop> let types = x :: Int in reverse (x :. Nil) == x :. Nil
 reverse ::
   List a
   -> List a
