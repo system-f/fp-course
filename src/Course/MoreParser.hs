@@ -7,7 +7,6 @@ import Course.Parser
 import Course.List
 import Course.Optional
 import Data.Char
-import Numeric
 
 -- $setup
 -- >>> import Parser.Parser(isErrorResult, character, lower, is)
