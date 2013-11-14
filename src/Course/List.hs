@@ -475,6 +475,22 @@ readHex ::
 readHex =
   mapOptional fst . readHexs
 
+readFloats ::
+  (RealFrac a) =>
+  Str
+  -> Optional (a, Str)
+readFloats s =
+  case N.readSigned N.readFloat (hlist s) of
+    [] -> Empty
+    ((a, q):_) -> Full (a, listh q)
+
+readFloat ::
+  (RealFrac a) =>
+  Str
+  -> Optional a
+readFloat =
+  mapOptional fst . readFloats
+
 instance IsString (List Char) where
   fromString =
     listh
