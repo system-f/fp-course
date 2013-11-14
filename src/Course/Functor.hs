@@ -67,6 +67,16 @@ instance Functor ((->) t) where
   (<$>) =
     error "todo"
 
+-- Exercise 5
+-- Anonymous map
+(<$) ::
+  Functor f =>
+  a
+  -> f b
+  -> f a
+(<$) =
+  error "todo"
+
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
