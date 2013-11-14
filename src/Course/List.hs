@@ -398,6 +398,18 @@ unfoldr f b  =
     Full (a, z) -> a :. unfoldr f z
     Empty -> Nil
 
+lines ::
+  Str
+  -> List Str
+lines =
+  listh . P.fmap listh . P.lines . hlist
+
+unlines ::
+  List Str
+  -> Str
+unlines s =
+  listh (P.unlines (hlist (map hlist s)))
+
 any ::
   (a -> Bool)
   -> List a
