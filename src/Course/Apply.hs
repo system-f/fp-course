@@ -132,6 +132,7 @@ lift4 ::
 lift4 =
   error "todo"
 
+-- | Sequence, discarding the value of the first argument.
 (*>) ::
   Apply f =>
   f a
@@ -140,6 +141,7 @@ lift4 =
 (*>) =
   error "todo"
 
+-- | Sequence, discarding the value of the second argument.
 (<*) ::
   Apply f =>
   f b
