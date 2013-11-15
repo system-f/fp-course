@@ -1,18 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.State(
-  State(..)
-, exec
-, eval
-, get
-, put
-, findM
-, firstRepeat
-, filterM
-, distinct
-, produce
-, isHappy
-) where
+module Course.State where
 
 import Course.Core
 import qualified Prelude as P

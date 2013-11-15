@@ -1,9 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Compose
-(
-  Compose(..)
-)where
+module Course.Compose where
 
 import Course.Core
 import Course.Functor

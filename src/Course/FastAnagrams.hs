@@ -1,9 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.FastAnagrams(
-  NoCaseString
-, fastAnagrams
-) where
+module Course.FastAnagrams where
 
 import Course.Core
 import Course.List

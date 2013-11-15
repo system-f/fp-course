@@ -1,9 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.JsonValue(
-  Assoc
-, JsonValue(..)
-) where
+module Course.JsonValue where
 
 import Course.Core
 import Course.List

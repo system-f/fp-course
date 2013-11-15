@@ -1,14 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Apply
-(
-  Apply(..)
-, lift2
-, lift3
-, lift4
-, (*>)
-, (<*)
-) where
+module Course.Apply where
 
 import Course.Core
 import Course.Functor

@@ -1,11 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.Anagrams
-(
-  anagrams
-, equalIgnoringCase
-)where
+module Course.Anagrams where
 
 import Course.Core
 import Course.List

@@ -1,28 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.MoreParser(
-  (<.>)
-, spaces
-, tok
-, charTok
-, commaTok
-, quote
-, string
-, stringTok
-, option
-, digits1
-, oneof
-, noneof
-, between
-, betweenCharTok
-, hex
-, sepby1
-, sepby
-, eof
-, satisfyAll
-, satisfyAny
-, betweenSepbyComma
-) where
+module Course.MoreParser where
 
 import Course.Core
 import Course.Parser

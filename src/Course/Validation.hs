@@ -1,16 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Validation(
-  Validation(..)
-, Err
-, isError
-, isValue
-, mapValidation
-, bindValidation
-, valueOr
-, errorOr
-, valueValidation
-) where
+module Course.Validation where
 
 import Course.Core
 

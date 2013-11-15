@@ -1,12 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Id
-(
-  Id(..)
-, runId
-, mapId
-, bindId
-) where
+module Course.Id where
 
 import Course.Core
 import qualified Prelude as P

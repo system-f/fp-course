@@ -1,9 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.Interactive(
-  interactive
-) where
+module Course.Interactive where
 
 import Course.Core
 import Course.Functor

@@ -49,30 +49,11 @@ library
 
   exposed-modules:    Course
                       Course.Core
-                      -- Algorithm.Anagrams
-                      -- Algorithm.Cheque
-                      -- Algorithm.EditDistance
-                      -- Algorithm.FastAnagrams
                       Course.Id
                       Course.Optional
                       Course.Validation
-                      -- IO.Interactive
-                      -- Monad.Compose
-                      -- Monad.Functor
-                      -- Monad.Monad
-                      -- Monad.State
-                      -- Monad.StateT
-                      -- Parser.JsonParser
-                      -- Parser.JsonValue
-                      -- Parser.MoreParser
-                      -- Parser.Parser
-                      -- Parser.Person
-                      -- Structure.BKTree
-                      -- Structure.Lens
                       Course.List
                       Course.Compose
-                      -- Structure.ListZipper
-                      -- Structure.MetricSpace
                       Course.Apply
                       Course.Applicative
                       Course.Bind

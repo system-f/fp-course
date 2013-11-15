@@ -1,14 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Optional(
-  Optional(..)
-, mapOptional
-, bindOptional
-, (??)
-, (<+>)
-, twiceOptional
-, contains
-) where
+module Course.Optional where
 
 import Course.Core
 import qualified Prelude as P
