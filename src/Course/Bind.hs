@@ -7,6 +7,7 @@ module Course.Bind(
 ) where
 
 import Course.Core
+import Course.Functor
 import Course.Apply
 import Course.Id
 import Course.List
@@ -33,7 +34,7 @@ infixr 1 =<<
 
 -- | Binds a function on the Id monad.
 --
--- >>> bind (\x -> Id(x+1)) (Id 2)
+-- >>> (\x -> Id(x+1)) =<< Id 2
 -- Id 3
 instance Bind Id where
   (=<<) =
@@ -41,7 +42,7 @@ instance Bind Id where
 
 -- | Binds a function on a List.
 --
--- >>> bind (\n -> n :. n :. Nil) (1 :. 2 :. 3 :. Nil)
+-- >>> (\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)
 -- [1,1,2,2,3,3]
 instance Bind List where
   (=<<) =
@@ -49,7 +50,7 @@ instance Bind List where
 
 -- | Binds a function on an Optional.
 --
--- >>> bind (\n -> Full (n + n)) (Full 7)
+-- >>> (\n -> Full (n + n)) =<< Full 7
 -- Full 14
 instance Bind Optional where
   (=<<) =
@@ -57,7 +58,7 @@ instance Bind Optional where
 
 -- | Binds a function on the reader ((->) t).
 --
--- >>> bind (*) (+10) 7
+-- >>> ((*) =<< (+10)) 7
 -- 119
 instance Bind ((->) t) where
   (=<<) =
