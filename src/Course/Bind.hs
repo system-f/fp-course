@@ -23,7 +23,6 @@ class Apply f => Bind f where
 infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
---
 (<*>) ::
   Bind f =>
   f (a -> b)

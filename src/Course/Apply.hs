@@ -17,24 +17,56 @@ class Functor f => Apply f where
 
 infixl 4 <*>
 
+-- | Implement @Apply@ instance for @Id@.
+--
+-- >>> Id (+10) <*> Id 8
+-- Id 18
 instance Apply Id where
   (<*>) =
     error "todo"
 
+-- | Implement @Apply@ instance for @List@.
+--
+-- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
+-- [2,3,4,2,4,6]
 instance Apply List where
   (<*>) =
     error "todo"
 
+-- | Implement @Apply@ instance for @Optional@.
+--
+-- >>> Full (+8) <*> Full 7
+-- Full 15
+--
+-- >>> Empty <*> Full 7
+-- Empty
+--
+-- >>> Full (+8) <*> Empty
+-- Empty
 instance Apply Optional where
   (<*>) =
     error "todo"
 
+-- | Implement @Apply@ instance for reader.
+--
+-- >>> ((+) <*> (+10)) 3
+-- 16
+--
+-- >>> ((+) <*> (+5)) 3
+-- 11
+--
+-- >>> ((+) <*> (+5)) 1
+-- 7
+--
+-- >>> ((*) <*> (+10)) 3
+-- 39
+--
+-- >>> ((*) <*> (+2)) 3
+-- 15
 instance Apply ((->) t) where
   (<*>) =
     error "todo"
 
--- Exercise 13
---
 -- | Apply a binary function in the environment.
 --
 -- >>> lift2 (+) (Id 7) (Id 8)
@@ -63,8 +95,6 @@ lift2 ::
 lift2 =
   error "todo"
 
--- Exercise 14
---
 -- | Apply a ternary function in the Monad environment.
 --
 -- >>> lift3 (\a b c -> a + b + c) (Id 7) (Id 8) (Id 9)
@@ -97,8 +127,6 @@ lift3 ::
 lift3 =
   error "todo"
 
--- Exercise 15
---
 -- | Apply a quaternary function in the environment.
 --
 -- >>> lift4 (\a b c d -> a + b + c + d) (Id 7) (Id 8) (Id 9) (Id 10)
