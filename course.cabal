@@ -48,31 +48,32 @@ library
   hs-source-dirs:     src
 
   exposed-modules:    Course
-                      Course.Core
-                      Course.Id
-                      Course.Optional
-                      Course.Validation
-                      Course.List
-                      Course.Compose
-                      Course.Apply
+                      Course.Anagrams
                       Course.Applicative
+                      Course.Apply
                       Course.Bind
-                      Course.Monad
-                      Course.Extend
+                      Course.Cheque
                       Course.Comonad
+                      Course.Compose
+                      Course.Core
+                      Course.Extend
+                      Course.FastAnagrams
+                      Course.Functor
+                      Course.Id
+                      Course.Interactive
+                      Course.JsonParser
+                      Course.JsonValue
+                      Course.List
+                      Course.ListZipper
+                      Course.Monad
+                      Course.MoreParser
+                      Course.Optional
+                      Course.Parser
+                      Course.Person
                       Course.State
                       Course.StateT
                       Course.Traversable
-                      Course.Person
-                      Course.Parser
-                      Course.MoreParser
-                      Course.JsonValue
-                      Course.JsonParser
-                      Course.ListZipper
-                      Course.Interactive
-                      Course.Anagrams
-                      Course.Cheque
-                      Course.FastAnagrams
+                      Course.Validation
 
 test-suite            doctests
   type:
