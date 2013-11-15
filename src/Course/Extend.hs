@@ -29,3 +29,10 @@ instance Extend List where
 instance Extend Optional where
   f <<= o =
     f . Full <$> o
+
+cojoin ::
+  Extend f =>
+  f a
+  -> f (f a)
+cojoin =
+  error "todo"
