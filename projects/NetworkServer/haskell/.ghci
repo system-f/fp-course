@@ -1,4 +1,0 @@
-:set -isrc
-:l src/Network/Server.hs
-:set prompt ">> "
-:set -Wall
