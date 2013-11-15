@@ -1,7 +1,39 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.Parser where
+module Course.Parser(
+  Input
+, ParseResult(..)
+, withResultInput
+, isErrorResult
+, Parser(..)
+, valueParser
+, failed
+, character
+, bindParser
+, (>>>)
+, (|||)
+, list
+, many1
+, satisfy
+, is
+, digit
+, natural
+, space
+, spaces1
+, lower
+, upper
+, alpha
+, sequenceParser
+, thisMany
+, ageParser
+, firstNameParser
+, surnameParser
+, genderParser
+, phoneBodyParser
+, phoneParser
+, personParser
+) where
 
 import Course.Core
 import Data.Char

@@ -1,6 +1,16 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.JsonParser where
+module Course.JsonParser(
+  jsonString
+, jsonNumber
+, jsonTrue
+, jsonFalse
+, jsonNull
+, jsonArray
+, jsonObject
+, jsonValue
+, readJsonValue
+) where
 
 import Course.Core
 import Course.Parser

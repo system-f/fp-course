@@ -1,6 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Traversable where
+module Course.Traversable(
+  Traversable(..)
+) where
 
 import Course.Functor
 import Course.Apply

@@ -1,6 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Monad where
+module Course.Monad(
+  Monad
+) where
 
 import Course.Applicative
 import Course.Bind

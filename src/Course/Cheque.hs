@@ -16,7 +16,10 @@ data structures that may assist you in deriving the result. It is not compulsory
 
 -}
 
-module Course.Cheque where
+module Course.Cheque
+(
+  dollars
+)where
 
 import Course.Core
 import Course.Optional

@@ -1,6 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Functor where
+module Course.Functor(
+  Functor(..)
+, (<$)
+) where
 
 import Course.Core
 import Course.Id

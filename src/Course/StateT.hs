@@ -1,7 +1,24 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.StateT where
+module Course.StateT(
+  StateT(..)
+, State'
+, state'
+, runState'
+, execT
+, exec'
+, evalT
+, eval'
+, getT
+, putT
+, distinct'
+, distinctF
+, OptionalT(..)
+, Logger(..)
+, log1
+, distinctG
+) where
 
 import Course.Core
 import Course.Id

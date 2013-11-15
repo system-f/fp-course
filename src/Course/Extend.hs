@@ -1,6 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Extend where
+module Course.Extend(
+  Extend(..)
+, cojoin
+) where
 
 import Course.Core
 import Course.Id

@@ -1,6 +1,8 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.Person where
+module Course.Person(
+  Person(..)
+) where
 
 import Course.Core
 import Course.List

@@ -1,6 +1,45 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Course.ListZipper where
+module Course.ListZipper(
+  ListZipper(..)
+, MaybeListZipper(..)
+, fromList
+, toOptional
+, fromOptional
+, asZipper
+, (>$>)
+, asMaybeZipper
+, (>->)
+, toList
+, toListZ
+, withFocus
+, setFocus
+, (.=)
+, hasLeft
+, hasRight
+, findLeft
+, findRight
+, moveLeftLoop
+, moveRightLoop
+, moveLeft
+, moveRight
+, swapLeft
+, swapRight
+, dropLefts
+, dropRights
+, moveLeftN
+, moveRightN
+, moveLeftN'
+, moveRightN'
+, nth
+, index
+, end
+, start
+, deletePullLeft
+, deletePullRight
+, insertPushLeft
+, insertPushRight
+) where
 
 import Course.Core
 import Course.List
