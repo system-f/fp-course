@@ -8,7 +8,7 @@ module Course.Bind(
 
 import Course.Core
 import Course.Functor
-import Course.Apply
+import Course.Apply(Apply)
 import Course.Id
 import Course.List
 import Course.Optional
@@ -23,6 +23,36 @@ class Apply f => Bind f where
 infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
+--
+-- >>> Id (+10) <*> Id 8
+-- Id 18
+--
+-- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
+-- [2,3,4,2,4,6]
+--
+-- >>> Full (+8) <*> Full 7
+-- Full 15
+--
+-- >>> Empty <*> Full 7
+-- Empty
+--
+-- >>> Full (+8) <*> Empty
+-- Empty
+--
+-- >>> ((+) <*> (+10)) 3
+-- 16
+--
+-- >>> ((+) <*> (+5)) 3
+-- 11
+--
+-- >>> ((+) <*> (+5)) 1
+-- 7
+--
+-- >>> ((*) <*> (+10)) 3
+-- 39
+--
+-- >>> ((*) <*> (+2)) 3
+-- 15
 (<*>) ::
   Bind f =>
   f (a -> b)
@@ -30,6 +60,8 @@ infixr 1 =<<
   -> f b
 (<*>) =
   error "todo"
+
+infixl 4 <*>
 
 -- | Binds a function on the Id monad.
 --
