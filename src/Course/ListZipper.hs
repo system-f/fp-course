@@ -15,11 +15,8 @@ import Course.Traversable
 import qualified Prelude as P
 
 -- $setup
--- >>> import Data.Maybe(isNothing)
 -- >>> import Test.QuickCheck
--- >>> import qualified Prelude as P(return, maybe)
 -- >>> import Core(Num(..), id, const)
--- >>> import Data.List(null)
 -- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)
 
 -- A `ListZipper` is a focussed position, with a list of values to the left and to the right.
