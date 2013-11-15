@@ -3,7 +3,7 @@
 module Course.Bind(
   Bind(..)
 , (>>=)
-, flatten'
+, join
 ) where
 
 import Course.Core
@@ -21,7 +21,8 @@ class Apply f => Bind f where
 
 infixr 1 =<<
 
--- todo exercise
+-- | Witness that all things with (=<<) and (<$>) also have (<*>).
+--
 (<*>) ::
   Bind f =>
   f (a -> b)
@@ -30,18 +31,6 @@ infixr 1 =<<
 (<*>) =
   error "todo"
 
-(>>=) ::
-  Bind f =>
-  f a
-  -> (a -> f b)
-  -> f b
-(>>=) =
-  flip (=<<)
-
-infixr 1 >>=
-
--- Exercise 7
---
 -- | Binds a function on the Id monad.
 --
 -- >>> bind (\x -> Id(x+1)) (Id 2)
@@ -50,8 +39,6 @@ instance Bind Id where
   (=<<) =
     error "todo"
 
--- Exercise 8
---
 -- | Binds a function on a List.
 --
 -- >>> bind (\n -> n :. n :. Nil) (1 :. 2 :. 3 :. Nil)
@@ -60,8 +47,6 @@ instance Bind List where
   (=<<) =
     error "todo"
 
--- Exercise 9
---
 -- | Binds a function on an Optional.
 --
 -- >>> bind (\n -> Full (n + n)) (Full 7)
@@ -70,8 +55,6 @@ instance Bind Optional where
   (=<<) =
     error "todo"
 
--- Exercise 10
---
 -- | Binds a function on the reader ((->) t).
 --
 -- >>> bind (*) (+10) 7
@@ -80,27 +63,37 @@ instance Bind ((->) t) where
   (=<<) =
     error "todo"
 
--- Exercise 11
---
 -- | Flattens a combined structure to a single structure.
 --
--- >>> flatten' ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
+-- >>> join ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil)
 -- [1,2,3,1,2]
 --
--- >>> flatten' (Full Empty)
+-- >>> join (Full Empty)
 -- Empty
 --
--- >>> flatten' (Full (Full 7))
+-- >>> join (Full (Full 7))
 -- Full 7
 --
--- >>> flatten' (+) 7
+-- >>> join (+) 7
 -- 14
-flatten' ::
+join ::
   Bind f =>
   f (f a)
   -> f a
-flatten' =
+join =
   error "todo"
+
+-- | Implement a flipped version of @(=<<)@, however, use only
+-- @join@ and @(<$>)@.
+(>>=) ::
+  Bind f =>
+  f a
+  -> (a -> f b)
+  -> f b
+(>>=) =
+  error "todo"
+
+infixl 1 >>=
 
 -----------------------
 -- SUPPORT LIBRARIES --
