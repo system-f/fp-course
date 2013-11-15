@@ -14,16 +14,22 @@ class Extend f => Comonad f where
     f a
     -> a
 
+-- | Implement the @Comonad@ instance for @Id@.
+--
+-- >>> copure (Id 7)
+-- 7
 instance Comonad Id where
-  copure (Id a) =
-    a
+  copure =
+    error "todo"
 
 -- | Witness that all things with (<<=) and copure also have (<$>).
+--
+-- (+10) <$> Id 7
+-- 17
 (<$>) ::
   Comonad f =>
   (a -> b)
   -> f a
   -> f b
 (<$>) =
-  undefined
-
+  error "todo"
