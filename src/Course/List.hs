@@ -84,7 +84,7 @@ product ::
   List Int
   -> Int
 product =
-  error "todo"
+  foldLeft (*) 1
 
 -- | Sum the elements of the list.
 --
@@ -278,7 +278,7 @@ notReverse ::
   List a
   -> List a
 notReverse =
-  error "impossible"
+  reverse -- impossible
 
 hlist ::
   List a
