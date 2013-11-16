@@ -132,7 +132,7 @@ firstRepeat ::
   List a
   -> Optional a
 firstRepeat x =
-  eval (findM (\a -> State (\s -> (a `S.member` s, a `S.insert` s))) x) S.empty
+  eval (findM (\a -> State (S.member a &&& S.insert a)) x) S.empty
 
 -- | Remove all elements in a `List` that fail a given predicate.
 -- However, while performing the filter, we sequence some `Monad` effect through.
@@ -172,7 +172,7 @@ distinct ::
   List a
   -> List a
 distinct x =
-  eval (filterM (\a -> State (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
+  eval (filterM (\a -> State (S.notMember a &&& S.insert a)) x) S.empty
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

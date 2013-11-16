@@ -27,13 +27,13 @@ newtype StateT s f a =
 -- | Implement the `Functor` instance for @StateT s f@ given a @Functor f@.
 instance Functor f => Functor (StateT s f) where
   f <$> StateT k =
-    StateT ((<$>) (\(a, t) -> (f a, t)) . k)
+    StateT ((<$>) (first f) . k)
 
 -- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
 instance Bind f => Apply (StateT s f) where
   StateT f <*> StateT a =
     -- StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
-    StateT ((\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) <=< f)
+    StateT ((\(g, t) -> first g <$> a t) <=< f)
 
 -- | Implement the `Applicative` instance for @StateT s f@ given a @Applicative f@.
 instance Monad f => Applicative (StateT s f) where
@@ -124,7 +124,7 @@ distinct' ::
   List a
   -> List a
 distinct' x =
-  eval' (filterM (\a -> state' (\s -> (a `S.notMember` s, a `S.insert` s))) x) S.empty
+  eval' (filterM (\a -> state' (S.member a &&& S.insert a)) x) S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
