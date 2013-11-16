@@ -127,6 +127,18 @@ a >>= f =
 
 infixl 1 >>=
 
+-- | Implement composition within the @Bind@ environment.
+(<=<) ::
+  Bind f =>
+  (b -> f c)
+  -> (a -> f b)
+  -> a
+  -> f c
+(<=<) =
+  error "todo"
+
+infixr 1 <=<
+
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
