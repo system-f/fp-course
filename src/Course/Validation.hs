@@ -2,6 +2,7 @@
 
 module Course.Validation where
 
+import qualified Prelude as P(String)
 import Course.Core
 
 --  class Validation<A> {
@@ -16,7 +17,7 @@ import Course.Core
 data Validation a = Error Err | Value a
   deriving (Eq, Show)
 
-type Err = [Char]
+type Err = P.String
 
 -- | Returns whether or not the given validation is an error.
 --
