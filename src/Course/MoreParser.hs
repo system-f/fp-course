@@ -6,10 +6,14 @@ import Course.Core
 import Course.Parser
 import Course.List
 import Course.Optional
+import Course.Applicative
+import Course.Apply
+import Course.Traversable
 import Data.Char
 
 -- $setup
--- >>> import Parser.Parser(isErrorResult, character, lower, is)
+-- >>> :set -XOverloadedStrings
+-- >>> import Course.Parser(isErrorResult, character, lower, is)
 -- >>> import Data.Char(isUpper, isLower)
 
 -- | Parses the given input and returns the result.
@@ -226,7 +230,7 @@ betweenCharTok =
 -- Exercise 14
 -- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
 --
--- /Tip:/ Use `readHex`, `isHexDigit`, `replicateM`, `satisfy` and the monad instance.
+-- /Tip:/ Use `readHex`, `isHexDigit`, `replicate`, `satisfy` and the monad instance.
 --
 -- >>> parse hex "u0010"
 -- Result >< '\DLE'
@@ -311,21 +315,21 @@ eof =
 -- Exercise 18
 -- | Write a parser that produces a characer that satisfies all of the given predicates.
 --
--- /Tip:/ Use `sequence` and @Data.List#and@.
+-- /Tip:/ Use `sequenceParser` and @Data.List#and@.
 --
--- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABC"
+-- >>> parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "ABC"
 -- Result >BC< 'A'
 --
--- >>> parse (satisfyAll [isUpper, (/= 'X')]) "ABc"
+-- >>> parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "ABc"
 -- Result >Bc< 'A'
 --
--- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "XBc")
+-- >>> isErrorResult (parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "XBc")
 -- True
 --
--- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "")
+-- >>> isErrorResult (parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "")
 -- True
 --
--- >>> isErrorResult (parse (satisfyAll [isUpper, (/= 'X')]) "abc")
+-- >>> isErrorResult (parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "abc")
 -- True
 satisfyAll ::
   List (Char -> Bool)
@@ -336,18 +340,18 @@ satisfyAll =
 -- Exercise 19
 -- | Write a parser that produces a characer that satisfies any of the given predicates.
 --
--- /Tip:/ Use `sequence` and @Data.List#or@.
+-- /Tip:/ Use `sequenceParser` and @Data.List#or@.
 --
--- >>> parse (satisfyAny [isLower, (/= 'X')]) "abc"
+-- >>> parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (satisfyAny [isLower, (/= 'X')]) "ABc"
+-- >>> parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "ABc"
 -- Result >Bc< 'A'
 --
--- >>> isErrorResult (parse (satisfyAny [isLower, (/= 'X')]) "XBc")
+-- >>> isErrorResult (parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "XBc")
 -- True
 --
--- >>> isErrorResult (parse (satisfyAny [isLower, (/= 'X')]) "")
+-- >>> isErrorResult (parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "")
 -- True
 satisfyAny ::
   List (Char -> Bool)
