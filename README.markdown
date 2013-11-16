@@ -29,7 +29,7 @@ instructions are not contained herein.
    You may need to set permissions on a file, `chmod 600 .ghci`.
 
 4. The `Intro` module does not contain exercises. Its purpose is to demonstrate
-   the structure of a project. The first recommend exercise is `Structure.List`.
+   the structure of a project. The first recommend exercise is `Course.List`.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
@@ -131,26 +131,31 @@ compiler error.
 
 ### Progression
 
-It is recommended to perform some exercises before others. The first step is to inspect the `Intro` modules. They
-contain examples of data structures and Haskell syntax. The next step is to complete the exercises in `Structure.List`.
+It is recommended to perform some exercises before others. The first step is to inspect the introduction modules.
+
+* `Course.Id`
+* `Course.Optional`
+* `Course.Validation`
+
+They contain examples of data structures and Haskell syntax. The next step is to complete the exercises in `Course.List`.
 
 After this, the following progression of modules is recommended:
 
-* `Monad.Functor`
-* `Monad.Monad`
-* `Monad.State`
-* `Monad.StateT`
-* `Structure.ListZipper`
-* `Parser.Parser`
-* `Parser.MoreParser`
-* `Parser.JsonParser`
-* `IO.Interactive`
-* `Structure.Lens`
-* `Algorithm.Anagrams`
-* `Algorithm.FastAnagrams`
-* `Algorithm.EditDistance`
-* `Structure.BKTree`
-* `Algorithm.Cheque`
+* `Course.Functor`
+* `Course.Monad`
+* `Course.State`
+* `Course.StateT`
+* `Course.ListZipper`
+* `Course.Parser`
+* `Course.MoreParser`
+* `Course.JsonParser`
+* `Course.Interactive`
+* `Course.Lens`
+* `Course.Anagrams`
+* `Course.FastAnagrams`
+* `Course.EditDistance`
+* `Course.BKTree`
+* `Course.Cheque`
 
 After these are completed, complete the exercises in the `projects` directory.
 

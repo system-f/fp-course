@@ -6,4 +6,5 @@
 :set -fno-warn-unused-do-bind
 :set -fno-warn-unused-imports
 :set -fno-warn-type-defaults
-
+:set -XNoImplicitPrelude
+:set -XSafe

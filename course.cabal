@@ -1,5 +1,5 @@
 name:                 course
-version:              0.0.9
+version:              0.1.0
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
@@ -43,34 +43,37 @@ library
                       -fno-warn-type-defaults
 
   default-extensions: Safe
+                      NoImplicitPrelude
 
   hs-source-dirs:     src
 
   exposed-modules:    Course
-                      Core
-                      Algorithm.Anagrams
-                      Algorithm.Cheque
-                      Algorithm.EditDistance
-                      Algorithm.FastAnagrams
-                      Intro.Id
-                      Intro.Optional
-                      Intro.Validation
-                      IO.Interactive
-                      Monad.Compose
-                      Monad.Functor
-                      Monad.Monad
-                      Monad.State
-                      Monad.StateT
-                      Parser.JsonParser
-                      Parser.JsonValue
-                      Parser.MoreParser
-                      Parser.Parser
-                      Parser.Person
-                      Structure.BKTree
-                      Structure.Lens
-                      Structure.List
-                      Structure.ListZipper
-                      Structure.MetricSpace
+                      Course.Anagrams
+                      Course.Applicative
+                      Course.Apply
+                      Course.Bind
+                      Course.Cheque
+                      Course.Comonad
+                      Course.Compose
+                      Course.Core
+                      Course.Extend
+                      Course.FastAnagrams
+                      Course.Functor
+                      Course.Id
+                      Course.Interactive
+                      Course.JsonParser
+                      Course.JsonValue
+                      Course.List
+                      Course.ListZipper
+                      Course.Monad
+                      Course.MoreParser
+                      Course.Optional
+                      Course.Parser
+                      Course.Person
+                      Course.State
+                      Course.StateT
+                      Course.Traversable
+                      Course.Validation
 
 test-suite            doctests
   type:
