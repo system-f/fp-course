@@ -16,4 +16,4 @@ class Functor t => Traversable t where
 
 instance Traversable List where
   traverse f =
-    foldRight (\a b -> (:.) <$> (f a) <*> b) (pure Nil)
+    foldRight (\a b -> (:.) <$> f a <*> b) (pure Nil)

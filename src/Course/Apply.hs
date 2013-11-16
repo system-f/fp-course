@@ -204,12 +204,12 @@ lift4 =
 
 instance Apply IO where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a
 
 instance Apply [] where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a
 
 instance Apply P.Maybe where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a
