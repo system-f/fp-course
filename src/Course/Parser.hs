@@ -11,6 +11,7 @@ import Course.Applicative
 import Course.Bind
 import Course.Monad
 import Course.List
+import Course.Optional
 import qualified Prelude as P
 
 -- $setup
