@@ -135,7 +135,9 @@ infixl 1 >>=
   -> a
   -> f c
 f <=< g =
-  \a -> f =<< g a
+  -- avoid hlint warning
+  let b = (=<<)
+  in \a -> f `b` g a
 
 infixr 1 <=<
 
