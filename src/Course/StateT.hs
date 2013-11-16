@@ -32,7 +32,8 @@ instance Functor f => Functor (StateT s f) where
 -- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
 instance Bind f => Apply (StateT s f) where
   StateT f <*> StateT a =
-    StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
+    -- StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
+    StateT ((\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) <=< f)
 
 -- | Implement the `Applicative` instance for @StateT s f@ given a @Applicative f@.
 instance Monad f => Applicative (StateT s f) where
