@@ -4,6 +4,7 @@ module Course.Bind(
   Bind(..)
 , (>>=)
 , join
+, (<=<)
 ) where
 
 import Course.Core
