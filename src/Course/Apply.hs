@@ -31,7 +31,7 @@ instance Apply Id where
 -- [2,3,4,2,4,6]
 instance Apply List where
   f <*> a =
-    flatMap (\f' -> map (f'$) a) f
+    flatMap (`map` a) f
 
 -- | Implement @Apply@ instance for @Optional@.
 --
@@ -45,7 +45,7 @@ instance Apply List where
 -- Empty
 instance Apply Optional where
   f <*> a =
-    bindOptional (\f' -> mapOptional (f'$) a) f
+    bindOptional (`mapOptional` a) f
 
 -- | Implement @Apply@ instance for reader.
 --
@@ -204,12 +204,12 @@ lift4 f a b c d =
 
 instance Apply IO where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a
 
 instance Apply [] where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a
 
 instance Apply P.Maybe where
   f <*> a =
-    f P.>>= \f' -> P.fmap (f' $) a
+    f P.>>= \f' -> P.fmap f' a

@@ -251,7 +251,7 @@ moveLeftLoop ::
   ListZipper a
   -> ListZipper a
 moveLeftLoop (ListZipper Nil x r) =
-  let (x':.r') = (reverse (x:.r))
+  let (x':.r') = reverse (x:.r)
   in ListZipper r' x' Nil
 moveLeftLoop (ListZipper (h:.t) x r) =
   ListZipper t h (x:.r)
@@ -371,7 +371,7 @@ moveLeftN n z | n == 0 =
   IsZ z
 moveLeftN n z | n < 0 =
   moveRightN (negate n) z
-moveLeftN n z | otherwise =
+moveLeftN n z =
   moveLeftN (pred n) >-> moveLeft z
 
 -- Move the focus right the given number of positions. If the value is negative, move left instead.
@@ -383,7 +383,7 @@ moveRightN n z | n == 0 =
   IsZ z
 moveRightN n z | n < 0 =
   moveLeftN (negate n) z
-moveRightN n z | otherwise =
+moveRightN n z =
   moveRightN (pred n) >-> moveRight z
 
 -- | Move the focus left the given number of positions. If the value is negative, move right instead.
@@ -408,18 +408,13 @@ moveLeftN' ::
   -> ListZipper a
   -> Either Int (ListZipper a)
 moveLeftN' n z =
-  let moveLeftN'' n' z' q =
-        if n' == 0
-          then
-            Right z'
-          else
-            if n' < 0
-              then
-                moveRightN' (negate n') z
-              else
-                case moveLeft z' of
-                  IsZ zz -> moveLeftN'' (n' - 1) zz (q + 1)
-                  IsNotZ -> Left q
+  let moveLeftN'' n' z' q
+          | n' == 0 = Right z'
+          | n' < 0 = moveRightN' (negate n') z
+          | otherwise =
+            case moveLeft z' of
+                IsZ zz -> moveLeftN'' (n' - 1) zz (q + 1)
+                IsNotZ -> Left q
   in moveLeftN'' n z 0
 
 -- | Move the focus right the given number of positions. If the value is negative, move left instead.
@@ -444,18 +439,13 @@ moveRightN' ::
   -> ListZipper a
   -> Either Int (ListZipper a)
 moveRightN' n z =
-  let moveRightN'' n' z' q =
-        if n' == 0
-          then
-            Right z'
-          else
-            if n' < 0
-              then
-                moveLeftN' (negate n') z
-              else
-                case moveRight z' of
-                  IsZ zz -> moveRightN'' (n' - 1) zz (q + 1)
-                  IsNotZ -> Left q
+  let moveRightN'' n' z' q
+          | n' == 0 = Right z'
+          | n' < 0 = moveLeftN' (negate n') z
+          | otherwise =
+            case moveRight z' of
+                IsZ zz -> moveRightN'' (n' - 1) zz (q + 1)
+                IsNotZ -> Left q
   in moveRightN'' n z 0
 
 -- | Move the focus to the given absolute position in the zipper. Traverse the zipper only to the extent required.
@@ -635,7 +625,7 @@ instance Comonad ListZipper where
 -- An effectful zipper is returned.
 instance Traversable ListZipper where
   traverse f (ListZipper l x r) =
-    (ListZipper . reverse) <$> (traverse f $ reverse l) <*> f x <*> traverse f r
+    (ListZipper . reverse) <$> traverse f (reverse l) <*> f x <*> traverse f r
 
 -- | Implement the `Traversable` instance for `MaybeListZipper`.
 --

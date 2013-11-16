@@ -83,7 +83,7 @@ valueParser ::
   a
   -> Parser a
 valueParser a =
-  P (\i -> Result i a)
+  P (`Result` a)
 
 -- | Return a parser that always fails with the given error.
 --
@@ -92,7 +92,7 @@ valueParser a =
 failed ::
   Parser a
 failed =
-  P (\_ -> Failed)
+  P (const Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -163,7 +163,7 @@ fbindParser =
   -> Parser b
   -> Parser b
 p >>> q =
-  bindParser (\_ -> q) p
+  bindParser (const q) p
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -572,8 +572,8 @@ personParser =
   spaces1 >>>
   fbindParser genderParser (\g ->
   spaces1 >>>
-  fbindParser phoneParser (\p ->
-  valueParser (Person a f s g p))))))
+  fbindParser phoneParser (
+  valueParser . Person a f s g)))))
 
 -- Make sure all the tests pass!
 
@@ -588,7 +588,7 @@ instance Functor Parser where
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Apply Parser where
   p <*> q =
-    bindParser (\f -> bindParser (\a -> valueParser (f a)) q) p
+    bindParser (\f -> bindParser (valueParser . f) q) p
 
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
