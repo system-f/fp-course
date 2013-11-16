@@ -33,6 +33,10 @@ module Course.Core(
 , snd
 , getChar
 , on
+, first
+, second
+, (&&&)
+, (***)
 , IsString(..)
 , module Data.Char
 ) where
@@ -80,5 +84,11 @@ import System.IO(
   )
 import Data.Function(
     on
+  )
+import Control.Arrow(
+    first
+  , second
+  , (&&&)
+  , (***)
   )
 import Data.Char
