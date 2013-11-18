@@ -142,9 +142,14 @@ They contain examples of data structures and Haskell syntax. The next step is to
 After this, the following progression of modules is recommended:
 
 * `Course.Functor`
+* `Course.Apply`
+* `Course.Applicative`
+* `Course.Bind`
 * `Course.Monad`
 * `Course.State`
 * `Course.StateT`
+* `Course.Extend`
+* `Course.Comonad`
 * `Course.ListZipper`
 * `Course.Parser`
 * `Course.MoreParser`
