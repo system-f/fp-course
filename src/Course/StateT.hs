@@ -29,7 +29,7 @@ instance Functor f => Functor (StateT s f) where
   (<$>) =
     error "todo"
 
--- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
+-- | Implement the `Apply` instance for @StateT s f@ given a @Bind f@.
 instance Bind f => Apply (StateT s f) where
   (<*>) =
     error "todo"
