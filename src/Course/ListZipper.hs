@@ -56,6 +56,14 @@ instance Functor ListZipper where
   (<$>) =
     error "todo"
 
+zipper ::
+  [a] -- lefts
+  -> a -- focus
+  -> [a] -- rights
+  -> ListZipper a
+zipper l x r =
+   ListZipper (listh l) x (listh r)
+
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
 -- >>> (+1) <$> (IsZ (zipper [3,2,1] 4 [5,6,7]))
