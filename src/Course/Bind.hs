@@ -21,6 +21,11 @@ class Apply f => Bind f where
     -> f a
     -> f b
 
+-- (<$>) ::   (a -> b) -> f a -> f b
+-- (<*>) :: f (a -> b) -> f a -> f b
+-- (=<<) :: (a -> f b) -> f a -> f b
+-- ?     :: (f a -> b) -> f a -> f b
+
 infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
@@ -69,8 +74,10 @@ infixl 4 <*>
 -- >>> (\x -> Id(x+1)) =<< Id 2
 -- Id 3
 instance Bind Id where
-  (=<<) =
-    error "todo"
+  -- (=<<) :: (a -> f b) -> f a -> f b
+  --          (a -> Id b) -> Id a -> Id b
+  f =<< Id a =
+    f a
 
 -- | Binds a function on a List.
 --
@@ -78,23 +85,28 @@ instance Bind Id where
 -- [1,1,2,2,3,3]
 instance Bind List where
   (=<<) =
-    error "todo"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
 -- >>> (\n -> Full (n + n)) =<< Full 7
 -- Full 14
 instance Bind Optional where
+  -- (a -> Optional b) -> Optional a -> Optional b
   (=<<) =
-    error "todo"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
 -- >>> ((*) =<< (+10)) 7
 -- 119
 instance Bind ((->) t) where
-  (=<<) =
-    error "todo"
+  -- (a -> f b) -> f a -> f b
+  -- (a -> ((->) t) b) -> ((->) t a) -> ((->) t b)
+  -- (a -> (t -> b)) -> (t -> a) -> (t -> b)
+  -- (a -> t -> b) -> (t -> a) -> t -> b
+  (=<<) f g t =
+     f (g t) t
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -114,7 +126,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -123,20 +135,22 @@ join =
   f a
   -> (a -> f b)
   -> f b
-(>>=) =
-  error "todo"
+a >>= f =
+  join (f <$> a)
+
 
 infixl 1 >>=
 
 -- | Implement composition within the @Bind@ environment.
+-- This has a name. Kleisli composition.
 (<=<) ::
   Bind f =>
-  (b -> f c)
-  -> (a -> f b)
-  -> a
-  -> f c
-(<=<) =
-  error "todo"
+  (b -> f c)    -- (b -> c)
+  -> (a -> f b) -- -> (a -> b)
+  -> a          -- -> a
+  -> f c        -- -> c
+f <=< g =
+  \a -> g a >>= f
 
 infixr 1 <=<
 

@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.Applicative(
   Applicative(..)
@@ -28,41 +29,51 @@ class Apply f => Applicative f where
 --
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
+
+-- HINT: we are just trying to implement <$> in terms of, pure and <*>, remember
+--
+--  (<$>)  ::    (a -> b) -> f a -> f b
+--  (<*>)  ::  f (a -> b) -> f a -> f b
+--
 (<$>) ::
   Applicative f =>
   (a -> b)
   -> f a
   -> f b
 (<$>) =
-  error "todo"
+  (<*>) . pure
 
 -- | Insert into the Id monad.
 --
 -- prop> pure x == Id x
 instance Applicative Id where
   pure =
-    error "todo"
+    Id
 
 -- | Insert into a List.
 --
 -- prop> pure x == x :. Nil
 instance Applicative List where
   pure =
-    error "todo"
+    (:. Nil)
 
 -- | Insert into an Optional.
 --
 -- prop> pure x == Full x
 instance Applicative Optional where
   pure =
-    error "todo"
+    Full
 
 -- | Insert into a constant function.
 --
 -- prop> pure x y == x
 instance Applicative ((->) t) where
+  -- a -> f a
+  -- a -> ((->) t) a
+  -- a -> (t -> a)
+  -- a -> t -> a
   pure =
-    error "todo"
+    const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -81,11 +92,21 @@ instance Applicative ((->) t) where
 -- >>> sequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
 sequence ::
+  forall f a.
   Applicative f =>
   List (f a)
   -> f (List a)
 sequence =
-  error "todo"
+  -- el :: f a
+  -- acc :: f (List a)
+  -- result :: f (List a)
+  foldRight (lift2 (:.)) (pure Nil)
+
+    -- let el' = el :: f a
+    --     acc' = acc :: f (List a)
+        -- (:.) ::  a      -> List a ->     List a
+        -- ?    ::  f a -> f (List a) -> f (List a)
+        -- lift2 :: (a -> b -> c) -> f a -> f b -> f c 
 
 -- | Replicate an effect a given number of times.
 --
@@ -105,8 +126,8 @@ replicateA ::
   Int
   -> f a
   -> f (List a)
-replicateA =
-  error "todo"
+replicateA n =
+  sequence . replicate n
 
 -- | Filter a list with a predicate that produces an effect.
 --
@@ -125,14 +146,28 @@ replicateA =
 -- >>> filtering (>) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. 10 :. 11 :. 12 :. Nil) 8
 -- [9,10,11,12]
 filtering ::
+  forall f a.
   Applicative f =>
   (a -> f Bool)
   -> List a
   -> f (List a)
-filtering =
-  error "todo"
+filtering _ Nil =
+  pure Nil
+filtering p (h:.t) =
+  lift2 (if' (h :.) id) 
+                 (p h) (filtering p t)
 
------------------------
+filtering' p =
+  foldRight (\h -> lift2 (if' id ((:.) h)) (p h)) (pure Nil)
+
+if' :: 
+  x
+  -> x
+  -> Bool
+  -> x
+if' f t p = 
+  if p then f else t
+----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
 

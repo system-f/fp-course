@@ -203,7 +203,7 @@ lift4 f a b c d =
   -> f b
   -> f b
 (*>) =
-  error "todo"
+  lift2 (const id)
 
 -- | Sequence, discarding the value of the second argument.
 --
@@ -222,7 +222,7 @@ lift4 f a b c d =
   -> f a
   -> f b
 (<*) =
-  error "todo"
+  lift2 const
 
 -----------------------
 -- SUPPORT LIBRARIES --
