@@ -169,7 +169,7 @@ setFocus =
 
 -- A flipped infix alias for `setFocus`. This allows:
 --
--- z := "abc" -- sets the focus on the zipper z to the value "abc".
+-- z .= "abc" -- sets the focus on the zipper z to the value "abc".
 (.=) ::
   ListZipper a
   -> a
