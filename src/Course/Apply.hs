@@ -22,16 +22,23 @@ infixl 4 <*>
 -- >>> Id (+10) <*> Id 8
 -- Id 18
 instance Apply Id where
-  (<*>) =
-    error "todo"
+  -- (<*>) :: Id (a -> b) -> Id a -> Id b
+  Id f <*> Id a =
+    Id (f a)
 
 -- | Implement @Apply@ instance for @List@.
 --
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 instance Apply List where
-  (<*>) =
-    error "todo"
+  -- List (a -> b) -> List a -> List b
+  fs <*> as =
+            {- (a -> b) -> List b -}
+    -- as :: List a
+    -- ? :: (a -> b) -> List b
+    -- tip: use map :: (a -> b) -> List a -> List b
+    --      or (<$>):: (a -> b) -> f a -> f b
+    flatMap (`map` as) fs
 
 -- | Implement @Apply@ instance for @Optional@.
 --
@@ -43,9 +50,13 @@ instance Apply List where
 --
 -- >>> Full (+8) <*> Empty
 -- Empty
+--
+-- TIP: use bindOptional and mapOptional
+--  OR: use pattern-matching
 instance Apply Optional where
-  (<*>) =
-    error "todo"
+  -- Optional (a -> b) -> Optional a -> Optional b
+  f <*> a =
+    bindOptional (`mapOptional` a) f
 
 -- | Implement @Apply@ instance for reader.
 --
@@ -64,8 +75,13 @@ instance Apply Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 instance Apply ((->) t) where
-  (<*>) =
-    error "todo"
+  -- f (a -> b) -> f a -> f b
+  -- ((->) t (a -> b)) -> ((->) t a) -> ((->) t b)
+  -- (t -> (a -> b)) -> (t -> a) -> (t -> b)
+  -- (t ->  a -> b ) -> (t -> a) -> (t -> b)
+  -- (t ->  a -> b ) -> (t -> a) ->  t -> b
+  f <*> g =
+    \t -> f t (g t)
 
 -- | Apply a binary function in the environment.
 --
@@ -88,12 +104,19 @@ instance Apply ((->) t) where
 -- 18
 lift2 ::
   Apply f =>
-  (a -> b -> c)
-  -> f a
-  -> f b
+  (a -> (b -> c)) -- f
+  -> f a        -- a
+  -> f b        -- b
   -> f c
-lift2 =
-  error "todo"
+-- (a -> b -> c -> d) -> (f a -> f b -> f c -> f d)
+-- (a -> b -> c) -> (f a -> f b -> f c)
+-- (a -> b) -> (f a -> f b)
+
+-- let r = f <$> a :: f (b -> c)
+-- (<*>) :: f (b -> c) -> f b -> f c
+-- f <$> a <*> b :: f c
+lift2 f a b =
+  f <$> a <*> b
 
 -- | Apply a ternary function in the Monad environment.
 --
@@ -119,13 +142,16 @@ lift2 =
 -- 138
 lift3 ::
   Apply f =>
-  (a -> b -> c -> d)
-  -> f a
-  -> f b
-  -> f c
+  (a -> b -> (c -> d)) -- f
+  -> f a --             a
+  -> f b --             b
+  -> f c --             c
   -> f d
-lift3 =
-  error "todo"
+-- lift2 f :: f a -> f b -> f (c -> d)
+-- lift2 f a :: f b -> f (c -> d)
+-- lift2 f a b :: f (c -> d)
+-- lift2 f a b <*> c :: f d
+lift3 = \f a -> (<*>) . lift2 f a
 
 -- | Apply a quaternary function in the environment.
 --
@@ -157,8 +183,8 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo"
+lift4 f a b c d =
+  lift3 f a b c <*> d
 
 -- | Sequence, discarding the value of the first argument.
 --

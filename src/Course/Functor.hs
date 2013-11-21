@@ -84,8 +84,8 @@ instance Functor ((->) t) where
   a
   -> f b
   -> f a
-(<$) a fb =
-  (const a) <$> fb
+(<$) =
+  (<$>) . const 
 
 
 
