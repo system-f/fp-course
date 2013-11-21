@@ -26,3 +26,6 @@ TAGS
 # sbt
 /project
 /target
+
+*.swp
+
