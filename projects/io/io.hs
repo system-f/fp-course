@@ -2,20 +2,25 @@ import System.Environment
 import Control.Applicative
 import Control.Monad
 
+
 {-
 
 Functions --
 
-  getArgs :: IO [String]
-  putStrLn :: IO String
-  readFile :: String -> String
+  putStrLn :: String -> IO ()
+  readFile :: FilePath -> IO String
   lines :: String -> [String]
   void :: IO a -> IO ()
 
 Abstractions --
   Applicative, Monad:
 
-    <$>, <*>, >>=, =<<, pure
+    (<$>) :: (a -> b) -> IO a -> IO b
+    (<*>) :: IO (a -> b) -> IO a -> IO b
+    (>>=) :: IO a -> (a -> IO b) -> IO b
+    (=<<) :: (a -> IO b) -> IO a -> IO b
+    pure :: a -> IO a
+
 
 
 Problem --
@@ -52,29 +57,87 @@ the contents of c
 -}
 
 
-
+-- getArgs :: IO [String]
 -- Hint: use getArgs and run
 main :: IO ()
-main =
-  undefined
+main = getArgs >>= \args -> 
+  case args of 
+    [filename] -> run filename
+    _          -> putStrLn "usage: runhaskell io.hs filename" 
 
+--
 -- Hint: use getFiles and printFiles
 run :: String -> IO ()
-run =
-  undefined
+run filename = do
+  content <- readFile filename
+  results <- getFiles (lines content)
+  c <- getChar
+  print c
+  printFiles results
 
-getFiles :: [String] -> IO [(String, String)]
+
+fred :: Maybe String
+fred = Just "fred"
+
+barney :: Maybe String
+barney = Just "barney"
+
+count :: Maybe Int
+count = Just 10
+
+count' :: Maybe Int
+count' = Nothing
+
+attemptIt :: Int -> String -> Maybe [String]
+attemptIt n name = 
+  if n < 10
+    then Just (replicate n name)
+    else Nothing
+
+
+example :: Maybe Int -> Maybe String -> Maybe Int
+example mcount mname = do
+  c <- mcount 
+  n <- mname 
+  names <- attemptIt c n
+  pure (length names)
+
+
+{-
+  mcount >>= (\c -> -- mcount :: Maybe Int, c :: Int
+  mname >>= (\n ->  -- mname :: Maybe String, n :: String
+  attemptIt c n >>= (\names -> -- names :: [String]
+  pure (length names))))
+-}
+  
+
+
+
+
+
+{-
+  readFile filename >>= \content ->
+  getFiles (lines content) >>= \results ->
+  getChar >>= \c ->
+  print c >>= \_ ->
+  printFiles results
+-}
+
+getFiles :: [String] -> IO [(FilePath, String)]
 getFiles =
-  undefined
+  mapM getFile 
 
-getFile :: String -> IO (String, String)
+getFile :: FilePath -> IO (FilePath, String)
 getFile =
-  undefined
+    -- \filename -> (<$>) ((,) filename) (readFile filename)
+    liftA2 (<$>) (,) readFile 
 
-printFiles :: [(String, String)] -> IO ()
+printFiles :: [(FilePath, String)] -> IO ()
 printFiles =
-  undefined
+  mapM_ $ uncurry printFile 
 
-printFile :: String -> String -> IO ()
-printFile =
-  undefined
+printFile :: FilePath -> String -> IO ()
+printFile filename contents =
+--  mapM_ putStrLn ["======" ++ filename, contents] 
+  sequence_ (map putStrLn ["======" ++ filename, contents])
+
