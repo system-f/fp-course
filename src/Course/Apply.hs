@@ -165,10 +165,10 @@ lift4 f a b c d =
 -- | Sequence, discarding the value of the first argument.
 -- Pronounced, right apply.
 --
--- [1,2,3] *> [4,5,6]
+-- >>> [1,2,3] *> [4,5,6]
 -- [4,5,6,4,5,6,4,5,6]
 --
--- Full 7 *> Full 8
+-- >>> Full 7 *> Full 8
 -- Full 8
 --
 -- prop> [a,b,c] *> [x,y,z] == [x,y,z,x,y,z,x,y,z]
@@ -185,13 +185,13 @@ lift4 f a b c d =
 -- | Sequence, discarding the value of the second argument.
 -- Pronounced, left apply.
 --
--- [1,2,3] <* [4,5,6]
--- [1,2,3,1,2,3,1,2,3]
+-- >>> [1,2,3] <* [4,5,6]
+-- [1,1,1,2,2,2,3,3,3]
 --
--- Full 7 <* Full 8
+-- >>> Full 7 <* Full 8
 -- Full 7
 --
--- prop> [x,y,z] <* [a,b,c] == [x,y,z,x,y,z,x,y,z]
+-- prop> [x,y,z] <* [a,b,c] == [x,x,x,y,y,y,z,z,z]
 --
 -- prop> Full x <* Full y == Full x
 (<*) ::
