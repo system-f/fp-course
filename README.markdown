@@ -115,6 +115,7 @@ satisfied all tests with cabal-install and doctest. From the base directory of
 this source code:
 
     > cabal update
+    > cabal install cabal-install
     > cabal install doctest
     > cabal install QuickCheck
     > cabal configure --enable-tests
