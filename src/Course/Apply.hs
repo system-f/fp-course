@@ -11,6 +11,7 @@ import Course.Optional
 import qualified Prelude as P
 
 class Functor f => Apply f where
+  -- Pronounced apply.
   (<*>) ::
     f (a -> b)
     -> f a
@@ -162,6 +163,7 @@ lift4 =
   error "todo"
 
 -- | Sequence, discarding the value of the first argument.
+-- Pronounced, right apply.
 --
 -- [1,2,3] *> [4,5,6]
 -- [4,5,6,4,5,6,4,5,6]
@@ -181,6 +183,7 @@ lift4 =
   error "todo"
 
 -- | Sequence, discarding the value of the second argument.
+-- Pronounced, left apply.
 --
 -- [1,2,3] <* [4,5,6]
 -- [1,2,3,1,2,3,1,2,3]
