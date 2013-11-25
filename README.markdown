@@ -116,8 +116,7 @@ this source code:
 
     > cabal update
     > cabal install cabal-install
-    > cabal install doctest
-    > cabal install QuickCheck
+    > cabal install --only-dependencies
     > cabal configure --enable-tests
     > cabal build
     > cabal test

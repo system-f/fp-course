@@ -34,6 +34,7 @@ library
 
   build-depends:      base < 5 && >= 4
                       , QuickCheck >= 2.0
+                      , doctest >= 0.9.7
                       , containers >= 0.4.0.0
                       , array >= 0.4
 
