@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.State where
 
@@ -197,7 +198,7 @@ produce f a =
 --
 -- /Tip:/ Use `flatten` to write a @square@ function.
 --
--- /Tip:/ Use library functions: @Data.Foldable#elem@, @Data.Char#digitToInt@.
+-- /Tip:/ Use library functions: @Optional#contains@, @Data.Char#digitToInt@.
 --
 -- >>> isHappy 4
 -- False

@@ -42,8 +42,8 @@ library
                       -fno-warn-unused-imports
                       -fno-warn-type-defaults
 
-  default-extensions: Safe
-                      NoImplicitPrelude
+  default-extensions: NoImplicitPrelude
+                      ScopedTypeVariables
 
   hs-source-dirs:     src
 

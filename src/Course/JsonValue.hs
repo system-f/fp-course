@@ -1,14 +1,15 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.JsonValue where
 
 import Course.Core
 import Course.List
 
-type Assoc = List (Str, JsonValue)
+type Assoc = List (Chars, JsonValue)
 
 data JsonValue =
-     JsonString Str
+     JsonString Chars
    | JsonRational  Bool !Rational
    | JsonObject Assoc
    | JsonArray  (List JsonValue)

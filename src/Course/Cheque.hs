@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 {-
@@ -27,10 +28,10 @@ import Course.Bind
 
 -- The representation of the grouping of each exponent of one thousand. ["thousand", "million", ...]
 illion ::
-  List Str
+  List Chars
 illion =
   let preillion ::
-        List (Str -> Str)
+        List (Chars -> Chars)
       preillion =
         listh [
           const ""
@@ -45,7 +46,7 @@ illion =
         , \q -> if "n" `isPrefixOf` q then "novem" else "noven"
         ]
       postillion ::
-        List Str
+        List Chars
       postillion =
         listh [
           "vigintillion"
@@ -187,7 +188,7 @@ data Digit =
 
 showDigit ::
   Digit
-  -> Str
+  -> Chars
 showDigit Zero =
   "zero"
 showDigit One =
@@ -277,8 +278,8 @@ showDigit3 d =
         D3 a b c -> showd a ++ " hundred and " ++ showDigit3 (D2 b c)
 
 toDot ::
-  Str
-  -> (List Digit, Str)
+  Chars
+  -> (List Digit, Chars)
 toDot =
   let toDot' x Nil =
         (x, Nil)
@@ -295,7 +296,7 @@ toDot =
 
 illionate ::
   List Digit
-  -> Str
+  -> Chars
 illionate =
   let space "" =
         ""
@@ -393,8 +394,8 @@ illionate =
 -- >>> dollars "456789123456789012345678901234567890123456789012345678901234567890.12"
 -- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
 dollars ::
-  Str
-  -> Str
+  Chars
+  -> Chars
 dollars x =
   let (d, c) = toDot (dropWhile (`notElem` ('.':.listh ['1'..'9'])) x)
       c' =

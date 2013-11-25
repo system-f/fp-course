@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.JsonParser where
@@ -44,7 +45,7 @@ import Course.Optional
 -- >>> isErrorResult (parse jsonString "\"\\abc\"def")
 -- True
 jsonString ::
-  Parser Str
+  Parser Chars
 jsonString =
   let e = oneof "\"\\/bfnrt" ||| hex
       c = (is '\\' *> e)
@@ -92,7 +93,7 @@ jsonNumber =
 -- >>> isErrorResult (parse jsonTrue "TRUE")
 -- True
 jsonTrue ::
-  Parser Str
+  Parser Chars
 jsonTrue =
   stringTok "true"
 
@@ -106,7 +107,7 @@ jsonTrue =
 -- >>> isErrorResult (parse jsonFalse "FALSE")
 -- True
 jsonFalse ::
-  Parser Str
+  Parser Chars
 jsonFalse =
   stringTok "false"
 
@@ -120,7 +121,7 @@ jsonFalse =
 -- >>> isErrorResult (parse jsonNull "NULL")
 -- True
 jsonNull ::
-  Parser Str
+  Parser Chars
 jsonNull =
   stringTok "null"
 

@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ListZipper where
 
@@ -121,11 +122,11 @@ asMaybeZipper _ IsNotZ =
 asMaybeZipper f (IsZ z) =
   f z
 
-(>->) ::
+(-<<) ::
   (ListZipper a -> MaybeListZipper a)
   -> MaybeListZipper a
   -> MaybeListZipper a
-(>->) =
+(-<<) =
   asMaybeZipper
 
 -- | Convert the given zipper back to a list.
@@ -175,7 +176,7 @@ setFocus =
 
 -- A flipped infix alias for `setFocus`. This allows:
 --
--- z := "abc" -- sets the focus on the zipper z to the value "abc".
+-- z .= "abc" -- sets the focus on the zipper z to the value "abc".
 (.=) ::
   ListZipper a
   -> a
@@ -212,7 +213,7 @@ hasRight (ListZipper _ _ r) =
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findLeft (const True) >-> fromList xs == fromList xs
+-- prop> findLeft (const True) -<< fromList xs == fromList xs
 --
 -- prop> findLeft (const False) (zipper l x r) == IsNotZ
 findLeft ::
@@ -227,7 +228,7 @@ findLeft p (ListZipper ls x rs) =
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findRight (const True) >-> fromList xs == fromList xs
+-- prop> findRight (const True) -<< fromList xs == fromList xs
 --
 -- prop> findRight (const False) (zipper l x r) == IsNotZ
 findRight ::
@@ -372,7 +373,7 @@ moveLeftN n z | n == 0 =
 moveLeftN n z | n < 0 =
   moveRightN (negate n) z
 moveLeftN n z =
-  moveLeftN (pred n) >-> moveLeft z
+  moveLeftN (pred n) -<< moveLeft z
 
 -- Move the focus right the given number of positions. If the value is negative, move left instead.
 moveRightN ::
@@ -384,7 +385,7 @@ moveRightN n z | n == 0 =
 moveRightN n z | n < 0 =
   moveLeftN (negate n) z
 moveRightN n z =
-  moveRightN (pred n) >-> moveRight z
+  moveRightN (pred n) -<< moveRight z
 
 -- | Move the focus left the given number of positions. If the value is negative, move right instead.
 -- If the focus cannot be moved, the given number of times, return the value by which it can be moved instead.

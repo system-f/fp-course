@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.Parser where
@@ -18,7 +19,7 @@ import qualified Prelude as P
 -- >>> :set -XOverloadedStrings
 -- >>> import Data.Char(isUpper)
 
-type Input = Str
+type Input = Chars
 
 data ParseResult a =
   UnexpectedEof
@@ -316,7 +317,7 @@ space =
 --
 -- /Tip:/ Use the @many1@ and @space@ functions.
 spaces1 ::
-  Parser Str
+  Parser Chars
 spaces1 =
   many1 space
 
@@ -424,7 +425,7 @@ ageParser =
 -- λ> isErrorResult (parse firstNameParser "abc")
 -- True
 firstNameParser ::
-  Parser Str
+  Parser Chars
 firstNameParser =
   fbindParser upper (\c ->
   fbindParser (list lower) (\cs ->
@@ -445,7 +446,7 @@ firstNameParser =
 -- >>> isErrorResult (parse surnameParser "abc")
 -- True
 surnameParser ::
-  Parser Str
+  Parser Chars
 surnameParser =
   fbindParser upper (\c ->
   fbindParser (thisMany 5 lower) (\cs ->
@@ -489,7 +490,7 @@ genderParser =
 -- >>> parse phoneBodyParser "a123-456"
 -- Result >a123-456< ""
 phoneBodyParser ::
-  Parser Str
+  Parser Chars
 phoneBodyParser =
   list (digit ||| is '.' ||| is '-')
 
@@ -511,7 +512,7 @@ phoneBodyParser =
 -- >>> isErrorResult (parse phoneParser "a123-456")
 -- True
 phoneParser ::
-  Parser Str
+  Parser Chars
 phoneParser =
   fbindParser digit (\d ->
   fbindParser phoneBodyParser (\z ->

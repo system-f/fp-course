@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.MoreParser where
 
@@ -28,7 +29,7 @@ P p <.> i =
 
 -- | Write a parser that will parse zero or more spaces.
 spaces ::
-  Parser Str
+  Parser Chars
 spaces =
   list space
 
@@ -88,8 +89,8 @@ quote =
 -- >>> isErrorResult (parse (string "abc") "bcdef")
 -- True
 string ::
-  Str
-  -> Parser Str
+  Chars
+  -> Parser Chars
 string =
   traverse is
 
@@ -103,8 +104,8 @@ string =
 -- >>> isErrorResult (parse (stringTok "abc") "bc  ")
 -- True
 stringTok ::
-  Str
-  -> Parser Str
+  Chars
+  -> Parser Chars
 stringTok =
   tok . string
 
@@ -134,7 +135,7 @@ option a p =
 -- >>> isErrorResult (parse digits1 "abc123")
 -- True
 digits1 ::
-  Parser Str
+  Parser Chars
 digits1 =
   many1 digit
 
@@ -148,7 +149,7 @@ digits1 =
 -- >>> isErrorResult (parse (oneof "abc") "def")
 -- True
 oneof ::
-  Str
+  Chars
   -> Parser Char
 oneof s =
   satisfy (`elem` s)
@@ -163,7 +164,7 @@ oneof s =
 -- >>> isErrorResult (parse (noneof "abcd") "abc")
 -- True
 noneof ::
-  Str
+  Chars
   -> Parser Char
 noneof s =
   satisfy (`notElem` s)

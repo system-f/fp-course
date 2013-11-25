@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateT where
@@ -29,7 +30,7 @@ instance Functor f => Functor (StateT s f) where
   f <$> StateT k =
     StateT ((<$>) (first f) . k)
 
--- | Implement the `Apply` instance for @StateT s f@ given a @Applicative f@.
+-- | Implement the `Apply` instance for @StateT s f@ given a @Bind f@.
 instance Bind f => Apply (StateT s f) where
   StateT f <*> StateT a =
     -- StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
@@ -218,7 +219,7 @@ log1 l =
 distinctG ::
   (Integral a, Show a) =>
   List a
-  -> Logger Str (Optional (List a))
+  -> Logger Chars (Optional (List a))
 distinctG x =
   runOptionalT (evalT (filterM (\a -> StateT (\s ->
     OptionalT (if a > 100

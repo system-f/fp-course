@@ -1,4 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.Interactive where
@@ -63,7 +64,7 @@ echo =
            pure c))
 
 data Op =
-  Op Char Str (IO ()) -- keyboard entry, description, program
+  Op Char Chars (IO ()) -- keyboard entry, description, program
 
 -- |
 --
@@ -147,8 +148,8 @@ encodeInteractive ::
   IO ()
 encodeInteractive =
   let encode ::
-        Str
-        -> Str
+        Chars
+        -> Chars
       encode url =
         url >>= \c -> case c of
                         ' '  -> "%20"
