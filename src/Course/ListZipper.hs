@@ -91,6 +91,14 @@ toOptional IsNotZ =
 toOptional (IsZ z) =
   Full z
 
+zipper ::
+  [a]
+  -> a
+  -> [a]
+  -> ListZipper a
+zipper l x r =
+  ListZipper (listh l) x (listh r)
+
 fromOptional ::
   Optional (ListZipper a)
   -> MaybeListZipper a
