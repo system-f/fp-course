@@ -116,11 +116,11 @@ asMaybeZipper _ IsNotZ =
 asMaybeZipper f (IsZ z) =
   f z
 
-(>->) ::
+(-<<) ::
   (ListZipper a -> MaybeListZipper a)
   -> MaybeListZipper a
   -> MaybeListZipper a
-(>->) =
+(-<<) =
   asMaybeZipper
 
 -- | Convert the given zipper back to a list.
@@ -207,7 +207,7 @@ hasRight =
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findLeft (const True) >-> fromList xs == fromList xs
+-- prop> findLeft (const True) -<< fromList xs == fromList xs
 --
 -- prop> findLeft (const False) (zipper l x r) == IsNotZ
 findLeft ::
@@ -220,7 +220,7 @@ findLeft =
 -- | Seek to the right for a location matching a predicate, starting from the
 -- current one.
 --
--- prop> findRight (const True) >-> fromList xs == fromList xs
+-- prop> findRight (const True) -<< fromList xs == fromList xs
 --
 -- prop> findRight (const False) (zipper l x r) == IsNotZ
 findRight ::
