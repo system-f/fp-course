@@ -39,6 +39,18 @@ data ListZipper a =
   ListZipper (List a) a (List a)
   deriving Eq
 
+lefts ::
+  ListZipper a
+  -> List a
+lefts (ListZipper l _ _) =
+  l
+
+rights ::
+  ListZipper a
+  -> List a
+rights (ListZipper _ _ r) =
+  r
+
 -- A `MaybeListZipper` is a data structure that allows us to "fail" zipper operations.
 -- e.g. Moving left when there are no values to the left.
 --
@@ -589,6 +601,18 @@ instance Apply ListZipper where
 -- | Implement the `Apply` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use `<*>` for `ListZipper`.
+--
+-- >>> IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
+-- [5,12] >8< [15,24,12]
+--
+-- >>> IsNotZ <*> IsZ (zipper [3,2,1] 4 [5,6,7])
+-- ><
+--
+-- >>> IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsNotZ
+-- ><
+--
+-- >>> IsNotZ <*> IsNotZ
+-- ><
 instance Apply MaybeListZipper where
   IsNotZ <*> _ = IsNotZ
   _ <*> IsNotZ = IsNotZ
@@ -598,6 +622,10 @@ instance Apply MaybeListZipper where
 -- This implementation produces an infinite list zipper (to both left and right).
 --
 -- /Tip:/ Use @Data.List#repeat@.
+--
+-- prop> all . (==) <*> take n . lefts . pure
+--
+-- prop> all . (==) <*> take n . rights . pure
 instance Applicative ListZipper where
   pure a =
     ListZipper (repeat a) a (repeat a)
@@ -605,6 +633,10 @@ instance Applicative ListZipper where
 -- | Implement the `Applicative` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use @pure@ for `ListZipper`.
+--
+-- prop> let is (IsZ z) = z in all . (==) <*> take n . lefts . is . pure
+--
+-- prop> let is (IsZ z) = z in all . (==) <*> take n . rights . is . pure
 instance Applicative MaybeListZipper where
   pure =
     IsZ . pure
@@ -647,6 +679,12 @@ instance Comonad ListZipper where
 -- | Implement the `Traversable` instance for `ListZipper`.
 -- This implementation traverses a zipper while running some `Applicative` effect through the zipper.
 -- An effectful zipper is returned.
+--
+-- >>> traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Full 5, Full 6, Full 7])
+-- Full [1,2,3] >4< [5,6,7]
+--
+-- >>> traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Empty, Full 6, Full 7])
+-- Empty
 instance Traversable ListZipper where
   traverse f (ListZipper l x r) =
     (ListZipper . reverse) <$> traverse f (reverse l) <*> f x <*> traverse f r
@@ -654,6 +692,12 @@ instance Traversable ListZipper where
 -- | Implement the `Traversable` instance for `MaybeListZipper`.
 --
 -- /Tip:/ Use `traverse` for `ListZipper`.
+--
+-- >>> traverse id IsNotZ
+-- ><
+--
+-- >>> traverse id (IsZ (zipper [Full 1, Full 2, Full 3] (Full 4) [Full 5, Full 6, Full 7]))
+-- Full [1,2,3] >4< [5,6,7]
 instance Traversable MaybeListZipper where
   traverse _ IsNotZ =
     pure IsNotZ
