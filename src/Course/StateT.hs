@@ -119,25 +119,25 @@ putT =
 
 -- | Remove all duplicate elements in a `List`.
 --
--- /Tip:/ Use `filterM` and `State'` with a @Data.Set#Set@.
+-- /Tip:/ Use `filtering` and `State'` with a @Data.Set#Set@.
 distinct' ::
   (Ord a, Num a) =>
   List a
   -> List a
 distinct' x =
-  eval' (filterM (\a -> state' (S.member a &&& S.insert a)) x) S.empty
+  eval' (filtering (\a -> state' (S.member a &&& S.insert a)) x) S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
 -- abort the computation by producing `Empty`.
 --
--- /Tip:/ Use `filterM` and `StateT` over `Optional` with a @Data.Set#Set@.
+-- /Tip:/ Use `filtering` and `StateT` over `Optional` with a @Data.Set#Set@.
 distinctF ::
   (Ord a, Num a) =>
   List a
   -> Optional (List a)
 distinctF x =
-  evalT (filterM (\a -> StateT (\s ->
+  evalT (filtering (\a -> StateT (\s ->
     if a > 100 then Empty else Full (a `S.notMember` s, a `S.insert` s))) x) S.empty
 
 -- | An `OptionalT` is a functor of an `Optional` value.
@@ -215,13 +215,13 @@ log1 l =
 -- If you see an even number, produce a log message, "even number: " followed by the even number.
 -- Other numbers produce no log message.
 --
--- /Tip:/ Use `filterM` and `StateT` over (`OptionalT` over `Logger` with a @Data.Set#Set@).
+-- /Tip:/ Use `filtering` and `StateT` over (`OptionalT` over `Logger` with a @Data.Set#Set@).
 distinctG ::
   (Integral a, Show a) =>
   List a
   -> Logger Chars (Optional (List a))
 distinctG x =
-  runOptionalT (evalT (filterM (\a -> StateT (\s ->
+  runOptionalT (evalT (filtering (\a -> StateT (\s ->
     OptionalT (if a > 100
                  then
                    log1 (fromString ("aborting > 100: " P.++ show a)) Empty

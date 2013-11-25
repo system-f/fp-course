@@ -135,35 +135,8 @@ firstRepeat ::
 firstRepeat x =
   eval (findM (\a -> State (S.member a &&& S.insert a)) x) S.empty
 
--- | Remove all elements in a `List` that fail a given predicate.
--- However, while performing the filter, we sequence some `Monad` effect through.
---
--- Note the similarity of the type signature to List#filter
--- where the effect appears in every return position:
---   filter ::  (a ->   Bool) -> List a ->    List a
---   filterM :: (a -> f Bool) -> List a -> f (List a)
---
--- >>> let p x = Full (x `mod` 2 == 0); xs = listh [1..10] in filterM p xs
--- Full [2,4,6,8,10]
---
--- >>> let p x = if x `mod` 2 == 0 then Full True else Empty; xs = listh [1..10] in filterM p xs
--- Empty
-filterM ::
-  Monad f =>
-  (a -> f Bool)
-  -> List a
-  -> f (List a)
-filterM _ Nil =
-  pure Nil
-filterM p (h :. t) =
- (\q -> (if q
-           then
-             (h:.)
-           else
-             id) <$> filterM p t) =<< p h
-
 -- | Remove all duplicate elements in a `List`.
--- /Tip:/ Use `filterM` and `State` with a @Data.Set#Set@.
+-- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.
 --
 -- prop> firstRepeat (distinct xs) == Empty
 --
@@ -173,7 +146,7 @@ distinct ::
   List a
   -> List a
 distinct x =
-  eval (filterM (\a -> State (S.notMember a &&& S.insert a)) x) S.empty
+  eval (filtering (\a -> State (S.notMember a &&& S.insert a)) x) S.empty
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
