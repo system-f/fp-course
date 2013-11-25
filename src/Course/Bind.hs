@@ -17,6 +17,7 @@ import Course.Optional
 import qualified Prelude as P
 
 class Apply f => Bind f where
+  -- Pronounced, bind.
   (=<<) ::
     (a -> f b)
     -> f a
@@ -119,6 +120,7 @@ join =
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
+-- Pronounced, bind flipped.
 (>>=) ::
   Bind f =>
   f a
@@ -130,6 +132,7 @@ a >>= f =
 infixl 1 >>=
 
 -- | Implement composition within the @Bind@ environment.
+-- Pronounced, kleisli composition.
 (<=<) ::
   Bind f =>
   (b -> f c)

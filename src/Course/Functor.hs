@@ -10,6 +10,7 @@ import Course.List
 import qualified Prelude as P
 
 class Functor f where
+  -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
     -> f a

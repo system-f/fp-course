@@ -10,6 +10,7 @@ import Course.Optional
 import Course.Functor
 
 class Functor f => Extend f where
+  -- Pronounced, extend.
   (<<=) ::
     (f a -> b)
     -> f a
