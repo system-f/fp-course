@@ -182,15 +182,15 @@ lift4 =
 
 -- | Sequence, discarding the value of the second argument.
 --
--- [1,2,3] *> [4,5,6]
+-- [1,2,3] <* [4,5,6]
 -- [1,2,3,1,2,3,1,2,3]
 --
--- Full 7 *> Full 8
+-- Full 7 <* Full 8
 -- Full 7
 --
--- prop> [x,y,z] *> [a,b,c] == [x,y,z,x,y,z,x,y,z]
+-- prop> [x,y,z] <* [a,b,c] == [x,y,z,x,y,z,x,y,z]
 --
--- prop> Full x *> Full y == Full x
+-- prop> Full x <* Full y == Full x
 (<*) ::
   Apply f =>
   f b
