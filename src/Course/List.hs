@@ -251,6 +251,25 @@ find ::
 find =
   error "todo"
 
+-- | Determine if the length of the given list is greater than 4.
+--
+-- >>> lengthGT4 (1 :. 3 :. 5 :. Nil)
+-- False
+--
+-- >>> lengthGT4 Nil
+-- False
+--
+-- >>> lengthGT4 (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
+-- True
+--
+-- >>> lengthGT4 infinity
+-- True
+lengthGT4 ::
+  List a
+  -> Bool
+lengthGT4 =
+  error "todo"
+
 -- | Reverse a list.
 --
 -- >>> reverse Nil
