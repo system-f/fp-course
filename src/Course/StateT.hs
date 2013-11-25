@@ -118,7 +118,7 @@ putT =
 
 -- | Remove all duplicate elements in a `List`.
 --
--- /Tip:/ Use `filterM` and `State'` with a @Data.Set#Set@.
+-- /Tip:/ Use `filtering` and `State'` with a @Data.Set#Set@.
 distinct' ::
   (Ord a, Num a) =>
   List a
@@ -130,7 +130,7 @@ distinct' =
 -- However, if you see a value greater than `100` in the list,
 -- abort the computation by producing `Empty`.
 --
--- /Tip:/ Use `filterM` and `StateT` over `Optional` with a @Data.Set#Set@.
+-- /Tip:/ Use `filtering` and `StateT` over `Optional` with a @Data.Set#Set@.
 distinctF ::
   (Ord a, Num a) =>
   List a
@@ -210,7 +210,7 @@ log1 =
 -- If you see an even number, produce a log message, "even number: " followed by the even number.
 -- Other numbers produce no log message.
 --
--- /Tip:/ Use `filterM` and `StateT` over (`OptionalT` over `Logger` with a @Data.Set#Set@).
+-- /Tip:/ Use `filtering` and `StateT` over (`OptionalT` over `Logger` with a @Data.Set#Set@).
 distinctG ::
   (Integral a, Show a) =>
   List a
