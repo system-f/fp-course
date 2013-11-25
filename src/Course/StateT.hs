@@ -214,6 +214,6 @@ log1 =
 distinctG ::
   (Integral a, Show a) =>
   List a
-  -> Logger Str (Optional (List a))
+  -> Logger Chars (Optional (List a))
 distinctG =
   error "todo"

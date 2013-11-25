@@ -11,15 +11,15 @@ import qualified Data.Set as S
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
 fastAnagrams ::
-  Str
+  Chars
   -> Filename
-  -> IO (List Str)
+  -> IO (List Chars)
 fastAnagrams =
   error "todo"
 
 newtype NoCaseString =
   NoCaseString {
-    ncString :: Str
+    ncString :: Chars
   }
 
 instance Eq NoCaseString where

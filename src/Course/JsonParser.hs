@@ -45,7 +45,7 @@ import Course.Optional
 -- >>> isErrorResult (parse jsonString "\"\\abc\"def")
 -- True
 jsonString ::
-  Parser Str
+  Parser Chars
 jsonString =
   error "todo"
 
@@ -88,7 +88,7 @@ jsonNumber =
 -- >>> isErrorResult (parse jsonTrue "TRUE")
 -- True
 jsonTrue ::
-  Parser Str
+  Parser Chars
 jsonTrue =
   error "todo"
 
@@ -102,7 +102,7 @@ jsonTrue =
 -- >>> isErrorResult (parse jsonFalse "FALSE")
 -- True
 jsonFalse ::
-  Parser Str
+  Parser Chars
 jsonFalse =
   error "todo"
 
@@ -116,7 +116,7 @@ jsonFalse =
 -- >>> isErrorResult (parse jsonNull "NULL")
 -- True
 jsonNull ::
-  Parser Str
+  Parser Chars
 jsonNull =
   error "todo"
 

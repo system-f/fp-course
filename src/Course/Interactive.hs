@@ -64,7 +64,7 @@ echo =
            pure c))
 
 data Op =
-  Op Char Str (IO ()) -- keyboard entry, description, program
+  Op Char Chars (IO ()) -- keyboard entry, description, program
 
 -- |
 --

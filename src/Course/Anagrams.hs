@@ -29,16 +29,16 @@ Functions that might help
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
 anagrams ::
-  Str
+  Chars
   -> Filename
-  -> IO (List Str)
+  -> IO (List Chars)
 anagrams =
   error "todo"
 
 -- Compare two strings for equality, ignoring case
 equalIgnoringCase ::
-  Str
-  -> Str
+  Chars
+  -> Chars
   -> Bool
 equalIgnoringCase =
   error "todo"

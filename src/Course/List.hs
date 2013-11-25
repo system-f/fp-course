@@ -292,32 +292,32 @@ listh =
   P.foldr (:.) Nil
 
 putStr ::
-  List Char
+  Chars
   -> IO ()
 putStr =
   P.putStr . hlist
 
 putStrLn ::
-  List Char
+  Chars
   -> IO ()
 putStrLn =
   P.putStrLn . hlist
 
 readFile ::
   Filename
-  -> IO Str
+  -> IO Chars
 readFile =
   P.fmap listh . P.readFile . hlist
 
 writeFile ::
   Filename
-  -> Str
+  -> Chars
   -> IO ()
 writeFile n s =
   P.writeFile (hlist n) (hlist s)
 
 getLine ::
-  IO Str
+  IO Chars
 getLine =
   P.fmap listh P.getLine
 
@@ -408,26 +408,26 @@ unfoldr f b  =
     Empty -> Nil
 
 lines ::
-  Str
-  -> List Str
+  Chars
+  -> List Chars
 lines =
   listh . P.fmap listh . P.lines . hlist
 
 unlines ::
-  List Str
-  -> Str
+  List Chars
+  -> Chars
 unlines =
   listh . P.unlines . hlist . map hlist
 
 words ::
-  Str
-  -> List Str
+  Chars
+  -> List Chars
 words =
   listh . P.fmap listh . P.words . hlist
 
 unwords ::
-  List Str
-  -> Str
+  List Chars
+  -> Chars
 unwords =
   listh . P.unwords . hlist . map hlist
 
@@ -547,8 +547,8 @@ replicate n x =
 
 reads ::
   P.Read a =>
-  Str
-  -> Optional (a, Str)
+  Chars
+  -> Optional (a, Chars)
 reads s =
   case P.reads (hlist s) of
     [] -> Empty
@@ -556,15 +556,15 @@ reads s =
 
 read ::
   P.Read a =>
-  Str
+  Chars
   -> Optional a
 read =
   mapOptional fst . reads
 
 readHexs ::
   (Eq a, Num a) =>
-  Str
-  -> Optional (a, Str)
+  Chars
+  -> Optional (a, Chars)
 readHexs s =
   case N.readHex (hlist s) of
     [] -> Empty
@@ -572,15 +572,15 @@ readHexs s =
 
 readHex ::
   (Eq a, Num a) =>
-  Str
+  Chars
   -> Optional a
 readHex =
   mapOptional fst . readHexs
 
 readFloats ::
   (RealFrac a) =>
-  Str
-  -> Optional (a, Str)
+  Chars
+  -> Optional (a, Chars)
 readFloats s =
   case N.readSigned N.readFloat (hlist s) of
     [] -> Empty
@@ -588,7 +588,7 @@ readFloats s =
 
 readFloat ::
   (RealFrac a) =>
-  Str
+  Chars
   -> Optional a
 readFloat =
   mapOptional fst . readFloats
@@ -597,14 +597,14 @@ instance IsString (List Char) where
   fromString =
     listh
 
-type Str =
+type Chars =
   List Char
 
 type Filename =
-  Str
+  Chars
 
 strconcat ::
-  [Str]
+  [Chars]
   -> P.String
 strconcat =
   P.concatMap hlist

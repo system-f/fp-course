@@ -29,7 +29,7 @@ P p <.> i =
 
 -- | Write a parser that will parse zero or more spaces.
 spaces ::
-  Parser Str
+  Parser Chars
 spaces =
   error "todo"
 
@@ -87,8 +87,8 @@ quote =
 -- >>> isErrorResult (parse (string "abc") "bcdef")
 -- True
 string ::
-  Str
-  -> Parser Str
+  Chars
+  -> Parser Chars
 string =
   error "todo"
 
@@ -102,8 +102,8 @@ string =
 -- >>> isErrorResult (parse (stringTok "abc") "bc  ")
 -- True
 stringTok ::
-  Str
-  -> Parser Str
+  Chars
+  -> Parser Chars
 stringTok =
   error "todo"
 
@@ -133,7 +133,7 @@ option =
 -- >>> isErrorResult (parse digits1 "abc123")
 -- True
 digits1 ::
-  Parser Str
+  Parser Chars
 digits1 =
   error "todo"
 
@@ -147,7 +147,7 @@ digits1 =
 -- >>> isErrorResult (parse (oneof "abc") "def")
 -- True
 oneof ::
-  Str
+  Chars
   -> Parser Char
 oneof =
   error "todo"
@@ -162,7 +162,7 @@ oneof =
 -- >>> isErrorResult (parse (noneof "abcd") "abc")
 -- True
 noneof ::
-  Str
+  Chars
   -> Parser Char
 noneof =
   error "todo"
