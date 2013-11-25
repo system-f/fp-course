@@ -9,4 +9,3 @@
 :set -XNoImplicitPrelude
 :set -XScopedTypeVariables
 :set -XOverloadedStrings
-:set -XSafe
