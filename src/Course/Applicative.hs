@@ -101,6 +101,9 @@ sequence =
 --
 -- >>> replicateA 4 (*2) 5
 -- [10,10,10,10]
+--
+-- >>> replicateA 3 ['a', 'b', 'c']
+-- ["aaa","aab","aac","aba","abb","abc","aca","acb","acc","baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc","caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"]
 replicateA ::
   Applicative f =>
   Int
