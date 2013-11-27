@@ -37,7 +37,7 @@ class Apply f => Applicative f where
 (<$>) =
   error "todo"
 
--- | Insert into the Id monad.
+-- | Insert into Id.
 --
 -- prop> pure x == Id x
 instance Applicative Id where
