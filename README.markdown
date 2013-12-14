@@ -1,6 +1,6 @@
 # Functional Programming Course
 
-### Written by Tony Morris
+### Written by Tony Morris & Mark Hibberd
 
 ### With support from NICTA Limited and contributions from individuals (thanks!)
 
