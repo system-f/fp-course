@@ -561,7 +561,7 @@ instance Apply MaybeListZipper where
 -- | Implement the `Applicative` instance for `ListZipper`.
 -- This implementation produces an infinite list zipper (to both left and right).
 --
--- /Tip:/ Use @Data.List#repeat@.
+-- /Tip:/ Use @List#repeat@.
 --
 -- prop> all . (==) <*> take n . lefts . pure
 --
@@ -584,7 +584,7 @@ instance Applicative MaybeListZipper where
 -- | Implement the `Extend` instance for `ListZipper`.
 -- This implementation "visits" every possible zipper value derivable from a given zipper (i.e. all zippers to the left and right).
 --
--- /Tip:/ Use @Data.List#unfoldr@.
+-- /Tip:/ Use @List#unfoldr@.
 --
 -- >>> id <<= (zipper [2,1] 3 [4,5])
 -- [[1] >2< [3,4,5],[] >1< [2,3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
