@@ -351,7 +351,7 @@ alpha =
 -- but fails on the first failing parser of the list.
 --
 -- /Tip:/ Use @bindParser@ and @value@.
--- /Tip:/ Optionally use @Prelude.foldr@. If not, an explicit recursive call.
+-- /Tip:/ Optionally use @List#foldRight@. If not, an explicit recursive call.
 --
 -- >>> parse (sequenceParser (character :. is 'x' :. upper :. Nil)) "axCdef"
 -- Result >def< "axC"
