@@ -25,8 +25,8 @@ instance Comonad Id where
 
 -- | Witness that all things with (<<=) and copure also have (<$>).
 --
--- (+10) <$> Id 7
--- 17
+-- >>> (+10) <$> Id 7
+-- Id 17
 (<$>) ::
   Comonad f =>
   (a -> b)
