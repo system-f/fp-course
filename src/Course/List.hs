@@ -284,6 +284,21 @@ reverse ::
 reverse =
   error "todo"
 
+-- | Produce an infinite `List` that seeds with the given value at its head,
+-- then runs the given function for subsequent elements
+--
+-- >>> let (x:.y:.z:.w:._) = produce (+1) 0 in [x,y,z,w]
+-- [0,1,2,3]
+--
+-- >>> let (x:.y:.z:.w:._) = produce (*2) 1 in [x,y,z,w]
+-- [1,2,4,8]
+produce ::
+  (a -> a)
+  -> a
+  -> List a
+produce =
+  error "todo"
+
 -- | Do anything other than reverse a list.
 --
 -- >>> notReverse Nil

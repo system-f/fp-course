@@ -144,21 +144,6 @@ distinct ::
 distinct =
   error "todo"
 
--- | Produce an infinite `List` that seeds with the given value at its head,
--- then runs the given function for subsequent elements
---
--- >>> let (x:.y:.z:.w:._) = produce (+1) 0 in [x,y,z,w]
--- [0,1,2,3]
---
--- >>> let (x:.y:.z:.w:._) = produce (*2) 1 in [x,y,z,w]
--- [1,2,4,8]
-produce ::
-  (a -> a)
-  -> a
-  -> List a
-produce =
-  error "todo"
-
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
 -- because it results in a recurring sequence.
