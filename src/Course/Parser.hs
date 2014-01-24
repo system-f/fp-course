@@ -195,6 +195,15 @@ infixl 3 |||
 --
 -- /Tip:/ Use @many1@, @valueParser@ and @(|||)@.
 --
+-- >>> parse (list (character)) ""
+-- Result >< ""
+--
+-- >>> parse (list (digit)) "123abc"
+-- Result >abc< ""
+--
+-- >>> parse (list digit) "abc"
+-- Result >abc< ""
+--
 -- >>> parse (list (character)) "abc"
 -- Result >< "abc"
 --
