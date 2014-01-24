@@ -199,7 +199,7 @@ infixl 3 |||
 -- Result >< ""
 --
 -- >>> parse (list (digit)) "123abc"
--- Result >abc< ""
+-- Result >abc< "123"
 --
 -- >>> parse (list digit) "abc"
 -- Result >abc< ""
