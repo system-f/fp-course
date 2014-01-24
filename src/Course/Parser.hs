@@ -201,6 +201,15 @@ infixl 3 |||
 --
 -- /Tip:/ Use @many1@, @valueParser@ and @(|||)@.
 --
+-- >>> parse (list (character)) ""
+-- Result >< ""
+--
+-- >>> parse (list (digit)) "123abc"
+-- Result >abc< ""
+--
+-- >>> parse (list digit) "abc"
+-- Result >abc< ""
+--
 -- >>> parse (list (character)) "abc"
 -- Result >< "abc"
 --
@@ -361,7 +370,7 @@ alpha =
 -- but fails on the first failing parser of the list.
 --
 -- /Tip:/ Use @bindParser@ and @value@.
--- /Tip:/ Optionally use @Prelude.foldr@. If not, an explicit recursive call.
+-- /Tip:/ Optionally use @List#foldRight@. If not, an explicit recursive call.
 --
 -- >>> parse (sequenceParser (character :. is 'x' :. upper :. Nil)) "axCdef"
 -- Result >def< "axC"
