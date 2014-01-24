@@ -79,7 +79,7 @@ quote =
 
 -- | Write a function that parses the given string (fails otherwise).
 --
--- /Tip:/ Use `is` and `mapM`.
+-- /Tip:/ Use `is` and `traverse`.
 --
 -- >>> parse (string "abc") "abcdef"
 -- Result >def< "abc"
