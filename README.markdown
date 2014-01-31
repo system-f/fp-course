@@ -157,7 +157,6 @@ After this, the following progression of modules is recommended:
 * `Course.MoreParser`
 * `Course.JsonParser`
 * `Course.Interactive`
-* `Course.Lens`
 * `Course.Anagrams`
 * `Course.FastAnagrams`
 * `Course.EditDistance`
