@@ -24,16 +24,25 @@ infixl 4 <*>
 -- >>> Id (+10) <*> Id 8
 -- Id 18
 instance Apply Id where
-  (<*>) =
-    error "todo"
+  -- f (a -> b) -> f a -> f b
+  -- Id (a -> b) -> Id a -> Id b
+  -- f :: a -> b
+  -- a :: a 
+  -- Id :: a -> Id a
+  -- Id :: b -> Id b
+  -- f a :: b
+  -- Id (f a) :: Id b
+  -- ? :: Id b
+  (<*>) (Id f) (Id a) =
+    Id (f a)
 
 -- | Implement @Apply@ instance for @List@.
 --
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 instance Apply List where
-  (<*>) =
-    error "todo"
+  f <*> a =
+    flatMap (\f' -> map (\a' -> f' a') a) f
 
 -- | Implement @Apply@ instance for @Optional@.
 --
@@ -46,8 +55,10 @@ instance Apply List where
 -- >>> Full (+8) <*> Empty
 -- Empty
 instance Apply Optional where
-  (<*>) =
-    error "todo"
+  -- f (a -> b) -> f a -> f b
+  -- Opt (a -> b) -> Opt a -> Opt b
+  f <*> a =
+    bindOptional (\ff -> mapOptional ff a) f
 
 -- | Implement @Apply@ instance for reader.
 --
@@ -66,8 +77,23 @@ instance Apply Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 instance Apply ((->) t) where
-  (<*>) =
-    error "todo"
+  -- f (a -> b) -> f a -> f b
+  -- ((->) t (a -> b)) -> ((->) t a) -> ((->) t b)
+  -- (t -> (a -> b)) -> (t -> a) -> (t -> b)
+  -- (t -> a -> b) -> (t -> a) -> t -> b
+  -- tab :: t -> a -> b
+  -- ta :: t -> a
+  -- t :: t
+  -- ta t :: a
+  -- tab t :: a -> b
+  -- (tab t) (ta t) :: b 
+  (<*>) f g t = 
+   f t (g t)
+
+ {-
+  (<*>) tab ta t =
+    tab t (ta t)
+ -}
 
 -- | Apply a binary function in the environment.
 --
@@ -94,8 +120,32 @@ lift2 ::
   -> f a
   -> f b
   -> f c
-lift2 =
-  error "todo"
+
+--  g :: a -> (b -> c)
+--  fa :: f a
+--  fb :: f b
+--  <$> ::   (a -> b) -> f a -> f b
+--  <*> :: f (a -> b) -> f a -> f b
+--  <*> :: f (x -> y) -> f x -> f y
+--
+--  <$> ::   (a -> (b -> c)) -> f a -> f (b -> c)
+--  <$> ::   (a -> b -> c) -> f a -> f (b -> c)
+--  g <$> fa :: f (b -> c)
+--  <*> :: f (b -> c) -> f b -> f c
+--  (g <$> fa) <*> fb :: f c 
+
+
+-- g :: a -> b -> c
+-- g :: a -> (b -> c)
+-- fa :: f a
+-- <$> :: (a -> b) -> f a -> f b
+-- <$> :: (x -> y) -> f x -> f y
+-- g <$> fa :: f (b -> c)
+--   x = a
+--   y = (b -> c)
+
+lift2 g fa fb =
+  (g <$> fa) <*> fb
 
 -- | Apply a ternary function in the Monad environment.
 --

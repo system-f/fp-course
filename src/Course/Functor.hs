@@ -25,11 +25,20 @@ infixl 4 <$>
 
 -- | Maps a function on the Id functor.
 --
+--     (<$>) (+1) (Id 2)
 -- >>> (+1) <$> Id 2
 -- Id 3
+--class Functor f where
 instance Functor Id where
-  (<$>) =
-    error "todo"
+  -- (a -> b) -> f a -> f b
+  -- (a -> b) -> Id a -> Id b
+  -- a :: a
+  -- f :: a -> b
+  -- f a :: b
+  -- Id :: a -> Id a
+  -- Id :: b -> Id b 
+  (<$>) f (Id a) =
+    Id (f a)
 
 -- | Maps a function on the List functor.
 --
@@ -39,8 +48,10 @@ instance Functor Id where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
+  -- (a -> b) -> f a -> f b
+  -- (a -> b) -> List a -> List b
   (<$>) =
-    error "todo"
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -50,16 +61,36 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
-  (<$>) =
-    error "todo"
+  -- (a -> b) -> f a -> f b
+  -- (a -> b) -> Optional a -> Optional b
+  (<$>) = 
+    mapOptional   
+{-
+  (<$>) _ Empty =
+    Empty
+  (<$>) f (Full a) =
+    Full (f a)
+-}
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
+---  x :: t -> z 
+---  x :: (->) t z 
 instance Functor ((->) t) where
+  -- (a -> b) -> f a -> f b
+  -- (a -> b) -> (((->) t) a) -> (((->) t) b)
+  -- (a -> b) -> ((->) t a) -> ((->) t b)
+  -- (a -> b) -> (t -> a) -> (t -> b)
+  -- (a -> b) -> (t -> a) -> t -> b
+  -- f :: a -> b
+  -- g :: t -> a
+  -- t :: t
+  ---------
+  -- ? :: b
   (<$>) =
-    error "todo"
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -74,9 +105,19 @@ instance Functor ((->) t) where
   a
   -> f b
   -> f a
-(<$) =
-  error "todo"
+(<$) a fb  =
+  (\_ -> a) <$> fb
+{-
 
+interface Functor<F> {
+  B map(A a)
+}
+
+
+F<B> anon(Functor<F> f, F<A> fa, B b) {
+}
+
+-}
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
