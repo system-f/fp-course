@@ -404,10 +404,10 @@ moveRightN =
 -- >>> moveLeftN' (-4) (zipper [3,2,1] 4 [5,6,7])
 -- Left 3
 --
--- >>> moveLeftN' 4 (zipper [3,2,1] [5,6,7,8,9])
+-- >>> moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7,8,9])
 -- Left 3
 --
--- >>> moveLeftN' (-4) (zipper [5,4,3,2,1] [6,7,8])
+-- >>> moveLeftN' (-4) (zipper [5,4,3,2,1] 6 [7,8,9])
 -- Left 3
 moveLeftN' ::
   Int
