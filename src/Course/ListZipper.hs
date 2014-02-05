@@ -78,6 +78,12 @@ instance Functor MaybeListZipper where
 
 -- | Create a `MaybeListZipper` positioning the focus at the head.
 --
+-- ->>> fromList (1 :. 2 :. 3 :. Nil)
+-- [] >1< [2,3]
+--
+-- >>> fromList Nil
+-- ><
+--
 -- prop> xs == toListZ (fromList xs)
 fromList ::
   List a
@@ -143,6 +149,12 @@ asMaybeZipper f (IsZ z) =
   asMaybeZipper
 
 -- | Convert the given zipper back to a list.
+--
+-- >>> toList <$> toOptional (fromList Nil)
+-- Empty
+--
+-- >>> toList <$> toOptional (withFocus (+100) >$> (moveRight -<< (fromList (1 :. 2 :. 3 :. Nil))))
+-- Full [1,102,3]
 toList ::
   ListZipper a
   -> List a
