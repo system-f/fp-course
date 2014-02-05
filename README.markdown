@@ -37,7 +37,7 @@ instructions are not contained herein.
 
 ### Tips after having started
 
-1. Some questions take a particular form. These are call *WTF questions*. WTF
+1. Some questions take a particular form. These are called *WTF questions*. WTF
    questions are those of this form or similar:
   * What does ____ mean?
   * What does the ____ function mean?
@@ -157,7 +157,6 @@ After this, the following progression of modules is recommended:
 * `Course.MoreParser`
 * `Course.JsonParser`
 * `Course.Interactive`
-* `Course.Lens`
 * `Course.Anagrams`
 * `Course.FastAnagrams`
 * `Course.EditDistance`
