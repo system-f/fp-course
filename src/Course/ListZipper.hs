@@ -463,12 +463,12 @@ nth =
 -- | Return the absolute position of the current focus in the zipper.
 --
 -- >>> index (zipper [3,2,1] 4 [5,6,7])
--- Full 3
+-- 3
 --
--- prop> optional True (\i -> optional False (==z) (toOptional (nth i z))) (index z)
+-- prop> optional True (\z' -> index z' == i) (toOptional (nth i z))
 index ::
   ListZipper a
-  -> Optional Int
+  -> Int
 index =
   error "todo"
 
