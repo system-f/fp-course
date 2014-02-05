@@ -34,9 +34,11 @@ class Apply f => Applicative f where
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo"
-
+f <$> a =
+  -- pure :: x -> f x
+  -- pure f :: f (a -> b)
+  pure f <*> a
+ 
 -- | Insert into Id.
 --
 -- prop> pure x == Id x
@@ -48,22 +50,28 @@ instance Applicative Id where
 --
 -- prop> pure x == x :. Nil
 instance Applicative List where
-  pure =
-    error "todo"
+  pure a =
+    a :. Nil
 
 -- | Insert into an Optional.
 --
 -- prop> pure x == Full x
 instance Applicative Optional where
-  pure =
-    error "todo"
+  -- pure :: a -> f a
+  -- pure :: a -> Optional a
+  pure a =
+    Full a 
 
 -- | Insert into a constant function.
 --
 -- prop> pure x y == x
 instance Applicative ((->) t) where
+  -- pure :: a -> f a
+  -- pure :: a -> ((->) t a)
+  -- pure :: a -> (t -> a)
+  -- pure :: a -> t -> a
   pure =
-    error "todo"
+    const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -85,8 +93,18 @@ sequence ::
   Applicative f =>
   List (f a)
   -> f (List a)
-sequence =
-  error "todo"
+sequence Nil =
+  pure Nil
+-- pure, (<$>), (<*>), lift2, lift*...
+-- h :: f a
+-- t :: List (f a)
+-- sequence t :: f (List a)
+-- (:.) :: a -> List a -> List a
+-- lift2 (:.) :: f a -> f (List a) -> f (List a)
+-- lift2 (:.) h :: f (List a) -> f (List a)
+-- lift2 (:.) h (sequence t) :: f (List a)
+sequence (h:.t) =
+  lift2 (:.) h (sequence t)
 
 -- | Replicate an effect a given number of times.
 --

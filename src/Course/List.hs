@@ -271,7 +271,7 @@ flatten ::
   List (List a)
   -> List a
 flatten x =
-  foldRight (++) Nil x
+  foldRight ((++) . id) Nil x
 
 -- | Map a function then flatten to a list.
 --
@@ -450,8 +450,8 @@ notReverse ::
 notReverse =
   error "todo"
 
-f :: a -> a
-f a = a
+--f :: a -> a
+--f a = a
 
 hlist ::
   List a

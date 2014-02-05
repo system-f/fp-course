@@ -13,6 +13,10 @@ import qualified Prelude as P
 
 class (Applicative f, Bind f) => Monad f where
 
+--data R a = R
+
+--instance Monad R where
+
 instance Monad Id where
 
 instance Monad List where

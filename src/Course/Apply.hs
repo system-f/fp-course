@@ -170,14 +170,20 @@ lift2 g fa fb =
 -- >>> lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6])
 -- 138
 lift3 ::
+  forall f a b c d.
   Apply f =>
   (a -> b -> c -> d)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
-lift3 =
-  error "todo"
+  -> (f a -> f b -> f c -> f d)
+lift3 f fa fb fc =
+  -- lift2 :: (x -> y -> z) -> (f x -> f y -> f z)
+  let r :: f a -> f b -> f (c -> d)
+      r = lift2 f
+      s :: f (c -> d)
+      s = r fa fb
+      -- (<*>) :: f (x -> y) -> f x -> f y
+      t :: f d
+      t = (<*>) s fc
+  in lift2 f fa fb <*> fc 
 
 -- | Apply a quaternary function in the environment.
 --
@@ -209,8 +215,8 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo"
+lift4 f a b c d =
+  lift3 f a b c <*> d 
 
 -- | Sequence, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -225,12 +231,13 @@ lift4 =
 --
 -- prop> Full x *> Full y == Full y
 (*>) ::
+  forall f a b.
   Apply f =>
   f a
   -> f b
   -> f b
-(*>) =
-  error "todo"
+(*>) fa fb =
+  lift2 (const id) fa fb
 
 -- | Sequence, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -249,8 +256,8 @@ lift4 =
   f b
   -> f a
   -> f b
-(<*) =
-  error "todo"
+(<*) fb fa =
+  lift2 const fb fa
 
 -----------------------
 -- SUPPORT LIBRARIES --
