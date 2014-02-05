@@ -532,9 +532,10 @@ index (ListZipper l _ _) =
 end ::
   ListZipper a
   -> ListZipper a
-end (ListZipper l x r) =
-  let (x':.r') = reverse (x:.r)
-  in ListZipper (r' ++ l) x' Nil
+end z =
+  case moveRight z of
+    IsNotZ -> z
+    IsZ z' -> end z' 
 
 -- | Move the focus to the start of the zipper.
 --
@@ -543,9 +544,10 @@ end (ListZipper l x r) =
 start ::
   ListZipper a
   -> ListZipper a
-start (ListZipper l x r) =
-  let (x':.r') = reverse (x:.l)
-  in ListZipper Nil x' (r' ++ r)
+start z =
+  case moveLeft z of
+    IsNotZ -> z
+    IsZ z' -> start z'
 
 -- | Delete the current focus and pull the left values to take the empty position.
 --
