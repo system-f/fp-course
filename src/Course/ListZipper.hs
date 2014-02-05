@@ -153,8 +153,11 @@ asMaybeZipper f (IsZ z) =
 -- >>> toList <$> toOptional (fromList Nil)
 -- Empty
 --
--- >>> toList <$> toOptional (withFocus (+100) >$> (moveRight -<< (fromList (1 :. 2 :. 3 :. Nil))))
--- Full [1,102,3]
+-- >>> toList (ListZipper Nil 1 (2:.3:.4:.Nil))
+-- [1,2,3,4]
+--
+-- >>> toList (ListZipper (3:.2:.1:.Nil) 4 (5:.6:.7:.Nil))
+-- [1,2,3,4,5,6,7]
 toList ::
   ListZipper a
   -> List a
