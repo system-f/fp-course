@@ -14,6 +14,7 @@ import Course.Bind
 import Course.Monad
 import Course.List
 import Course.Optional
+import Data.Char
 
 -- $setup
 -- >>> :set -XOverloadedStrings
