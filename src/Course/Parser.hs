@@ -63,6 +63,13 @@ data Parser a = P {
   parse :: Input -> ParseResult a
 }
 
+-- Function to produce a parser with the given result.
+result ::
+  ParseResult a
+  -> Parser a
+result =
+  P . const
+
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
 -- >>> parse (valueParser 3) "abc"
