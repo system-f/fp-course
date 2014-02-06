@@ -13,7 +13,15 @@ import Course.Bind
 import Course.Monad
 import Course.List
 import Course.Optional
+import Data.Char
 import qualified Prelude as P
+
+
+data Fred = 
+  Fred { runInt :: Int -> Int } 
+
+data Barney = 
+  Barney { getInt :: Int }
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -83,8 +91,9 @@ data Parser a = P {
 valueParser ::
   a
   -> Parser a
-valueParser =
-  error "todo"
+valueParser v =
+  P (\input -> Result input v) 
+
 
 -- | Return a parser that always fails with the given error.
 --
@@ -93,7 +102,7 @@ valueParser =
 failed ::
   Parser a
 failed =
-  error "todo"
+  P (\_ -> Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -105,7 +114,9 @@ failed =
 character ::
   Parser Char
 character =
-  error "todo"
+  P $ \input -> case input of
+                 Nil -> UnexpectedEof
+                 h:.t -> Result t h
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -134,8 +145,24 @@ bindParser ::
   (a -> Parser b)
   -> Parser a
   -> Parser b
-bindParser =
-  error "todo"
+bindParser f (P p) =
+  -- input :: Input
+  -- f :: a -> Parser b
+  -- p :: Input -> ParseResult a
+  -- p input :: ParserResult a
+  -- zzz :: Parser b -> ParseResult b ???
+  -- x :: a 
+  -- f x :: Parser b
+  -- undefined :: ParseResult b
+  P (\input -> 
+      case p input of 
+        UnexpectedEof -> UnexpectedEof 
+        ExpectedEof e -> ExpectedEof e
+        UnexpectedChar c -> UnexpectedChar c
+        Failed -> Failed 
+        Result remainder x -> parse (f x) remainder)
+
+
 
 fbindParser ::
   Parser a
@@ -162,8 +189,8 @@ fbindParser =
   Parser a
   -> Parser b
   -> Parser b
-(>>>) =
-  error "todo"
+(>>>) pa =
+  fbindParser pa  . const 
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -186,8 +213,11 @@ fbindParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) =
-  error "todo"
+(|||) (P f) (P g) =
+  P (\input -> 
+   case f input of
+     Result remainder a -> Result remainder a 
+     _ -> g input)
 
 infixl 3 |||
 
@@ -215,28 +245,31 @@ infixl 3 |||
 list ::
   Parser a
   -> Parser (List a)
-list =
-  error "todo"
+list p =
+  many1 p ||| valueParser Nil
 
--- | Return a parser that produces at least one value from the given parser then
--- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
--- The returned parser fails if The input is empty.
---
--- /Tip:/ Use @bindParser@, @list@ and @value@.
---
--- >>> parse (many1 (character)) "abc"
--- Result >< "abc"
---
--- >>> parse (many1 (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> isErrorResult (parse (many1 (character *> valueParser 'v')) "")
--- True
+-- A list parser parses (one or more elements) successfully *OR* a parser that *always successfully* produces empty list. Hint: OR is spelled |||, always successfully is spelled "valueParser", empty list is spelled Nil.
+-- A many1 parser takes one value from a parser, *and then* a list of values from that parser, *and then* cons together. Hint, and then is spelled "bindParser" (or "fbindParser" if you prefer).
 many1 ::
   Parser a
   -> Parser (List a)
 many1 =
-  error "todo"
+  lift2 (:.) <*> list
+  
+--  lift2 (:.) p (list p)
+-- \f g t -> f          t (g    t)
+
+{-
+  do a <- p
+     b <- list p
+     pure (a:.b) 
+-}
+
+{-
+  fbindParser p        (\a -> 
+  fbindParser (list p) (\as -> 
+  valueParser (a:.as)))
+-}
 
 -- | Return a parser that produces a character but fails if
 --
@@ -254,8 +287,25 @@ many1 =
 satisfy ::
   (Char -> Bool)
   -> Parser Char
-satisfy =
-  error "todo"
+satisfy p =
+  do c <- character
+     if p c then pure c else result (UnexpectedChar c)
+
+{-
+  fbindParser character (\c -> 
+    if p c then pure c else result (UnexpectedChar c))
+-}
+
+  {-
+    c = character
+    if p c then return c else result (UnexpectedChar c)
+  -}
+
+result ::
+  ParseResult a
+  -> Parser a
+result =
+  P . const
 
 -- | Return a parser that produces the given character but fails if
 --
@@ -266,8 +316,8 @@ satisfy =
 -- /Tip:/ Use the @satisfy@ function.
 is ::
   Char -> Parser Char
-is =
-  error "todo"
+is c =
+  satisfy (c ==)
 
 -- | Return a parser that produces a character between '0' and '9' but fails if
 --
@@ -279,7 +329,7 @@ is =
 digit ::
   Parser Char
 digit =
-  error "todo"
+  satisfy isDigit
 
 -- | Return a parser that produces zero or a positive integer but fails if
 --
@@ -287,12 +337,22 @@ digit =
 --
 --   * The input does not produce a value series of digits
 --
--- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @reads@ and @digit@
+-- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @read@ and @digit@
 -- functions.
 natural ::
   Parser Int
 natural =
-  error "todo"
+  do x <- list digit
+     case read x of
+       Empty -> failed
+       Full i -> pure i
+
+{-
+  fbindParser (list digit) (\x ->
+  case read x of
+    Empty -> failed
+    Full i -> pure i)
+-}
 
 --
 -- | Return a parser that produces a space character but fails if
@@ -305,7 +365,7 @@ natural =
 space ::
   Parser Char
 space =
-  error "todo"
+  satisfy isSpace
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if
@@ -318,7 +378,7 @@ space =
 spaces1 ::
   Parser Chars
 spaces1 =
-  error "todo"
+  many1 space
 
 -- | Return a parser that produces a lower-case character but fails if
 --
@@ -330,7 +390,7 @@ spaces1 =
 lower ::
   Parser Char
 lower =
-  error "todo"
+  satisfy isLower
 
 -- | Return a parser that produces an upper-case character but fails if
 --
@@ -342,7 +402,7 @@ lower =
 upper ::
   Parser Char
 upper =
-  error "todo"
+  satisfy isUpper
 
 -- | Return a parser that produces an alpha character but fails if
 --
@@ -354,7 +414,7 @@ upper =
 alpha ::
   Parser Char
 alpha =
-  error "todo"
+  satisfy isAlpha
 
 -- | Return a parser that sequences the given list of parsers by producing all their results
 -- but fails on the first failing parser of the list.
@@ -367,16 +427,18 @@ alpha =
 --
 -- >>> isErrorResult (parse (sequenceParser (character :. is 'x' :. upper :. Nil)) "abCdef")
 -- True
+-- sequence :: Applicative f => List (f a) -> f (List a)
+-- sequence ::                  List (Parser a) -> Parser (List a)
 sequenceParser ::
   List (Parser a)
   -> Parser (List a)
 sequenceParser =
-  error "todo"
+  sequence
 
 -- | Return a parser that produces the given number of values off the given parser.
 -- This parser fails if the given parser fails in the attempt to produce the given number of values.
 --
--- /Tip:/ Use @sequenceParser@ and @Prelude.replicate@.
+-- /Tip:/ Use @sequenceParser@ and @List.replicate@.
 --
 -- >>> parse (thisMany 4 upper) "ABCDef"
 -- Result >ef< "ABCD"
@@ -387,8 +449,10 @@ thisMany ::
   Int
   -> Parser a
   -> Parser (List a)
-thisMany =
-  error "todo"
+thisMany n =
+  sequence . replicate n  
+--  sequence (replicate n p)
+--f        (g           x)
 
 -- | Write a parser for Person.age.
 --
@@ -407,7 +471,7 @@ thisMany =
 ageParser ::
   Parser Int
 ageParser =
-  error "todo"
+  natural
 
 -- | Write a parser for Person.firstName.
 -- /First Name: non-empty string that starts with a capital letter/
@@ -422,7 +486,29 @@ ageParser =
 firstNameParser ::
   Parser Chars
 firstNameParser =
-  error "todo"
+  -- upper :: Parser Char
+  -- lower :: Parser Char
+  -- list :: Parser a -> Parser (List a)
+  -- pure :: a -> Parser a
+  -- list lower :: Parser (List Char)   
+  -- u :: Char
+  -- l :: List Char
+  -- :. :: a -> List a -> List a
+  -- u :. l :: List Char
+  lift2 (:.) upper (list lower)
+
+{-
+  do u <- upper
+     l <- list lower
+     pure (u :. l)
+-}
+{-
+  fbindParser upper (\u -> 
+  fbindParser (list lower) (\l -> 
+  pure (u :. l)))
+-}
+
+
 
 -- | Write a parser for Person.surname.
 --
@@ -441,7 +527,11 @@ firstNameParser =
 surnameParser ::
   Parser Chars
 surnameParser =
-  error "todo"
+  do
+    u <- upper
+    r <- thisMany 5 lower
+    s <- list lower
+    pure (u :. r ++ s)
 
 -- | Write a parser for Person.gender.
 --
@@ -460,7 +550,7 @@ surnameParser =
 genderParser ::
   Parser Char
 genderParser =
-  error "todo"
+  is 'm' ||| is 'f'
 
 -- | Write part of a parser for Person.phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
@@ -482,7 +572,7 @@ genderParser =
 phoneBodyParser ::
   Parser Chars
 phoneBodyParser =
-  error "todo"
+  list (digit ||| is '.' ||| is '-')
 
 -- | Write a parser for Person.phone.
 --
@@ -503,8 +593,12 @@ phoneBodyParser =
 -- True
 phoneParser ::
   Parser Chars
-phoneParser =
-  error "todo"
+phoneParser = 
+  do
+    d <- digit
+    b <- phoneBodyParser
+    is '#'
+    pure (d :. b)
 
 -- | Write a parser for Person.
 --
@@ -552,32 +646,57 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  error "todo"
+  Person <$>
+     ageParser <* 
+     spaces1 <*> 
+     firstNameParser <*
+     spaces1 <*>
+     surnameParser <*
+     spaces1 <*>
+     genderParser <*
+     spaces1 <*>
+     phoneParser 
 
+  {-
+  do
+    age <- ageParser
+    spaces1
+    firstName <- firstNameParser
+    spaces1
+    surname <- surnameParser
+    spaces1
+    gender <- genderParser
+    spaces1
+    phone <- phoneParser
+    pure (Person age firstName surname gender phone)
+
+  -}
 -- Make sure all the tests pass!
 
 
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Functor Parser where
-  (<$>) =
-     error "todo"
+  (<$>) f =
+    bindParser (valueParser . f)
 
 -- | Write a Apply instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Apply Parser where
-  (<*>) =
-    error "todo"
+  p <*> q =
+    fbindParser p (\p' ->
+    fbindParser q (\q' ->
+    valueParser (p' q')))
 
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
   pure =
-    error "todo"
+    valueParser 
 
 -- | Write a Bind instance for a @Parser@.
 instance Bind Parser where
   (=<<) =
-    error "todo"
+    bindParser
 
 instance Monad Parser where
 
