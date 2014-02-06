@@ -28,20 +28,25 @@ data ParseError =
   | Failed
   deriving Eq
 
+
+instance Show ParseError where
+  show UnexpectedEof =
+    "Expected end of stream"
+  show (ExpectedEof i) =
+    stringconcat ["Expected end of stream, but got >", show i, "<"]
+  show (UnexpectedChar c) =
+    stringconcat ["Unexpected character", show [c]]
+  show Failed =
+    "Parse failed"
+
 data ParseResult a =
   ErrorResult ParseError
   | Result Input a
   deriving Eq
 
 instance Show a => Show (ParseResult a) where
-  show (ErrorResult UnexpectedEof) =
-    "Expected end of stream"
-  show (ErrorResult (ExpectedEof i)) =
-    stringconcat ["Expected end of stream, but got >", show i, "<"]
-  show (ErrorResult (UnexpectedChar c)) =
-    stringconcat ["Unexpected character", show [c]]
-  show (ErrorResult Failed) =
-    "Parse failed"
+  show (ErrorResult e) =
+    show e
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
 
