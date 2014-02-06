@@ -404,7 +404,7 @@ ageParser =
 -- | Write a parser for Person.firstName.
 -- /First Name: non-empty string that starts with a capital letter/
 --
--- /Tip:/ Use @bindParser@, @value@, @upper@, @list@ and @lower@.
+-- /Tip:/ Use @bindParser@, @valueParser@, @upper@, @list@ and @lower@.
 --
 -- λ> parse firstNameParser "Abc"
 -- Result >< "Abc"
@@ -420,7 +420,7 @@ firstNameParser =
 --
 -- /Surname: string that starts with a capital letter and is followed by 5 or more lower-case letters./
 --
--- /Tip:/ Use @bindParser@, @value@, @upper@, @thisMany@, @lower@ and @list@.
+-- /Tip:/ Use @bindParser@, @valueParser@, @upper@, @thisMany@, @lower@ and @list@.
 --
 -- >>> parse surnameParser "Abcdef"
 -- Result >< "Abcdef"
@@ -480,7 +480,7 @@ phoneBodyParser =
 --
 -- /Phone: ... but must start with a digit and end with a hash (#)./
 --
--- /Tip:/ Use @bindParser@, @value@, @digit@, @phoneBodyParser@ and @is@.
+-- /Tip:/ Use @bindParser@, @valueParser@, @digit@, @phoneBodyParser@ and @is@.
 --
 -- >>> parse phoneParser "123-456#"
 -- Result >< "123-456"
@@ -501,7 +501,7 @@ phoneParser =
 -- | Write a parser for Person.
 --
 -- /Tip:/ Use @bindParser@,
---            @value@,
+--            @valueParser@,
 --            @(>>>)@,
 --            @ageParser@,
 --            @firstNameParser@,
