@@ -21,53 +21,35 @@ import qualified Prelude as P
 
 type Input = Chars
 
-data ParseResult a =
+data ParseError =
   UnexpectedEof
   | ExpectedEof Input
   | UnexpectedChar Char
   | Failed
+  deriving Eq
+
+data ParseResult a =
+  ErrorResult ParseError
   | Result Input a
   deriving Eq
 
 instance Show a => Show (ParseResult a) where
-  show UnexpectedEof =
+  show (ErrorResult UnexpectedEof) =
     "Expected end of stream"
-  show (ExpectedEof i) =
+  show (ErrorResult (ExpectedEof i)) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
-  show (UnexpectedChar c) =
+  show (ErrorResult (UnexpectedChar c)) =
     stringconcat ["Unexpected character", show [c]]
-  show Failed =
+  show (ErrorResult Failed) =
     "Parse failed"
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
-
--- Function to also access the input while binding parsers.
-withResultInput ::
-  (Input -> a -> ParseResult b)
-  -> ParseResult a
-  -> ParseResult b
-withResultInput _ UnexpectedEof =
-  UnexpectedEof
-withResultInput _ (ExpectedEof i) =
-  ExpectedEof i
-withResultInput _ (UnexpectedChar c) =
-  UnexpectedChar c
-withResultInput _ Failed =
-  Failed
-withResultInput f (Result i a) =
-  f i a
 
 -- Function to determine is a parse result is an error.
 isErrorResult ::
   ParseResult a
   -> Bool
-isErrorResult UnexpectedEof =
-  True
-isErrorResult (ExpectedEof _) =
-  True
-isErrorResult (UnexpectedChar _) =
-  True
-isErrorResult Failed =
+isErrorResult (ErrorResult _) =
   True
 isErrorResult (Result _ _) =
   False
@@ -113,8 +95,6 @@ character =
 --     then put in the remaining input in the resulting parser.
 --
 --   * if that parser fails with an error the returned parser fails with that error.
---
--- /Tip:/ Use @withResultInput@.
 --
 -- >>> parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "abc"
 -- Result >bc< 'v'
