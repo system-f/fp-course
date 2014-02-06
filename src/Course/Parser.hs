@@ -87,7 +87,7 @@ valueParser a =
 failed ::
   Parser a
 failed =
-  P (const Failed)
+  result (ErrorResult Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -99,7 +99,7 @@ failed =
 character ::
   Parser Char
 character =
-  P (\s -> case s of Nil -> UnexpectedEof
+  P (\s -> case s of Nil -> ErrorResult UnexpectedEof
                      (c:.r) -> Result r c)
 
 -- | Return a parser that puts its input into the given parser and
@@ -128,7 +128,9 @@ bindParser ::
   -> Parser a
   -> Parser b
 bindParser f (P p) =
-  P (withResultInput (\r c -> parse (f c) r) . p)
+  P (\i -> case p i of
+             Result r a -> parse (f a) r
+             ErrorResult e -> ErrorResult e)
 
 fbindParser ::
   Parser a

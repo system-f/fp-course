@@ -307,7 +307,7 @@ eof ::
 eof =
   P (\s -> case s of
              Nil -> Result Nil ()
-             x -> ExpectedEof x)
+             x -> ErrorResult (ExpectedEof x))
 
 -- | Write a parser that produces a characer that satisfies all of the given predicates.
 --

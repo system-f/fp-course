@@ -80,7 +80,7 @@ jsonNumber ::
   Parser Rational
 jsonNumber =
   P (\i -> case readFloats i of
-             Empty -> Failed
+             Empty -> ErrorResult Failed
              Full (n, z) -> Result z n)
 
 -- | Parse a JSON true literal.
