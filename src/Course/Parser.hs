@@ -1,6 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
 
 module Course.Parser where
 
@@ -13,7 +14,6 @@ import Course.Bind
 import Course.Monad
 import Course.List
 import Course.Optional
-import qualified Prelude as P
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -572,9 +572,3 @@ instance Bind Parser where
     error "todo"
 
 instance Monad Parser where
-
-instance P.Monad Parser where
-  (>>=) =
-    flip (=<<)
-  return =
-    pure
