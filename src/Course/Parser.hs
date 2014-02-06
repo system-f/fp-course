@@ -368,7 +368,7 @@ sequenceParser =
 -- | Return a parser that produces the given number of values off the given parser.
 -- This parser fails if the given parser fails in the attempt to produce the given number of values.
 --
--- /Tip:/ Use @sequenceParser@ and @Prelude.replicate@.
+-- /Tip:/ Use @sequenceParser@ and @List.replicate@.
 --
 -- >>> parse (thisMany 4 upper) "ABCDef"
 -- Result >ef< "ABCD"
