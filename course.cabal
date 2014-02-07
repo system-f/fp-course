@@ -1,5 +1,5 @@
 name:                 course
-version:              0.1.0
+version:              0.1.1
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
@@ -60,6 +60,7 @@ library
                       Course.Core
                       Course.Extend
                       Course.FastAnagrams
+                      Course.FileIO
                       Course.Functor
                       Course.Id
                       Course.Interactive
