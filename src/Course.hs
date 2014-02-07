@@ -13,6 +13,7 @@ import Course.Compose as X
 import Course.Core as X
 import Course.Extend as X
 import Course.FastAnagrams as X
+import Course.FileIO as X
 import Course.Functor as X
 import Course.Id as X
 import Course.Interactive as X

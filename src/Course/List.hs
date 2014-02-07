@@ -14,6 +14,7 @@ module Course.List where
 
 import Course.Core
 import Course.Optional
+import qualified System.Environment as E
 import qualified Prelude as P
 import qualified Numeric as N
 
@@ -354,6 +355,11 @@ getLine ::
   IO Chars
 getLine =
   P.fmap listh P.getLine
+
+getArgs ::
+  IO (List Chars)
+getArgs =
+  P.fmap (listh . P.fmap listh) E.getArgs
 
 isPrefixOf ::
   Eq a =>
