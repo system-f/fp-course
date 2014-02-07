@@ -95,7 +95,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo"
+  (<$) ()
 
 -----------------------
 -- SUPPORT LIBRARIES --
