@@ -9,6 +9,7 @@ module Course.Applicative(
 , filtering
 , return
 , fail
+, ifThenElse
 ) where
 
 import Course.Core
@@ -168,3 +169,11 @@ fail ::
   -> f a
 fail =
   error . hlist
+
+ifThenElse ::
+  Bool
+  -> a
+  -> a
+  -> a
+ifThenElse p t f =
+  if p then t else f

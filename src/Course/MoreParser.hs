@@ -9,6 +9,7 @@ import Course.List
 import Course.Optional
 import Course.Applicative
 import Course.Apply
+import Course.Bind
 import Course.Traversable
 
 -- $setup

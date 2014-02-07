@@ -217,3 +217,11 @@ instance Apply [] where
 instance Apply P.Maybe where
   f <*> a =
     f P.>>= \f' -> P.fmap f' a
+
+(>>) ::
+  Apply f =>
+  f a
+  -> f b
+  -> f b
+(>>) =
+  (*>)
