@@ -101,5 +101,7 @@ ifThenElse ::
   -> a
   -> a
   -> a
-ifThenElse p t f =
-  if p then t else f
+ifThenElse True t _ =
+  t
+ifThenElse False _ f =
+  f
