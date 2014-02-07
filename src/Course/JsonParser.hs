@@ -11,6 +11,7 @@ import Course.JsonValue
 import Course.Functor
 import Course.Apply
 import Course.Applicative
+import Course.Bind
 import Course.List
 import Course.Optional
 
