@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE RebindableSyntax #-}
 
 module Course.Core(
   Eq(..)
@@ -40,6 +41,7 @@ module Course.Core(
 , (***)
 , IsString(..)
 , module Data.Char
+, ifThenElse
 ) where
 
 
@@ -93,3 +95,11 @@ import Control.Arrow(
   , (***)
   )
 import Data.Char
+
+ifThenElse ::
+  Bool
+  -> a
+  -> a
+  -> a
+ifThenElse p t f =
+  if p then t else f
