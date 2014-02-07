@@ -423,10 +423,10 @@ ageParser =
 --
 -- /Tip:/ Use @bindParser@, @valueParser@, @upper@, @list@ and @lower@.
 --
--- λ> parse firstNameParser "Abc"
+-- >>> parse firstNameParser "Abc"
 -- Result >< "Abc"
 --
--- λ> isErrorResult (parse firstNameParser "abc")
+-- >>> isErrorResult (parse firstNameParser "abc")
 -- True
 firstNameParser ::
   Parser Chars
