@@ -85,8 +85,8 @@ instance Functor ((->) t) where
 -- >>> void (Full 7)
 -- Full ()
 --
--- >>> void Nothing
--- Nothing
+-- >>> void Empty
+-- Empty
 --
 -- >>> void (+10) 5
 -- ()
