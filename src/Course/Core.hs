@@ -22,6 +22,8 @@ module Course.Core(
 , undefined
 , const
 , flip
+, curry
+, uncurry
 , id
 , otherwise
 , (.)
@@ -66,6 +68,8 @@ import Prelude(
   , undefined
   , const
   , flip
+  , curry
+  , uncurry
   , id
   , otherwise
   , (.)
