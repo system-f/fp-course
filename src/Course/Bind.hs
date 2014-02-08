@@ -122,6 +122,9 @@ join =
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
 -- Pronounced, bind flipped.
+--
+-- >>> ((+10) >>= (*)) 7
+-- 119
 (>>=) ::
   Bind f =>
   f a
@@ -134,6 +137,9 @@ infixl 1 >>=
 
 -- | Implement composition within the @Bind@ environment.
 -- Pronounced, kleisli composition.
+--
+-- >>> ((\n -> n :. n :. Nil) <=< (\n -> n+1 :. n+2 :. Nil)) 1
+-- [2,2,3,3]
 (<=<) ::
   Bind f =>
   (b -> f c)
