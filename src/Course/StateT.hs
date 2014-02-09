@@ -267,7 +267,7 @@ log1 =
 -- /Tip:/ Use `filtering` and `StateT` over (`OptionalT` over `Logger` with a @Data.Set#Set@).
 --
 -- >>> distinctG $ listh [1,2,3,2,6]
--- Logger ["even number: 6","even number: 2","","even number: 2",""] (Full [1,3,2,6])
+-- Logger ["even number: 6","even number: 2","even number: 2"] (Full [1,3,2,6])
 --
 -- >>> distinctG $ listh [1,2,3,2,6,106]
 -- Logger ["aborting > 100: 106"] Empty
