@@ -161,7 +161,7 @@ instance Applicative f => Applicative (OptionalT f) where
     error "todo"
 
 -- | Implement the `Bind` instance for `OptionalT f` given a Bind f.
-instance Bind f => Bind (OptionalT f) where
+instance Monad f => Bind (OptionalT f) where
   (=<<) =
     error "todo"
 
