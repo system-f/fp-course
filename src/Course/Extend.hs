@@ -23,8 +23,8 @@ infixr 1 <<=
 -- >>> id <<= Id 7
 -- Id (Id 7)
 instance Extend Id where
-  f <<= i =
-    Id (f i)
+  (<<=) =
+    error "todo"
 
 -- | Implement the @Extend@ instance for @List@.
 --
@@ -37,10 +37,8 @@ instance Extend Id where
 -- > reverse =<< ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. Nil)
 -- [3,2,1,6,5,4]
 instance Extend List where
-  _ <<= Nil =
-    Nil
-  f <<= x@(_ :. t) =
-    f x :. (f <<= t)
+  (<<=) =
+    error "todo"
 
 -- | Implement the @Extend@ instance for @Optional@.
 --
@@ -50,8 +48,8 @@ instance Extend List where
 -- >>> id <<= Empty
 -- Empty
 instance Extend Optional where
-  f <<= o =
-    f . Full <$> o
+  (<<=) =
+    error "todo"
 
 -- | Duplicate the functor using extension.
 --
