@@ -202,7 +202,7 @@ instance Applicative f => Applicative (OptionalT f) where
   pure =
     error "todo"
 
--- | Implement the `Bind` instance for `OptionalT f` given a Bind f.
+-- | Implement the `Bind` instance for `OptionalT f` given a Monad f.
 --
 -- >>> runOptionalT $ (\a -> OptionalT (Full (a+1) :. Full (a+2) :. Nil)) =<< OptionalT (Full 1 :. Empty :. Nil)
 -- [Full 2,Full 3,Empty]
