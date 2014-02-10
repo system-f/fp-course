@@ -39,6 +39,8 @@ instance Functor (State s) where
     State (\s -> let (a, t) = k s in (f a, t))
 
 -- | Implement the `Apply` instance for `State s`.
+-- >>> runState (pure (+1) <*> pure 0) 0
+-- (1,0)
 instance Apply (State s) where
   State f <*> State a =
     State (\s -> let (g, t) = f s
@@ -46,6 +48,8 @@ instance Apply (State s) where
                  in (g z, u))
 
 -- | Implement the `Applicative` instance for `State s`.
+-- >>> runState (pure 2) 0
+-- (2,0)
 instance Applicative (State s) where
   pure a =
     State (\s -> (a, s))
@@ -127,7 +131,8 @@ findM p (h :. t) =
 --
 -- /Tip:/ Use `findM` and `State` with a @Data.Set#Set@.
 --
--- prop> case firstRepeat xs of Empty -> let xs' = foldRight (:) [] xs in nub xs' == xs'; Full x -> length (filter (== x) xs) > 1
+-- prop> case firstRepeat xs of Empty -> let xs' = hlist xs in nub xs' == xs'; Full x -> length (filter (== x) xs) > 1
+-- prop> case firstRepeat xs of Empty -> True; Full x -> let (l, (rx :. rs)) = span (/= x) xs in let (l2, r2) = span (/= x) rs in let l3 = hlist (l ++ (rx :. Nil) ++ l2) in nub l3 == l3
 firstRepeat ::
   Ord a =>
   List a

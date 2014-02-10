@@ -39,7 +39,7 @@ instance Extend Id where
 instance Extend List where
   _ <<= Nil =
     Nil
-  f <<= x@(_ :. t) =
+  f <<= x@(_:.t) =
     f x :. (f <<= t)
 
 -- | Implement the @Extend@ instance for @Optional@.
