@@ -148,6 +148,7 @@ After this, the following progression of modules is recommended:
 * `Course.Applicative`
 * `Course.Bind`
 * `Course.Monad`
+* `Course.FileIO`
 * `Course.State`
 * `Course.StateT`
 * `Course.Extend`
