@@ -477,6 +477,10 @@ index =
 --
 -- >>> end (zipper [3,2,1] 4 [5,6,7])
 -- [6,5,4,3,2,1] >7< []
+--
+-- prop> toList lz == toList (end lz)
+--
+-- prop> rights (end lz) == Nil
 end ::
   ListZipper a
   -> ListZipper a
@@ -487,6 +491,10 @@ end =
 --
 -- >>> start (zipper [3,2,1] 4 [5,6,7])
 -- [] >1< [2,3,4,5,6,7]
+--
+-- prop> toList lz == toList (start lz)
+--
+-- prop> lefts (start lz) == Nil
 start ::
   ListZipper a
   -> ListZipper a
