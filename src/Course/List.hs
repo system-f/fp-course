@@ -301,6 +301,7 @@ produce =
   error "todo"
 
 -- | Do anything other than reverse a list.
+-- Is it even possible?
 --
 -- >>> notReverse Nil
 -- []
