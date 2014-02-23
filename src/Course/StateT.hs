@@ -37,6 +37,10 @@ instance Functor f => Functor (StateT s f) where
 --
 -- >>> runStateT (pure (+2) <*> ((pure 2) :: StateT Int List Int)) 0
 -- [(4,0)]
+--
+-- >>> import qualified Prelude as P
+-- >>> runStateT (StateT (\s -> Full ((+2), s P.++ [1])) <*> (StateT (\s -> Full (2, s P.++ [2])))) [0]
+-- Full (4,[0,1,2])
 instance Bind f => Apply (StateT s f) where
   StateT f <*> StateT a =
     -- StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
@@ -204,7 +208,7 @@ instance Applicative f => Applicative (OptionalT f) where
   pure =
     OptionalT . pure . pure
 
--- | Implement the `Bind` instance for `OptionalT f` given a Bind f.
+-- | Implement the `Bind` instance for `OptionalT f` given a Monad f.
 --
 -- >>> runOptionalT $ (\a -> OptionalT (Full (a+1) :. Full (a+2) :. Nil)) =<< OptionalT (Full 1 :. Empty :. Nil)
 -- [Full 2,Full 3,Empty]

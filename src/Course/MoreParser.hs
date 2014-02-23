@@ -313,7 +313,7 @@ eof =
 
 -- | Write a parser that produces a characer that satisfies all of the given predicates.
 --
--- /Tip:/ Use `sequenceParser` and @Data.List#and@.
+-- /Tip:/ Use `sequence` and @Data.List#and@.
 --
 -- >>> parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "ABC"
 -- Result >BC< 'A'
@@ -337,7 +337,7 @@ satisfyAll ps =
 
 -- | Write a parser that produces a characer that satisfies any of the given predicates.
 --
--- /Tip:/ Use `sequenceParser` and @Data.List#or@.
+-- /Tip:/ Use `sequence` and @Data.List#or@.
 --
 -- >>> parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "abc"
 -- Result >bc< 'a'
