@@ -436,23 +436,23 @@ surnameParser ::
 surnameParser =
   error "todo"
 
--- | Write a parser for Person.gender.
+-- | Write a parser for Person.smoker.
 --
--- /Gender: character that must be @'m'@ or @'f'@/
+-- /Smoker: character that must be @'y'@ or @'n'@/
 --
 -- /Tip:/ Use @is@ and @(|||)@./
 --
--- >>> parse genderParser "mabc"
--- Result >abc< 'm'
+-- >>> parse smokerParser "yabc"
+-- Result >abc< 'y'
 --
--- >>> parse genderParser "fabc"
--- Result >abc< 'f'
+-- >>> parse smokerParser "nabc"
+-- Result >abc< 'n'
 --
--- >>> isErrorResult (parse genderParser "abc")
+-- >>> isErrorResult (parse smokerParser "abc")
 -- True
-genderParser ::
+smokerParser ::
   Parser Char
-genderParser =
+smokerParser =
   error "todo"
 
 -- | Write part of a parser for Person.phoneBody.
@@ -507,41 +507,41 @@ phoneParser =
 --            @ageParser@,
 --            @firstNameParser@,
 --            @surnameParser@,
---            @genderParser@,
+--            @smokerParser@,
 --            @phoneParser@.
 --
 -- >>> isErrorResult (parse personParser "")
 -- True
 --
--- >>> isErrorResult (parse personParser "12x Fred Clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "12x Fred Clarkson y 123-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 fred Clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 fred Clarkson y 123-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 Fred Cla m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Cla y 123-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 Fred clarkson m 123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred clarkson y 123-456.789#")
 -- True
 --
 -- >>> isErrorResult (parse personParser "123 Fred Clarkson x 123-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 Fred Clarkson m 1x3-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson y 1x3-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 Fred Clarkson m -123-456.789#")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson y -123-456.789#")
 -- True
 --
--- >>> isErrorResult (parse personParser "123 Fred Clarkson m 123-456.789")
+-- >>> isErrorResult (parse personParser "123 Fred Clarkson y 123-456.789")
 -- True
 --
 -- >>> parse personParser "123 Fred Clarkson m 123-456.789#"
--- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"}
+-- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
 --
 -- >>> parse personParser "123 Fred Clarkson m 123-456.789# rest"
--- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", gender = 'm', phone = "123-456.789"}
+-- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
 personParser ::
   Parser Person
 personParser =
