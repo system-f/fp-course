@@ -114,8 +114,10 @@ mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
-mapParser =
-  error "todo"
+mapParser f (P p) =
+  P (\input -> case p input of 
+                 ErrorResult e -> ErrorResult e
+                 Result r a -> Result r (f a))
 
 -- | This is @mapParser@ with the arguments flipped.
 -- It might be more helpful to use this function if you prefer this argument order.
@@ -172,7 +174,7 @@ flbindParser =
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- /Tip:/ Use @bindParser@ or @fbindParser@.
+-- /Tip:/ Use @bindParser@ or @flbindParser@.
 --
 -- >>> parse (character >>> valueParser 'v') "abc"
 -- Result >bc< 'v'
@@ -262,8 +264,8 @@ many1 ::
   Parser a
   -> Parser (List a)
 many1 k =
-  fbindParser k (\k' ->
-  fbindParser (list k) (\kk' ->
+  flbindParser k (\k' ->
+  flbindParser (list k) (\kk' ->
   valueParser (k' :. kk')))
 
 -- | Return a parser that produces a character but fails if
@@ -403,8 +405,8 @@ sequenceParser ::
 sequenceParser Nil =
   valueParser Nil
 sequenceParser (h:.t) =
-  fbindParser h (\a ->
-  fbindParser (sequenceParser t) (\as ->
+  flbindParser h (\a ->
+  flbindParser (sequenceParser t) (\as ->
   valueParser (a :. as)))
 
 -- | Return a parser that produces the given number of values off the given parser.
@@ -456,8 +458,8 @@ ageParser =
 firstNameParser ::
   Parser Chars
 firstNameParser =
-  fbindParser upper (\c ->
-  fbindParser (list lower) (\cs ->
+  flbindParser upper (\c ->
+  flbindParser (list lower) (\cs ->
   valueParser (c :. cs)))
 
 -- | Write a parser for Person.surname.
@@ -477,9 +479,9 @@ firstNameParser =
 surnameParser ::
   Parser Chars
 surnameParser =
-  fbindParser upper (\c ->
-  fbindParser (thisMany 5 lower) (\cs ->
-  fbindParser (list lower) (\t ->
+  flbindParser upper (\c ->
+  flbindParser (thisMany 5 lower) (\cs ->
+  flbindParser (list lower) (\t ->
   valueParser (c :. cs ++ t))))
 
 -- | Write a parser for Person.smoker.
@@ -543,9 +545,9 @@ phoneBodyParser =
 phoneParser ::
   Parser Chars
 phoneParser =
-  fbindParser digit (\d ->
-  fbindParser phoneBodyParser (\z ->
-  fbindParser (is '#') (\_ ->
+  flbindParser digit (\d ->
+  flbindParser phoneBodyParser (\z ->
+  flbindParser (is '#') (\_ ->
   valueParser (d :. z))))
 
 -- | Write a parser for Person.
@@ -594,15 +596,15 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  fbindParser ageParser (\a ->
+  flbindParser ageParser (\a ->
   spaces1 >>>
-  fbindParser firstNameParser (\f ->
+  flbindParser firstNameParser (\f ->
   spaces1 >>>
-  fbindParser surnameParser (\s ->
+  flbindParser surnameParser (\s ->
   spaces1 >>>
-  fbindParser smokerParser (\g ->
+  flbindParser smokerParser (\g ->
   spaces1 >>>
-  fbindParser phoneParser (
+  flbindParser phoneParser (
   valueParser . Person a f s g)))))
 
 -- Make sure all the tests pass!
