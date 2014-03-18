@@ -32,7 +32,7 @@ data ParseError =
 
 instance Show ParseError where
   show UnexpectedEof =
-    "Expected end of stream"
+    "Unexpected end of stream"
   show (ExpectedEof i) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
