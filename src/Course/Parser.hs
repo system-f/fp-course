@@ -64,13 +64,6 @@ data Parser a = P {
   parse :: Input -> ParseResult a
 }
 
--- Function to produce a parser with the given result.
-result ::
-  ParseResult a
-  -> Parser a
-result =
-  P . const
-
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::
   Char
