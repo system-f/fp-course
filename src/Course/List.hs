@@ -249,23 +249,16 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap f Nil =
-  Nil
-flatMap f (h :. t) = 
-  -- f :: a -> List b
-  -- h :: a
-  -- t :: List a
-  -- flatMap :: (a -> List b) -> List a -> List b
-  -- f h :: List b
-  -- flatMap f t :: List b
-  -- (++) :: List b -> List b -> List b
-  -- f h ++ flatMap f t :: List b
-  f h ++ flatMap f t
+flatMap f x =
+  flatten (map f x)
+
+flattenagain ::
+  List (List a)
+  -> List a
+flattenagain =
+  flatMap id
 
 flatMapagain f = foldRight ((++) . f) Nil
-
-flattenagain = flatMap id
-
 
 flatMap' :: (a -> List b) -> List a -> List b
 flatMap' f =
@@ -431,7 +424,7 @@ produce ::
   -> a
   -> List a
 produce f a =
-  a:.produce f (f a)
+  (:.) a (produce f (f a))
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?

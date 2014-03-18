@@ -15,6 +15,15 @@ class Functor f where
     (a -> b)
     -> f a
     -> f b
+  (<$>) = fmap
+  -- f<U> fmap(func<T, U> f, f<T>)
+  fmap ::
+    (a -> b)
+    -> f a
+    -> f b
+
+
+
 
 infixl 4 <$>
 
@@ -28,8 +37,10 @@ infixl 4 <$>
 -- >>> (+1) <$> Id 2
 -- Id 3
 instance Functor Id where
-  (<$>) =
-    error "todo"
+  -- data Id a = Id a
+  -- (<$>) :: (a -> b) -> f a -> f b
+  -- (<$>) :: (a -> b) -> Id a -> Id b
+  (<$>) f (Id a) = Id (f a)
 
 -- | Maps a function on the List functor.
 --
@@ -39,8 +50,13 @@ instance Functor Id where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
-  (<$>) =
-    error "todo"
+  -- (<$>) :: (a -> b) -> f a -> f b
+  -- (<$>) :: (a -> b) -> List a -> List b
+  -- (<$>) f list = map f list
+  (<$>) f Nil =
+    Nil
+  (<$>) f (h :. t) =   
+    f h :. (f <$> t)
 
 -- | Maps a function on the Optional functor.
 --
@@ -50,16 +66,39 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
-  (<$>) =
-    error "todo"
+  -- (<$>) :: (a -> b) -> f a -> f b
+  -- (<$>) :: (a -> b) -> Optional a -> Optional b
+  (<$>) _ Empty =
+    Empty
+  (<$>) f (Full a) =
+    -- f :: a -> b
+    -- a :: a
+    -- f a :: b
+    -- ??? :: Optional b 
+    Full (f a)  
+  -- (<$>) f optional = mapOptional f optional
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
 instance Functor ((->) t) where
-  (<$>) =
-    error "todo"
+  -- (<$>) :: (a -> b) -> f a -> f b
+  -- (<$>) :: (a -> b) -> (((->) t) a) -> (((->) t) b)
+  -- (<$>) :: (a -> b) -> (t -> a) -> (t -> b)
+  -- (<$>) :: (a -> b) -> (t -> a) -> t -> b
+  --   (square -> circle) -> (star -> square) -> star -> circle
+  --  f(x) = z,  g(y) = x, x,    ? = z         
+  (<$>)       f           g           t  =
+     -- f :: a -> b
+     -- g :: t -> a
+     -- t :: t
+     -- g t :: a
+     -- f (g t) :: b 
+     -- undefined :: b
+     f (g t)
+  -- (<$>) = (.)   
+
 
 -- | Anonymous map. Maps a constant value on a functor.
 --

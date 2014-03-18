@@ -32,7 +32,7 @@ data ParseError =
 
 instance Show ParseError where
   show UnexpectedEof =
-    "Expected end of stream"
+    "Unexpected end of stream"
   show (ExpectedEof i) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
@@ -78,8 +78,8 @@ result =
 valueParser ::
   a
   -> Parser a
-valueParser =
-  error "todo"
+valueParser x =
+  P (\input -> Result input x)
 
 -- | Return a parser that always fails with the given error.
 --
@@ -88,7 +88,7 @@ valueParser =
 failed ::
   Parser a
 failed =
-  error "todo"
+  P (\_ -> ErrorResult Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -100,7 +100,9 @@ failed =
 character ::
   Parser Char
 character =
-  error "todo"
+  P (\input -> case input of
+                 Nil -> ErrorResult UnexpectedEof
+                 h:.t -> Result t h)
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -124,11 +126,20 @@ character =
 -- >>> isErrorResult (parse (bindParser (\c -> if c == 'x' then character else valueParser 'v') character) "x")
 -- True
 bindParser ::
-  (a -> Parser b)
-  -> Parser a
-  -> Parser b
-bindParser =
-  error "todo"
+  (q -> Parser y)
+  -> Parser q
+  -> Parser y
+bindParser f p =
+  -- f :: q -> Parser y
+  -- p :: Parser q
+  -- parse p :: Input -> ParseResult q
+  -- rest :: Input
+  -- q :: q
+  ----
+  -- ? :: ParseResult y
+  P (\input -> case parse p input of
+                 ErrorResult e -> ErrorResult e
+                 Result rest q -> parse (f q) rest)
 
 fbindParser ::
   Parser a
@@ -136,6 +147,15 @@ fbindParser ::
   -> Parser b
 fbindParser =
   flip bindParser
+
+
+pairparser :: Parser (Char, Char)
+pairparser = 
+  -- undefined :: Parser (Char, Char)
+
+  fbindParser character (\char1 -> 
+  fbindParser character (\char2 -> 
+  valueParser (char1, char2)))
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -155,8 +175,10 @@ fbindParser =
   Parser a
   -> Parser b
   -> Parser b
-(>>>) =
-  error "todo"
+(>>>) pa pb =
+  fbindParser pa (\_ -> 
+  fbindParser pb (\b ->
+  valueParser b))
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -166,6 +188,9 @@ fbindParser =
 --
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
+--
+-- >>> parse (character 'y' ||| character 'n') "y"
+-- Result >< 'y'
 --
 -- >>> parse (failed ||| valueParser 'v') ""
 -- Result >< 'v'
@@ -179,8 +204,12 @@ fbindParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) =
-  error "todo"
+(|||) p1 p2 =
+  -- p1 :: Input -> ParseResult a
+  -- p2 :: Input -> ParseResult a
+  P (\input -> case parse p1 input of
+                 ErrorResult _ -> parse p2 input
+                 Result r a -> Result r a)
 
 infixl 3 |||
 
@@ -209,6 +238,9 @@ list ::
   Parser a
   -> Parser (List a)
 list =
+-- A 0 or many parser is a 1 or many parser (many1)
+-- |||OR||| (wink wink) a parser that
+-- ALWAYS PRODUCES Nil (valueParser?).
   error "todo"
 
 -- | Return a parser that produces at least one value from the given parser then
@@ -226,6 +258,11 @@ list =
 -- >>> isErrorResult (parse (many1 (character *> valueParser 'v')) "")
 -- True
 many1 ::
+-- A 1 or many parser is a parser that runs a parser
+-- producing a value (call it a), 
+-- bi.THEN.ndPar.RUN.ser a 0 or many parser
+-- producing a list (call it listofa), 
+-- bi.THEN.ndParser cons a to listofa
   Parser a
   -> Parser (List a)
 many1 =
