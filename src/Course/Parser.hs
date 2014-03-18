@@ -32,7 +32,7 @@ data ParseError =
 
 instance Show ParseError where
   show UnexpectedEof =
-    "Expected end of stream"
+    "Unexpected end of stream"
   show (ExpectedEof i) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
@@ -64,12 +64,12 @@ data Parser a = P {
   parse :: Input -> ParseResult a
 }
 
--- Function to produce a parser with the given result.
-result ::
-  ParseResult a
+-- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
+unexpectedCharParser ::
+  Char
   -> Parser a
-result =
-  P . const
+unexpectedCharParser c =
+  P (\_ -> ErrorResult (UnexpectedChar c))
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -88,7 +88,7 @@ valueParser a =
 failed ::
   Parser a
 failed =
-  result (ErrorResult Failed)
+  P (\_ -> ErrorResult Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -259,7 +259,7 @@ satisfy ::
   -> Parser Char
 satisfy p =
   bindParser (\c ->
-    if p c then valueParser c else failed) character
+    if p c then valueParser c else unexpectedCharParser c) character
 
 -- | Return a parser that produces the given character but fails if
 --
@@ -419,7 +419,7 @@ ageParser =
   natural
 
 -- | Write a parser for Person.firstName.
--- /First Name: non-empty string that starts with a capital letter/
+-- /First Name: non-empty string that starts with a capital letter and is followed by zero or more lower-case letters/
 --
 -- /Tip:/ Use @bindParser@, @valueParser@, @upper@, @list@ and @lower@.
 --
