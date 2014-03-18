@@ -403,7 +403,7 @@ ageParser =
   error "todo"
 
 -- | Write a parser for Person.firstName.
--- /First Name: non-empty string that starts with a capital letter/
+-- /First Name: non-empty string that starts with a capital letter and is followed by zero or more lower-case letters/
 --
 -- /Tip:/ Use @bindParser@, @valueParser@, @upper@, @list@ and @lower@.
 --
