@@ -102,6 +102,29 @@ character ::
 character =
   error "todo"
 
+-- | Return a parser that maps any succeeding result with the given function.
+--
+-- >>> parse (mapParser succ character) "amz"
+-- Result >mz< 'b'
+--
+-- parse (mapParser (+10) (valueParser 7)) ""
+-- Result >< 17
+mapParser ::
+  (a -> b)
+  -> Parser a
+  -> Parser b
+mapParser =
+  error "todo"
+
+-- | This is @mapParser@ with the arguments flipped.
+-- It might be more helpful to use this function if you prefer this argument order.
+flmapParser ::
+  Parser a
+  -> (a -> b)
+  -> Parser b
+flmapParser =
+  flip mapParser
+
 -- | Return a parser that puts its input into the given parser and
 --
 --   * if that parser succeeds with a value (a), put that value into the given function
@@ -130,11 +153,13 @@ bindParser ::
 bindParser =
   error "todo"
 
-fbindParser ::
+-- | This is @bindParser@ with the arguments flipped.
+-- It might be more helpful to use this function if you prefer this argument order.
+flbindParser ::
   Parser a
   -> (a -> Parser b)
   -> Parser b
-fbindParser =
+flbindParser =
   flip bindParser
 
 -- | Return a parser that puts its input into the given parser and
