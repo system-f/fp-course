@@ -131,7 +131,7 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map f Nil =
+map _ Nil =
   Nil
 map f (h :. t) =
   -- f :: a -> b 
@@ -193,22 +193,6 @@ filteragain p =
 
 infixr 5 ++
 
-bar :: Optional Int -> Int
-bar Empty = 0
-bar (Full n) = 1
-
-bar' :: List (Optional Int) -> Int
-bar' ((Full n) :. tail) = undefined
-bar' (Empty :. tail) = undefined
-bar' Nil = undefined
-
-bar'' :: List (Optional Int) -> Int
-bar'' (h :. t) = 
-  case h of
-    Empty -> 0
-    Full n -> n
-bar'' Nil =
-  0    
 -- | Flatten a list of lists to a list.
 --
 -- >>> flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil)
@@ -258,6 +242,7 @@ flattenagain ::
 flattenagain =
   flatMap id
 
+flatMapagain :: (a -> List b) -> List a -> List b
 flatMapagain f = foldRight ((++) . f) Nil
 
 flatMap' :: (a -> List b) -> List a -> List b
@@ -344,15 +329,11 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find f Nil =
+find _ Nil =
   Empty
 find f (h :. t) =   
-  ifproper (find f t) (Full h) (f h)
+  if f h then Full h else find f t
 
-find' f = foldRight undefined Nil
-
-ifproper _ t True = t
-ifproper f _ False = f
 
 -- | Determine if the length of the given list is greater than 4.
 --
@@ -392,9 +373,7 @@ reverse ::
   List a
   -> List a
 reverse =
-  foldLeft (hithere) Nil
-
-hithere r e = e :. r
+  foldLeft (flip (:.)) Nil
 
 reverse0 :: List a -> List a -> List a
 reverse0    acc       Nil    = acc

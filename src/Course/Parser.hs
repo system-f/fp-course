@@ -237,11 +237,11 @@ infixl 3 |||
 list ::
   Parser a
   -> Parser (List a)
-list =
+list p =
 -- A 0 or many parser is a 1 or many parser (many1)
 -- |||OR||| (wink wink) a parser that
 -- ALWAYS PRODUCES Nil (valueParser?).
-  error "todo"
+  many1 p ||| valueParser Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -258,15 +258,17 @@ list =
 -- >>> isErrorResult (parse (many1 (character *> valueParser 'v')) "")
 -- True
 many1 ::
--- A 1 or many parser is a parser that runs a parser
+-- A 1 or many parser is (=) a parser that runs
 -- producing a value (call it a), 
 -- bi.THEN.ndPar.RUN.ser a 0 or many parser
 -- producing a list (call it listofa), 
 -- bi.THEN.ndParser cons a to listofa
   Parser a
   -> Parser (List a)
-many1 =
-  error "todo"
+many1 p =
+  fbindParser p        (\a -> 
+  fbindParser (list p) (\listofa ->
+  valueParser (a :. listofa)))
 
 -- | Return a parser that produces a character but fails if
 --
@@ -284,8 +286,17 @@ many1 =
 satisfy ::
   (Char -> Bool)
   -> Parser Char
-satisfy =
-  error "todo"
+satisfy p =
+  fbindParser character (\char ->
+    if p char 
+      then valueParser char
+      else P (\_ -> ErrorResult (UnexpectedChar char)))
+--         result (ErrorResult (UnexpectedChar char))
+unexpectedCharP ::
+  Char
+  -> Parser a
+unexpectedCharP c =
+  P (\_ -> ErrorResult (UnexpectedChar c))
 
 -- | Return a parser that produces the given character but fails if
 --
@@ -296,8 +307,10 @@ satisfy =
 -- /Tip:/ Use the @satisfy@ function.
 is ::
   Char -> Parser Char
-is =
-  error "todo"
+is c =
+--  satisfy (\char -> char == c)
+  satisfy (== c)
+-- satisfy . (==)
 
 -- | Return a parser that produces a character between '0' and '9' but fails if
 --
@@ -309,7 +322,8 @@ is =
 digit ::
   Parser Char
 digit =
-  error "todo"
+  satisfy isDigit
+
 
 -- | Return a parser that produces zero or a positive integer but fails if
 --
@@ -322,7 +336,9 @@ digit =
 natural ::
   Parser Int
 natural =
-  error "todo"
+  fbindParser (list digit) (\ds -> case read ds of
+                                     Empty -> failed
+                                     Full n -> valueParser n)
 
 --
 -- | Return a parser that produces a space character but fails if
@@ -335,7 +351,7 @@ natural =
 space ::
   Parser Char
 space =
-  error "todo"
+  satisfy isSpace
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if
@@ -348,7 +364,7 @@ space =
 spaces1 ::
   Parser Chars
 spaces1 =
-  error "todo"
+  many1 space
 
 -- | Return a parser that produces a lower-case character but fails if
 --
@@ -360,7 +376,7 @@ spaces1 =
 lower ::
   Parser Char
 lower =
-  error "todo"
+  satisfy isLower
 
 -- | Return a parser that produces an upper-case character but fails if
 --
@@ -372,7 +388,7 @@ lower =
 upper ::
   Parser Char
 upper =
-  error "todo"
+  satisfy isUpper
 
 -- | Return a parser that produces an alpha character but fails if
 --
@@ -384,7 +400,7 @@ upper =
 alpha ::
   Parser Char
 alpha =
-  error "todo"
+  satisfy isAlpha
 
 -- | Return a parser that sequences the given list of parsers by producing all their results
 -- but fails on the first failing parser of the list.
@@ -400,9 +416,35 @@ alpha =
 sequenceParser ::
   List (Parser a)
   -> Parser (List a)
-sequenceParser =
-  error "todo"
+sequenceParser = 
+  foldRight (twiceParser (:.)) (valueParser Nil)
+  
+  {-
+  fbindParser h (\a ->
+  fbindParser (sequenceParser t) (\as ->
+  valueParser (a:.as)))
+  -}
 
+twiceParser ::
+  (a -> b -> c)
+  -> Parser a 
+  -> Parser b
+  -> Parser c
+twiceParser f pa pb =
+  fbindParser pa (\a ->
+  fbindParser pb (\b ->
+  valueParser (f a b))) 
+{-
+twiceOptionalagain ::
+  (a -> b -> c)
+  -> Optional a 
+  -> Optional b
+  -> Optional c
+twiceOptionalagain f oa ob = 
+  fbindOptional oa (\a ->
+  fbindOptional ob (\b ->
+  Full (f a b))) 
+-}
 -- | Return a parser that produces the given number of values off the given parser.
 -- This parser fails if the given parser fails in the attempt to produce the given number of values.
 --

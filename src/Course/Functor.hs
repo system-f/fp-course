@@ -15,12 +15,6 @@ class Functor f where
     (a -> b)
     -> f a
     -> f b
-  (<$>) = fmap
-  -- f<U> fmap(func<T, U> f, f<T>)
-  fmap ::
-    (a -> b)
-    -> f a
-    -> f b
 
 
 
@@ -53,7 +47,7 @@ instance Functor List where
   -- (<$>) :: (a -> b) -> f a -> f b
   -- (<$>) :: (a -> b) -> List a -> List b
   -- (<$>) f list = map f list
-  (<$>) f Nil =
+  (<$>) _ Nil =
     Nil
   (<$>) f (h :. t) =   
     f h :. (f <$> t)
