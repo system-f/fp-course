@@ -103,6 +103,29 @@ character =
   P (\s -> case s of Nil -> ErrorResult UnexpectedEof
                      (c:.r) -> Result r c)
 
+-- | Return a parser that maps any succeeding result with the given function.
+--
+-- >>> parse (mapParser succ character) "amz"
+-- Result >mz< 'b'
+--
+-- parse (mapParser (+10) (valueParser 7)) ""
+-- Result >< 17
+mapParser ::
+  (a -> b)
+  -> Parser a
+  -> Parser b
+mapParser =
+  error "todo"
+
+-- | This is @mapParser@ with the arguments flipped.
+-- It might be more helpful to use this function if you prefer this argument order.
+flmapParser ::
+  Parser a
+  -> (a -> b)
+  -> Parser b
+flmapParser =
+  flip mapParser
+
 -- | Return a parser that puts its input into the given parser and
 --
 --   * if that parser succeeds with a value (a), put that value into the given function
@@ -133,11 +156,13 @@ bindParser f (P p) =
              Result r a -> parse (f a) r
              ErrorResult e -> ErrorResult e)
 
-fbindParser ::
+-- | This is @bindParser@ with the arguments flipped.
+-- It might be more helpful to use this function if you prefer this argument order.
+flbindParser ::
   Parser a
   -> (a -> Parser b)
   -> Parser b
-fbindParser =
+flbindParser =
   flip bindParser
 
 -- | Return a parser that puts its input into the given parser and
@@ -223,7 +248,7 @@ list k =
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
 -- The returned parser fails if The input is empty.
 --
--- /Tip:/ Use @bindParser@, @list@ and @value@.
+-- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
 --
 -- >>> parse (many1 (character)) "abc"
 -- Result >< "abc"
