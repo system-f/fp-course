@@ -71,6 +71,13 @@ result ::
 result =
   P . const
 
+-- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
+unexpectedCharParser ::
+  Char
+  -> Parser a
+unexpectedCharParser c =
+  P (\_ -> ErrorResult (UnexpectedChar c))
+
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
 -- >>> parse (valueParser 3) "abc"
