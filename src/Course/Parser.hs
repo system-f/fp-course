@@ -529,6 +529,7 @@ phoneParser =
 -- /Tip:/ Use @bindParser@,
 --            @valueParser@,
 --            @(>>>)@,
+--            @spaces1@,
 --            @ageParser@,
 --            @firstNameParser@,
 --            @surnameParser@,
