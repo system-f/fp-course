@@ -69,13 +69,10 @@ the contents of c
 main ::
   IO ()
 main =
-  getArgs >>= traversey_ run >>= \_ -> putStrLn "helo"
+  getArgs >>= traversey_ run
 
-{-
-  do 
-    args <- getArgs
-    traversey_ run args
--}
+void_ :: IO a -> IO ()
+void_ io = (\_ -> ()) <$> io
 
 traversey_ :: (a -> IO b) -> List a -> IO ()
 traversey_ f as = traversey f as >>= \_ -> pure ()
