@@ -127,7 +127,7 @@ option =
 
 -- | Write a parser that parses 1 or more digits.
 --
--- /Tip:/ Use `many1` and `digit`.
+-- /Tip:/ Use `list1` and `digit`.
 --
 -- >>> parse digits1 "123"
 -- Result >< "123"
