@@ -69,7 +69,19 @@ the contents of c
 main ::
   IO ()
 main =
-  putStrLn "hi"
+  getArgs >>= traversey_ run >>= \_ -> putStrLn "helo"
+
+{-
+  do 
+    args <- getArgs
+    traversey_ run args
+-}
+
+traversey_ :: (a -> IO b) -> List a -> IO ()
+traversey_ f as = traversey f as >>= \_ -> pure ()
+
+traversey :: (a -> IO b) -> List a -> IO (List b)
+traversey f = sequenceIO . map f 
 
 type FilePath =
   Chars
@@ -78,14 +90,17 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo"
-
+run filepath = 
+  do
+     content <- readFile filepath
+     files <- getFiles (lines content)
+     printFiles files
+ 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
-getFiles =
-  error "todo"
+getFiles paths =
+  sequenceIO (map getFile paths)
 
 getFile ::
   FilePath
@@ -99,21 +114,59 @@ getFile path =
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
-printFiles =
-  error "todo"
+printFiles as =
+  do _ <- (sequenceIO . map (uncurry printFile)) as
+     pure ()
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo"
+printFile path contents =
+  putStrLn (constructFileContents path contents)
+
+-- |
+--
+-- prop> x + 0 == x
+constructFileContents ::
+  FilePath
+  -> Chars
+  -> Chars
+constructFileContents path contents =
+  "============ " ++ path ++ "\n" ++ contents
 
 sequenceIO ::
   List (IO a)
   -> IO (List a)
-sequenceIO =
-  error "hi there"  
+sequenceIO Nil =
+  pure Nil
+sequenceIO (h:.t) =
+  -- h :: IO a
+  -- sequence t :: IO (List a)
+  -- a :: a
+  -- r :: List a
+  {-
+  h            >>= \a ->
+  sequenceIO t >>= \r ->
+  pure (a :. r)
+-}
+  do a <- h
+     r <- sequenceIO t
+     pure (a :. r)
+
+  -- foldRight (twiceOptional (:.)) (Full Nil)
+  -- foldRight (twiceParser (:.)) (valueParser Nil)
+  -- foldRight (twiceIO (:.)) (pure Nil)
+
+twiceIO ::
+  (a -> b -> c)
+  -> IO a
+  -> IO b
+  -> IO c
+twiceIO f x y =
+  do aa <- x
+     bb <- y
+     pure (f aa bb)
 
 {-
 lift0/pure/unit/return
