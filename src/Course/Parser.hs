@@ -36,7 +36,7 @@ instance Show ParseError where
   show (ExpectedEof i) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
-    stringconcat ["Unexpected character", show [c]]
+    stringconcat ["Unexpected character: ", show [c]]
   show Failed =
     "Parse failed"
 
