@@ -27,6 +27,9 @@ Abstractions --
 
     <$>, <*>, >>=, =<<, pure
 
+
+  -- sequenceIO
+
 Problem --
   Given a single argument of a file name, read that file,
   each line of that file contains the name of another file,
@@ -59,11 +62,14 @@ the contents of c
 
 -}
 
+-- sequenceIO :: List (IO a) -> IO (List a)
+-- sequenceIO = ???
+
 -- /Tip:/ use @getArgs@ and @run@
 main ::
   IO ()
 main =
-  error "todo"
+  putStrLn "hi"
 
 type FilePath =
   Chars
@@ -84,8 +90,11 @@ getFiles =
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
-getFile =
-  error "todo"
+getFile path =
+--  do contents <- readFile path
+--     pure (path, contents)
+  readFile path >>= \content -> 
+  pure (path, content)
 
 printFiles ::
   List (FilePath, Chars)
@@ -100,3 +109,22 @@ printFile ::
 printFile =
   error "todo"
 
+sequenceIO ::
+  List (IO a)
+  -> IO (List a)
+sequenceIO =
+  error "hi there"  
+
+{-
+lift0/pure/unit/return
+                z ->                       f z
+
+lift1/map/fmap/(<$>)
+          (y -> z) ->               f y -> f z  
+
+lift2/liftA2/liftM2          
+     (x -> y -> z) ->        f x -> f y -> f z
+
+lift3/liftA3/liftM3     
+(w -> x -> y -> z) -> f w -> f x -> f y -> f z
+-}

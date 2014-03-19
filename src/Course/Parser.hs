@@ -701,8 +701,7 @@ instance Apply Parser where
     do f <- pf
        a <- pa
        valueParser (f a)
-    na
-
+    
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
   pure =
