@@ -131,7 +131,8 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo"
+  -- error "todo"
+  flip (=<<)
 
 infixl 1 >>=
 

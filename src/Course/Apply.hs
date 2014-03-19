@@ -185,8 +185,8 @@ lift4 =
   f a
   -> f b
   -> f b
-(*>) =
-  error "todo"
+a *> b =
+  const <$> b <*> a
 
 -- | Sequence, discarding the value of the second argument.
 -- Pronounced, left apply.
