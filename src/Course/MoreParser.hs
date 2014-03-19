@@ -129,7 +129,7 @@ option a p =
 
 -- | Write a parser that parses 1 or more digits.
 --
--- /Tip:/ Use `many1` and `digit`.
+-- /Tip:/ Use `list1` and `digit`.
 --
 -- >>> parse digits1 "123"
 -- Result >< "123"
@@ -139,7 +139,7 @@ option a p =
 digits1 ::
   Parser Chars
 digits1 =
-  many1 digit
+  list1 digit
 
 -- | Write a function that parses one of the characters in the given string.
 --

@@ -36,7 +36,7 @@ instance Show ParseError where
   show (ExpectedEof i) =
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
-    stringconcat ["Unexpected character", show [c]]
+    stringconcat ["Unexpected character: ", show [c]]
   show Failed =
     "Parse failed"
 
@@ -221,7 +221,7 @@ infixl 3 |||
 
 -- | Return a parser that continues producing a list of values from the given parser.
 --
--- /Tip:/ Use @many1@, @valueParser@ and @(|||)@.
+-- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
 --
 -- >>> parse (list (character)) ""
 -- Result >< ""
@@ -244,7 +244,7 @@ list ::
   Parser a
   -> Parser (List a)
 list k =
-  many1 k ||| valueParser Nil
+  list1 k ||| valueParser Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -252,18 +252,18 @@ list k =
 --
 -- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
 --
--- >>> parse (many1 (character)) "abc"
+-- >>> parse (list1 (character)) "abc"
 -- Result >< "abc"
 --
--- >>> parse (many1 (character *> valueParser 'v')) "abc"
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
 -- Result >< "vvv"
 --
--- >>> isErrorResult (parse (many1 (character *> valueParser 'v')) "")
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
 -- True
-many1 ::
+list1 ::
   Parser a
   -> Parser (List a)
-many1 k =
+list1 k =
   flbindParser k (\k' ->
   flbindParser (list k) (\kk' ->
   valueParser (k' :. kk')))
@@ -346,11 +346,11 @@ space =
 --
 --   * The first produced character is not a space.
 --
--- /Tip:/ Use the @many1@ and @space@ functions.
+-- /Tip:/ Use the @list1@ and @space@ functions.
 spaces1 ::
   Parser Chars
 spaces1 =
-  many1 space
+  list1 space
 
 -- | Return a parser that produces a lower-case character but fails if
 --
@@ -555,6 +555,7 @@ phoneParser =
 -- /Tip:/ Use @bindParser@,
 --            @valueParser@,
 --            @(>>>)@,
+--            @spaces1@,
 --            @ageParser@,
 --            @firstNameParser@,
 --            @surnameParser@,
