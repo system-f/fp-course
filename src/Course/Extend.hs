@@ -34,8 +34,8 @@ instance Extend Id where
 -- >>> id <<= (1 :. 2 :. 3 :. 4 :. Nil)
 -- [[1,2,3,4],[2,3,4],[3,4],[4]]
 --
--- > reverse =<< ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. Nil)
--- [3,2,1,6,5,4]
+-- >>> reverse <<= ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. Nil)
+-- [[[4,5,6],[1,2,3]],[[4,5,6]]]
 instance Extend List where
   (<<=) =
     error "todo"
