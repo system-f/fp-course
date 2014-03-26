@@ -1,8 +1,16 @@
 # Functional Programming Course
 
-### Written by Tony Morris & Mark Hibberd
+![NICTA](http://i.imgur.com/sMXB9XB.jpg)
 
-### With support from NICTA Limited and contributions from individuals (thanks!)
+### Written by Tony Morris & Mark Hibberd for NICTA
+
+### With contributions from individuals (thanks!)
+
+#### Special note
+
+If you have arrived here by https://github.com/tonymorris/course and you are
+looking for the *exercises* (not the answers), please go to
+https://github.com/NICTA/course
 
 #### Introduction
 
