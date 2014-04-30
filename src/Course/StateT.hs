@@ -159,7 +159,7 @@ distinct' ::
   List a
   -> List a
 distinct' x =
-  eval' (filtering (\a -> state' (S.member a &&& S.insert a)) x) S.empty
+  eval' (filtering (\a -> state' (S.notMember a &&& S.insert a)) x) S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- However, if you see a value greater than `100` in the list,
