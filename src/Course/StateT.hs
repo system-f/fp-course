@@ -17,6 +17,11 @@ import Course.State
 import qualified Data.Set as S
 import qualified Prelude as P
 
+-- $setup
+-- >>> import Test.QuickCheck
+-- >>> import qualified Prelude as P(fmap)
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap listh arbitrary
+
 -- | A `StateT` is a function from a state value `s` to a functor f of (a produced value `a`, and a resulting state `s`).
 newtype StateT s f a =
   StateT {
@@ -153,6 +158,8 @@ putT =
 -- | Remove all duplicate elements in a `List`.
 --
 -- /Tip:/ Use `filtering` and `State'` with a @Data.Set#Set@.
+--
+-- prop> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
 distinct' ::
   (Ord a, Num a) =>
   List a
