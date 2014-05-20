@@ -159,7 +159,7 @@ putT =
 --
 -- /Tip:/ Use `filtering` and `State'` with a @Data.Set#Set@.
 --
--- prop> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
+-- prop> distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs)
 distinct' ::
   (Ord a, Num a) =>
   List a
