@@ -250,6 +250,9 @@ hasRight (ListZipper _ _ r) =
 -- prop> findLeft (const True) -<< fromList xs == fromList xs
 --
 -- prop> findLeft (const False) (zipper l x r) == IsNotZ
+--
+-- >>> findLeft (== 1) (zipper [2, 1] 3 [4, 5])
+-- [] >1< [2,3,4,5]
 findLeft ::
   (a -> Bool)
   -> ListZipper a
@@ -265,6 +268,9 @@ findLeft p (ListZipper ls x rs) =
 -- prop> findRight (const True) -<< fromList xs == fromList xs
 --
 -- prop> findRight (const False) (zipper l x r) == IsNotZ
+--
+-- >>> findRight (== 5) (zipper [2, 1] 3 [4, 5])
+-- [4,3,2,1] >5< []
 findRight ::
   (a -> Bool)
   -> ListZipper a
