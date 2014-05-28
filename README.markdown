@@ -90,7 +90,7 @@ however, your first post might be moderated. This is simply to spam.
 
    `> :type reverse`
 
-   `[t] -> [t]`
+   `List t -> List t`
 
    This tells you that the `reverse` function takes a list of elements of some
    arbitrary type (`t`) and returns a list of elements of that same type. Try
