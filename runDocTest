@@ -1,0 +1,2 @@
+#! /bin/sh
+.cabal-sandbox/bin/doctest -isrc -Wall -fno-warn-type-defaults $@
