@@ -201,6 +201,16 @@ flatMap ::
 flatMap f =
   flatten . map f
 
+-- | Flatten a list of lists to a list (again).
+-- HOWEVER, this time use the /flatMap/ function that you just wrote.
+--
+-- prop> let types = x :: List (List Int) in flatten x == flattenAgain x
+flattenAgain ::
+  List (List a)
+  -> List a
+flattenAgain =
+  error "todo"
+
 -- | Convert a list of optional values to an optional list of values.
 --
 -- * If the list contains all `Full` values, 
