@@ -41,6 +41,10 @@ instance Functor (State s) where
 -- | Implement the `Apply` instance for `State s`.
 -- >>> runState (pure (+1) <*> pure 0) 0
 -- (1,0)
+--
+-- >>> import qualified Prelude as P
+-- >>> runState (State (\s -> ((+3), s P.++ ["apple"])) <*> State (\s -> (7, s P.++ ["banana"]))) []
+-- (10,["apple","banana"])
 instance Apply (State s) where
   (<*>) =
     error "todo"
