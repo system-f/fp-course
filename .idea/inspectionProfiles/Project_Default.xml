@@ -192,7 +192,6 @@
     <inspection_tool class="FtlReferencesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="FtlTypesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="FtlWellformednessInspection" enabled="false" level="ERROR" enabled_by_default="false" />
-    <inspection_tool class="FunctionWithInconsistentReturnsJS" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="GWTRemoteServiceAsyncCheck" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="GWTStyleCheck" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="GroovyAccessibility" enabled="false" level="WARNING" enabled_by_default="false" />
@@ -733,6 +732,7 @@
     <inspection_tool class="VtlTypesInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="W3CssValidation" enabled="false" level="WARNING" enabled_by_default="false">
       <option name="myCssVersion" value="css3" />
+      <option name="myIgnoreVendorSpecificProperties" value="false" />
     </inspection_tool>
     <inspection_tool class="WSReferenceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="WeakerAccess" enabled="false" level="WARNING" enabled_by_default="false">

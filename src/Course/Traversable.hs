@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Traversable where
 
@@ -16,5 +17,10 @@ class Functor t => Traversable t where
     -> f (t b)
 
 instance Traversable List where
+  traverse ::
+    Applicative f =>
+    (a -> f b)
+    -> List a
+    -> f (List b)
   traverse f =
     foldRight (\a b -> (:.) <$> f a <*> b) (pure Nil)

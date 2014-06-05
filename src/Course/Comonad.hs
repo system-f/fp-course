@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Comonad
 (
@@ -20,6 +21,9 @@ class Extend f => Comonad f where
 -- >>> copure (Id 7)
 -- 7
 instance Comonad Id where
+  copure ::
+    Id a
+    -> a
   copure =
     error "todo"
 

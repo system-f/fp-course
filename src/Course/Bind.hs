@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
 module Course.Bind(
@@ -72,6 +73,10 @@ infixl 4 <*>
 -- >>> (\x -> Id(x+1)) =<< Id 2
 -- Id 3
 instance Bind Id where
+  (=<<) ::
+    (a -> Id b)
+    -> Id a
+    -> Id b
   (=<<) =
     error "todo"
 
@@ -80,6 +85,10 @@ instance Bind Id where
 -- >>> (\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)
 -- [1,1,2,2,3,3]
 instance Bind List where
+  (=<<) ::
+    (a -> List b)
+    -> List a
+    -> List b
   (=<<) =
     error "todo"
 
@@ -88,6 +97,10 @@ instance Bind List where
 -- >>> (\n -> Full (n + n)) =<< Full 7
 -- Full 14
 instance Bind Optional where
+  (=<<) ::
+    (a -> Optional b)
+    -> Optional a
+    -> Optional b
   (=<<) =
     error "todo"
 
@@ -96,6 +109,10 @@ instance Bind Optional where
 -- >>> ((*) =<< (+10)) 7
 -- 119
 instance Bind ((->) t) where
+  (=<<) ::
+    (a -> ((->) t b))
+    -> ((->) t a)
+    -> ((->) t b)
   (=<<) =
     error "todo"
 

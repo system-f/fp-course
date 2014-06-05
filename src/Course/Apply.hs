@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Apply where
 
@@ -24,6 +25,10 @@ infixl 4 <*>
 -- >>> Id (+10) <*> Id 8
 -- Id 18
 instance Apply Id where
+  (<*>) ::
+    Id (a -> b)
+    -> Id a
+    -> Id b
   (<*>) =
     error "todo"
 
@@ -32,6 +37,10 @@ instance Apply Id where
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 instance Apply List where
+  (<*>) ::
+    List (a -> b)
+    -> List a
+    -> List b
   (<*>) =
     error "todo"
 
@@ -46,6 +55,10 @@ instance Apply List where
 -- >>> Full (+8) <*> Empty
 -- Empty
 instance Apply Optional where
+  (<*>) ::
+    Optional (a -> b)
+    -> Optional a
+    -> Optional b
   (<*>) =
     error "todo"
 
@@ -66,6 +79,10 @@ instance Apply Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 instance Apply ((->) t) where
+  (<*>) ::
+    ((->) t (a -> b))
+    -> ((->) t a)
+    -> ((->) t b)
   (<*>) =
     error "todo"
 
