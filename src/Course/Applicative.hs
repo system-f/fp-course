@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
 module Course.Applicative(
@@ -44,6 +45,9 @@ f <$> a =
 --
 -- prop> pure x == Id x
 instance Applicative Id where
+  pure ::
+    a
+    -> Id a
   pure =
     Id
 
@@ -51,6 +55,9 @@ instance Applicative Id where
 --
 -- prop> pure x == x :. Nil
 instance Applicative List where
+  pure ::
+    a
+    -> List a
   pure =
     (:. Nil)
 
@@ -58,6 +65,9 @@ instance Applicative List where
 --
 -- prop> pure x == Full x
 instance Applicative Optional where
+  pure ::
+    a
+    -> Optional a
   pure =
     Full
 
@@ -65,6 +75,9 @@ instance Applicative Optional where
 --
 -- prop> pure x y == x
 instance Applicative ((->) t) where
+  pure ::
+    a
+    -> ((->) t a)
   pure =
     const
 

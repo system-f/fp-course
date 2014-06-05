@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Functor where
 
@@ -28,6 +29,10 @@ infixl 4 <$>
 -- >>> (+1) <$> Id 2
 -- Id 3
 instance Functor Id where
+  (<$>) ::
+    (a -> b)
+    -> Id a
+    -> Id b
   (<$>) =
     mapId
 
@@ -39,6 +44,10 @@ instance Functor Id where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
+  (<$>) ::
+    (a -> b)
+    -> List a
+    -> List b
   (<$>) =
     map
 
@@ -50,6 +59,10 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
+  (<$>) ::
+    (a -> b)
+    -> Optional a
+    -> Optional b
   (<$>) =
     mapOptional
 
@@ -58,6 +71,10 @@ instance Functor Optional where
 -- >>> ((+1) <$> (*2)) 8
 -- 17
 instance Functor ((->) t) where
+  (<$>) ::
+    (a -> b)
+    -> ((->) t a)
+    -> ((->) t b)
   (<$>) =
     (.)
 

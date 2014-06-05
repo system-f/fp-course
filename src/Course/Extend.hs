@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.Extend where
 
@@ -23,6 +24,10 @@ infixr 1 <<=
 -- >>> id <<= Id 7
 -- Id (Id 7)
 instance Extend Id where
+  (<<=) ::
+    (Id a -> b)
+    -> Id a
+    -> Id b
   f <<= i =
     Id (f i)
 
@@ -37,6 +42,10 @@ instance Extend Id where
 -- >>> reverse <<= ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. Nil)
 -- [[[4,5,6],[1,2,3]],[[4,5,6]]]
 instance Extend List where
+  (<<=) ::
+    (List a -> b)
+    -> List a
+    -> List b
   _ <<= Nil =
     Nil
   f <<= x@(_:.t) =
@@ -50,6 +59,10 @@ instance Extend List where
 -- >>> id <<= Empty
 -- Empty
 instance Extend Optional where
+  (<<=) ::
+    (Optional a -> b)
+    -> Optional a
+    -> Optional b
   f <<= o =
     f . Full <$> o
 
