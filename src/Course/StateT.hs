@@ -230,11 +230,17 @@ instance Functor (Logger l) where
     error "todo"
 
 -- | Implement the `Apply` instance for `Logger`.
+--
+-- >>> Logger (listh [1,2]) (+7) <*> Logger (listh [3,4]) 3
+-- Logger [1,2,3,4] 10
 instance Apply (Logger l) where
   (<*>) =
     error "todo"
 
 -- | Implement the `Applicative` instance for `Logger`.
+--
+-- >>> pure "table" :: Logger Int P.String
+-- Logger [] "table"
 instance Applicative (Logger l) where
   pure =
     error "todo"
