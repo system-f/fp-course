@@ -10,13 +10,15 @@ import Data.TicTacToe.Player
 import Data.TicTacToe.GameResult
 import Data.Char
 import Control.Monad
+import System.IO
 
 -- | Play tic-tac-toe interactively.
 tictactoe ::
   IO ()
 tictactoe =
-  gameLoop (\b' -> do surround $ printWithoutPositions b'
-                      tictactoe' b') empty
+  do hSetBuffering stdin NoBuffering
+     gameLoop (\b' -> do surround $ printWithoutPositions b'
+                         tictactoe' b') empty
 
 gameLoop ::
   (BoardLike b, Move b to) =>
@@ -32,7 +34,6 @@ gameLoop k b =
           , "  q to Quit"
           , "  v to view board positions"
           ]
-        putStr "  > "
         c <- getChar
         if c `elem` "vV"
           then
@@ -48,7 +49,7 @@ gameLoop k b =
                     do line
                        putStrLn "Bye!"
                   else
-                    do surround $ putStrLn "Invalid selection. Please try again."
+                    do surround . putStrLn $ ("Invalid selection '" ++ c : "'. Please try again.")
                        gameLoop k b
 
 tictactoe' ::
