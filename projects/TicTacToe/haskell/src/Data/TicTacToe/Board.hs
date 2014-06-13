@@ -32,6 +32,7 @@ module Data.TicTacToe.Board
 , BoardLike(..)
 -- * Printing
 , showEachPosition
+, showEachPositionFlat
 , showLinePosition
 ) where
 
@@ -238,21 +239,18 @@ showEachPosition k =
              ]
   in intercalate "\n" each
 
+showEachPositionFlat ::
+  (Position -> String) -- ^ The function returning the string to substitute each position.
+  -> String
+showEachPositionFlat k =
+  concat ("1 2 3 4 5 6 7 8 9\n" : map (k$) [NW ..])
+
 showLinePosition ::
   (Position -> String)
   -> String
 showLinePosition k =
   concat ["|", k NW, k N, k NE, "|", k W, k C, k E, "|", k SW, k S, k SE, "|"]
 
-{-
-
-pos ::
-  Ord k =>
-  M.Map k Player
-  -> String
-  -> k
-  -> String
- -}
 -- | Functions that work on boards that are in play or have completed.
 --
 -- This class specifically does not specify moving on a board, since this is illegal on a completed board.

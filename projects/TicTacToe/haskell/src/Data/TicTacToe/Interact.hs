@@ -17,7 +17,8 @@ tictactoe ::
   IO ()
 tictactoe =
   do hSetBuffering stdin NoBuffering
-     gameLoop (\b' -> do surround $ printWithoutPositions b'
+     putStrLn . showWithPositions $ empty
+     gameLoop (\b' -> do surround . putStrLn . showWithoutPositions $ b'
                          tictactoe' b') empty
 
 gameLoop ::
@@ -32,12 +33,12 @@ gameLoop k b =
             show p ++ " to move [" ++ [toSymbol p] ++ "]"
           , "  [1-9] to Move"
           , "  q to Quit"
-          , "  v to view board positions"
+          , "  v to view positions"
           ]
         c <- getChar
         if c `elem` "vV"
           then
-            do surround $ printWithPositions b
+            do surround . putStrLn . showWithPositions $ b
                gameLoop k b
           else
             if c `elem` ['1'..'9']
@@ -58,12 +59,12 @@ tictactoe' ::
 tictactoe' b =
   gameLoop (foldMoveResult
               (do surround $ putStrLn "That position is already taken. Try again."
-                  printWithoutPositions b
+                  putStrLn . showWithoutPositions $ b
                   line
                   tictactoe' b)
-              (\b' -> do surround $ printWithoutPositions b'
-                         tictactoe' b')
-              (\b' -> do surround $ printWithoutPositions b'
+              (\b' -> do surround . putStrLn . showWithoutPositions $ b'
+                         tictactoe'  b')
+              (\b' -> do surround . putStrLn . showWithoutPositions $ b'
                          putStrLn (playerGameResult "Player 1 Wins!" "Player 2 Wins!" "Draw" (getResult b'))))
             b
 
@@ -92,27 +93,19 @@ nlines ::
 nlines n =
   replicateM_ n (putStrLn [])
 
-printWithPositions ::
+showWithPositions ::
   BoardLike b =>
   b
-  -> IO ()
-printWithPositions =
-  printPositions (show . fromPosition)
+  -> String
+showWithPositions b =
+  showEachPosition (\p -> maybe (show . fromPosition $ p) (return . toSymbol) (b `playerAt` p))
 
-printWithoutPositions ::
+showWithoutPositions ::
   BoardLike b =>
   b
-  -> IO ()
-printWithoutPositions =
-  printPositions (const " ")
-
-printPositions ::
-  BoardLike b =>
-  (Position -> String)
-  -> b
-  -> IO ()
-printPositions k b =
-  putStrLn (showEachPosition (\p -> maybe (k p) (return . toSymbol) (b `playerAt` p)))
+  -> String
+showWithoutPositions b =
+  showEachPosition (\p -> maybe " " (return . toSymbol) (b `playerAt` p))
 
 fromPosition ::
   Position
@@ -125,4 +118,3 @@ toPosition ::
   -> Position
 toPosition n =
   toEnum (n - 1)
-
