@@ -1,6 +1,6 @@
 module Main(main) where
 
-import Data.TicTacToe.Interact(tictactoe)
+import Data.TicTacToe(tictactoe)
 
 main ::
   IO ()
