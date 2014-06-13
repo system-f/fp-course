@@ -170,7 +170,6 @@ foldTakenBack ::
   -> (Board -> a)
   -> TakenBack
   -> a
-
 foldTakenBack e _ TakeBackIsEmpty =
   e
 foldTakenBack _ k (TakeBackIsBoard b) =

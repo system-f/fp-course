@@ -30,7 +30,7 @@ gameLoop k b =
   let p = whoseTurn b
   in do putStrLns
           [
-            show p ++ " to move [" ++ [toSymbol p] ++ "]"
+            show p ++ " to move [" ++ toSymbol p : "]"
           , "  [1-9] to Move"
           , "  q to Quit"
           , "  v to view positions"
