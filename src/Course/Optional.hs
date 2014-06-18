@@ -28,8 +28,11 @@ Full a ?? _ = a
 Empty <+> o = o
 k <+> _     = k
 
-twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
-twiceOptional f a b = bindOptional (\aa -> mapOptional (f aa) b) a
+twiceOptional ::
+  (a -> b -> c) -> (Optional a -> Optional b -> Optional c)
+twiceOptional f a b =
+  bindOptional (\aa -> 
+  mapOptional (f aa) b) a
 
 contains :: Eq a => a -> Optional a -> Bool
 contains _ Empty = False
