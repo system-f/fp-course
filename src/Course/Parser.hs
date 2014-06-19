@@ -491,7 +491,7 @@ smokerParser ::
 smokerParser =
   error "todo"
 
--- | Write part of a parser for Person.phoneBody.
+-- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
 -- It will ignore the overall requirement of a phone number to
 -- start with a digit and end with a hash (#).
@@ -590,22 +590,37 @@ personParser =
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Functor Parser where
+  (<$>) ::
+    (a -> b)
+    -> Parser a
+    -> Parser b
   (<$>) =
      error "todo"
 
 -- | Write a Apply instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Apply Parser where
+  (<*>) ::
+    Parser (a -> b)
+    -> Parser a
+    -> Parser b
   (<*>) =
     error "todo"
 
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
+  pure ::
+    a
+    -> Parser a
   pure =
     error "todo"
 
 -- | Write a Bind instance for a @Parser@.
 instance Bind Parser where
+  (=<<) ::
+    (a -> Parser b)
+    -> Parser a
+    -> Parser b
   (=<<) =
     error "todo"
 
