@@ -38,8 +38,17 @@ class Apply f => Applicative f where
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo"
+(<$>) func fa =
+  -- pure :: x -> f x
+  -- (<*>) :: f (v -> w) -> f v -> f w
+  -- func :: a -> b
+  -- fa :: f a
+  -- pure func :: f (a -> b)
+  -- (<*>) (pure func) :: f a -> f b
+  -- (<*>) (pure func) fa :: f b
+  ----
+  -- ? :: f b
+  pure func <*> fa
 
 -- | Insert into Id.
 --
@@ -49,7 +58,7 @@ instance Applicative Id where
     a
     -> Id a
   pure =
-    error "todo"
+    Id
 
 -- | Insert into a List.
 --
@@ -59,7 +68,7 @@ instance Applicative List where
     a
     -> List a
   pure =
-    error "todo"
+    (:. Nil)
 
 -- | Insert into an Optional.
 --
@@ -69,7 +78,7 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo"
+    Full
 
 -- | Insert into a constant function.
 --
@@ -77,9 +86,10 @@ instance Applicative Optional where
 instance Applicative ((->) t) where
   pure ::
     a
-    -> ((->) t a)
+    -> t
+    -> a
   pure =
-    error "todo"
+    const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -101,8 +111,27 @@ sequence ::
   Applicative f =>
   List (f a)
   -> f (List a)
-sequence =
-  error "todo"
+sequence Nil =
+  pure Nil
+sequence (h:.t) =
+  -- h :: f a
+  -- (:.) :: a -> List a -> List a
+  -- t :: List (f a)
+  -- sequence t :: f (List a)
+  -- (:.) <$> h :: f (List a -> List a)
+  -- (<*>) ((:.) <$> h) (sequence t) :: f (List a)
+  -- (:.) <$> h <*> sequence t
+  -- lift2 (:.) h (sequence t)
+  ----
+  -- ? f (List a)
+  lift2 (:.) h (sequence t)
+
+sequenceAgain :: 
+  Applicative f =>
+  List (f a)
+  -> f (List a)
+sequenceAgain =
+  foldRight (lift2 (:.)) (pure Nil)
 
 -- | Replicate an effect a given number of times.
 --
@@ -125,9 +154,9 @@ replicateA ::
   Int
   -> f a
   -> f (List a)
-replicateA =
-  error "todo"
-
+replicateA n =
+  sequence . replicate n
+  
 -- | Filter a list with a predicate that produces an effect.
 --
 -- >>> filtering (Id . even) (4 :. 5 :. 6 :. Nil)

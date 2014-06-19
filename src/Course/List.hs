@@ -269,8 +269,39 @@ seqOptional (h:.t) =
 seqOptionalAgain ::
   List (Optional a)
   -> Optional (List a)
-seqOptionalAgain =
-  foldRight (twiceOptional (:.)) (Full Nil)
+seqOptionalAgain Nil =
+--pure Nil
+  Full Nil
+seqOptionalAgain (h:.t) =
+  -- h :: Optional a
+  -- t :: List (Optional a)
+  -- seqOptionalAgain t :: Optional (List a)
+  -- i :: a
+  -- j :: List a
+  ----
+  -- ? :: Optional (List a)
+{-
+  case h of
+    Empty -> Empty
+    Full i -> case seqOptionalAgain t of 
+                Empty -> Empty
+                Full j -> Full (i :. j)
+-}
+--(<*>)         ((<$>)       (:.) h) (sequence t)
+  applyOptional (mapOptional (:.) h) (seqOptionalAgain t)
+
+-- mapOptional :: (a -> b) -> Optional a -> Optional b
+
+applyOptional ::
+  Optional (a -> b)
+  -> Optional a
+  -> Optional b
+applyOptional Empty _ =
+  Empty
+applyOptional _ Empty =
+  Empty
+applyOptional (Full f) (Full a) =
+  Full (f a)
 
 -- | Find the first element in the list matching the predicate.
 --

@@ -63,8 +63,14 @@ infixr 1 =<<
   f (a -> b)
   -> f a
   -> f b
-(<*>) =
-  error "todo"
+(<*>) fab fa =
+  -- fab :: f (a -> b)
+  -- fa :: f a
+  -- (=<<) :: ((a -> b) -> f b) -> f (a -> b) -> f b
+  -- f :: a -> b
+  ----
+  -- ? :: f b
+  (<$> fa) =<< fab
 
 infixl 4 <*>
 
@@ -77,8 +83,8 @@ instance Bind Id where
     (a -> Id b)
     -> Id a
     -> Id b
-  (=<<) =
-    error "todo"
+  f =<< Id a =
+    f a
 
 -- | Binds a function on a List.
 --
@@ -90,7 +96,7 @@ instance Bind List where
     -> List a
     -> List b
   (=<<) =
-    error "todo"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -102,7 +108,7 @@ instance Bind Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -110,11 +116,13 @@ instance Bind Optional where
 -- 119
 instance Bind ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (=<<) =
-    error "todo"
+    (a -> t -> b)
+    -> (t -> a)
+    -> t
+    -> b
+  (=<<) atb ta t =
+    atb (ta t) t
+
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -134,7 +142,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -147,8 +155,29 @@ join =
   f a
   -> (a -> f b)
   -> f b
-(>>=) =
-  flip (=<<)
+(>>=) x f =
+  join (f <$> x)
+
+{-
+join
+flatten ::
+  List (List a)
+  -> List a
+
+(<$>)
+map ::
+  (a -> b)
+  -> List a
+  -> List b
+
+(=<<) with args flipped
+flatMap ::
+  (a -> List b)
+  -> List a
+  -> List b
+flatMap f x =
+  flatten (map f x)
+-}
 
 infixl 1 >>=
 
@@ -163,8 +192,8 @@ infixl 1 >>=
   -> (a -> f b)
   -> a
   -> f c
-(<=<) =
-  error "todo"
+(<=<) f g a =
+  f =<< g a
 
 infixr 1 <=<
 
