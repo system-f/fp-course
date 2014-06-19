@@ -303,20 +303,20 @@ digit =
 --
 --   * The input is empty.
 --
---   * The input does not produce a value series of digits
+--   * The input does not produce a valid series of digits
 --
--- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @read@ and @digit@
+-- /Tip:/ Use the @bindParser@, @valueParser@, @list1@, @read@ and @digit@
 -- functions.
--- >>> parse (natural) "123"
+-- >>> parse natural "123"
 -- Result >< 123
 --
--- >>> parse (natural) "123ab"
+-- >>> parse natural "123ab"
 -- Result >ab< 123
 --
--- >>> isErrorResult (parse (natural) "abc")
+-- >>> isErrorResult (parse natural "abc")
 -- True
 --
--- >>> isErrorResult (parse (natural) "")
+-- >>> isErrorResult (parse natural "")
 -- True
 natural ::
   Parser Int
