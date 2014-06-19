@@ -169,7 +169,7 @@ flbindParser =
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- /Tip:/ Use @bindParser@ or @fbindParser@.
+-- /Tip:/ Use @bindParser@ or @flbindParser@.
 --
 -- >>> parse (character >>> valueParser 'v') "abc"
 -- Result >bc< 'v'
