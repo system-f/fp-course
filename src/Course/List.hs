@@ -286,6 +286,9 @@ lengthGT4 =
 -- >>> reverse Nil
 -- []
 --
+-- >>> take 1 (reverse largeList)
+-- [50000]
+--
 -- prop> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
 -- prop> let types = x :: Int in reverse (x :. Nil) == x :. Nil
@@ -293,7 +296,9 @@ reverse ::
   List a
   -> List a
 reverse =
-  error "todo"
+  foldLeft (flip (:.)) Nil
+
+  -- error "todo"
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -324,6 +329,11 @@ notReverse ::
   -> List a
 notReverse =
   error "todo"
+
+largeList ::
+  List Int
+largeList =
+  listh [1..50000]
 
 hlist ::
   List a
