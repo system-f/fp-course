@@ -213,16 +213,16 @@ infixl 3 |||
 --
 -- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
 --
--- >>> parse (list (character)) ""
+-- >>> parse (list character) ""
 -- Result >< ""
 --
--- >>> parse (list (digit)) "123abc"
+-- >>> parse (list digit) "123abc"
 -- Result >abc< "123"
 --
 -- >>> parse (list digit) "abc"
 -- Result >abc< ""
 --
--- >>> parse (list (character)) "abc"
+-- >>> parse (list character) "abc"
 -- Result >< "abc"
 --
 -- >>> parse (list (character *> valueParser 'v')) "abc"
