@@ -293,7 +293,7 @@ is =
 --
 --   * The produced character is not a digit.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isDigit@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isDigit@ functions.
 digit ::
   Parser Char
 digit =
@@ -330,7 +330,7 @@ natural =
 --
 --   * The produced character is not a space.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isSpace@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isSpace@ functions.
 space ::
   Parser Char
 space =
@@ -355,7 +355,7 @@ spaces1 =
 --
 --   * The produced character is not lower-case.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isLower@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isLower@ functions.
 lower ::
   Parser Char
 lower =
@@ -367,7 +367,7 @@ lower =
 --
 --   * The produced character is not upper-case.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isUpper@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isUpper@ functions.
 upper ::
   Parser Char
 upper =
@@ -379,7 +379,7 @@ upper =
 --
 --   * The produced character is not alpha.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isAlpha@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isAlpha@ functions.
 alpha ::
   Parser Char
 alpha =
