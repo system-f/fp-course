@@ -262,7 +262,7 @@ list1 =
 --
 --   * The character does not satisfy the given predicate.
 --
--- /Tip:/ The @bindParser@ and @character@ functions will be helpful here.
+-- /Tip:/ The @bindParser@, @unexpectedCharParser@ and @character@ functions will be helpful here.
 --
 -- >>> parse (satisfy isUpper) "Abc"
 -- Result >bc< 'A'
