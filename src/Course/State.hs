@@ -241,4 +241,19 @@ isHappy ::
   Integer
   -> Bool
 isHappy =
-  error "todo"
+  let square =
+        join (*)
+      happies =
+        produce (sum' . (<$>) (square . toInteger . digitToInt) . show')
+      gotit =
+        findM (\j -> State (\s -> (j == 1 || S.member j s, S.insert j s)))
+      runIt =
+        (`eval` S.empty) . gotit . happies
+  in contains 1 . runIt
+
+sum' ::
+  Num a =>
+  List a
+  -> a
+sum' =
+  foldLeft (+) 0
