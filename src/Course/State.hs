@@ -51,6 +51,10 @@ instance Functor (State s) where
 -- >>> runState (State (\s -> ((+3), s P.++ ["apple"])) <*> State (\s -> (7, s P.++ ["banana"]))) []
 -- (10,["apple","banana"])
 instance Apply (State s) where
+  (<*>) ::
+    State s (a -> b)
+    -> State s a
+    -> State s b 
   (<*>) =
     error "todo"
 
@@ -58,6 +62,9 @@ instance Apply (State s) where
 -- >>> runState (pure 2) 0
 -- (2,0)
 instance Applicative (State s) where
+  pure ::
+    a
+    -> State s a
   pure =
     error "todo"
 
@@ -65,6 +72,10 @@ instance Applicative (State s) where
 -- >>> runState ((const $ put 2) =<< put 1) 0
 -- ((),2)
 instance Bind (State s) where
+  (=<<) ::
+    (a -> State s b)
+    -> State s a
+    -> State s b
   (=<<) =
     error "todo"
 
