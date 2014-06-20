@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Course.State where
 
@@ -35,6 +36,10 @@ newtype State s a =
 -- >>> runState ((+1) <$> pure 0) 0
 -- (1,0)
 instance Functor (State s) where
+  (<$>) ::
+    (a -> b)
+    -> State s a
+    -> State s b
   (<$>) =
       error "todo"
 
