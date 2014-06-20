@@ -783,6 +783,13 @@ stringconcat ::
 stringconcat =
   P.concat
 
+show' ::
+  Show a =>
+  a
+  -> List Char
+show' = 
+  listh . show
+
 instance P.Monad List where
   (>>=) =
     flip flatMap

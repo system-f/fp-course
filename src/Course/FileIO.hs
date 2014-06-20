@@ -63,7 +63,10 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo"
+  do args <- getArgs
+     case args of
+       Nil -> putStrLn "please enter a file name"
+       h:._ -> run h
 
 type FilePath =
   Chars
@@ -72,31 +75,33 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo"
+run name =
+  do c <- readFile name
+     q <- getFiles (lines c)
+     printFiles q
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
-getFiles =
-  error "todo"
+getFiles input =
+  sequence (getFile <$> input)
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo"
+  lift2 (<$>) (,) readFile
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo"
+  void . sequence . (uncurry printFile <$>)
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo"
-
+printFile name c =
+  putStrLn ("====" ++ name) *>
+  putStrLn c

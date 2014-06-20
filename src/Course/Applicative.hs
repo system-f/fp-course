@@ -182,9 +182,20 @@ filtering ::
   (a -> f Bool)
   -> List a
   -> f (List a)
-filtering =
-  error "todo"
-
+filtering p =
+  foldRight (\h -> lift2 (\b -> 
+    if b
+    then (h:.)
+    else id) 
+  (p h)) (pure Nil)
+  
+filterAgain ::
+  (a -> Bool)
+  -> List a
+  -> List a
+filterAgain p =
+  runId . filtering (Id . p)
+  
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------
