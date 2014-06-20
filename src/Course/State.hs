@@ -155,7 +155,7 @@ distinct ::
   List a
   -> List a
 distinct x =
-  eval (filtering (\a -> State (S.notMember a &&& S.insert a)) x) S.empty
+  eval (filtering (State . lift2 (lift2 (,)) S.notMember S.insert) x) S.empty
 
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
