@@ -1,5 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateT where
@@ -35,6 +37,10 @@ newtype StateT s f a =
 -- >>> runStateT ((+1) <$> (pure 2) :: StateT Int List Int) 0
 -- [(3,0)]
 instance Functor f => Functor (StateT s f) where
+  (<$>) ::
+    (a -> b)
+    -> StateT s f a
+    -> StateT s f b
   (<$>) =
     error "todo"
 
@@ -47,6 +53,10 @@ instance Functor f => Functor (StateT s f) where
 -- >>> runStateT (StateT (\s -> Full ((+2), s P.++ [1])) <*> (StateT (\s -> Full (2, s P.++ [2])))) [0]
 -- Full (4,[0,1,2])
 instance Bind f => Apply (StateT s f) where
+  (<*>) ::
+    StateT s f (a -> b)
+    -> StateT s f a
+    -> StateT s f b
   (<*>) =
     error "todo"
 
@@ -58,6 +68,9 @@ instance Bind f => Apply (StateT s f) where
 -- >>> runStateT ((pure 2) :: StateT Int List Int) 0
 -- [(2,0)]
 instance Monad f => Applicative (StateT s f) where
+  pure ::
+    a
+    -> StateT s f a
   pure =
     error "todo"
 
@@ -67,6 +80,10 @@ instance Monad f => Applicative (StateT s f) where
 -- >>> runStateT ((const $ putT 2) =<< putT 1) 0
 -- ((),2)
 instance Monad f => Bind (StateT s f) where
+  (=<<) ::
+    (a -> StateT s f b)
+    -> StateT s f a
+    -> StateT s f b
   (=<<) =
     error "todo"
 

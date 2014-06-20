@@ -1,5 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RebindableSyntax #-}
 
@@ -169,7 +170,7 @@ flbindParser =
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- /Tip:/ Use @bindParser@ or @fbindParser@.
+-- /Tip:/ Use @bindParser@ or @flbindParser@.
 --
 -- >>> parse (character >>> valueParser 'v') "abc"
 -- Result >bc< 'v'
@@ -213,16 +214,16 @@ infixl 3 |||
 --
 -- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
 --
--- >>> parse (list (character)) ""
+-- >>> parse (list character) ""
 -- Result >< ""
 --
--- >>> parse (list (digit)) "123abc"
+-- >>> parse (list digit) "123abc"
 -- Result >abc< "123"
 --
 -- >>> parse (list digit) "abc"
 -- Result >abc< ""
 --
--- >>> parse (list (character)) "abc"
+-- >>> parse (list character) "abc"
 -- Result >< "abc"
 --
 -- >>> parse (list (character *> valueParser 'v')) "abc"
@@ -262,7 +263,7 @@ list1 =
 --
 --   * The character does not satisfy the given predicate.
 --
--- /Tip:/ The @bindParser@ and @character@ functions will be helpful here.
+-- /Tip:/ The @bindParser@, @unexpectedCharParser@ and @character@ functions will be helpful here.
 --
 -- >>> parse (satisfy isUpper) "Abc"
 -- Result >bc< 'A'
@@ -293,7 +294,7 @@ is =
 --
 --   * The produced character is not a digit.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isDigit@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isDigit@ functions.
 digit ::
   Parser Char
 digit =
@@ -303,20 +304,20 @@ digit =
 --
 --   * The input is empty.
 --
---   * The input does not produce a value series of digits
+--   * The input does not produce a valid series of digits
 --
--- /Tip:/ Use the @bindParser@, @valueParser@, @list@, @read@ and @digit@
+-- /Tip:/ Use the @bindParser@, @valueParser@, @list1@, @read@ and @digit@
 -- functions.
--- >>> parse (natural) "123"
+-- >>> parse natural "123"
 -- Result >< 123
 --
--- >>> parse (natural) "123ab"
+-- >>> parse natural "123ab"
 -- Result >ab< 123
 --
--- >>> isErrorResult (parse (natural) "abc")
+-- >>> isErrorResult (parse natural "abc")
 -- True
 --
--- >>> isErrorResult (parse (natural) "")
+-- >>> isErrorResult (parse natural "")
 -- True
 natural ::
   Parser Int
@@ -330,7 +331,7 @@ natural =
 --
 --   * The produced character is not a space.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isSpace@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isSpace@ functions.
 space ::
   Parser Char
 space =
@@ -355,7 +356,7 @@ spaces1 =
 --
 --   * The produced character is not lower-case.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isLower@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isLower@ functions.
 lower ::
   Parser Char
 lower =
@@ -367,7 +368,7 @@ lower =
 --
 --   * The produced character is not upper-case.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isUpper@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isUpper@ functions.
 upper ::
   Parser Char
 upper =
@@ -379,7 +380,7 @@ upper =
 --
 --   * The produced character is not alpha.
 --
--- /Tip:/ Use the @satisfy@ and @Data.Char.isAlpha@ functions.
+-- /Tip:/ Use the @satisfy@ and @Data.Char#isAlpha@ functions.
 alpha ::
   Parser Char
 alpha =
@@ -491,7 +492,7 @@ smokerParser ::
 smokerParser =
   error "todo"
 
--- | Write part of a parser for Person.phoneBody.
+-- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
 -- It will ignore the overall requirement of a phone number to
 -- start with a digit and end with a hash (#).
@@ -590,22 +591,37 @@ personParser =
 -- | Write a Functor instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Functor Parser where
+  (<$>) ::
+    (a -> b)
+    -> Parser a
+    -> Parser b
   (<$>) =
      error "todo"
 
 -- | Write a Apply instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Apply Parser where
+  (<*>) ::
+    Parser (a -> b)
+    -> Parser a
+    -> Parser b
   (<*>) =
     error "todo"
 
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
+  pure ::
+    a
+    -> Parser a
   pure =
     error "todo"
 
 -- | Write a Bind instance for a @Parser@.
 instance Bind Parser where
+  (=<<) ::
+    (a -> Parser b)
+    -> Parser a
+    -> Parser b
   (=<<) =
     error "todo"
 
