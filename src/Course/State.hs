@@ -142,7 +142,7 @@ firstRepeat ::
   List a
   -> Optional a
 firstRepeat x =
-  eval (findM (\a -> State (S.member a &&& S.insert a)) x) S.empty
+  eval (findM (State . lift2 (lift2 (,)) S.member S.insert) x) S.empty
 
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.
