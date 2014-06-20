@@ -290,6 +290,9 @@ lengthGT4 _ =
 -- >>> reverse Nil
 -- []
 --
+-- >>> take 1 (reverse largeList)
+-- [50000]
+--
 -- prop> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
 -- prop> let types = x :: Int in reverse (x :. Nil) == x :. Nil
@@ -328,6 +331,11 @@ notReverse ::
   -> List a
 notReverse =
   reverse -- impossible
+
+largeList ::
+  List Int
+largeList =
+  listh [1..50000]
 
 hlist ::
   List a
@@ -669,6 +677,13 @@ stringconcat ::
   -> P.String
 stringconcat =
   P.concat
+
+show' ::
+  Show a =>
+  a
+  -> List Char
+show' =
+  listh . show
 
 instance P.Monad List where
   (>>=) =

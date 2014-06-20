@@ -1,5 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateT where
@@ -35,6 +37,10 @@ newtype StateT s f a =
 -- >>> runStateT ((+1) <$> (pure 2) :: StateT Int List Int) 0
 -- [(3,0)]
 instance Functor f => Functor (StateT s f) where
+  (<$>) ::
+    (a -> b)
+    -> StateT s f a
+    -> StateT s f b
   f <$> StateT k =
     StateT ((<$>) (first f) . k)
 
@@ -47,6 +53,10 @@ instance Functor f => Functor (StateT s f) where
 -- >>> runStateT (StateT (\s -> Full ((+2), s P.++ [1])) <*> (StateT (\s -> Full (2, s P.++ [2])))) [0]
 -- Full (4,[0,1,2])
 instance Bind f => Apply (StateT s f) where
+  (<*>) ::
+    StateT s f (a -> b)
+    -> StateT s f a
+    -> StateT s f b
   StateT f <*> StateT a =
     -- StateT (\s -> (\(g, t) -> (\(z, u) -> (g z, u)) <$> a t) =<< f s)
     StateT ((\(g, t) -> first g <$> a t) <=< f)
@@ -59,6 +69,9 @@ instance Bind f => Apply (StateT s f) where
 -- >>> runStateT ((pure 2) :: StateT Int List Int) 0
 -- [(2,0)]
 instance Monad f => Applicative (StateT s f) where
+  pure ::
+    a
+    -> StateT s f a
   pure a =
     StateT (\s -> pure (a, s))
 
@@ -68,6 +81,10 @@ instance Monad f => Applicative (StateT s f) where
 -- >>> runStateT ((const $ putT 2) =<< putT 1) 0
 -- ((),2)
 instance Monad f => Bind (StateT s f) where
+  (=<<) ::
+    (a -> StateT s f b)
+    -> StateT s f a
+    -> StateT s f b
   f =<< StateT k =
     StateT ((=<<) (\(a, t) -> runStateT (f a) t) . k)
 
@@ -241,11 +258,17 @@ instance Functor (Logger l) where
     Logger l (f a)
 
 -- | Implement the `Apply` instance for `Logger`.
+--
+-- >>> Logger (listh [1,2]) (+7) <*> Logger (listh [3,4]) 3
+-- Logger [1,2,3,4] 10
 instance Apply (Logger l) where
   Logger l f <*> Logger m a =
     Logger (l ++ m) (f a)
 
 -- | Implement the `Applicative` instance for `Logger`.
+--
+-- >>> pure "table" :: Logger Int P.String
+-- Logger [] "table"
 instance Applicative (Logger l) where
   pure =
     Logger Nil
