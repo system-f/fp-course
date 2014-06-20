@@ -141,8 +141,8 @@ firstRepeat ::
   Ord a =>
   List a
   -> Optional a
-firstRepeat x =
-  eval (findM (State . lift2 (lift2 (,)) S.member S.insert) x) S.empty
+firstRepeat =
+  listWithState findM S.member
 
 -- | Remove all duplicate elements in a `List`.
 -- /Tip:/ Use `filtering` and `State` with a @Data.Set#Set@.
@@ -154,9 +154,21 @@ distinct ::
   Ord a =>
   List a
   -> List a
-distinct x =
-  eval (filtering (State . lift2 (lift2 (,)) S.notMember S.insert) x) S.empty
+distinct =
+  listWithState filtering S.notMember 
 
+listWithState :: 
+  Ord a1 =>
+  ((a1 -> State (S.Set a1) a2) 
+  -> t 
+  -> State (S.Set a3) a)
+  -> (a1 -> S.Set a1 -> a2) 
+  -> t 
+  -> a 
+listWithState f m x =
+  eval (f (State . lift2 (lift2 (,)) m S.insert) x) S.empty
+
+   
 -- | A happy number is a positive integer, where the sum of the square of its digits eventually reaches 1 after repetition.
 -- In contrast, a sad number (not a happy number) is where the sum of the square of its digits never reaches 1
 -- because it results in a recurring sequence.
