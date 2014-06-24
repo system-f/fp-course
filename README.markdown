@@ -21,7 +21,7 @@ programming.
 Exercises are annotated with a comment containing the word "Exercise." The existing code compiles, however answers have
 been replaced with a call to the Haskell `error` function and so the code will throw an exception if it is run. Some
 exercises contain tips, which are annotated with a preceding "Tip:". It is not necessary to adhere to tips. Tips are
-provided for potential guidance, which may be  discarded.
+provided for potential guidance, which may be discarded if you prefer a different path to a solution.
 
 The exercises are designed in a way that requires personal guidance, so if you
 attempt it on your own and feel a little lost, this is normal. All the
