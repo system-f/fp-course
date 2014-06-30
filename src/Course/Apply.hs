@@ -114,7 +114,7 @@ lift2 ::
 lift2 =
   error "todo"
 
--- | Apply a ternary function in the Monad environment.
+-- | Apply a ternary function in the environment.
 --
 -- >>> lift3 (\a b c -> a + b + c) (Id 7) (Id 8) (Id 9)
 -- Id 24
