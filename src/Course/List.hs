@@ -296,7 +296,7 @@ reverse ::
   List a
   -> List a
 reverse =
-  foldLeft (flip (:.)) Nil
+  error "todo"
 
   -- error "todo"
 
