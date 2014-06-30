@@ -58,8 +58,9 @@ however, your first post might be moderated. This is simply to spam.
 3. Execute the command `ghci`, which will compile and load all the source code.
    You may need to set permissions on a file, `chmod 600 .ghci`.
 
-4. The `Intro` module does not contain exercises. Its purpose is to demonstrate
-   the structure of a project. The first recommend exercise is `Course.List`.
+4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
+   on to the exercises starting with `Course.List`. The [Progression](#progression)
+   section of this document lists the recommended order in which to attempt the exercises.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
