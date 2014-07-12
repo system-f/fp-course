@@ -21,10 +21,10 @@ import Course.Optional
 
 -- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters. See http://json.org for the full list of control characters in JSON.
 --
--- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `betweenCharTok`, `list`.
+-- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `between`, `charTok`, `list`.
 --
--- >>> parse jsonString "\"abc\""
--- Result >< "abc"
+-- >>> parse jsonString "\" abc\""
+-- Result >< " abc"
 --
 -- >>> parse jsonString "\"abc\"def"
 -- Result >def< "abc"
