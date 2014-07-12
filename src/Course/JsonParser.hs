@@ -19,7 +19,7 @@ import Course.Optional
 -- $setup
 -- >>> :set -XOverloadedStrings
 
--- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
+-- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters. See http://json.org for the full list of control characters in JSON.
 --
 -- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `betweenCharTok`, `list`.
 --
