@@ -30,7 +30,7 @@ import Course.Optional
 -- Result >def< "abc"
 --
 -- >>> parse jsonString "\"\\babc\"def"
--- Result >def< "babc"
+-- Result >def< "\babc"
 --
 -- >>> parse jsonString "\"\\u00abc\"def"
 -- Result >def< "\171c"
