@@ -1,6 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RebindableSyntax #-}
 
 module Course.JsonParser where
 
@@ -18,18 +19,18 @@ import Course.Optional
 -- $setup
 -- >>> :set -XOverloadedStrings
 
--- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters.
+-- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters. See http://json.org for the full list of control characters in JSON.
 --
--- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `betweenCharTok`, `list`.
+-- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `between`, `charTok`, `list`.
 --
--- >>> parse jsonString "\"abc\""
--- Result >< "abc"
+-- >>> parse jsonString "\" abc\""
+-- Result >< " abc"
 --
 -- >>> parse jsonString "\"abc\"def"
 -- Result >def< "abc"
 --
 -- >>> parse jsonString "\"\\babc\"def"
--- Result >def< "babc"
+-- Result >def< "\babc"
 --
 -- >>> parse jsonString "\"\\u00abc\"def"
 -- Result >def< "\171c"
