@@ -21,7 +21,7 @@ programming.
 Exercises are annotated with a comment containing the word "Exercise." The existing code compiles, however answers have
 been replaced with a call to the Haskell `error` function and so the code will throw an exception if it is run. Some
 exercises contain tips, which are annotated with a preceding "Tip:". It is not necessary to adhere to tips. Tips are
-provided for potential guidance, which may be  discarded.
+provided for potential guidance, which may be discarded if you prefer a different path to a solution.
 
 The exercises are designed in a way that requires personal guidance, so if you
 attempt it on your own and feel a little lost, this is normal. All the
@@ -30,7 +30,7 @@ instructions are not contained herein.
 ### Getting Help
 
 There are two mailing lists for asking questions. All questions are welcome,
-however, your first post might be moderated. This is simply to spam.
+however, your first post might be moderated. This is simply to prevent spam.
 
 1. [[nicta-fp]](https://groups.google.com/forum/#!forum/nicta-fp) is a Google
    Group for any queries related to functional programming. This mailing list is
@@ -44,7 +44,11 @@ however, your first post might be moderated. This is simply to spam.
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
 
-3. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
+3. [#nicta-course](irc://irc.freenode.net/#nicta-course) is an IRC channel that
+   is operated by others who are going through this course material on their
+   own time and effort.
+
+4. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
    is a Google Group for queries related specifically to this NICTA funtional
    programming course material. This mailing list is not owned by NICTA, but is
    run by others who are keen to share ideas relating to the course. 
@@ -58,8 +62,9 @@ however, your first post might be moderated. This is simply to spam.
 3. Execute the command `ghci`, which will compile and load all the source code.
    You may need to set permissions on a file, `chmod 600 .ghci`.
 
-4. The `Intro` module does not contain exercises. Its purpose is to demonstrate
-   the structure of a project. The first recommend exercise is `Course.List`.
+4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
+   on to the exercises starting with `Course.List`. The [Progression](#progression)
+   section of this document lists the recommended order in which to attempt the exercises.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
