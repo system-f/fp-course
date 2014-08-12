@@ -30,6 +30,12 @@ P p <.> i =
     _          -> Empty
 
 -- | Write a parser that will parse zero or more spaces.
+--
+-- >>> parse spaces " abc"
+-- Result >abc< " "
+--
+-- >>> parse spaces "abc"
+-- Result >abc< ""
 spaces ::
   Parser Chars
 spaces =
@@ -39,6 +45,12 @@ spaces =
 -- then produces the result of the original parser.
 --
 -- /Tip:/ Use the monad instance.
+--
+-- >>> parse (tok (is 'a')) "a bc"
+-- Result >bc< 'a'
+--
+-- >>> parse (tok (is 'a')) "abc"
+-- Result >bc< 'a'
 tok ::
   Parser a
   -> Parser a
