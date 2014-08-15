@@ -11,6 +11,7 @@ import Course.Optional
 import Course.Applicative
 import Course.Apply
 import Course.Bind
+import Course.Functor
 import Course.Traversable
 
 -- $setup
@@ -228,27 +229,47 @@ betweenCharTok ::
 betweenCharTok =
   error "todo"
 
--- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
+-- | Write a function that parses 4 hex digits and return the character value.
 --
 -- /Tip:/ Use `readHex`, `isHexDigit`, `replicate`, `satisfy` and the monad instance.
 --
--- >>> parse hex "u0010"
+-- >>> parse hex "0010"
 -- Result >< '\DLE'
 --
--- >>> parse hex "u0a1f"
+-- >>> parse hex "0a1f"
 -- Result >< '\2591'
 --
--- >>> isErrorResult (parse hex "0010")
+-- >>> isErrorResult (parse hex "001")
 -- True
 --
--- >>> isErrorResult (parse hex "u001")
--- True
---
--- >>> isErrorResult (parse hex "u0axf")
+-- >>> isErrorResult (parse hex "0axf")
 -- True
 hex ::
   Parser Char
 hex =
+  error "todo"
+
+-- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
+--
+-- /Tip:/ Use `is` and `hex`.
+--
+-- >>> parse hexu "u0010"
+-- Result >< '\DLE'
+--
+-- >>> parse hexu "u0a1f"
+-- Result >< '\2591'
+--
+-- >>> isErrorResult (parse hexu "0010")
+-- True
+--
+-- >>> isErrorResult (parse hexu "u001")
+-- True
+--
+-- >>> isErrorResult (parse hexu "u0axf")
+-- True
+hexu ::
+  Parser Char
+hexu =
   error "todo"
 
 -- | Write a function that produces a non-empty list of values coming off the given parser (which must succeed at least once),
