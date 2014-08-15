@@ -255,9 +255,7 @@ hex =
   let hInt s = case readHex s of
                  Empty -> 0
                  Full n -> n
-  in do is 'u'
-        h <- replicateA 4 (satisfy isHexDigit)
-        pure . chr . hInt $ h
+  in chr . hInt <$> replicateA 4 (satisfy isHexDigit) 
 
 -- | Write a function that parses the character 'u' followed by 4 hex digits and return the character value.
 --
@@ -280,7 +278,8 @@ hex =
 hexu ::
   Parser Char
 hexu =
-  error "todo"
+  do is 'u'
+     hex
 
 -- | Write a function that produces a non-empty list of values coming off the given parser (which must succeed at least once),
 -- separated by the second given parser.
