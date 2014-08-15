@@ -19,9 +19,71 @@ import Course.Optional
 -- $setup
 -- >>> :set -XOverloadedStrings
 
--- | Parse a JSON string. Handle double-quotes, control characters, hexadecimal characters. See http://json.org for the full list of control characters in JSON.
+-- A special character is one of the following:
+-- * \b  Backspace (ascii code 08)
+-- * \f  Form feed (ascii code 0C)
+-- * \n  New line
+-- * \r  Carriage return
+-- * \t  Tab
+-- * \v  Vertical tab
+-- * \'  Apostrophe or single quote (only valid in single quoted json strings)
+-- * \"  Double quote (only valid in double quoted json strings)
+-- * \\  Backslash character
+data SpecialCharacter =
+  BackSpace
+  | FormFeed
+  | NewLine
+  | CarriageReturn
+  | Tab
+  | VerticalTab
+  | SingleQuote
+  | DoubleQuote
+  | Backslash
+  deriving (Eq, Ord, Show)
+
+-- NOTE: This is not inverse to @toSpecialCharacter@.
+fromSpecialCharacter ::
+  SpecialCharacter
+  -> Char
+fromSpecialCharacter BackSpace =
+  chr 0x08
+fromSpecialCharacter FormFeed =
+  chr 0x0C
+fromSpecialCharacter NewLine =
+  '\n'
+fromSpecialCharacter CarriageReturn =
+  '\r'
+fromSpecialCharacter Tab =
+  '\t'
+fromSpecialCharacter VerticalTab =
+  '\v'
+fromSpecialCharacter SingleQuote =
+  '\''
+fromSpecialCharacter DoubleQuote =
+  '"'
+fromSpecialCharacter Backslash =
+  '\\'
+
+-- NOTE: This is not inverse to @fromSpecialCharacter@.
+toSpecialCharacter ::
+  Char
+  -> Optional SpecialCharacter
+toSpecialCharacter c =
+  let table = ('b', BackSpace) :.
+              ('f', FormFeed) :.
+              ('n', NewLine) :.
+              ('r', CarriageReturn) :.
+              ('t', Tab) :.
+              ('v', VerticalTab) :.
+              ('\'', SingleQuote) :.
+              ('"' , DoubleQuote) :.
+              ('\\', Backslash) :.
+              Nil
+  in snd <$> find ((==) c . fst) table
+  
+-- | Parse a JSON string. Handle double-quotes, special characters, hexadecimal characters. See http://json.org for the full list of control characters in JSON.
 --
--- /Tip:/ Use `oneof`, `hex`, `is`, `satisfyAll`, `between`, `charTok`, `list`.
+-- /Tip:/ Use `hex`, `fromSpecialCharacter`, `between`, `is`, `charTok`, `toSpecialCharacter`.
 --
 -- >>> parse jsonString "\" abc\""
 -- Result >< " abc"

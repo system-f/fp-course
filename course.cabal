@@ -1,5 +1,5 @@
 name:                 course
-version:              0.1.1
+version:              0.1.2
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
@@ -20,7 +20,8 @@ bug-reports:          https://github.com/NICTA/course/issues
 cabal-version:        >= 1.10
 build-type:           Custom
 extra-source-files:   etc/CONTRIBUTORS,
-                      etc/CREDITS
+                      etc/CREDITS,
+                      changelog
 
 source-repository     head
   type:               git
