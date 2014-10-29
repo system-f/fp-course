@@ -83,8 +83,9 @@ headOr =
 -- >>> product (1 :. 2 :. 3 :. 4 :. Nil)
 -- 24
 product ::
-  List Int
-  -> Int
+  Num a
+  => List a
+  -> a
 product =
   error "todo"
 
@@ -98,8 +99,9 @@ product =
 --
 -- prop> foldLeft (-) (sum x) x == 0
 sum ::
-  List Int
-  -> Int
+  Num a
+  => List a
+  -> a
 sum =
   error "todo"
 
@@ -213,7 +215,7 @@ flattenAgain =
 
 -- | Convert a list of optional values to an optional list of values.
 --
--- * If the list contains all `Full` values, 
+-- * If the list contains all `Full` values,
 -- then return `Full` list of values.
 --
 -- * If the list contains one or more `Empty` values,
