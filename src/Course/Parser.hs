@@ -52,7 +52,7 @@ instance Show a => Show (ParseResult a) where
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
 
--- Function to determine is a parse result is an error.
+-- Function to determine if a parse result is an error.
 isErrorResult ::
   ParseResult a
   -> Bool

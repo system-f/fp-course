@@ -63,7 +63,7 @@ instance Bind f => Apply (StateT s f) where
   (<*>) =
     error "todo"
 
--- | Implement the `Applicative` instance for @StateT s f@ given a @Applicative f@.
+-- | Implement the `Applicative` instance for @StateT s f@ given a @Monad f@.
 --
 -- >>> runStateT (pure 2) 0
 -- (2,0)
@@ -126,7 +126,7 @@ execT ::
 execT =
   error "todo"
 
--- | Run the `State` seeded with `s` and retrieve the resulting state.
+-- | Run the `State'` seeded with `s` and retrieve the resulting state.
 exec' ::
   State' s a
   -> s
@@ -143,7 +143,7 @@ evalT ::
 evalT =
   error "todo"
 
--- | Run the `State` seeded with `s` and retrieve the resulting value.
+-- | Run the `State'` seeded with `s` and retrieve the resulting value.
 eval' ::
   State' s a
   -> s
