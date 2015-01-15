@@ -26,6 +26,9 @@ import Course.Functor
 import Course.Apply
 import Course.Bind
 
+-- $setup
+-- >>> :set -XOverloadedStrings
+
 -- The representation of the grouping of each exponent of one thousand. ["thousand", "million", ...]
 illion ::
   List Chars
