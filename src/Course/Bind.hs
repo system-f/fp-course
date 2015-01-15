@@ -18,6 +18,11 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+-- | All instances of the `Bind` type-class must satisfy one law. This law
+-- is not checked by the compiler. This law is given as:
+--
+-- * The law of associativity
+--   `∀f g x. g =<< (f =<< x) ≅ ((g =<<) . f) =<< x`
 class Apply f => Bind f where
   -- Pronounced, bind.
   (=<<) ::

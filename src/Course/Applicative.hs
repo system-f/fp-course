@@ -19,6 +19,14 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+-- | All instances of the `Applicative` type-class must satisfy two laws. These
+-- laws are not checked by the compiler. These laws are given as:
+--
+-- * The law of left identity
+--   `∀x. pure <*> x ≅ x`
+--
+-- * The law of right identity
+--   `∀x. x <*> pure ≅ x`
 class Apply f => Applicative f where
   pure ::
     a -> f a

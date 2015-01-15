@@ -10,6 +10,14 @@ import Course.Optional
 import Course.List
 import qualified Prelude as P
 
+-- | All instances of the `Functor` type-class must satisfy two laws. These laws
+-- are not checked by the compiler. These laws are given as:
+--
+-- * The law of identity
+--   `∀x. (id <$> x) ≅ x`
+--
+-- * The law of composition
+--   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
 class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::

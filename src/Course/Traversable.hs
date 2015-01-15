@@ -9,6 +9,17 @@ import Course.Apply
 import Course.Applicative
 import Course.List
 
+-- | All instances of the `Traversable` type-class must satisfy two laws. These
+-- laws are not checked by the compiler. These laws are given as:
+--
+-- * The law of naturality
+--   `∀f g. f . traverseg ≅ traverse (f . g)`
+--
+-- * The law of identity
+--   `∀x. traverse Id x ≅ Id x`
+--
+-- * The law of composition
+--   `∀f g. traverse ((g <$>) . f) ≅ (traverse g <$>) . traverse f`
 class Functor t => Traversable t where
   traverse ::
     Applicative f =>
