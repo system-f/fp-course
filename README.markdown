@@ -188,6 +188,8 @@ After this, the following progression of modules is recommended:
 * `Course.StateT`
 * `Course.Extend`
 * `Course.Comonad`
+* `Course.Compose`
+* `Course.Traversable`
 * `Course.ListZipper`
 * `Course.Parser`
 * `Course.MoreParser`
@@ -195,8 +197,6 @@ After this, the following progression of modules is recommended:
 * `Course.Interactive`
 * `Course.Anagrams`
 * `Course.FastAnagrams`
-* `Course.EditDistance`
-* `Course.BKTree`
 * `Course.Cheque`
 
 After these are completed, complete the exercises in the `projects` directory.

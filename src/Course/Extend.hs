@@ -10,6 +10,11 @@ import Course.List
 import Course.Optional
 import Course.Functor
 
+-- | All instances of the `Extend` type-class must satisfy one law. This law
+-- is not checked by the compiler. This law is given as:
+--
+-- * The law of associativity
+--   `∀f g x. (f <<=) . (g <<=) ≅ (<<=) (f . (g <<=) <<=)
 class Functor f => Extend f where
   -- Pronounced, extend.
   (<<=) ::

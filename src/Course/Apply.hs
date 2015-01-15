@@ -11,6 +11,12 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P
 
+
+-- | All instances of the `Apply` type-class must satisfy one law. This law
+-- is not checked by the compiler. This law is given as:
+--
+-- * The law of associative composition
+--   `∀a b c. ((.) <$> a <*> b <*> c) ≅ (a <*> (b <*> c))`
 class Functor f => Apply f where
   -- Pronounced apply.
   (<*>) ::
