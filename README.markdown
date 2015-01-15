@@ -42,14 +42,14 @@ however, your first post might be moderated. This is simply to prevent spam.
    programming course material. This mailing list is not owned by NICTA, but is
    run by others who are keen to share ideas relating to the course. 
 
-3. [\#scalaz on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
+3. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
    general. Most of the participants of this channel have completed the NICTA 
    functional programming course to some extent. They are in various timezones
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
 
-4. [\#nicta-course on Freenode](irc://irc.freenode.net/#nicta-course) is an IRC channel that
+4. \#nicta-course [on Freenode](irc://irc.freenode.net/#nicta-course) is an IRC channel that
    is operated by others who are going through this course material on their
    own time and effort.
 
