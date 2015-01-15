@@ -52,6 +52,9 @@ instance Functor f => Functor (StateT s f) where
 -- >>> import qualified Prelude as P
 -- >>> runStateT (StateT (\s -> Full ((+2), s P.++ [1])) <*> (StateT (\s -> Full (2, s P.++ [2])))) [0]
 -- Full (4,[0,1,2])
+--
+-- >>> runStateT (StateT (\s -> ((+2), s P.++ [1]) :. ((+3), s P.++ [1]) :. Nil) <*> (StateT (\s -> (2, s P.++ [2]) :. Nil))) [0]
+-- [(4,[0,1,2]),(5,[0,1,2])]
 instance Bind f => Apply (StateT s f) where
   (<*>) ::
     StateT s f (a -> b)
