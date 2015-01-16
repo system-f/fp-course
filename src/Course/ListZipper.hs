@@ -19,7 +19,6 @@ import qualified Prelude as P
 -- >>> import Data.Maybe(maybe)
 -- >>> import Course.Core
 -- >>> import qualified Prelude as P
--- >>> let optional e _ Empty = e; optional _ f (Full a) = f a
 -- >>> instance Arbitrary a => Arbitrary (Optional a) where arbitrary = P.fmap (maybe Empty Full) arbitrary
 -- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (P.foldr (:.) Nil) arbitrary
 -- >>> instance Arbitrary a => Arbitrary (ListZipper a) where arbitrary = do l <- arbitrary; x <- arbitrary; r <- arbitrary; P.return (ListZipper l x r)

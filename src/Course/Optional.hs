@@ -38,6 +38,10 @@ contains :: Eq a => a -> Optional a -> Bool
 contains _ Empty = False
 contains a (Full z) = a == z
 
+optional :: b -> (a -> b) -> Optional a -> b
+optional e _ Empty    = e
+optional _ f (Full a) = f a
+
 instance P.Monad Optional where
   (>>=) =
     flip bindOptional
