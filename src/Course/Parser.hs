@@ -226,10 +226,10 @@ infixl 3 |||
 -- >>> parse (list character) "abc"
 -- Result >< "abc"
 --
--- >>> parse (list (character *> valueParser 'v')) "abc"
+-- >>> parse (list (character >>> valueParser 'v')) "abc"
 -- Result >< "vvv"
 --
--- >>> parse (list (character *> valueParser 'v')) ""
+-- >>> parse (list (character >>> valueParser 'v')) ""
 -- Result >< ""
 list ::
   Parser a
@@ -246,10 +246,10 @@ list =
 -- >>> parse (list1 (character)) "abc"
 -- Result >< "abc"
 --
--- >>> parse (list1 (character *> valueParser 'v')) "abc"
+-- >>> parse (list1 (character >>> valueParser 'v')) "abc"
 -- Result >< "vvv"
 --
--- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
+-- >>> isErrorResult (parse (list1 (character >>> valueParser 'v')) "")
 -- True
 list1 ::
   Parser a
