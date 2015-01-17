@@ -17,6 +17,7 @@ import Course.Optional
 import qualified System.Environment as E
 import qualified Prelude as P
 import qualified Numeric as N
+import Data.Monoid (Monoid(..))
 
 
 -- $setup
@@ -694,3 +695,7 @@ instance P.Monad List where
     flip flatMap
   return =
     (:. Nil)
+
+instance Monoid (List a) where
+  mempty = Nil
+  mappend = (++)
