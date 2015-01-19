@@ -247,6 +247,82 @@ fromChar '9' =
 fromChar _ =
   Empty
 
+showDigit3 ::
+  Digit3
+  -> List Char
+showDigit3 d =
+    let showd x = toLower <$> showDigit x
+        x .++. y = x ++ if y == Zero then Nil else '-' :. showd y
+    in case d of
+        D1 a -> showd a
+        D2 Zero b -> showd b
+        D2 One b -> case b of
+                      Zero -> "ten"
+                      One -> "eleven"
+                      Two -> "twelve"
+                      Three -> "thirteen"
+                      Four -> "fourteen"
+                      Five -> "fifteen"
+                      Six -> "sixteen"
+                      Seven -> "seventeen"
+                      Eight -> "eighteen"
+                      Nine -> "nineteen"
+        D2 Two b -> "twenty" .++. b
+        D2 Three b -> "thirty" .++. b
+        D2 Four b -> "forty" .++. b
+        D2 Five b -> "fifty" .++. b
+        D2 Six b -> "sixty" .++. b
+        D2 Seven b -> "seventy" .++. b
+        D2 Eight b -> "eighty" .++. b
+        D2 Nine b -> "ninety" .++. b
+        D3 Zero Zero Zero -> ""
+        D3 Zero b c -> showDigit3 (D2 b c)
+        D3 a Zero Zero -> showd a ++ " hundred"
+        D3 a b c -> showd a ++ " hundred and " ++ showDigit3 (D2 b c)
+
+toDot ::
+  Chars
+  -> (List Digit, Chars)
+toDot =
+  let toDot' x Nil =
+        (x, Nil)
+      toDot' x (h:.t) =
+        let move = case fromChar h of
+                     Full n -> toDot' . (:.) n
+                     Empty -> if h == '.'
+                                  then
+                                    (,)
+                                  else
+                                     toDot'
+        in move x t
+  in toDot' Nil
+
+illionate ::
+  List Digit
+  -> Chars
+illionate =
+  let space "" =
+        ""
+      space x =
+        ' ' :. x
+      todigits acc _ Nil =
+        acc
+      todigits _ Nil _ =
+        error "unsupported illion"
+      todigits acc (_:.is) (Zero:.Zero:.Zero:.t) =
+        todigits acc is t
+      todigits acc (i:.is) (q:.r:.s:.t) =
+        todigits ((showDigit3 (D3 s r q) ++ space i) :. acc) is t
+      todigits acc (_:.is) (Zero:.Zero:.t) =
+        todigits acc is t
+      todigits acc (i:._) (r:.s:._) =
+        (showDigit3 (D2 s r) ++ space i) :. acc
+      todigits acc (_:.is) (Zero:.t) =
+        todigits acc is t
+      todigits acc (i:._) (s:._) =
+        (showDigit3 (D1 s) ++ space i) :. acc
+  in unwords . todigits Nil illion
+
 -- | Take a numeric value and produce its English output.
 --
 -- >>> dollars "0"
@@ -323,5 +399,17 @@ fromChar _ =
 dollars ::
   Chars
   -> Chars
-dollars =
-  error "todo"
+dollars x =
+  let (d, c) = toDot (dropWhile (`notElem` ('.':.listh ['1'..'9'])) x)
+      c' =
+        case listOptional fromChar c of
+          Nil -> "zero cents"
+          (Zero:.One:.Nil) -> "one cent"
+          (a:.b:._) -> showDigit3 (D2 a b) ++ " cents"
+          (a:._) -> showDigit3 (D2 a Zero) ++ " cents"
+      d' =
+        case d of
+          Nil -> "zero dollars"
+          (One:.Nil) -> "one dollar"
+          _ -> illionate d ++ " dollars"
+  in d' ++ " and " ++ c'

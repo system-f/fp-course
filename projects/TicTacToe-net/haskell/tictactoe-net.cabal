@@ -1,0 +1,88 @@
+name:               tictactoe-net
+version:            0.0.1
+license:            BSD3
+license-File:       etc/LICENCE
+author:             Tony Morris <tmorris@tmorris.net>
+maintainer:         Tony Morris
+copyright:          Copyright (C) 2010-2013 Tony Morris
+copyright:          Copyright (C) 2012,2013 National ICT Australia Limited 2012, 2013
+copyright:          Copyright (C) 2012      James Earl Douglas
+copyright:          Copyright (C) 2012      Ben Sinclair
+synopsis:           A network server to play the game of Tic-Tac-Toe
+category:           Education
+description:        A network server to play the game of Tic-Tac-Toe using IORef
+homepage:           https://github.com/NICTA/course
+bug-reports:        https://github.com/NICTA/course/issues
+cabal-version:      >= 1.10
+build-type:         Custom
+
+source-repository   head
+  type:             git
+  location:         git@github.com:NICTA/course.git
+
+flag                small_base
+  description:      Choose the new, split-up base package.
+
+executable tictactoe-net
+  default-language: Haskell2010
+
+  main-is:          Network/TicTacToe/Main.hs
+
+  hs-source-dirs:   src
+
+  build-depends:    base < 5 && >= 4
+                    , tictactoe
+                    , mtl
+                    , containers
+                    , network
+
+  ghc-options:      -Wall
+
+  other-modules:    Network.TicTacToe
+
+library
+  default-language: Haskell2010
+
+  build-depends:    base < 5 && >= 4
+                    , tictactoe
+                    , mtl
+                    , containers
+                    , network
+
+  ghc-options:      -Wall
+
+  hs-source-dirs:   src
+
+  exposed-modules:
+                    Network.TicTacToe
+                    , Network.TicTacToe.Accept
+                    , Network.TicTacToe.Command
+                    , Network.TicTacToe.Env
+                    , Network.TicTacToe.Game
+                    , Network.TicTacToe.HandleLens
+                    , Network.TicTacToe.Lens
+                    , Network.TicTacToe.Ref
+
+test-suite          doctests
+  type:
+                    exitcode-stdio-1.0
+
+  main-is:
+                    doctests.hs
+
+  default-language:
+                    Haskell2010
+
+  build-depends:
+                    base < 5 && >= 3,
+                    doctest >= 0.9.7,
+                    filepath >= 1.3,
+                    directory >= 1.1,
+                    QuickCheck >= 2.0
+
+  ghc-options:
+                    -Wall
+                    -threaded
+
+  hs-source-dirs:
+                    test

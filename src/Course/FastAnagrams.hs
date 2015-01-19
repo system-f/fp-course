@@ -14,8 +14,8 @@ fastAnagrams ::
   Chars
   -> Filename
   -> IO (List Chars)
-fastAnagrams =
-  error "todo"
+fastAnagrams name f =
+  (flip (filter . flip S.member) (permutations name) . S.fromList . hlist . lines) <$> readFile f
 
 newtype NoCaseString =
   NoCaseString {
@@ -23,7 +23,9 @@ newtype NoCaseString =
   }
 
 instance Eq NoCaseString where
-  (==) = (==) `on` map toLower . ncString
+  (==) =
+    (==) `on` (<$>) toLower . ncString
 
 instance Show NoCaseString where
-  show = show . ncString
+  show =
+    show . ncString
