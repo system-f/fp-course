@@ -286,8 +286,8 @@ lengthGT4 =
 -- >>> reverse Nil
 -- []
 --
--- >>> take 1 (reverse largeList)
--- [50000]
+-- >>> take 1 (reverse (reverse largeList))
+-- [1]
 --
 -- prop> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
