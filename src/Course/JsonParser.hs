@@ -111,27 +111,7 @@ toSpecialCharacter c =
 jsonString ::
   Parser Chars
 jsonString =
-  let str = 
-        do c1 <- character
-           if c1 == '\\'
-             then
-               do c2 <- character
-                  if c2 == 'u'
-                    then 
-                      hex
-                    else
-                      case toSpecialCharacter c2 of
-                        Empty ->
-                          unexpectedCharParser c2
-                        Full d ->
-                          return (fromSpecialCharacter d)
-             else
-               if c1 == '"'
-                 then
-                   unexpectedCharParser '"'
-                 else
-                  return c1
-  in between (is '"') (charTok '"') (list str)
+  error "todo"
 
 -- | Parse a JSON rational.
 --
@@ -160,9 +140,7 @@ jsonString =
 jsonNumber ::
   Parser Rational
 jsonNumber =
-  P (\i -> case readFloats i of
-             Empty -> ErrorResult Failed
-             Full (n, z) -> Result z n)
+  error "todo"
 
 -- | Parse a JSON true literal.
 --
@@ -176,7 +154,7 @@ jsonNumber =
 jsonTrue ::
   Parser Chars
 jsonTrue =
-  stringTok "true"
+  error "todo"
 
 -- | Parse a JSON false literal.
 --
@@ -190,7 +168,7 @@ jsonTrue =
 jsonFalse ::
   Parser Chars
 jsonFalse =
-  stringTok "false"
+  error "todo"
 
 -- | Parse a JSON null literal.
 --
@@ -204,7 +182,7 @@ jsonFalse =
 jsonNull ::
   Parser Chars
 jsonNull =
-  stringTok "null"
+  error "todo"
 
 -- | Parse a JSON array.
 --
@@ -227,7 +205,7 @@ jsonNull =
 jsonArray ::
   Parser (List JsonValue)
 jsonArray =
-  betweenSepbyComma '[' ']' jsonValue
+  error "todo"
 
 -- | Parse a JSON object.
 --
@@ -247,8 +225,7 @@ jsonArray =
 jsonObject ::
   Parser Assoc
 jsonObject =
-  let field = (,) <$> (jsonString <* charTok ':') <*> jsonValue
-  in betweenSepbyComma '{' '}' field
+  error "todo"
 
 -- | Parse a JSON value.
 --
@@ -265,14 +242,7 @@ jsonObject =
 jsonValue ::
   Parser JsonValue
 jsonValue =
-      spaces *>
-      (JsonNull <$ jsonNull
-   ||| JsonTrue <$ jsonTrue
-   ||| JsonFalse <$ jsonFalse
-   ||| JsonArray <$> jsonArray
-   ||| JsonString <$> jsonString
-   ||| JsonObject <$> jsonObject
-   ||| JsonRational False <$> jsonNumber)
+   error "todo"
 
 -- | Read a file into a JSON value.
 --
@@ -280,6 +250,5 @@ jsonValue =
 readJsonValue ::
   Filename
   -> IO (ParseResult JsonValue)
-readJsonValue p =
-  do c <- readFile p
-     pure (jsonValue `parse` c)
+readJsonValue =
+  error "todo"

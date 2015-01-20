@@ -63,10 +63,7 @@ the contents of c
 main ::
   IO ()
 main =
-  getArgs >>= \args ->
-    case args of
-      filename :. Nil -> run filename
-      _ -> putStrLn "usage: runhaskell io.hs filename"
+  error "todo"
 
 type FilePath =
   Chars
@@ -75,35 +72,31 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run filename =
-  do
-    content <- readFile filename
-    results <- getFiles (lines content)
-    printFiles results
+run =
+  error "todo"
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  sequence . (<$>) getFile
+  error "todo"
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  lift2 (<$>) (,) readFile
+  error "todo"
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  void . sequence . (<$>) (uncurry printFile)
+  error "todo"
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile name content =
-  putStrLn ("============ " ++ name) >>
-  putStrLn content
+printFile =
+  error "todo"
 
