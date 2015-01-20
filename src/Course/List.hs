@@ -592,6 +592,12 @@ drop _ Nil =
 drop n (_:.xs) =
   drop (n-1) xs
 
+splitAt ::
+  Int
+  -> List a
+  -> (List a, List a)
+splitAt n = take n &&& drop n
+
 repeat ::
   a
   -> List a
