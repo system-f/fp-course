@@ -68,8 +68,8 @@ infixr 1 =<<
   f (a -> b)
   -> f a
   -> f b
-f <*> a =
-  (<$> a) =<< f
+(<*>) =
+  error "todo"
 
 infixl 4 <*>
 
@@ -82,8 +82,8 @@ instance Bind Id where
     (a -> Id b)
     -> Id a
     -> Id b
-  f =<< Id a =
-    f a
+  (=<<) =
+    error "todo"
 
 -- | Binds a function on a List.
 --
@@ -95,7 +95,7 @@ instance Bind List where
     -> List a
     -> List b
   (=<<) =
-    flatMap
+    error "todo"
 
 -- | Binds a function on an Optional.
 --
@@ -107,7 +107,7 @@ instance Bind Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    bindOptional
+    error "todo"
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -118,8 +118,8 @@ instance Bind ((->) t) where
     (a -> ((->) t b))
     -> ((->) t a)
     -> ((->) t b)
-  f =<< k =
-    \x -> f (k x) x
+  (=<<) =
+    error "todo"
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -139,7 +139,7 @@ join ::
   f (f a)
   -> f a
 join =
-  (=<<) id
+  error "todo"
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -152,8 +152,8 @@ join =
   f a
   -> (a -> f b)
   -> f b
-a >>= f =
-  join (f <$> a)
+(>>=) =
+  error "todo"
 
 infixl 1 >>=
 
@@ -168,10 +168,8 @@ infixl 1 >>=
   -> (a -> f b)
   -> a
   -> f c
-f <=< g =
-  -- avoid hlint warning
-  let b = (=<<)
-  in \a -> f `b` g a
+(<=<) =
+  error "todo"
 
 infixr 1 <=<
 
