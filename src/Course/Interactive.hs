@@ -6,6 +6,7 @@ module Course.Interactive where
 
 import Course.Core
 import Course.Functor
+import Course.Apply
 import Course.Applicative
 import Course.Bind
 import Course.Monad
