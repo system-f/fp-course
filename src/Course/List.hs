@@ -328,6 +328,8 @@ notReverse ::
 notReverse =
   error "todo"
 
+---- End of list exercises
+
 largeList ::
   List Int
 largeList =
