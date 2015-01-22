@@ -167,14 +167,16 @@ compiler error.
 
 ### Progression
 
-It is recommended to perform some exercises before others. The first step is to inspect the introduction modules.
+It is recommended to perform some exercises before others. The first step is to
+inspect the introduction modules.
 
 * `Course.Id`
 * `Course.Optional`
 * `Course.Validation`
 
-They contain examples of data structures and Haskell syntax. They do not contain exercises and exist to provide 
-a cursory examination of Haskell syntax. The next step is to complete the exercises in `Course.List`.
+They contain examples of data structures and Haskell syntax. They do not contain
+exercises and exist to provide a cursory examination of Haskell syntax. The next
+step is to complete the exercises in `Course.List`.
 
 After this, the following progression of modules is recommended:
 
@@ -198,6 +200,18 @@ After this, the following progression of modules is recommended:
 * `Course.Anagrams`
 * `Course.FastAnagrams`
 * `Course.Cheque`
+
+During this progression, it is often the case that some exercises are abandoned
+due to time constraints and the benefit of completing some exercises over
+others. For example, in the progression, `Course.Functor` to `Course.Monad`, the
+exercises repeat a similar theme. Instead, a participant may wish to do
+different exercises, such as `Course.Parser`. In this case, the remaining
+answers are filled out, so that progress on to `Course.Parser` can begin
+(which depends on correct answers up to `Course.Monad`). It is recommended to 
+take this deviation if it is felt that there is more reward in doing so.
+
+Answers for the exercises can be found here:
+[https://github.com/tonymorris/course](https://github.com/tonymorris/course)
 
 After these are completed, complete the exercises in the `projects` directory.
 
