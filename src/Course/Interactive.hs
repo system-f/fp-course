@@ -21,15 +21,6 @@ vooid ::
 vooid =
   (<$>) (const ())
 
--- | A version of @bind@ that ignores the result of the effect.
-(>-) ::
-  Monad m =>
-  m a
-  -> m b
-  -> m b
-(>-) a =
-  (>>=) a . const
-
 -- | Runs an action until a result of that action satisfies a given predicate.
 untilM ::
   Monad m =>
@@ -53,14 +44,14 @@ echo =
           (\c ->
             if c == 'q'
               then
-                putStrLn "Bye!" >-
+                putStrLn "Bye!" >>
                 pure True
               else
                 pure False)
-          (putStr "Enter a character: " >-
+          (putStr "Enter a character: " >>
            getChar >>= \c ->
-           putStrLn "" >-
-           putStrLn (c :. Nil) >-
+           putStrLn "" >>
+           putStrLn (c :. Nil) >>
            pure c))
 
 data Op =
@@ -154,19 +145,19 @@ interactive =
              (\c ->
                if c == 'q'
                  then
-                   putStrLn "Bye!" >-
+                   putStrLn "Bye!" >>
                    pure True
                  else
                    pure False)
-             (putStrLn "Select: " >-
+             (putStrLn "Select: " >>
               traverse (\(Op c s _) ->
-                putStr (c :. Nil) >-
-                putStr ". " >-
-                putStrLn s) ops >-
+                putStr (c :. Nil) >>
+                putStr ". " >>
+                putStrLn s) ops >>
               getChar >>= \c ->
-              putStrLn "" >-
+              putStrLn "" >>
               let o = find (\(Op c' _ _) -> c' == c) ops
                   r = case o of
-                        Empty -> (putStrLn "Not a valid selection. Try again." >-)
-                        Full (Op _ _ k) -> (k >-)
+                        Empty -> (putStrLn "Not a valid selection. Try again." >>)
+                        Full (Op _ _ k) -> (k >>)
               in r (pure c)))
