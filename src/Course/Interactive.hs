@@ -13,14 +13,6 @@ import Course.Traversable
 import Course.List
 import Course.Optional
 
--- | Eliminates any value over which a functor is defined.
-vooid ::
-  Functor m =>
-  m a
-  -> m ()
-vooid =
-  (<$>) (const ())
-
 -- | Runs an action until a result of that action satisfies a given predicate.
 untilM ::
   Monad m =>
@@ -40,7 +32,7 @@ untilM p a =
 echo ::
   IO ()
 echo =
-  vooid (untilM
+  void (untilM
           (\c ->
             if c == 'q'
               then
@@ -141,7 +133,7 @@ interactive =
             :. Op 'q' "Quit" (pure ())
             :. Nil
             )
-  in vooid (untilM
+  in void (untilM
              (\c ->
                if c == 'q'
                  then
