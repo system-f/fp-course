@@ -648,13 +648,17 @@ instance Comonad ListZipper where
     error "todo"
 
 -- | Implement the `Traversable` instance for `ListZipper`.
--- This implementation traverses a zipper while running some `Applicative` effect through the zipper.
+-- This implementation traverses a zipper from left to right while running
+-- some `Applicative` effect through the zipper.
 -- An effectful zipper is returned.
 --
 -- >>> traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Full 5, Full 6, Full 7])
 -- Full [1,2,3] >4< [5,6,7]
 --
 -- >>> traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Empty, Full 6, Full 7])
+-- Empty
+--
+-- >>> traverse id (zipper [error "traversing left values in wrong order", Empty] (error "traversing focus before left values") [Full 5, Full 6, Full 7])
 -- Empty
 instance Traversable ListZipper where
   traverse =
