@@ -417,6 +417,10 @@ moveRightN =
 --
 -- >>> moveLeftN' (-4) (zipper [5,4,3,2,1] 6 [7,8,9])
 -- Left 3
+--
+-- >>> rights <$> moveLeftN' 1 (zipper [3,2,error "moveLeftN' not sufficiently lazy"] 4 [5,6,7])
+-- Right [4,5,6,7]
+--
 moveLeftN' ::
   Int
   -> ListZipper a
