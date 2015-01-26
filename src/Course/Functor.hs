@@ -141,3 +141,7 @@ instance Functor [] where
 instance Functor P.Maybe where
   (<$>) =
     P.fmap
+
+instance Functor (P.Either a) where
+  (<$>) =
+    P.fmap
