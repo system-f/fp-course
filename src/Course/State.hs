@@ -176,7 +176,7 @@ distinct =
 --
 -- /Tip:/ Use `findM` with `State` and `produce`.
 --
--- /Tip:/ Use `flatten` to write a @square@ function.
+-- /Tip:/ Use `join` to write a @square@ function.
 --
 -- /Tip:/ Use library functions: @Optional#contains@, @Data.Char#digitToInt@.
 --
