@@ -13,7 +13,7 @@ import Course.List
 -- laws are not checked by the compiler. These laws are given as:
 --
 -- * The law of naturality
---   `∀f g. f . traverseg ≅ traverse (f . g)`
+--   `∀f g. f . traverse ≅ traverse (f . g)`
 --
 -- * The law of identity
 --   `∀x. traverse Id x ≅ Id x`
