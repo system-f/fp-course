@@ -378,7 +378,13 @@ dropRights ::
 dropRights =
   error "todo"
 
--- Move the focus left the given number of positions. If the value is negative, move right instead.
+-- | Move the focus left the given number of positions. If the value is negative, move right instead.
+--
+-- >>> moveLeftN 2 (zipper [2,1,0] 3 [4,5,6])
+-- [0] >1< [2,3,4,5,6]
+--
+-- >>> moveLeftN (-1) $ zipper [2,1,0] 3 [4,5,6]
+-- [3,2,1,0] >4< [5,6]
 moveLeftN ::
   Int
   -> ListZipper a
@@ -386,7 +392,13 @@ moveLeftN ::
 moveLeftN =
   error "todo"
 
--- Move the focus right the given number of positions. If the value is negative, move left instead.
+-- | Move the focus right the given number of positions. If the value is negative, move left instead.
+--
+-- >>> moveRightN 1 (zipper [2,1,0] 3 [4,5,6])
+-- [3,2,1,0] >4< [5,6]
+--
+-- >>> moveRightN (-1) $ zipper [2,1,0] 3 [4,5,6]
+-- [1,0] >2< [3,4,5,6]
 moveRightN ::
   Int
   -> ListZipper a
