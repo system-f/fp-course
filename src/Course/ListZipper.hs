@@ -583,6 +583,8 @@ insertPushRight =
 -- | Implement the `Apply` instance for `ListZipper`.
 -- This implementation zips functions with values by function application.
 --
+-- /Tip:/ Use `zipWith`
+--
 -- >>> zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7]
 -- [5,12] >8< [15,24,12]
 instance Apply ListZipper where
