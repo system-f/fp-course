@@ -241,12 +241,17 @@ hasRight =
 -- | Seek to the left for a location matching a predicate, starting from the
 -- current one.
 --
+-- -- /Tip:/ Use `break`
+--
 -- prop> findLeft (const True) -<< fromList xs == fromList xs
 --
 -- prop> findLeft (const False) (zipper l x r) == IsNotZ
 --
 -- >>> findLeft (== 1) (zipper [2, 1] 3 [4, 5])
 -- [] >1< [2,3,4,5]
+--
+-- >>> findLeft (== 1) (zipper [2, 1] 1 [4, 5])
+-- [] >1< [2,1,4,5]
 findLeft ::
   (a -> Bool)
   -> ListZipper a
@@ -378,7 +383,13 @@ dropRights ::
 dropRights =
   error "todo"
 
--- Move the focus left the given number of positions. If the value is negative, move right instead.
+-- | Move the focus left the given number of positions. If the value is negative, move right instead.
+--
+-- >>> moveLeftN 2 (zipper [2,1,0] 3 [4,5,6])
+-- [0] >1< [2,3,4,5,6]
+--
+-- >>> moveLeftN (-1) $ zipper [2,1,0] 3 [4,5,6]
+-- [3,2,1,0] >4< [5,6]
 moveLeftN ::
   Int
   -> ListZipper a
@@ -386,7 +397,13 @@ moveLeftN ::
 moveLeftN =
   error "todo"
 
--- Move the focus right the given number of positions. If the value is negative, move left instead.
+-- | Move the focus right the given number of positions. If the value is negative, move left instead.
+--
+-- >>> moveRightN 1 (zipper [2,1,0] 3 [4,5,6])
+-- [3,2,1,0] >4< [5,6]
+--
+-- >>> moveRightN (-1) $ zipper [2,1,0] 3 [4,5,6]
+-- [1,0] >2< [3,4,5,6]
 moveRightN ::
   Int
   -> ListZipper a
@@ -565,6 +582,8 @@ insertPushRight =
 
 -- | Implement the `Apply` instance for `ListZipper`.
 -- This implementation zips functions with values by function application.
+--
+-- /Tip:/ Use `zipWith`
 --
 -- >>> zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7]
 -- [5,12] >8< [15,24,12]
