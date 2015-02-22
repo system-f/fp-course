@@ -3,6 +3,8 @@
 
 module Course.Optional where
 
+import qualified Control.Applicative as A
+import qualified Control.Monad as M
 import Course.Core
 import qualified Prelude as P
 
@@ -37,6 +39,16 @@ twiceOptional f = applyOptional . mapOptional f
 contains :: Eq a => a -> Optional a -> Bool
 contains _ Empty = False
 contains a (Full z) = a == z
+
+instance P.Functor Optional where
+  fmap =
+    M.liftM
+
+instance A.Applicative Optional where
+  (<*>) =
+    M.ap
+  pure =
+    Full
 
 instance P.Monad Optional where
   (>>=) =
