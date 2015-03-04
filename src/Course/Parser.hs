@@ -108,7 +108,7 @@ character =
 -- >>> parse (mapParser succ character) "amz"
 -- Result >mz< 'b'
 --
--- parse (mapParser (+10) (valueParser 7)) ""
+-- >>> parse (mapParser (+10) (valueParser 7)) ""
 -- Result >< 17
 mapParser ::
   (a -> b)
