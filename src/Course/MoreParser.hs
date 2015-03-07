@@ -210,16 +210,16 @@ between =
 --
 -- /Tip:/ Use `between` and `charTok`.
 --
--- λ> parse (betweenCharTok '[' ']' character) "[a]"
+-- >>> parse (betweenCharTok '[' ']' character) "[a]"
 -- Result >< 'a'
 --
--- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc]")
+-- >>> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc]")
 -- True
 --
--- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc")
+-- >>> isErrorResult (parse (betweenCharTok '[' ']' character) "[abc")
 -- True
 --
--- λ> isErrorResult (parse (betweenCharTok '[' ']' character) "abc]")
+-- >>> isErrorResult (parse (betweenCharTok '[' ']' character) "abc]")
 -- True
 betweenCharTok ::
   Char
