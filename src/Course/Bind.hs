@@ -68,8 +68,8 @@ infixr 1 =<<
   f (a -> b)
   -> f a
   -> f b
-(<*>) =
-  error "todo"
+f <*> a =
+   (\f' -> (f' $) <$> a) =<< f
 
 infixl 4 <*>
 
@@ -153,7 +153,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo"
+  flip (=<<)
 
 infixl 1 >>=
 
