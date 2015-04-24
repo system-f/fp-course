@@ -47,7 +47,7 @@ class Apply f => Applicative f where
   -> f a
   -> f b
 (<$>) =
-  error "todo"
+  error "todo: Course.Applicative#(<$>)"
 
 -- | Insert into Id.
 --
@@ -57,7 +57,7 @@ instance Applicative Id where
     a
     -> Id a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance Id"
 
 -- | Insert into a List.
 --
@@ -67,7 +67,7 @@ instance Applicative List where
     a
     -> List a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance List"
 
 -- | Insert into an Optional.
 --
@@ -77,7 +77,7 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#instance Optional"
 
 -- | Insert into a constant function.
 --
@@ -87,7 +87,7 @@ instance Applicative ((->) t) where
     a
     -> ((->) t a)
   pure =
-    error "todo"
+    error "todo: Course.Applicative pure#((->) t)"
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -110,7 +110,7 @@ sequence ::
   List (f a)
   -> f (List a)
 sequence =
-  error "todo"
+  error "todo: Course.Applicative#sequence"
 
 -- | Replicate an effect a given number of times.
 --
@@ -134,7 +134,7 @@ replicateA ::
   -> f a
   -> f (List a)
 replicateA =
-  error "todo"
+  error "todo: Course.Applicative#replicateA"
 
 -- | Filter a list with a predicate that produces an effect.
 --
@@ -162,7 +162,7 @@ filtering ::
   -> List a
   -> f (List a)
 filtering =
-  error "todo"
+  error "todo: Course.Applicative#filtering"
 
 -----------------------
 -- SUPPORT LIBRARIES --

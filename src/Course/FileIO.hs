@@ -63,7 +63,7 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo"
+  error "todo: Course.FileIO#main"
 
 type FilePath =
   Chars
@@ -73,30 +73,30 @@ run ::
   Chars
   -> IO ()
 run =
-  error "todo"
+  error "todo: Course.FileIO#run"
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo"
+  error "todo: Course.FileIO#getFiles"
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo"
+  error "todo: Course.FileIO#getFile"
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo"
+  error "todo: Course.FileIO#printFiles"
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
 printFile =
-  error "todo"
+  error "todo: Course.FileIO#printFile"
 
