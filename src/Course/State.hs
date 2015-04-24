@@ -57,7 +57,7 @@ instance Apply (State s) where
     -> State s a
     -> State s b 
   (<*>) =
-    error "todo"
+    error "todo: Course.State (<*>)#instance (State s)"
 
 -- | Implement the `Applicative` instance for `State s`.
 -- >>> runState (pure 2) 0
@@ -196,4 +196,3 @@ isHappy ::
   -> Bool
 isHappy =
   error "todo: Course.State#isHappy"
-  
