@@ -18,22 +18,22 @@ newtype Compose f g a =
 instance (Functor f, Functor g) =>
     Functor (Compose f g) where
   (<$>) =
-    error "todo"
+    error "todo: Course.Compose (<$>)#instance (Compose f g)"
 
 instance (Apply f, Apply g) =>
   Apply (Compose f g) where
 -- Implement the (<*>) function for an Apply instance for Compose
   (<*>) =
-    error "todo"
+    error "todo: Course.Compose (<*>)#instance (Compose f g)"
 
 instance (Applicative f, Applicative g) =>
   Applicative (Compose f g) where
 -- Implement the pure function for an Applicative instance for Compose
   pure =
-    error "todo"
+    error "todo: Course.Compose pure#instance (Compose f g)"
 
 instance (Bind f, Bind g) =>
   Bind (Compose f g) where
 -- Implement the (=<<) function for a Bind instance for Compose
   (=<<) =
-    error "todo"
+    error "todo: Course.Compose (<<=)#instance (Compose f g)"
