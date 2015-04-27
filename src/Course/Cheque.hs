@@ -324,4 +324,4 @@ dollars ::
   Chars
   -> Chars
 dollars =
-  error "todo"
+  error "todo: Course.Cheque#dollars"

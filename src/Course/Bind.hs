@@ -69,7 +69,7 @@ infixr 1 =<<
   -> f a
   -> f b
 (<*>) =
-  error "todo"
+  error "todo: Course.Bind#(<*>)"
 
 infixl 4 <*>
 
@@ -83,7 +83,7 @@ instance Bind Id where
     -> Id a
     -> Id b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance Id"
 
 -- | Binds a function on a List.
 --
@@ -95,7 +95,7 @@ instance Bind List where
     -> List a
     -> List b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance List"
 
 -- | Binds a function on an Optional.
 --
@@ -107,7 +107,7 @@ instance Bind Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance Optional"
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -119,7 +119,7 @@ instance Bind ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (=<<) =
-    error "todo"
+    error "todo: Course.Bind (=<<)#instance ((->) t)"
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -139,7 +139,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo"
+  error "todo: Course.Bind#join"
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -169,7 +169,7 @@ infixl 1 >>=
   -> a
   -> f c
 (<=<) =
-  error "todo"
+  error "todo: Course.Bind#(<=<)"
 
 infixr 1 <=<
 
