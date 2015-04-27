@@ -15,7 +15,7 @@ fastAnagrams ::
   -> Filename
   -> IO (List Chars)
 fastAnagrams =
-  error "todo"
+  error "todo: Course.FastAnagrams#fastAnagrams"
 
 newtype NoCaseString =
   NoCaseString {
