@@ -23,10 +23,10 @@ import qualified Prelude as P
 -- laws are not checked by the compiler. These laws are given as:
 --
 -- * The law of left identity
---   `∀x. pure <*> x ≅ x`
+--   `∀x. pure id <*> x ≅ x`
 --
 -- * The law of right identity
---   `∀x. x <*> pure ≅ x`
+--   `∀x. x <*> pure id ≅ x`
 class Apply f => Applicative f where
   pure ::
     a -> f a
