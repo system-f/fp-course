@@ -26,7 +26,7 @@ import qualified Numeric as N
 -- >>> import Test.QuickCheck
 -- >>> import Course.Core(even, id, const)
 -- >>> import qualified Prelude as P(fmap, foldr)
--- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap (P.foldr (:.) Nil) arbitrary
+-- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap ((P.foldr (:.) Nil) :: ([a] -> List a)) arbitrary
 
 -- BEGIN Helper functions and data types
 
