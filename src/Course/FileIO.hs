@@ -47,7 +47,7 @@ And b.txt, containing:
 And c.txt, containing:
   the contents of c
 
-$ runhaskell io.hs "files.txt"
+$ runhaskell FileIO.hs "files.txt"
 ============ a.txt
 the contents of a
 
@@ -63,40 +63,46 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \a ->
+    case a of
+      h:._ -> run h
+      Nil -> putStrLn "need to pass an argument silly"
 
 type FilePath =
   Chars
 
 -- /Tip:/ Use @getFiles@ and @printFiles@.
 run ::
-  Chars
+  FilePath
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run file =
+  do c <- readFile file
+     d <- getFiles (lines c)
+     printFiles d
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  sequence . (<$>) getFile
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
-
+  lift2 (<$>) (,) readFile
+  
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  void . sequence . (uncurry printFile <$>)
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile n c =
+  putStrLn ("======= " ++ n) >>
+  putStrLn c
 

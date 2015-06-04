@@ -32,7 +32,7 @@ instance Monad List where
 instance Monad Optional where
 
 instance Monad ((->) t) where
-
+  
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------

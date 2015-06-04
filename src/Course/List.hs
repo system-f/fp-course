@@ -132,10 +132,8 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map _ Nil =
-  Nil 
-map f (h:.t) =
-  f h :. map f t
+map f =
+  foldRight ((:.) . f) Nil
 
 foldRight' _ z Nil =
   z

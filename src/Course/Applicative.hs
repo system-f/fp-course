@@ -47,7 +47,7 @@ class Apply f => Applicative f where
   -> f a
   -> f b
 (<$>) =
-  error "todo: Course.Applicative#(<$>)"
+  (<*>) . pure
 
 -- | Insert into Id.
 --
@@ -57,7 +57,7 @@ instance Applicative Id where
     a
     -> Id a
   pure =
-    error "todo: Course.Applicative pure#instance Id"
+    Id
 
 -- | Insert into a List.
 --
@@ -66,8 +66,8 @@ instance Applicative List where
   pure ::
     a
     -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
+  pure x =
+    x :. Nil
 
 -- | Insert into an Optional.
 --
@@ -77,8 +77,8 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo: Course.Applicative pure#instance Optional"
-
+    Full
+    
 -- | Insert into a constant function.
 --
 -- prop> pure x y == x
@@ -87,7 +87,7 @@ instance Applicative ((->) t) where
     a
     -> ((->) t a)
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    const -- aka K combinator
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -109,8 +109,25 @@ sequence ::
   Applicative f =>
   List (f a)
   -> f (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+sequence Nil =
+  pure Nil
+sequence (h:.t) =
+  -- sequence t :: f (List a)
+  -- h :: f a
+  --
+  -- (    a ->    List a ->     List a) 
+  -- -> f a -> f (List a) -> f (List a)
+  ----
+  -- ? :: f (List a)
+  -- (:.) <$> h <*> sequence t
+  -- lift2 f a b = f <$> a <*> b
+  lift2 (:.) h (sequence t)
+
+sequence' ::
+  Applicative f =>
+  List (f a) -> f (List a)
+sequence' =
+  foldRight (lift2 (:.)) (pure Nil)
 
 -- | Replicate an effect a given number of times.
 --
@@ -133,8 +150,8 @@ replicateA ::
   Int
   -> f a
   -> f (List a)
-replicateA =
-  error "todo: Course.Applicative#replicateA"
+replicateA n =
+  sequence . replicate n
 
 -- | Filter a list with a predicate that produces an effect.
 --
@@ -161,9 +178,19 @@ filtering ::
   (a -> f Bool)
   -> List a
   -> f (List a)
-filtering =
-  error "todo: Course.Applicative#filtering"
+filtering _ Nil =
+  pure Nil
+filtering p (h:.t) =
+  (\b -> if b then (h:.) else id) <$> p h <*> filtering p t
 
+filteragain ::
+  (a -> Bool)
+  -> List a
+  -> List a
+filteragain p l =
+  let Id x = filtering (Id . p) l
+  in x
+  
 -----------------------
 -- SUPPORT LIBRARIES --
 -----------------------

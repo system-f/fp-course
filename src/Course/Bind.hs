@@ -115,11 +115,11 @@ instance Bind Optional where
 -- 119
 instance Bind ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (=<<) =
-    error "todo: Course.Bind (=<<)#instance ((->) t)"
+    (a -> ((->) t b)) -- (a -> t -> b)
+    -> ((->) t a)     -- (t -> a)
+    -> ((->) t b)     -- (t -> b)
+  (=<<) f g t =
+    f (g t) t
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -139,7 +139,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Bind#join"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
