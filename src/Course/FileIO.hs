@@ -47,7 +47,7 @@ And b.txt, containing:
 And c.txt, containing:
   the contents of c
 
-$ runhaskell io.hs "files.txt"
+$ runhaskell FileIO.hs "files.txt"
 ============ a.txt
 the contents of a
 
