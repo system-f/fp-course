@@ -330,7 +330,7 @@ eof ::
 eof =
   error "todo: Course.MoreParser#eof"
 
--- | Write a parser that produces a characer that satisfies all of the given predicates.
+-- | Write a parser that produces a character that satisfies all of the given predicates.
 --
 -- /Tip:/ Use `sequence` and @Data.List#and@.
 --
@@ -354,7 +354,7 @@ satisfyAll ::
 satisfyAll =
   error "todo: Course.MoreParser#satisfyAll"
 
--- | Write a parser that produces a characer that satisfies any of the given predicates.
+-- | Write a parser that produces a character that satisfies any of the given predicates.
 --
 -- /Tip:/ Use `sequence` and @Data.List#or@.
 --
