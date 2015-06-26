@@ -31,7 +31,7 @@ If you choose to use Haskell, also take advantage of its superior tooling:
 
 * Build with CABAL
 * Include a `.ghci` file for convenience when developing
-  * http://haskell.org/ghc/docs/6.12.2/html/users_guide/ghci-dot-files.html
+  * https://downloads.haskell.org/~ghc/latest/docs/html/users_guide/ghci-dot-files.html
 * API documented using Haddock
   * [http://www.haskell.org/haddock/doc/html/index.html](http://www.haskell.org/haddock/doc/html/index.html)
 * Code style examined using hlint
