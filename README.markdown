@@ -60,7 +60,8 @@ however, your first post might be moderated. This is simply to prevent spam.
 2. Change to the directory containing this document.
 
 3. Execute the command `ghci`, which will compile and load all the source code.
-   You may need to set permissions on a file, `chmod 600 .ghci`.
+   You may need to set permissions on the root directory and the ghci configuration
+   file, `chmod 600 .ghci ./`.
 
 4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
    on to the exercises starting with `Course.List`. The [Progression](#progression)
