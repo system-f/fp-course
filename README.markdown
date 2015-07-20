@@ -216,6 +216,31 @@ Answers for the exercises can be found here:
 
 After these are completed, complete the exercises in the `projects` directory.
 
+### Leksah
+
+If you choose to use the [Leksah IDE for Haskell](http://leksah.org/), the
+following tips are recommended:
+
+* Clone the git repo use Package -> Add to add course.cabal.
+* Click on the green tick on the toolbar to include `cabal test`
+  in each build and list the failures in the Errors pane.
+* Choose Package -> Configure to make sure `--enable-tests`
+  is used (just building may cause cabal to configure without).
+* Ctrl + B to build (Command + B on OS X).
+* The test failures should show up in Panes -> Errors.
+* Pane -> Log often has useful error messages.
+* Ctrl + J (Command + J on OS X) selects the next item in
+  Errors pane and goes to it in the source (hold down Shift
+  to go to previous item).
+* Ctrl + Enter on a line starting "-- >>>" will run the
+  selected expression in GHCi (Ctrl + Enter on OS X too).
+  The output goes to Panes -> Log and Panes -> Output.
+* The last GHCi expression is reevaluated after each :reload
+  triggered by changes in the code.
+* Uncheck Debug -> GHCi when you are done with GHCi and
+  Leksah will go back to running cabal build and cabal test
+  instead.
+
 ### References
 
 * [The Haskell `error` function](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#v:error)
