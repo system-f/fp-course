@@ -11,6 +11,7 @@ module Course.Core(
 , Bounded(..)
 , RealFrac(..)
 , Num(..)
+, Fractional(..)
 , Bool(..)
 , Either(..)
 , Int
@@ -56,6 +57,7 @@ import Prelude(
   , Bounded(..)
   , RealFrac(..)
   , Num(..)
+  , Fractional(..)
   , Bool(..)
   , Either(..)
   , Char
