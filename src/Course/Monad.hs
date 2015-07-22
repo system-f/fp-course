@@ -10,6 +10,9 @@ import Course.Id
 import Course.List
 import Course.Optional
 import qualified Prelude as P
+import Data.String
+import Data.Char
+
 
 {-
 
@@ -24,6 +27,13 @@ The monad type-class provides no additional methods to `Applicative` and `Bind`.
 -}
 
 class (Applicative f, Bind f) => Monad f where
+
+{-
+class Applicative f => Monad f where
+  return :: a -> f a
+  (>>=) :: f a -> (a -> f b) -> f b
+  ... annoying things
+-}
 
 instance Monad Id where
 
@@ -42,3 +52,36 @@ instance Monad IO where
 instance Monad [] where
 
 instance Monad P.Maybe where
+
+aaa :: Int -> Optional Int
+aaa n =
+  if n < 10 then Full (n * 2) else Empty
+
+bbb :: Int -> Optional (List Char)
+bbb n =
+  if n> 13 then Full (show' n) else Empty 
+
+ccc :: List Char -> Optional (List Char)
+ccc s =
+  if length s > 1 then Full (reverse s) else Empty
+
+rrr ::
+  Int -> Optional (List Char)
+rrr n =
+  aaa n >>= \o ->
+  bbb o >>= \c -> 
+  ccc c
+
+rrrr n =
+  do
+    o <- aaa n
+    c <- bbb o
+    ccc c
+
+
+
+{-
+>> :t (>>=)
+(>>=) :: Bind f => f a -> (a -> f b) -> f b
+
+-}

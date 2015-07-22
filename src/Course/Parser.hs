@@ -79,17 +79,17 @@ unexpectedCharParser c =
 valueParser ::
   a
   -> Parser a
-valueParser =
-  error "todo: Course.Parser#valueParser"
+valueParser a =
+  P (\input -> Result input a)
 
--- | Return a parser that always fails with the given error.
+-- | Return a parser that always fails.
 --
 -- >>> isErrorResult (parse failed "abc")
 -- True
 failed ::
   Parser a
 failed =
-  error "todo: Course.Parser#failed"
+  P (\_ -> ErrorResult Failed)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -101,7 +101,9 @@ failed =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\input -> case input of 
+                 Nil -> ErrorResult UnexpectedEof
+                 h:.t -> Result t h)
 
 -- | Return a parser that maps any succeeding result with the given function.
 --
@@ -595,7 +597,7 @@ instance Functor Parser where
     -> Parser a
     -> Parser b
   (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
+     mapParser
 
 -- | Write a Apply instance for a @Parser@.
 -- /Tip:/ Use @bindParser@ and @valueParser@.
@@ -604,8 +606,8 @@ instance Apply Parser where
     Parser (a -> b)
     -> Parser a
     -> Parser b
-  (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
+  p <*> q =
+    bindParser (\f -> mapParser f q) p
 
 -- | Write an Applicative functor instance for a @Parser@.
 instance Applicative Parser where
@@ -613,7 +615,7 @@ instance Applicative Parser where
     a
     -> Parser a
   pure =
-    error "todo: Course.Parser pure#instance Parser"
+    valueParser
 
 -- | Write a Bind instance for a @Parser@.
 instance Bind Parser where
@@ -622,6 +624,13 @@ instance Bind Parser where
     -> Parser a
     -> Parser b
   (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
+    bindParser
+
+
+
+
+
+
+
 
 instance Monad Parser where

@@ -21,9 +21,7 @@ import qualified Prelude as P
 class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::
-    (a -> b)
-    -> f a
-    -> f b
+    (a -> b) -> (f a -> f b)
 
 infixl 4 <$>
 
@@ -56,8 +54,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    map
+  f <$> x =
+    foldRight ((:.) . f) Nil x
 
 -- | Maps a function on the Optional functor.
 --
@@ -82,11 +80,14 @@ instance Functor Optional where
 -- 17
 instance Functor ((->) t) where
   (<$>) ::
-    (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
+    (a -> b) -- f
+    -> (t -> a) -- g
+    -> (t -> b)
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    -- \t -> f (g t)
+    -- \t -> (f . g) t
+    -- f . g
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -98,11 +99,11 @@ instance Functor ((->) t) where
 -- prop> x <$ Full q == Full x
 (<$) ::
   Functor f =>
-  a
-  -> f b
+  b
   -> f a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+  -> f b
+b <$ fa =
+  const b <$> fa
 
 -- | Anonymous map producing unit value.
 --
@@ -121,8 +122,8 @@ void ::
   Functor f =>
   f a
   -> f ()
-void =
-  error "todo: Course.Functor#void"
+void x =
+  () <$ x
 
 -----------------------
 -- SUPPORT LIBRARIES --

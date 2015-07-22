@@ -30,6 +30,11 @@ class Apply f => Bind f where
     -> f a
     -> f b
 
+-- (<$>) :: a -> b
+-- (<*>) :: f (a -> b)
+-- (=<<) :: a -> f b
+-- (<<=) :: f a -> b
+
 infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
@@ -107,7 +112,7 @@ instance Bind Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Bind (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --

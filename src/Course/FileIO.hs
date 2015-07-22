@@ -63,8 +63,12 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
-
+  getChar >>= \_ ->
+  getArgs >>= \c ->
+  case c of
+    Nil -> putStrLn "pass an arg dummy"
+    (h:._) -> run h
+                
 type FilePath =
   Chars
 
@@ -72,31 +76,73 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run f =
+  {-
+  readFile f >>= \c ->
+  getFiles (lines c) >>= \l ->
+  printFiles l
+  -}
+  do
+    c <- readFile f
+    l <- getFiles (lines c)
+    printFiles l
 
+-- Use getFile, sequence
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  sequence . (<$>) getFile
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+  lift2 (<$>) (,) readFile
 
+  {-
+  readFile f >>= \c ->
+  pure (f, c)
+-}
+
+-- Use printFile, sequence, void
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  void . sequence . (<$>) (uncurry printFile)
+  -- void (sequence ((<$>) (\(n, c) -> printFile n c) x))
+
+-- (FilePath -> Chars -> IO ()) -> ((FilePath, Chars) -> IO ())
+-- (a        -> b     -> c    ) -> ((a       , b    ) -> c)
+-- (a -> b -> c) -> ((a, b) -> c)
+
+  -- List (IO ())
+  -- sequence -> IO (List ())
+  -- void -> IO ()
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile p c =
+  -- putStrLn ("=====" ++ p) >>= \_ ->
+  -- putStrLn c
+  -- putStrLn (exp p c)
+  do putStrLn ("=====" ++ p)
+     putStrLn c
+
+exp :: FilePath -> Chars -> Chars
+exp p c =
+  "===== " ++ p ++ "\n" ++ c
+
+
+
+
+
+
+
+
+
+
 

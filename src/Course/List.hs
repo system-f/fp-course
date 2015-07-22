@@ -135,6 +135,22 @@ map f =
     ((:.) . f)
     Nil
 
+-- must use only flatMap
+-- (a -> List b) -> List a -> List b
+mapAgain ::
+  (a -> b) 
+  -> List a
+  -> List b
+mapAgain f =
+  flatMap (single . f)
+
+-- pure, return, unit, mu, lift0, 
+single ::
+  a
+  -> List a
+single a =
+  a :. Nil
+
 -- | Return elements satisfying the given predicate.
 --
 -- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)

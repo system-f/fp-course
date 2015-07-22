@@ -35,8 +35,8 @@ instance Apply Id where
     Id (a -> b)
     -> Id a
     -> Id b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Id"
+  Id f <*> Id a =
+    Id (f a)
 
 -- | Implement @Apply@ instance for @List@.
 --
@@ -47,8 +47,39 @@ instance Apply List where
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  -- flatMap :: (a -> List b) -> List a -> List b
+  listf <*> lista =
+    flMap listf (\f ->
+    flMap lista (\a -> 
+    f a :. Nil))
+    
+    {-
+    f <- listf
+    a <- lista
+    pure (f a)
+
+for {
+  f <- listf
+  a <- list a
+} yield f a
+
+from f in listf
+from a in lista
+select f(a)
+
+    -}
+flMap :: List x -> (x -> List y) -> List y
+flMap = flip flatMap
+
+    {-
+  _ <*> Nil =
+    Nil
+  Nil <*> _ =
+    Nil
+  (f:.fs) <*> q@(_:._) =
+    map (\a -> f a) q ++
+    (fs <*> q)
+-}
 
 -- | Implement @Apply@ instance for @Optional@.
 --
@@ -65,8 +96,21 @@ instance Apply Optional where
     Optional (a -> b)
     -> Optional a
     -> Optional b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+  optionalf <*> optionala =
+    bindOpt2 optionalf (\f ->
+    bindOpt2 optionala (\a -> 
+    Full (f a)))
+
+  {-
+
+bindOptional ::
+  (a -> Optional b) -> Optional a -> Optional b
+-}
+
+bindOpt2 :: 
+  Optional a -> (a -> Optional b) -> Optional b
+bindOpt2 =
+  flip bindOptional
 
 -- | Implement @Apply@ instance for reader.
 --
@@ -85,12 +129,35 @@ instance Apply Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 instance Apply ((->) t) where
+  {-
   (<*>) ::
     ((->) t (a -> b))
     -> ((->) t a)
     -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
+  -}
+  (<*>) ::
+    (t -> a -> b) -- f
+    -> (t -> a)   -- g
+    -> t          -- t
+    -> b
+  (<*>) x y z =
+    x   z ( y   z)
+    
+-- Sxyz = xz(yz)
+
+flbindReader ::
+  (t -> a)
+  -> (a -> t -> b)
+  -> t
+  -> b
+flbindReader f g t =
+  g (f t) t
+
+pureReader ::
+  a
+  -> t
+  -> a
+pureReader = const
 
 -- | Apply a binary function in the environment.
 --
@@ -112,13 +179,17 @@ instance Apply ((->) t) where
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
 lift2 ::
-  Apply f =>
-  (a -> b -> c)
-  -> f a
-  -> f b
+  Apply f => -- has (<$>) and (<*>)
+  (a -> b -> c) -- f
+  -> f a        -- a
+  -> f b        -- b
   -> f c
-lift2 =
-  error "todo: Course.Apply#lift2"
+lift2 f a b =
+  f <$> a <*> b
+
+-- f <$> a :: ?
+-- a) type error
+-- b) something else :: f (b -> c)
 
 -- | Apply a ternary function in the environment.
 --
@@ -149,8 +220,8 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  error "todo: Course.Apply#lift2"
+lift3 f a b c =
+  f <$> a <*> b <*> c
 
 -- | Apply a quaternary function in the environment.
 --
@@ -182,8 +253,8 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Apply#lift4"
+lift4 f a b c d =
+  f <$> a <*> b <*> c <*> d
 
 -- | Sequence, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -209,7 +280,8 @@ lift4 =
   -> f b
   -> f b
 (*>) =
-  error "todo: Course.Apply#(*>)"
+  lift2 (const id)
+
 
 -- | Sequence, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -235,7 +307,7 @@ lift4 =
   -> f a
   -> f b
 (<*) =
-  error "todo: Course.Apply#(<*)"
+  lift2 const
 
 -----------------------
 -- SUPPORT LIBRARIES --
