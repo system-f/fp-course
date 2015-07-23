@@ -282,16 +282,6 @@ lift4 f a b c d =
 (*>) =
   lift2 (const id)
 
-
--- | Sequence, discarding the value of the second argument.
--- Pronounced, left apply.
---
--- >>> [1,2,3] <* [4,5,6]
--- [1,1,1,2,2,2,3,3,3]
---
--- >>> [1,2] <* [4,5,6]
--- [1,1,1,2,2,2]
---
 -- >>> [1,2,3] <* [4,5]
 -- [1,1,2,2,3,3]
 --
