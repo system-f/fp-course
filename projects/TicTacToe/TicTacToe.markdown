@@ -45,5 +45,8 @@ If you choose to use Haskell, also take advantage of its superior tooling:
 
 Extra-curricular
 ----------------
+* Additional constraints using the type system:
+    * If fewer than 5 moves have been played, then this guarantees that the game is still in play, and so `move` can always be immediately called.
+    * An additional function on finished games, `isDraw` that, if called on a game with fewer than 9 moves, a compile-time type-error results.
 * Write an opponent that never loses
 * Write an opponent with easy, medium, hard difficulty levels
