@@ -1,5 +1,5 @@
 name:                 course
-version:              0.1.3
+version:              0.1.4
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
@@ -73,6 +73,7 @@ library
                       Course.List
                       Course.ListZipper
                       Course.Monad
+                      Course.MonadTutorial
                       Course.MoreParser
                       Course.Optional
                       Course.Parser
