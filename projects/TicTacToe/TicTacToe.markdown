@@ -9,13 +9,17 @@ The following API functions should exist. By removing the need for some of these
 
 * `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is empty or in-play. Calling `move` on a game board that is finished is a *compile-time type error*.
 
+*(optional)*  If fewer than 5 moves have been played, then this guarantees that the game is still in play, and so calling `move` will never produce a type-error in this case.
+
 * `whoWon`: takes a tic-tac-toe board and returns the player that won the game (or a draw if neither). This function can only be called on a board that is finished. Calling `whoWon` on a game board that is empty or in-play is a *compile-time type error*. As an optional consideration, `whoWon` should never be a draw if fewer than nine moves have been played. In the case that the game is completed, but fewer than nine moves have been played, return a value that can only be one of two possibilities (the winner) and never a draw.
 
 * `playerAt`: takes a tic-tac-toe board and position and returns the (possible) player at a given position. This function works on any type of board.
 
 * `takeBack` *(optional)*: takes either a finished board or a board in-play that has had at least one move and returns a board in-play. It is a compile-time type error to call this function on an empty board.
 
-* Other API functions that you may see fit. These can be determined by also writing an interactive console application that uses the API -- other useful functions are likely to arise.
+* `isDraw` *(optional)* if called on a game with fewer than 9 moves, a compile-time type-error results.
+
+* Other API functions that might be considered useful for general API use. Ensure that it is not possible to violate the game rules of tic-tac-toe. These functions can often be determined by also writing an interactive console application that uses the API -- other useful functions are likely to arise.
 
 You should write automated tests for your API. For example, the following universally quantified property holds true:
 
@@ -27,7 +31,7 @@ You should encode this property in an automated specification test. For Scala, u
 Haskell-specific
 ----------------
 
-If you choose to use Haskell, also take advantage of its superior tooling:
+If you choose to use Haskell, also take advantage of its tooling:
 
 * Build with CABAL
 * Include a `.ghci` file for convenience when developing
@@ -45,8 +49,5 @@ If you choose to use Haskell, also take advantage of its superior tooling:
 
 Extra-curricular
 ----------------
-* Additional constraints using the type system:
-    * If fewer than 5 moves have been played, then this guarantees that the game is still in play, and so `move` can always be immediately called.
-    * An additional function on finished games, `isDraw` that, if called on a game with fewer than 9 moves, a compile-time type-error results.
 * Write an opponent that never loses
 * Write an opponent with easy, medium, hard difficulty levels
