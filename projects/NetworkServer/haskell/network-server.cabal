@@ -34,6 +34,16 @@ executable network-tictactoe
                     , network
                     , QuickCheck
 
+  other-modules:     Data.TicTacToe
+                     , Network.Server.Common.Accept
+                     , Network.Server.Common.Env
+                     , Network.Server.Common.HandleLens
+                     , Network.Server.Common.Lens
+                     , Network.Server.Common.Line
+                     , Network.Server.Common.Ref
+                     , Network.Server.TicTacToe.Game
+                     , Network.Server.TicTacToe.Loop
+
   ghc-options:      -Wall
 
 executable network-chat
@@ -49,6 +59,15 @@ executable network-chat
                     , containers
                     , network
                     , QuickCheck
+
+  other-modules:    Network.Server.Chat.Chat
+                    , Network.Server.Chat.Loop
+                    , Network.Server.Common.Accept
+                    , Network.Server.Common.Env
+                    , Network.Server.Common.HandleLens
+                    , Network.Server.Common.Lens
+                    , Network.Server.Common.Line
+                    , Network.Server.Common.Ref
 
   ghc-options:      -Wall
 

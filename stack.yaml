@@ -1,0 +1,10 @@
+flags:
+  course:
+    small_base: true
+  network-server:
+    small_base: true
+packages:
+- '.'
+- projects/NetworkServer/haskell/
+extra-deps: []
+resolver: lts-3.0
