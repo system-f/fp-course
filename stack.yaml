@@ -7,4 +7,4 @@ packages:
 - '.'
 - projects/NetworkServer/haskell/
 extra-deps: []
-resolver: lts-3.0
+resolver: lts-3.4
