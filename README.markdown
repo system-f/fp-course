@@ -71,6 +71,26 @@ however, your first post might be moderated. This is simply to prevent spam.
    prompt, issue the command `:reload`. This will compile your solution and
    reload it in the GHC interpreter. You may use `:r` for short.
 
+#### Getting started using `stack` from FP Complete
+
+`Stack` is a tool designed to make building Haskell projects easier and safer.
+If you have not installed GHC before, `stack` can make getting up and running
+with Haskell much easier - it takes care of installing GHC and everything else
+your project needs for you, and uses FP Complete's LTS Haskell releases so that
+you can be sure that package version numbers won't change, leading to reproducable
+builds.
+
+1. Install `stack` following the instructions [here](https://github.com/commercialhaskell/stack/wiki/Downloads)
+
+2. Change to the directory containing this document.
+
+3. Run `stack setup` - this will download GHC and install it for you
+
+4. Run `stack build` to build all the modules in the course.
+
+5. run `stack ghci` to run ghci, and follow [steps 3-5 above](#getting-started), but
+   using `stack ghci` instead of `ghci`.
+
 ### Tips after having started
 
 1. Some questions take a particular form. These are called *WTF questions*. WTF
