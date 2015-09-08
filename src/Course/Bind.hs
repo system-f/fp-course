@@ -109,7 +109,7 @@ instance Bind Optional where
   (=<<) =
     error "todo: Course.Bind (=<<)#instance Optional"
 
--- | Binds a function on the reader ((->) t).
+-- | Binds a function on the function monad ((->) t).
 --
 -- >>> ((*) =<< (+10)) 7
 -- 119

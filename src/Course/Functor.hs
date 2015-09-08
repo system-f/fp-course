@@ -74,7 +74,7 @@ instance Functor Optional where
   (<$>) =
     error "todo: Course.Functor (<$>)#instance Optional"
 
--- | Maps a function on the reader ((->) t) functor.
+-- | Maps a function on the function ((->) t) monad.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
