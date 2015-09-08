@@ -68,7 +68,7 @@ instance Apply Optional where
   (<*>) =
     error "todo: Course.Apply (<*>)#instance Optional"
 
--- | Implement @Apply@ instance for reader.
+-- | Implement @Apply@ instance for the function monad.
 --
 -- >>> ((+) <*> (+10)) 3
 -- 16
