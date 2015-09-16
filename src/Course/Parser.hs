@@ -65,6 +65,47 @@ data Parser a = P {
   parse :: Input -> ParseResult a
 }
 
+
+-- | Write a Functor instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Functor Parser where
+  (<$>) ::
+    (a -> b)
+    -> Parser a
+    -> Parser b
+  (<$>) =
+     error "todo: Course.Parser (<$>)#instance Parser"
+
+-- | Write a Apply instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Apply Parser where
+  (<*>) ::
+    Parser (a -> b)
+    -> Parser a
+    -> Parser b
+  (<*>) =
+    error "todo: Course.Parser (<*>)#instance Parser"
+
+-- | Write an Applicative functor instance for a @Parser@.
+instance Applicative Parser where
+  pure ::
+    a
+    -> Parser a
+  pure =
+    error "todo: Course.Parser pure#instance Parser"
+
+-- | Write a Bind instance for a @Parser@.
+instance Bind Parser where
+  (=<<) ::
+    (a -> Parser b)
+    -> Parser a
+    -> Parser b
+  (=<<) =
+    error "todo: Course.Parser (=<<)#instance Parser"
+
+instance Monad Parser where
+
+
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::
   Char
@@ -589,41 +630,3 @@ personParser =
 -- Make sure all the tests pass!
 
 
--- | Write a Functor instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Functor Parser where
-  (<$>) ::
-    (a -> b)
-    -> Parser a
-    -> Parser b
-  (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
-
--- | Write a Apply instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Apply Parser where
-  (<*>) ::
-    Parser (a -> b)
-    -> Parser a
-    -> Parser b
-  (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
-
--- | Write an Applicative functor instance for a @Parser@.
-instance Applicative Parser where
-  pure ::
-    a
-    -> Parser a
-  pure =
-    error "todo: Course.Parser pure#instance Parser"
-
--- | Write a Bind instance for a @Parser@.
-instance Bind Parser where
-  (=<<) ::
-    (a -> Parser b)
-    -> Parser a
-    -> Parser b
-  (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
-
-instance Monad Parser where
