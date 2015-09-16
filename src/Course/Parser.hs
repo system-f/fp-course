@@ -210,6 +210,26 @@ flbindParser =
 
 infixl 3 |||
 
+-- | Return a parser that produces at least one value from the given parser then
+-- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
+--
+-- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
+--
+-- >>> parse (list1 (character)) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
+-- True
+list1 ::
+  Parser a
+  -> Parser (List a)
+list1 =
+  error "todo: Course.Parser#list1"
+
+
 -- | Return a parser that continues producing a list of values from the given parser.
 --
 -- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
@@ -237,24 +257,6 @@ list ::
 list =
   error "todo: Course.Parser#list"
 
--- | Return a parser that produces at least one value from the given parser then
--- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
---
--- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
---
--- >>> parse (list1 (character)) "abc"
--- Result >< "abc"
---
--- >>> parse (list1 (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
--- True
-list1 ::
-  Parser a
-  -> Parser (List a)
-list1 =
-  error "todo: Course.Parser#list1"
 
 -- | Return a parser that produces a character but fails if
 --
