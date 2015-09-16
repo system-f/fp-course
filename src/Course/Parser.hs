@@ -65,6 +65,47 @@ data Parser a = P {
   parse :: Input -> ParseResult a
 }
 
+
+-- | Write a Functor instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Functor Parser where
+  (<$>) ::
+    (a -> b)
+    -> Parser a
+    -> Parser b
+  (<$>) =
+     error "todo: Course.Parser (<$>)#instance Parser"
+
+-- | Write a Apply instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Apply Parser where
+  (<*>) ::
+    Parser (a -> b)
+    -> Parser a
+    -> Parser b
+  (<*>) =
+    error "todo: Course.Parser (<*>)#instance Parser"
+
+-- | Write an Applicative functor instance for a @Parser@.
+instance Applicative Parser where
+  pure ::
+    a
+    -> Parser a
+  pure =
+    error "todo: Course.Parser pure#instance Parser"
+
+-- | Write a Bind instance for a @Parser@.
+instance Bind Parser where
+  (=<<) ::
+    (a -> Parser b)
+    -> Parser a
+    -> Parser b
+  (=<<) =
+    error "todo: Course.Parser (=<<)#instance Parser"
+
+instance Monad Parser where
+
+
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::
   Char
@@ -210,6 +251,26 @@ flbindParser =
 
 infixl 3 |||
 
+-- | Return a parser that produces at least one value from the given parser then
+-- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
+--
+-- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
+--
+-- >>> parse (list1 (character)) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
+-- True
+list1 ::
+  Parser a
+  -> Parser (List a)
+list1 =
+  error "todo: Course.Parser#list1"
+
+
 -- | Return a parser that continues producing a list of values from the given parser.
 --
 -- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
@@ -237,24 +298,6 @@ list ::
 list =
   error "todo: Course.Parser#list"
 
--- | Return a parser that produces at least one value from the given parser then
--- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
---
--- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
---
--- >>> parse (list1 (character)) "abc"
--- Result >< "abc"
---
--- >>> parse (list1 (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
--- True
-list1 ::
-  Parser a
-  -> Parser (List a)
-list1 =
-  error "todo: Course.Parser#list1"
 
 -- | Return a parser that produces a character but fails if
 --
@@ -587,41 +630,3 @@ personParser =
 -- Make sure all the tests pass!
 
 
--- | Write a Functor instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Functor Parser where
-  (<$>) ::
-    (a -> b)
-    -> Parser a
-    -> Parser b
-  (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
-
--- | Write a Apply instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Apply Parser where
-  (<*>) ::
-    Parser (a -> b)
-    -> Parser a
-    -> Parser b
-  (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
-
--- | Write an Applicative functor instance for a @Parser@.
-instance Applicative Parser where
-  pure ::
-    a
-    -> Parser a
-  pure =
-    error "todo: Course.Parser pure#instance Parser"
-
--- | Write a Bind instance for a @Parser@.
-instance Bind Parser where
-  (=<<) ::
-    (a -> Parser b)
-    -> Parser a
-    -> Parser b
-  (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
-
-instance Monad Parser where
