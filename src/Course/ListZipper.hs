@@ -7,7 +7,6 @@ import Course.Core
 import Course.List
 import Course.Optional
 import Course.Functor
-import Course.Apply
 import Course.Applicative
 import Course.Extend
 import Course.Comonad
@@ -593,20 +592,32 @@ insertPushRight ::
 insertPushRight =
   error "todo: Course.ListZipper#insertPushRight"
 
--- | Implement the `Apply` instance for `ListZipper`.
--- This implementation zips functions with values by function application.
+-- | Implement the `Applicative` instance for `ListZipper`.
+-- `pure` produces an infinite list zipper (to both left and right).
+-- (<*>) zips functions with values by function application.
 --
--- /Tip:/ Use `zipWith`
+-- prop> all . (==) <*> take n . lefts . pure
+--
+-- prop> all . (==) <*> take n . rights . pure
 --
 -- >>> zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7]
 -- [5,12] >8< [15,24,12]
-instance Apply ListZipper where
+instance Applicative ListZipper where
+-- /Tip:/ Use @List#repeat@.
+  pure =
+    error "todo: Course.ListZipper pure#instance ListZipper"
+-- /Tip:/ Use `zipWith`
   (<*>) =
     error "todo: Course.ListZipper (<*>)#instance ListZipper"
 
--- | Implement the `Apply` instance for `MaybeListZipper`.
+-- | Implement the `Applicative` instance for `MaybeListZipper`.
 --
+-- /Tip:/ Use @pure@ for `ListZipper`.
 -- /Tip:/ Use `<*>` for `ListZipper`.
+--
+-- prop> let is (IsZ z) = z in all . (==) <*> take n . lefts . is . pure
+--
+-- prop> let is (IsZ z) = z in all . (==) <*> take n . rights . is . pure
 --
 -- >>> IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
 -- [5,12] >8< [15,24,12]
@@ -619,32 +630,11 @@ instance Apply ListZipper where
 --
 -- >>> IsNotZ <*> IsNotZ
 -- ><
-instance Apply MaybeListZipper where
-  (<*>) =
-    error "todo: Course.ListZipper (<*>)#instance MaybeListZipper"
-
--- | Implement the `Applicative` instance for `ListZipper`.
--- This implementation produces an infinite list zipper (to both left and right).
---
--- /Tip:/ Use @List#repeat@.
---
--- prop> all . (==) <*> take n . lefts . pure
---
--- prop> all . (==) <*> take n . rights . pure
-instance Applicative ListZipper where
-  pure =
-    error "todo: Course.ListZipper pure#instance ListZipper"
-
--- | Implement the `Applicative` instance for `MaybeListZipper`.
---
--- /Tip:/ Use @pure@ for `ListZipper`.
---
--- prop> let is (IsZ z) = z in all . (==) <*> take n . lefts . is . pure
---
--- prop> let is (IsZ z) = z in all . (==) <*> take n . rights . is . pure
 instance Applicative MaybeListZipper where
   pure =
     error "todo: Course.ListZipper pure#instance MaybeListZipper"
+  (<*>) =
+    error "todo: Course.ListZipper (<*>)#instance MaybeListZipper"
 
 -- | Implement the `Extend` instance for `ListZipper`.
 -- This implementation "visits" every possible zipper value derivable from a given zipper (i.e. all zippers to the left and right).
