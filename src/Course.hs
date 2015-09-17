@@ -5,8 +5,6 @@ module Course (module X) where
 
 import Course.Anagrams as X
 import Course.Applicative as X
-import Course.Apply as X
-import Course.Bind as X
 import Course.Cheque as X
 import Course.Comonad as X
 import Course.Compose as X

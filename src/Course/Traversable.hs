@@ -5,7 +5,6 @@
 module Course.Traversable where
 
 import Course.Functor
-import Course.Apply
 import Course.Applicative
 import Course.List
 
