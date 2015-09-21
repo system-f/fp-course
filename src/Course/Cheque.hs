@@ -23,6 +23,8 @@ import Course.Core
 import Course.Optional
 import Course.List
 import Course.Functor
+import Course.Applicative
+import Course.Monad
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -171,7 +173,7 @@ illion =
      , "septendecillion"
      , "octodecillion"
      , "novemdecillion"
-     ] ++ undefined -- lift2 ((++) =<<) preillion postillion
+     ] ++ lift2 ((++) =<<) preillion postillion
 
 -- A data type representing the digits zero to nine.
 data Digit =

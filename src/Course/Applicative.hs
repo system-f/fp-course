@@ -5,6 +5,11 @@
 
 module Course.Applicative(
   Applicative(..)
+, lift2
+, lift3
+, lift4
+, (*>)
+, (<*)
 , sequence
 , replicateA
 , filtering
