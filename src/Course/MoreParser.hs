@@ -4,6 +4,7 @@
 
 module Course.MoreParser where
 
+import Course.Core
 import Course.Parser
 import Course.List
 import Course.Optional
