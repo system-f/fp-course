@@ -596,6 +596,7 @@ instance Functor Parser where
      error "todo: Course.Parser (<$>)#instance Parser"
 
 -- | Write an Applicative functor instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
 instance Applicative Parser where
   pure ::
     a

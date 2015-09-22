@@ -11,6 +11,7 @@ import Course.MoreParser
 import Course.JsonValue
 import Course.Functor
 import Course.Applicative
+import Course.Monad
 import Course.List
 import Course.Optional
 

@@ -15,6 +15,7 @@ module Course.Applicative(
 , filtering
 , return
 , fail
+, (>>)
 ) where
 
 import Course.Core
