@@ -129,7 +129,7 @@ put =
 -- (Full 'c',3)
 --
 -- >>> let p x = (\s -> (const $ pure (x == 'i')) =<< put (1+s)) =<< get in runState (findM p $ listh ['a'..'h']) 8
--- (Empty,8)
+-- (Empty,16)
 findM ::
   Monad f =>
   (a -> f Bool)
