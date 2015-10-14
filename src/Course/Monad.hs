@@ -10,7 +10,7 @@ module Course.Monad(
 , (<=<)
 ) where
 
-import Course.Applicative
+import Course.Applicative hiding ((<*>))
 import Course.Core
 import Course.Id
 import Course.List

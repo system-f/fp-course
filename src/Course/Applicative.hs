@@ -19,7 +19,7 @@ module Course.Applicative(
 ) where
 
 import Course.Core
-import Course.Functor
+import Course.Functor hiding ((<$>))
 import Course.Id
 import Course.List
 import Course.Optional
