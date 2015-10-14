@@ -15,7 +15,7 @@ import Course.Core
 import Course.Id
 import Course.List
 import Course.Optional
-import qualified Prelude as P
+import qualified Prelude as P((=<<))
 
 -- | All instances of the `Monad` type-class must satisfy one law. This law
 -- is not checked by the compiler. This law is given as:
@@ -177,13 +177,5 @@ infixr 1 <=<
 -----------------------
 
 instance Monad IO where
-  (=<<) =
-    (P.=<<)
-
-instance Monad [] where
-  (=<<) =
-    (P.=<<)
-
-instance Monad P.Maybe where
   (=<<) =
     (P.=<<)

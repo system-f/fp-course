@@ -8,7 +8,7 @@ import Course.Core
 import Course.Id
 import Course.Optional
 import Course.List
-import qualified Prelude as P
+import qualified Prelude as P(fmap)
 
 -- | All instances of the `Functor` type-class must satisfy two laws. These laws
 -- are not checked by the compiler. These laws are given as:
@@ -131,13 +131,5 @@ void =
 -- >>> reverse <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
 -- hi"cba"
 instance Functor IO where
-  (<$>) =
-    P.fmap
-
-instance Functor [] where
-  (<$>) =
-    P.fmap
-
-instance Functor P.Maybe where
   (<$>) =
     P.fmap

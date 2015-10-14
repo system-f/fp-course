@@ -23,7 +23,7 @@ import Course.Functor hiding ((<$>))
 import Course.Id
 import Course.List
 import Course.Optional
-import qualified Prelude as P
+import qualified Prelude as P(fmap, return, (>>=))
 
 -- | All instances of the `Applicative` type-class must satisfy three laws.
 -- These laws are not checked by the compiler. These laws are given as:
@@ -384,18 +384,6 @@ filtering =
 -----------------------
 
 instance Applicative IO where
-  pure =
-    P.return
-  f <*> a =
-    f P.>>= \f' -> P.fmap f' a
-
-instance Applicative [] where
-  pure =
-    P.return
-  f <*> a =
-    f P.>>= \f' -> P.fmap f' a
-
-instance Applicative P.Maybe where
   pure =
     P.return
   f <*> a =
