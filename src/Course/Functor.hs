@@ -88,10 +88,10 @@ instance Functor ((->) t) where
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
--- >>> 7 <$ [1,2,3]
+-- >>> 7 <$ (1 :. 2 :. 3 :. Nil)
 -- [7,7,7]
 --
--- prop> x <$ [a,b,c] == [x,x,x]
+-- prop> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
@@ -104,7 +104,7 @@ instance Functor ((->) t) where
 
 -- | Anonymous map producing unit value.
 --
--- >>> void [1,2,3]
+-- >>> void (1 :. 2 :. 3 :. Nil)
 -- [(),(),()]
 --
 -- >>> void (Full 7)
