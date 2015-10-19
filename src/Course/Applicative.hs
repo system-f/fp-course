@@ -255,19 +255,19 @@ lift4 =
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
 --
--- >>> [1,2,3] *> [4,5,6]
+-- >>> (1 :. 2 :. 3 :. Nil) *> (4 :. 5 :. 6 :. Nil)
 -- [4,5,6,4,5,6,4,5,6]
 --
--- >>> [1,2] *> [4,5,6]
+-- >>> (1 :. 2 :. Nil) *> (4 :. 5 :. 6 :. Nil)
 -- [4,5,6,4,5,6]
 --
--- >>> [1,2,3] *> [4,5]
+-- >>> (1 :. 2 :. 3 :. Nil) *> (4 :. 5 :. Nil)
 -- [4,5,4,5,4,5]
 --
 -- >>> Full 7 *> Full 8
 -- Full 8
 --
--- prop> [a,b,c] *> [x,y,z] == [x,y,z,x,y,z,x,y,z]
+-- prop> (a :. b :. c :. Nil) *> (x :. y :. z :. Nil) == (x :. y :. z :. x :. y :. z :. x :. y :. z :. Nil)
 --
 -- prop> Full x *> Full y == Full y
 (*>) ::
@@ -281,19 +281,19 @@ lift4 =
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
 --
--- >>> [1,2,3] <* [4,5,6]
+-- >>> (1 :. 2 :. 3 :. Nil) <* (4 :. 5 :. 6 :. Nil)
 -- [1,1,1,2,2,2,3,3,3]
 --
--- >>> [1,2] <* [4,5,6]
+-- >>> (1 :. 2 :. Nil) <* (4 :. 5 :. 6 :. Nil)
 -- [1,1,1,2,2,2]
 --
--- >>> [1,2,3] <* [4,5]
+-- >>> (1 :. 2 :. 3 :. Nil) <* (4 :. 5 :. Nil)
 -- [1,1,2,2,3,3]
 --
 -- >>> Full 7 <* Full 8
 -- Full 7
 --
--- prop> [x,y,z] <* [a,b,c] == [x,x,x,y,y,y,z,z,z]
+-- prop> (x :. y :. z :. Nil) <* (a :. b :. c :. Nil) == (x :. x :. x :. y :. y :. y :. z :. z :. z :. Nil)
 --
 -- prop> Full x <* Full y == Full x
 (<*) ::
