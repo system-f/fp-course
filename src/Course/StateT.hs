@@ -77,6 +77,9 @@ instance Monad f => Applicative (StateT s f) where
 --
 -- >>> runStateT ((const $ putT 2) =<< putT 1) 0
 -- ((),2)
+--
+-- >>> let modify f = StateT (\s -> pure ((), f s)) in runStateT (modify (+1) >>= \() -> modify (*2)) 7
+-- ((),16)
 instance Monad f => Monad (StateT s f) where
   (=<<) ::
     (a -> StateT s f b)
