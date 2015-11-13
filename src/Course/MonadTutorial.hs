@@ -24,11 +24,7 @@ and burn result.
 
 Please complete the following exercises before proceeding:
 * Course/Functor
-* Course/Apply
 * Course/Applicative
-
-Optionally, for even more rigorous preparation, also complete the Course/Bind
-exercises.
 --------------------------------------------------------------------------------
 
 In this source file, you will find a recurring pattern:
