@@ -12,6 +12,7 @@ module Course.Monad(
 
 import Course.Applicative hiding ((<*>))
 import Course.Core
+import Course.Functor
 import Course.Id
 import Course.List
 import Course.Optional
@@ -152,7 +153,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  flip (=<<)
+  error "todo: Course.Monad#(>>=)"
 
 infixl 1 >>=
 
