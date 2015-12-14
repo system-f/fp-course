@@ -217,7 +217,7 @@ lift3 ::
   -> f c
   -> f d
 lift3 =
-  error "todo: Course.Applicative#lift2"
+  error "todo: Course.Applicative#lift3"
 
 -- | Apply a quaternary function in the environment.
 --
