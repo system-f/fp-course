@@ -1,6 +1,7 @@
 module Data.TicTacToe where
 
 import           Prelude hiding (any, all, mapM, concat)
+import qualified GHC.OldList as L
 import           Test.QuickCheck
 import           Data.Map (Map, singleton)
 import qualified Data.Map as M
@@ -176,7 +177,7 @@ instance Arbitrary Board where
   arbitrary = do
     p <- arbitrary
     ps <- arbitrary
-    return $ foldr propell (start p) ps
+    return $ L.foldr propell (start p) ps
 
 propell :: Position -> Board -> Board
 propell p b =
