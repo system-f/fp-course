@@ -28,3 +28,6 @@ TAGS
 
 *.swp
 
+# Stack
+.stack-work/
+
