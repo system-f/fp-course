@@ -50,6 +50,10 @@ instance Functor f => Functor (Loop v s f) where
   fmap f (Loop k) =
     Loop (\env -> fmap (\(a, t) -> (f a, t)) . k env)
 
+instance Applicative f => Applicative (Loop v s f) where
+  pure = undefined
+  (<*>) = undefined
+
 instance Monad f => Monad (Loop v s f) where
   return a =
     Loop $ \_ s -> return (a, s)

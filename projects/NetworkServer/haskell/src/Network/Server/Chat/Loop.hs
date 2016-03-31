@@ -33,6 +33,10 @@ instance Functor f => Functor (Loop v f) where
   fmap f (Loop k) =
     Loop (fmap f . k)
 
+instance Applicative f => Applicative (Loop v f) where
+  pure = undefined
+  (<*>) = undefined
+
 instance Monad f => Monad (Loop v f) where
   return =
     Loop . return . return
