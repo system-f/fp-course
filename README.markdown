@@ -55,19 +55,19 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 ### Getting Started
 
-1. Install the Glasgow Haskell Compiler (GHC) version 7.6 or higher.
+1. Install [Stack](http://docs.haskellstack.org/en/stable/README/)
 
 2. Change to the directory containing this document.
 
-3. Execute the command `ghci`, which will compile and load all the source code.
-   You may need to set permissions on the root directory and the ghci configuration
-   file, `chmod 600 .ghci ./`.
+3. Execute the command `stack setup`, which will install the appropriate compiler for this project.
 
-4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
+4. Execute the command `stack exec ghci` which will compile and load all the source code
+
+5. Inspect the introductory modules to get a feel for Haskell's syntax, then move
    on to the exercises starting with `Course.List`. The [Progression](#progression)
    section of this document lists the recommended order in which to attempt the exercises.
 
-5. Edit a source file to a proposed solution to an exercise. At the `ghci`
+6. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
    reload it in the GHC interpreter. You may use `:r` for short.
 
@@ -147,20 +147,18 @@ the code for that exercise. Examples begin with `>>>` while properties begin
 with `prop>`.
 
 The solution to the exercise must satisfy these tests. You can check if you have
-satisfied all tests with cabal-install and doctest. From the base directory of
-this source code:
+satisfied all tests with stack and doctest. From the base directory of this source code:
 
-    > cabal update
-    > cabal install cabal-install
-    > cabal install --only-dependencies
-    > cabal configure --enable-tests
-    > cabal build
-    > cabal test
+    > stack test
 
 Alternatively, you may run the tests in a single source file by using `doctest`
-explicitly. From the base directory of this source code:
+explicitly. First, install `doctest` with 
 
-    > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
+	> stack install doctest
+
+Then, from the base directory of this source code:
+
+    > stack exec -- doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
 
 Note: There is a [bug in GHC 7.4.1](http://ghc.haskell.org/trac/ghc/ticket/5820)
 where for some configurations, running the tests will cause an unjustified
