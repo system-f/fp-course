@@ -20,7 +20,7 @@ import Course.Optional
 import qualified System.Environment as E
 import qualified Prelude as P
 import qualified Numeric as N
-
+import Data.Bool
 
 -- $setup
 -- >>> import Test.QuickCheck
@@ -75,8 +75,8 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr d Nil = d
+headOr _ (h :. _) = h  
 
 -- | The product of the elements of a list.
 --
@@ -88,8 +88,10 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil =
+  1
+product (h :. t) =
+  h * product t
 
 -- | Sum the elements of the list.
 --
@@ -103,8 +105,9 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum Nil =
+  0
+sum (h :. t) = h + sum t
 
 -- | Return the length of the list.
 --
@@ -115,8 +118,10 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+length Nil =
+  0
+length (_ :. t) =
+  1 + length t
 
 -- | Map the given function on each element of the list.
 --
@@ -130,8 +135,10 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map f Nil =
+  Nil
+map f (h :. t) =
+  f h :. map f t
 
 -- | Return elements satisfying the given predicate.
 --
@@ -147,8 +154,23 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil =
+  Nil
+filter p (h:.t) =
+  bool id ((:.) h) (p h) (filter p t)
+
+filterr p =
+  foldRight (\h -> bool id ((:.) h) (p h)) Nil
+
+s :: (t -> a -> b) -> (t -> a) -> (t -> b)
+s f g t = f t (g t)
+
+  {-}
+  (if p h
+        then
+          (h :.)
+        else
+          id) (filter p t) -}
 
 -- | Append two lists to a new list.
 --
@@ -167,7 +189,10 @@ filter =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+  flip (foldRight (:.))
+
+Nil +++ y = y
+(h:.t) +++ y = h :. (t +++ y)
 
 infixr 5 ++
 
@@ -184,8 +209,12 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten Nil =
+  Nil
+flatten (h:.t) =
+  h ++ flatten t
+
+flattenn = foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -201,9 +230,29 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap _ Nil =
+  Nil
+flatMap f (h:.t) =
+  f h ++ flatMap f t
 
+flatMapp f =
+  foldRight (\h -> (++) (f h)) Nil
+--foldRight (\h -> (++) (f h)) Nil
+--foldRight ((++) . f) Nil
+--flattenn = foldRight ((++) . id) Nil
+--flatMap  = foldRight ((++) . f) Nil
+
+flatMappp f = flatten . map f
+flatMapppp f x = flatten (map f x)
+
+--           \x -> q    (r x)
+
+-- (b -> c) -> (a -> b) -> (a -> c)
+(...) :: (b -> c) -> (a -> b) -> (a -> c)
+      -- (b -> c) -> (List b) -> (List c)
+
+(...)     f           g           a =
+  f (g a)
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
 --
@@ -212,7 +261,11 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
+
+product2 :: List x -> List y -> List (x, y)
+product2 x y =
+  flatMap (\xx -> flatMap (\yy -> (xx, yy) :. Nil) y) x
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -239,8 +292,42 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional Nil =
+  Full Nil
+seqOptional (h:.t) =
+  case h of
+    Full w -> 
+      case seqOptional t of
+        Full x -> Full (w :. x)
+        Empty -> Empty
+    Empty -> Empty
+
+seqOptionall Nil = Full Nil
+seqOptionall (h:.t) =
+  bindOptional (\w -> mapOptional (w:.) (seqOptionall t)) h
+
+seqOptionalll =
+  foldRight
+    (\h t -> bindOptional (\w -> mapOptional (w:.) t) h)
+    (Full Nil)
+
+-- twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
+
+seqOptionallll =
+  foldRight (twiceOptional (:.)) (Full Nil)
+
+seqList :: List (List a) -> List (List a)
+seqList Nil = Nil :. Nil
+seqList (h:.t) =
+  flatMap (\w -> map (w:.) (seqList t)) h
+
+{-
+mapOptional _ Empty    = Empty
+mapOptional f (Full a) = Full (f a)
+
+bindOptional _ Empty    = Empty
+bindOptional f (Full a) = f a
+-}
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -262,8 +349,10 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find =
-  error "todo: Course.List#find"
+find _ Nil =
+  Empty
+find p (h:.t) =
+  if p h then Full h else find p t
 
 -- | Determine if the length of the given list is greater than 4.
 --
@@ -281,8 +370,26 @@ find =
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 (_:._:._:._:._:._) =
+  True
+lengthGT4 _ =
+  False
+
+type Nat = List ()
+
+lengthh :: List a -> Nat
+lengthh = map (const ())
+
+gt :: Nat -> Nat -> Bool
+gt Nil _ = False
+gt (_ :. _) Nil = True
+gt (_ :. t) (_ :. u) = gt t u
+
+infinityy = () :. infinityy
+
+four = () :. () :. () :. () :. Nil
+lengthGTT4 :: List a -> Bool
+lengthGTT4 x = gt (lengthh x) four
 
 -- | Reverse a list.
 --
@@ -298,8 +405,17 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse Nil =
+  Nil
+reverse (h:.t) =
+  reverse t ++ (h:.Nil)
+
+reversee :: List a -> List a -> List a
+reversee acc Nil = acc
+reversee acc (h:.t) = reversee (h:.acc) t
+
+reverseee = foldLeft (flip (:.)) Nil
+
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -313,8 +429,8 @@ produce ::
   (a -> a)
   -> a
   -> List a
-produce =
-  error "todo: Course.List#produce"
+produce f a =
+  a :. produce f (f a)
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?
@@ -325,11 +441,40 @@ produce =
 -- prop> let types = x :: List Int in notReverse x ++ notReverse y == notReverse (y ++ x)
 --
 -- prop> let types = x :: Int in notReverse (x :. Nil) == x :. Nil
+
+propnotreverse :: Eq a => List a -> List a -> Bool
+propnotreverse x y =
+  notReverse x ++ notReverse y == notReverse (y ++ x)
+
 notReverse ::
   List a
   -> List a
 notReverse =
-  error "todo: Is it even possible?"
+  reverse
+
+anonmapList :: a -> List b -> List a
+anonmapList a = map (\_ -> a)
+-- a -> List     b  -> List     a
+
+anonmapOptional :: a -> Optional b -> Optional a
+anonmapOptional a = mapOptional (\_ -> a)
+
+-- a -> Optional b  -> Optional a
+
+anonmapReader :: a -> (t -> b) -> (t -> a)
+anonmapReader a = (.) (\_ -> a)
+
+-- "all things that have map", (covariant) Functor
+class Functorr f where
+  ffmap :: (a -> b) -> f a -> f b
+
+anonmapForever :: Functorr f => a -> f b -> f a
+anonmapForever a = ffmap (\_ -> a)
+
+-- a -> (t ->    b) -> (t ->    a)
+-- a ->  f       b ->   f       a
+
+
 
 ---- End of list exercises
 
