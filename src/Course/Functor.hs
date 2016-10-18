@@ -8,7 +8,7 @@ import Course.Core
 import Course.Id
 import Course.Optional
 import Course.List
-import qualified Prelude as P
+import qualified Prelude as P(fmap)
 
 -- | All instances of the `Functor` type-class must satisfy two laws. These laws
 -- are not checked by the compiler. These laws are given as:
@@ -88,10 +88,10 @@ instance Functor ((->) t) where
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
--- >>> 7 <$ [1,2,3]
+-- >>> 7 <$ (1 :. 2 :. 3 :. Nil)
 -- [7,7,7]
 --
--- prop> x <$ [a,b,c] == [x,x,x]
+-- prop> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
@@ -104,7 +104,7 @@ instance Functor ((->) t) where
 
 -- | Anonymous map producing unit value.
 --
--- >>> void [1,2,3]
+-- >>> void (1 :. 2 :. 3 :. Nil)
 -- [(),(),()]
 --
 -- >>> void (Full 7)
@@ -131,13 +131,5 @@ void =
 -- >>> reverse <$> (putStr "hi" P.>> P.return ("abc" :: List Char))
 -- hi"cba"
 instance Functor IO where
-  (<$>) =
-    P.fmap
-
-instance Functor [] where
-  (<$>) =
-    P.fmap
-
-instance Functor P.Maybe where
   (<$>) =
     P.fmap

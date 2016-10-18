@@ -1,18 +1,11 @@
-{-# LANGUAGE CPP #-}
-
 module Network.Server.Chat.Loop where
 
-#if MIN_VERSION_base(4,8,0)
-import Prelude hiding (mapM_)
-import Data.Foldable(mapM_)
-#else
-import Prelude hiding (mapM_)
-import Control.Applicative(Applicative(..), pure)
-import Data.Foldable(Foldable, mapM_)
-#endif
+import Prelude hiding (mapM_, catch)
 import Network(PortID(..), sClose, withSocketsDo, listenOn)
 import System.IO(BufferMode(..))
 import Data.IORef(IORef, newIORef, readIORef)
+import Data.Foldable(Foldable, mapM_)
+import Control.Applicative(Applicative, pure)
 import Control.Concurrent(forkIO)
 import Control.Exception(finally, try, catch, Exception)
 import Control.Monad(forever)
@@ -41,8 +34,10 @@ instance Functor f => Functor (Loop v f) where
     Loop (fmap f . k)
 
 instance Applicative f => Applicative (Loop v f) where
-  pure = Loop . pure . pure
-  Loop mf <*> Loop l = Loop (\env -> mf env <*> l env)
+  pure =
+    Loop . pure . pure
+  Loop f <*> Loop x =
+    Loop (\a -> f a <*> x a)
 
 instance Monad f => Monad (Loop v f) where
   return =

@@ -14,7 +14,7 @@ import Course.Functor
 -- is not checked by the compiler. This law is given as:
 --
 -- * The law of associativity
---   `∀f g x. (f <<=) . (g <<=) ≅ (<<=) (f . (g <<=) <<=)
+--   `∀f g. (f <<=) . (g <<=) ≅ (<<=) (f . (g <<=))`
 class Functor f => Extend f where
   -- Pronounced, extend.
   (<<=) ::

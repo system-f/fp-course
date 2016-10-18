@@ -56,8 +56,6 @@ library
   exposed-modules:    Course
                       Course.Anagrams
                       Course.Applicative
-                      Course.Apply
-                      Course.Bind
                       Course.Cheque
                       Course.Comonad
                       Course.Compose
