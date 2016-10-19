@@ -62,7 +62,10 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \l ->
+    case l of
+      h:._ -> run h
+      Nil -> putStrLn "pass an argument ya dingbat"
 
 type FilePath =
   Chars
@@ -71,31 +74,48 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run p =
+  {-
+  readFile p >>= \q ->
+  getFiles (lines q) >>= \r ->
+  printFiles r
+  -}
+  do  q <- readFile p
+      r <- getFiles (lines q)
+      printFiles r
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
+  -- List (IO (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  sequence . (<$>) getFile
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+  {-
+  do  q <- readFile p
+      pure (p, q) -}
+  -- (\q -> (p, q)) <$> readFile p
+  -- \p -> (<$>) ((,) p) (readFile p)
+  lift2 (<$>) (,) readFile
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  -- void (sequence ((<$>) (uncurry printFile) ps))
+  void . sequence . (<$>) (uncurry printFile)
+
+-- (a -> b -> c) -> (a, b) -> c
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
-
+printFile p c =
+  -- putStrLn "============" *> putStrLn p *> putStrLn "\n" *> putStrLn c
+  putStrLn ("============" ++ p ++ "\n" ++ c)
+  -- putStrLn (join ["============", p, "\n", c])

@@ -113,7 +113,7 @@ instance Functor ((->) t) where
   -> f b
   -> f a
 (<$) =
-  \a -> (<$>) (const a)
+  (<$>) . const
 
 -- | Anonymous map producing unit value.
 --
@@ -133,7 +133,7 @@ void ::
   f a
   -> f ()
 void =
-  (<$>) (const ())
+  (<$>) (\_ -> ())
 
 -----------------------
 -- SUPPORT LIBRARIES --

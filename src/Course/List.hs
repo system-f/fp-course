@@ -93,6 +93,8 @@ product Nil =
 product (h :. t) =
   h * product t
 
+productt = foldRight (*) 1
+
 -- | Sum the elements of the list.
 --
 -- >>> sum (1 :. 2 :. 3 :. Nil)
@@ -108,6 +110,8 @@ sum ::
 sum Nil =
   0
 sum (h :. t) = h + sum t
+
+summ = foldRight (+) 0
 
 -- | Return the length of the list.
 --
@@ -216,6 +220,36 @@ flatten (h:.t) =
 
 flattenn = foldRight (++) Nil
 
+func = foldRight (.) id
+
+class Monoid a where
+  identity :: a
+  op :: a -> a -> a
+
+instance Monoid Int where
+  identity = 0
+  op = (+)
+
+instance Monoid Bool where
+  identity = False
+  op = (||)
+
+data Monoidd a = Monoidd {
+    identityy :: a
+  , opp :: a -> a -> a
+  }
+
+addition = Monoidd 0 (+)
+
+
+data NonEmptyList a = 
+  NonEmptyList a (List a)
+
+-- :: (a -> a -> a) -> a
+
+hi :: Monoid a => List a -> a
+hi = foldRight op identity
+
 -- | Map a function then flatten to a list.
 --
 -- >>> flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil)
@@ -313,6 +347,9 @@ seqOptionalll =
 
 -- twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
 
+seqOptionallll ::
+  List (Optional a)
+  -> Optional (List a)
 seqOptionallll =
   foldRight (twiceOptional (:.)) (Full Nil)
 

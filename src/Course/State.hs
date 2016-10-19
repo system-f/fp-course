@@ -6,6 +6,7 @@
 module Course.State where
 
 import Course.Core
+import Data.Bool(bool)
 import qualified Prelude as P
 import Course.Optional
 import Course.List
@@ -39,8 +40,8 @@ instance Functor (State s) where
     (a -> b)
     -> State s a
     -> State s b
-  (<$>) =
-      error "todo: Course.State#(<$>)"
+  f <$> State k =
+      State (\s -> let (a, t) = k s in (f a, t))
 
 -- | Implement the `Applicative` instance for `State s`.
 --
@@ -63,8 +64,10 @@ instance Applicative (State s) where
     State s (a -> b)
     -> State s a
     -> State s b 
-  (<*>) =
-    error "todo: Course.State (<*>)#instance (State s)"
+  State f <*> State a =
+    State (\s -> let (k, t) = f s
+                     (i, u) = a t
+                 in  (k i, u))
 
 -- | Implement the `Bind` instance for `State s`.
 --
@@ -78,8 +81,11 @@ instance Monad (State s) where
     (a -> State s b)
     -> State s a
     -> State s b
-  (=<<) =
-    error "todo: Course.State (=<<)#instance (State s)"
+  f =<< State k =
+    State (\s -> let (a, t) = k s
+              --     State l = f a
+              -- in  l t
+                 in  runState (f a) t)
 
 -- | Run the `State` seeded with `s` and retrieve the resulting state.
 --
@@ -89,8 +95,10 @@ exec ::
   -> s
   -> s
 exec =
-  error "todo: Course.State#exec"
-
+  -- \s -> snd (k s)
+  \k -> (.) snd (runState k)
+  -- (<$>) ((<$>) snd) runState 
+  
 -- | Run the `State` seeded with `s` and retrieve the resulting value.
 --
 -- prop> \(Fun _ f) -> eval (State f) s == fst (runState (State f) s)
@@ -98,8 +106,8 @@ eval ::
   State s a
   -> s
   -> a
-eval =
-  error "todo: Course.State#eval"
+eval (State k) =
+  fst . k
 
 -- | A `State` where the state also distributes into the produced value.
 --
@@ -108,7 +116,7 @@ eval =
 get ::
   State s s
 get =
-  error "todo: Course.State#get"
+  State (\s -> (s, s))
 
 -- | A `State` where the resulting state is seeded with the given value.
 --
@@ -118,7 +126,8 @@ put ::
   s
   -> State s ()
 put =
-  error "todo: Course.State#put"
+  -- \s -> State (const ((,) () s))
+  State . const . (,) ()
 
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
@@ -137,10 +146,14 @@ put =
 findM ::
   Monad f =>
   (a -> f Bool)
+--(a -> State (Set a) Bool)
   -> List a
   -> f (Optional a)
-findM =
-  error "todo: Course.State#findM"
+-- -> State (Set a) (Optional a)
+findM _ Nil =
+  pure Empty
+findM p (h:.t) =
+  p h >>= bool (findM p t) (pure (Full h))
 
 -- | Find the first element in a `List` that repeats.
 -- It is possible that no element repeats, hence an `Optional` result.
