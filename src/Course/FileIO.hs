@@ -46,14 +46,26 @@ And b.txt, containing:
 And c.txt, containing:
   the contents of c
 
-$ runhaskell FileIO.hs "files.txt"
-============ a.txt
+To test this module, load ghci in the root of the project directory, and do
+    >> :main "share/files.txt"
+
+Example output:
+
+$ ghci
+GHCi, version ... 
+Loading package...
+Loading ...
+[ 1 of 28] Compiling (etc...
+...
+Ok, modules loaded: Course, etc...
+>> :main "share/files.txt"
+============ share/a.txt
 the contents of a
 
-============ b.txt
+============ share/b.txt
 the contents of b
 
-============ c.txt
+============ share/c.txt
 the contents of c
 
 -}
