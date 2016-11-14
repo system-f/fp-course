@@ -18,12 +18,15 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
+
+-- ((->) t)
 class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::
-    (a -> b)
-    -> f a
-    -> f b
+    (a -> b) -> f a -> f b
+
+-- (a -> b) -> ((->) t) a -> ((->) t) b    
+-- (a -> b) -> (t -> a) -> (t -> b)
 
 infixl 4 <$>
 
@@ -38,11 +41,10 @@ infixl 4 <$>
 -- Id 3
 instance Functor Id where
   (<$>) ::
-    (a -> b)
-    -> Id a
-    -> Id b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Id"
+       (a -> b) -> Id a -> Id b
+  (<$>) f         (Id a)  =
+    Id (f a)
+    
 
 -- | Maps a function on the List functor.
 --
@@ -57,7 +59,7 @@ instance Functor List where
     -> List a
     -> List b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +73,10 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) _ Empty =
+    Empty
+  (<$>) f (Full a) =
+    Full (f a)
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -84,7 +88,7 @@ instance Functor ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
