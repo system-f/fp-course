@@ -336,12 +336,17 @@ seqOptional (h:.t) =
 seqOptional2 ::
   List (Optional a)
   -> Optional (List a)
-seqOptional2 list =
+seqOptional2 Nil = Full Nil
+seqOptional2 (h:.t) =
+  twiceOptional (:.) h (seqOptional2 t)
+            -- h    :: Optional a
+   -- :: Optional (List a)
+  -- goal           :: Optional (List a)
   {-
   foldRight (\a b -> 
     bindOptional (\x -> mapOptional (x:.) b) a) (Full Nil) list
 -}
-  foldRight (twiceOptional (:.)) (Full Nil) list
+  -- foldRight (twiceOptional (:.)) (Full Nil) list
 {-
 
 
