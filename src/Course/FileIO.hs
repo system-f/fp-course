@@ -74,7 +74,33 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+{-
+
+{-
+
+• Couldn't match type ‘[Char]’ with ‘List Char’
+      Expected type: Chars
+        Actual type: [Char]
+    • In a stmt of a 'do' block: _ :. _ <- getArgs
+      In the expression:
+        do { _ :. _ <- getArgs;
+             undefined }
+      In an equation for ‘main’:
+          main
+            = do { _ :. _ <- getArgs;
+                   undefined }
+
+-}
+
+  do  _:._ <- getArgs
+      undefined 
+
+-}
+
+  -- compiles fine
+  getArgs >>= \(_:._) ->
+      undefined
+
 
 type FilePath =
   Chars
