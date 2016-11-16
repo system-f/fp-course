@@ -17,7 +17,7 @@ Useful Functions --
 
   getArgs :: IO (List Chars)
   putStrLn :: Chars -> IO ()
-  readFile :: Chars -> IO Chars
+  readFile :: Filename -> IO Chars
   lines :: Chars -> List Chars
   void :: IO a -> IO ()
 
@@ -70,11 +70,17 @@ the contents of c
 
 -}
 
+getNotArgs :: IO (List Chars)
+getNotArgs = getNotArgs
+
 -- /Tip:/ use @getArgs@ and @run@
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  do  a <- getArgs
+      case a of
+        x:._ -> run x
+        _ -> putStrLn "please pass an argument"
 
 type FilePath =
   Chars
@@ -83,31 +89,82 @@ type FilePath =
 run ::
   Chars
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run name =
+  readFile name >>= \r ->
+  getFiles (lines r) >>= \s ->
+  -- (>>=) :: Monad f => f a -> (a -> f b) -> f b
+  printFiles s
+
+
+  {-
+  do  
+      r <- readFile name
+      s <- getFiles (lines r)
+      printFiles s
+-}
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
-
+  sequence . (getFile <$>)
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+  -- (\c -> (filename, c)) <$> readFile filename
+  lift2 (<$>) (,) readFile 
+
+  {-
+  do  c <- readFile filename
+      return (filename, c)
+-}
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  {-}
+printFiles Nil =
+  pure ()
+printFiles ((n, c):.t) =
+  printFile n c *> printFiles t
+-}
+-- printFiles =
+  -- foldRight (\(n, c) t -> printFile n c *> t) (pure ())
+  void . sequence . (<$>) (uncurry printFile)
+
+-- \x -> f (g (h x))
+-- \x -> (f . g . h) x
+-- f . g . h
+
+
+-- (a -> b -> c) -> (a, b) -> c
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile filename contents =
+  {-}
+  (\_ -> putStrLn contents) =<< putStrLn ("============" ++ filename)
+  -}
+  putStrLn ("============" ++ filename) *>
+  putStrLn contents
 
+  {-
+  putStrLn ("============" ++ filename) >>= \_ ->
+  putStrLn contents
+-}
+
+{-
+  do  putStrLn ("============" ++ filename)
+      putStrLn contents
+  -}
+
+{-
+void printFile(filename, contents) {
+  putStrLn("============" ++ filename);
+  putStrLn(contents);
+}
+-}

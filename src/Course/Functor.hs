@@ -90,6 +90,29 @@ instance Functor ((->) t) where
   (<$>) =
     (.)
 
+instance Functor ((,) a) where
+  f <$> (a, b) =
+    (a, f b)
+
+class BinaryFunctor f where
+  binarymap ::
+    (a -> b)
+    -> (c -> d)
+    -> f a c
+    -> f b d
+
+instance BinaryFunctor (,) where
+  binarymap f g (a, b) =
+    (f a, g b)
+
+leftmap ::
+  BinaryFunctor f =>
+  (a -> b)
+  -> f a x
+  -> f b x
+leftmap f =
+  binarymap f id
+  
 -- | Anonymous map. Maps a constant value on a functor.
 --
 -- >>> 7 <$ (1 :. 2 :. 3 :. Nil)

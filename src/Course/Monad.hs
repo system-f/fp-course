@@ -95,7 +95,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -118,8 +118,13 @@ instance Monad ((->) t) where
     (a -> ((->) t b))
     -> ((->) t a)
     -> ((->) t b)
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+  (=<<) steve aaron t =
+    -- steve :: a -> t -> b
+    -- aaron :: t -> a
+    -- t :: t
+    -----
+    -- goal :: b
+    steve (aaron t) t
 
 -- | Flattens a combined structure to a single structure.
 --
@@ -139,7 +144,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
