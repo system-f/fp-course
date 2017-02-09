@@ -1,16 +1,23 @@
 # Functional Programming Course
 
-![NICTA](http://i.imgur.com/sMXB9XB.jpg)
+![Data61](http://i.imgur.com/0h9dFhl.png)
 
-### Written by Tony Morris & Mark Hibberd for NICTA
+### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
 
 ### With contributions from individuals (thanks!)
 
-#### Special note
+#### Special note 1
 
-If you have arrived here by https://github.com/tonymorris/course and you are
+If you have arrived here by https://github.com/tonymorris/fp-course and you are
 looking for the *exercises* (not the answers), please go to
-https://github.com/NICTA/course
+https://github.com/data61/fp-course
+
+#### Special note 2
+
+Since February 2017, this repository is no longer hosted at
+https://github.com/NICTA/course which is deprecated. Data61 replaces what was 
+NICTA since July 2016. The new repository is located at
+https://github.com/data61/fp-course
 
 #### Introduction
 
@@ -34,17 +41,17 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 1. [[nicta-fp]](https://groups.google.com/forum/#!forum/nicta-fp) is a Google
    Group for any queries related to functional programming. This mailing list is
-   owned by NICTA and is open to the public. Questions relating to this course
+   owned by Data61 and is open to the public. Questions relating to this course
    are most welcome here.
 
 2. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
-   is a Google Group for queries related specifically to this NICTA funtional
-   programming course material. This mailing list is not owned by NICTA, but is
+   is a Google Group for queries related specifically to this Data61 functional
+   programming course material. This mailing list is not owned by Data61, but is
    run by others who are keen to share ideas relating to the course. 
 
 3. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
-   general. Most of the participants of this channel have completed the NICTA 
+   general. Most of the participants of this channel have completed the Data61 
    functional programming course to some extent. They are in various timezones
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
@@ -210,7 +217,7 @@ answers are filled out, so that progress on to `Course.Parser` can begin
 take this deviation if it is felt that there is more reward in doing so.
 
 Answers for the exercises can be found here:
-[https://github.com/tonymorris/course](https://github.com/tonymorris/course)
+[https://github.com/tonymorris/fp-course](https://github.com/tonymorris/fp-course)
 
 After these are completed, complete the exercises in the `projects` directory.
 
