@@ -49,7 +49,6 @@ library
   default-extensions: NoImplicitPrelude
                       ScopedTypeVariables
                       InstanceSigs
-                      RebindableSyntax
 
   hs-source-dirs:     src
 
