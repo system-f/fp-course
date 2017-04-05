@@ -71,8 +71,9 @@ however, your first post might be moderated. This is simply to prevent spam.
    file, `chmod 600 .ghci ./`.
 
 4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
-   on to the exercises starting with `Course.List`. The [Progression](#progression)
-   section of this document lists the recommended order in which to attempt the exercises.
+   on to the exercises starting with `Course.Optional`. The
+   [Progression](#progression) section of this document lists the recommended
+   order in which to attempt the exercises.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
@@ -179,15 +180,15 @@ It is recommended to perform some exercises before others. The first step is to
 inspect the introduction modules.
 
 * `Course.Id`
-* `Course.Optional`
 * `Course.Validation`
 
 They contain examples of data structures and Haskell syntax. They do not contain
 exercises and exist to provide a cursory examination of Haskell syntax. The next
-step is to complete the exercises in `Course.List`.
+step is to complete the exercises in `Course.Optional`.
 
 After this, the following progression of modules is recommended:
 
+* `Course.List`
 * `Course.Functor`
 * `Course.Applicative`
 * `Course.Monad` (please see [this issue](https://github.com/NICTA/course/issues/118))
