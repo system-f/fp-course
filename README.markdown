@@ -288,8 +288,6 @@ these points should be covered before attempting the exercises.
 When this course is run in-person, some tools, particularly within Haskell, are
 covered first.
 
-##### Haskell
-
 * GHCi
   * `:type`
   * `:info`
