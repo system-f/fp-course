@@ -283,6 +283,36 @@ these points should be covered before attempting the exercises.
   * when constructors appear on the right side of `=` we are *constructing*
 * type-classes
 
+### Learning the tools
+
+When this course is run in-person, some tools, particularly within Haskell, are
+covered first.
+
+##### Haskell
+
+* GHCi
+  * `:type`
+  * `:info`
+* values
+* type signatures
+  * `x :: T` is read as *x is of the type T*
+* functions are values
+* functions take arguments
+* functions take one argument
+* lambda expressions
+* operators (infix/prefix)
+  * identifiers starting with `isAlpha` are prefix by default, infix surrounded in backticks (\`)
+  * other identifiers are infix by default, prefix surrounded in parentheses
+* data types
+  * `data` keyword
+  * recursive data types
+* pattern matching
+* `deriving` keyword
+* type-classes
+* type parameters
+  * always lower-case 'a'..'z'
+  * aka generics, templates C++, parametric polymorphism
+
 ### References
 
 * [The Haskell `error` function](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#v:error)
