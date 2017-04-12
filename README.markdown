@@ -310,6 +310,40 @@ covered first.
 * type parameters
   * always lower-case 'a'..'z'
   * aka generics, templates C++, parametric polymorphism
+* running the tests
+  * `doctest`
+
+### One-day
+
+Sometimes this course material is condensed into one-day. In these cases, the
+following exercises are recommended:
+
+* `Optional`
+  * `mapOptional`
+  * `bindOptional`
+  * `(??)`
+  * `(<+>)`
+* `List`
+  * `headOr`
+  * `product`
+  * `length`
+  * `map`
+  * `filter`
+  * `(++)`
+  * `flatMap`
+  * `reverse`
+* `Functor`
+  * `instance Functor List`
+  * `instance Functor Optional`
+  * `instance Functor ((->) t)`
+  * `instance Functor void`
+* `Applicative`
+  * `instance Applicative List`
+  * `instance Applicative Optional`
+  * `instance Applicative ((->) t)`
+  * `lift2`
+  * `sequence`
+* `FileIO`
 
 ### References
 
