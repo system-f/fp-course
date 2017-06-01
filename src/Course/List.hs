@@ -1,7 +1,8 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE FlexibleInstances   #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE FlexibleInstances #-}
 
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo: ...") with an appropriate
@@ -31,10 +32,10 @@ import qualified Numeric as N
 -- BEGIN Helper functions and data types
 
 -- The custom list type
-data List t =
-  Nil
-  | t :. List t
-  deriving (Eq, Ord)
+data List a where
+  Nil  :: List a
+  (:.) :: a -> List a -> List a
+  deriving (Eq)
 
 -- Right-associative
 infixr 5 :.

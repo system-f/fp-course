@@ -1,4 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.Optional where
@@ -11,9 +12,9 @@ import qualified Prelude as P
 -- | The `Optional` data type contains 0 or 1 value.
 --
 -- It might be thought of as a list, with a maximum length of one.
-data Optional a =
-  Full a
-  | Empty
+data Optional a where
+  Empty :: Optional a
+  Full  :: a -> Optional a
   deriving (Eq, Show)
 
 -- | Map the given function on the possible value.
