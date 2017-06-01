@@ -1,8 +1,9 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE InstanceSigs        #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE RebindableSyntax    #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE InstanceSigs #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RebindableSyntax #-}
 
 module Course.Parser where
 
@@ -21,11 +22,11 @@ import Data.Char
 
 type Input = Chars
 
-data ParseError =
-  UnexpectedEof
-  | ExpectedEof Input
-  | UnexpectedChar Char
-  | Failed
+data ParseError where
+  UnexpectedEof  :: ParseError
+  ExpectedEof    :: Input -> ParseError
+  UnexpectedChar :: Char  -> ParseError
+  Failed         :: ParseError
   deriving Eq
 
 
@@ -39,9 +40,9 @@ instance Show ParseError where
   show Failed =
     "Parse failed"
 
-data ParseResult a =
-  ErrorResult ParseError
-  | Result Input a
+data ParseResult a where
+  ErrorResult :: ParseError -> ParseResult a
+  Result      :: Input -> a -> ParseResult a
   deriving Eq
 
 instance Show a => Show (ParseResult a) where
@@ -59,9 +60,12 @@ isErrorResult (ErrorResult _) =
 isErrorResult (Result _ _) =
   False
 
-data Parser a = P {
-  parse :: Input -> ParseResult a
-}
+data Parser a where
+  P :: (Input -> ParseResult a) -> Parser a
+
+-- Given a Parser of a's, and some Input, runs the parser on the input
+parse :: Parser a -> Input -> ParseResult a
+parse (P p) = p
 
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::

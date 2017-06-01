@@ -1,11 +1,13 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.Common.Lens where
 
 -- | A lens is a pair of set and get.
 --
 -- The type parameter 'a' denotes the target object.
 -- The type parameter 'b' denotes the field object.
-data Lens a b =
-  Lens (a -> b -> a) (a -> b)
+data Lens a b where
+  Lens :: (a -> b -> a) -> (a -> b) -> Lens a b
 
 -- | Given a lens and a target object, return its field object.
 getL ::

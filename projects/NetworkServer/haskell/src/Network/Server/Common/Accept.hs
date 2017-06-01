@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.Common.Accept where
 
 import Network.Server.Common.Lens
@@ -5,11 +7,8 @@ import Network.Server.Common.HandleLens(HandleLens(..))
 import Network.Server.Common.Ref(Ref(..))
 import Network(HostName, Socket, PortNumber, accept)
 
-data Accept =
-  Accept
-    Ref
-    HostName
-    PortNumber
+data Accept where
+  Accept :: Ref -> HostName -> PortNumber -> Accept
   deriving (Eq, Ord, Show)
 
 refL ::

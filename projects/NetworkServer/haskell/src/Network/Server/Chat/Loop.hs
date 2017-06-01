@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.Chat.Loop where
 
 import Prelude hiding (mapM_, catch)
@@ -20,8 +22,8 @@ import Network.Server.Common.Ref
 import Data.Set(Set)
 import qualified Data.Set as S
 
-data Loop v f a =
-  Loop (Env v -> f a)
+data Loop v f a where
+  Loop :: (Env v -> f a) -> Loop v f a
 
 type IOLoop v a =
   Loop v IO a

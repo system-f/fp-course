@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.Common.Env where
 
 import Network.Server.Common.Accept
@@ -7,11 +9,8 @@ import Network.Server.Common.Lens
 import Data.IORef(IORef, atomicModifyIORef)
 import Data.Set(Set)
 
-data Env a =
-  Env
-    Accept
-    (IORef (Set Ref))
-    a
+data Env a where
+  Env :: Accept -> IORef (Set Ref) -> a -> Env a
   deriving Eq
 
 acceptL ::

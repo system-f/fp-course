@@ -1,4 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ListZipper where
@@ -33,8 +34,8 @@ import qualified Prelude as P
 --
 -- then suppose we add 17 to the focus of this zipper:
 -- ListZipper [1,0] 19 [3,4,5,6]
-data ListZipper a =
-  ListZipper (List a) a (List a)
+data ListZipper a where
+  ListZipper :: List a -> a -> List a -> ListZipper a
   deriving Eq
 
 lefts ::
@@ -54,9 +55,9 @@ rights (ListZipper _ _ r) =
 --
 -- We then overload operations polymorphically to operate on both `ListZipper` and `MaybeListZipper`
 -- using the `ListZipper'` type-class below.
-data MaybeListZipper a =
-  IsZ (ListZipper a)
-  | IsNotZ
+data MaybeListZipper a where
+  IsZ    :: ListZipper a -> MaybeListZipper a
+  IsNotZ :: MaybeListZipper a
   deriving Eq
 
 -- | Implement the `Functor` instance for `ListZipper`.

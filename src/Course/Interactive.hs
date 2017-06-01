@@ -1,6 +1,7 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE GADTs               #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Course.Interactive where
 
@@ -62,8 +63,8 @@ echo =
            putStrLn (c :. Nil) >-
            pure c))
 
-data Op =
-  Op Char Chars (IO ()) -- keyboard entry, description, program
+data Op where
+  Op :: Char -> Chars -> IO () -> Op -- keyboard entry, description, program
 
 -- |
 --

@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.TicTacToe.Loop where
 
 import Prelude hiding (mapM_, catch)
@@ -21,8 +23,8 @@ import Network.Server.Common.Ref
 import Data.Set(Set)
 import qualified Data.Set as S
 
-data Loop v s f a =
-  Loop (Env v -> s -> f (a, s))
+data Loop v s f a where
+  Loop :: (Env v -> s -> f (a, s)) -> Loop v s f a
 
 type IOLoop v s a =
   Loop v s IO a

@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.TicTacToe.Game where
 
 import Data.TicTacToe
@@ -22,14 +24,14 @@ type FinishedGames =
 type Game a =
   IORefLoop Board (Board, FinishedGames) a
 
-data Command =
-  Move Position
-  | Current
-  | Finished
-  | Chat String
-  | Turn
-  | At Position
-  | Unknown String
+data Command where
+  Move     :: Position -> Command
+  Current  :: Command
+  Finished :: Command
+  Chat     :: String -> Command
+  Turn     :: Command
+  At       :: Position -> Command
+  Unknown  :: String -> Command
   deriving (Eq, Show)
 
 -- |

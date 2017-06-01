@@ -1,3 +1,5 @@
+{-# LANGUAGE GADTs #-}
+
 module Network.Server.Chat.Chat where
 
 import Network.Server.Common.Line
@@ -11,10 +13,10 @@ import Control.Monad.Trans(MonadIO(..))
 type Chat a =
   IORefLoop Integer a
 
-data ChatCommand =
-  Chat String
-  | Incr
-  | Unknown String
+data ChatCommand where
+  Chat    :: String -> ChatCommand
+  Incr    :: ChatCommand
+  Unknown :: String -> ChatCommand
   deriving (Eq, Show)
 
 incr ::
