@@ -12,8 +12,8 @@ module Course.Monad(
 
 import Course.Applicative hiding ((<*>))
 import Course.Core
+import Course.ExactlyOne
 import Course.Functor
-import Course.Id
 import Course.List
 import Course.Optional
 import qualified Prelude as P((=<<))
@@ -34,8 +34,8 @@ infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
--- >>> Id (+10) <*> Id 8
--- Id 18
+-- >>> ExactlyOne (+10) <*> ExactlyOne 8
+-- ExactlyOne 18
 --
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
@@ -73,17 +73,17 @@ infixr 1 =<<
 
 infixl 4 <*>
 
--- | Binds a function on the Id monad.
+-- | Binds a function on the ExactlyOne monad.
 --
--- >>> (\x -> Id(x+1)) =<< Id 2
--- Id 3
-instance Monad Id where
+-- >>> (\x -> ExactlyOne(x+1)) =<< ExactlyOne 2
+-- ExactlyOne 3
+instance Monad ExactlyOne where
   (=<<) ::
-    (a -> Id b)
-    -> Id a
-    -> Id b
+    (a -> ExactlyOne b)
+    -> ExactlyOne a
+    -> ExactlyOne b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Id"
+    error "todo: Course.Monad (=<<)#instance ExactlyOne"
 
 -- | Binds a function on a List.
 --

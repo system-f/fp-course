@@ -8,8 +8,8 @@ module Course.Comonad
 ) where
 
 import Course.Core
+import Course.ExactlyOne
 import Course.Extend
-import Course.Id
 
 -- | All instances of the `Comonad` type-class must satisfy two laws. These
 -- laws are not checked by the compiler. These laws are given as:
@@ -24,21 +24,21 @@ class Extend f => Comonad f where
     f a
     -> a
 
--- | Implement the @Comonad@ instance for @Id@.
+-- | Implement the @Comonad@ instance for @ExactlyOne@.
 --
--- >>> copure (Id 7)
+-- >>> copure (ExactlyOne 7)
 -- 7
-instance Comonad Id where
+instance Comonad ExactlyOne where
   copure ::
-    Id a
+    ExactlyOne a
     -> a
   copure =
-    error "todo: Course.Comonad copure#instance Id"
+    error "todo: Course.Comonad copure#instance ExactlyOne"
 
 -- | Witness that all things with (<<=) and copure also have (<$>).
 --
--- >>> (+10) <$> Id 7
--- Id 17
+-- >>> (+10) <$> ExactlyOne 7
+-- ExactlyOne 17
 (<$>) ::
   Comonad f =>
   (a -> b)

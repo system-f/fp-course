@@ -5,7 +5,7 @@
 module Course.Extend where
 
 import Course.Core
-import Course.Id
+import Course.ExactlyOne
 import Course.List
 import Course.Optional
 import Course.Functor
@@ -24,17 +24,17 @@ class Functor f => Extend f where
 
 infixr 1 <<=
 
--- | Implement the @Extend@ instance for @Id@.
+-- | Implement the @Extend@ instance for @ExactlyOne@.
 --
--- >>> id <<= Id 7
--- Id (Id 7)
-instance Extend Id where
+-- >>> id <<= ExactlyOne 7
+-- ExactlyOne (ExactlyOne 7)
+instance Extend ExactlyOne where
   (<<=) ::
-    (Id a -> b)
-    -> Id a
-    -> Id b
+    (ExactlyOne a -> b)
+    -> ExactlyOne a
+    -> ExactlyOne b
   (<<=) =
-    error "todo: Course.Extend (<<=)#instance Id"
+    error "todo: Course.Extend (<<=)#instance ExactlyOne"
 
 -- | Implement the @Extend@ instance for @List@.
 --
@@ -71,8 +71,8 @@ instance Extend Optional where
 
 -- | Duplicate the functor using extension.
 --
--- >>> cojoin (Id 7)
--- Id (Id 7)
+-- >>> cojoin (ExactlyOne 7)
+-- ExactlyOne (ExactlyOne 7)
 --
 -- >>> cojoin (1 :. 2 :. 3 :. 4 :. Nil)
 -- [[1,2,3,4],[2,3,4],[3,4],[4]]

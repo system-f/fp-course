@@ -15,7 +15,7 @@ import Course.List
 --   `∀f g. f . traverse g ≅ traverse (f . g)`
 --
 -- * The law of identity
---   `∀x. traverse Id x ≅ Id x`
+--   `∀x. traverse ExactlyOne x ≅ ExactlyOne x`
 --
 -- * The law of composition
 --   `∀f g. traverse ((g <$>) . f) ≅ (traverse g <$>) . traverse f`
