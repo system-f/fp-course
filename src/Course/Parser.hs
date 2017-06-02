@@ -708,7 +708,29 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  error "todo: Course.Parser#personParser"
+  Person <$>
+    ageParser <*
+    spaces1 <*>
+    firstNameParser <*
+    spaces1 <*>
+    surnameParser <*
+    spaces1 <*>
+    smokerParser <*
+    spaces1 <*>
+    phoneParser
+
+  {-}
+  do  a <- ageParser
+      _ <- spaces1
+      f <- firstNameParser
+      _ <- spaces1
+      s <- surnameParser
+      _ <- spaces1
+      k <- smokerParser
+      _ <- spaces1
+      p <- phoneParser
+      pure (Person a f s k p)
+-}
 
 -- Make sure all the tests pass!
 

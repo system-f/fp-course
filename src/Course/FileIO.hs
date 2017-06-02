@@ -74,40 +74,106 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \a ->
+  case a of
+    Nil ->
+      putStrLn "give me an argument silly"
+    h:._ ->
+      run h
 
 type FilePath =
   Chars
 
 -- /Tip:/ Use @getFiles@ and @printFiles@.
 run ::
-  Chars
+  FilePath
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run name =
+  do  c <- readFile name
+      z <- getFiles (lines c)
+      printFiles z
+
+  {-
+  readFile name >>= \c ->
+  getFiles (lines c) >>= \z ->
+  printFiles z
+  -}
 
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  sequence . (<$>) getFile
+  -- :: List (IO (FilePath, Chars))
 
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+  -- \name -> (<$>) ((,) name) (readFile name)
+  lift2 (<$>) (,) readFile
+
+-- \x    -> f     (g   x   ) (h        x)
+--lift2 f g h
+
+{-
+  readFile name >>= \c ->
+  pure (name, c)
+-}
 
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  -- ((a, b) -> c) -> a -> b -> c
+  -- (a -> b -> c) -> (a, b) -> c
+  \x -> void (sequence ((<$>) (uncurry printFile) x)) -- :: List (IO ())
+  -- void . sequence . (<$>) (uncurry printFile)
+  -- 1. turn List (IO ()) into a IO (List ()), how do we do that?
+  -- 2. turn IO (List ()) into IO (), wedo that with void
 
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile name contents =
+  putStrLn ("======= " ++ name) *> putStrLn contents
+
+{-
+
+hack = seq . length
+
+p2 =
+  do  f <- readFile "/tmp/afile"
+      f `hack` writeFile "/tmp/afile" "abc"
+      g <- readFile "/tmp/afile"
+      pure (f ++ g)
+
+p = readFile "/tmp/afile"
+
+p1 =
+  do  f <- p
+      f `hack` writeFile "/tmp/afile" "abc"
+      g <- p
+      pure (f ++ g)
+
+-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
