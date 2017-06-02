@@ -18,14 +18,21 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
-class Functor f where
+class Functor somethingthathasmap where
   -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
-    -> f a
-    -> f b
+    -> somethingthathasmap a
+    -> somethingthathasmap b
 
 infixl 4 <$>
+
+data Twoo a = Twoo a a
+  deriving Show
+
+instance Functor Twoo where
+  f <$> Twoo a1 a2 =
+    Twoo (f a1) (f a2)
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -41,8 +48,12 @@ instance Functor Id where
     (a -> b)
     -> Id a
     -> Id b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Id"
+  (<$>) func (Id a) =
+    Id (func a)
+    ---- func :: a -> b
+    ---- a :: a
+
+    ---- ? :: Id b
 
 -- | Maps a function on the List functor.
 --
@@ -56,8 +67,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) f =
+    foldRight ((:.) . f) Nil
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,20 +82,38 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) _ Empty =
+    Empty
+  (<$>) f (Full x) =
+    Full (f x)
+    
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
 instance Functor ((->) t) where
+  {-
   (<$>) ::
     (a -> b)
     -> ((->) t a)
     -> ((->) t b)
+  (<$>) ::
+    (a -> b)
+    -> (t -> a)
+    -> (t -> b)
+  (<$>) ::
+    (a -> b)
+    -> (t -> a)
+    -> t -> b
+    -}
+  (<$>) ::
+    (a -> b)
+    -> (t -> a)
+    -> t
+    -> b
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -99,8 +128,29 @@ instance Functor ((->) t) where
   a
   -> f b
   -> f a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+(<$) a fb =
+  const a <$> fb
+
+listDemo1 ::
+  a
+  -> List b
+  -> List a
+listDemo1 a fb =
+  const a `map` fb
+  
+optionalDemo1 ::
+  a
+  -> Optional b
+  -> Optional a
+optionalDemo1 a fb =
+  const a `mapOptional` fb
+
+readerDemo1 ::
+  a
+  -> ((->) t) b
+  -> ((->) t) a
+readerDemo1 a fb =
+  const a . fb
 
 -- | Anonymous map producing unit value.
 --
@@ -119,8 +169,8 @@ void ::
   Functor f =>
   f a
   -> f ()
-void =
-  error "todo: Course.Functor#void"
+void x =
+  () <$ x
 
 -----------------------
 -- SUPPORT LIBRARIES --
