@@ -81,7 +81,7 @@ type FilePath =
 
 -- /Tip:/ Use @getFiles@ and @printFiles@.
 run ::
-  Chars
+  FilePath
   -> IO ()
 run =
   error "todo: Course.FileIO#run"
