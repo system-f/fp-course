@@ -191,7 +191,7 @@ After this, the following progression of modules is recommended:
 * `Course.List`
 * `Course.Functor`
 * `Course.Applicative`
-* `Course.Monad` (please see [this issue](https://github.com/NICTA/course/issues/118))
+* `Course.Monad`
 * `Course.FileIO`
 * `Course.State`
 * `Course.StateT`
