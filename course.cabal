@@ -59,11 +59,11 @@ library
                       Course.Comonad
                       Course.Compose
                       Course.Core
+                      Course.ExactlyOne
                       Course.Extend
                       Course.FastAnagrams
                       Course.FileIO
                       Course.Functor
-                      Course.Id
                       Course.Interactive
                       Course.JsonParser
                       Course.JsonValue
