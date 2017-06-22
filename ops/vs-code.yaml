@@ -22,3 +22,6 @@
   command: apt-get install -fy
   become: yes
   when: haz_code|failed
+
+- name: "Install haskell syntax highlighting for VS Code"
+  command: code --install-extension justusadam.language-haskell
