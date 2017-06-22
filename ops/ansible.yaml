@@ -28,7 +28,6 @@
       with_items:
         - emacs
         - git
-        - tmux
         - vim
         - xubuntu-desktop
 
@@ -38,5 +37,11 @@
         path: /usr/share/lightdm/lightdm.conf.d/60-xubuntu.conf
       become: yes
 
+    - name: "Checkout course repo"
+      git:
+        repo: https://github.com/data61/fp-course
+        dest: ~/fp-course
+
     - include: haskell.yaml
     - include: vs-code.yaml
+    - include: sublime.yaml
