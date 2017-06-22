@@ -20,11 +20,12 @@ If you'd rather use a pre-configured haskell development environment, then this 
  
 ## Make it so
 
-The following will download a VM image of Ubuntu and then provision it to build a desktop environment for Haskell development.
+The following will download a VM image of Ubuntu and then provision it to build a desktop environment for Haskell development. Once it's provisioned, reload the machine, which will log you straight into a graphical environment.
 
 ```
 cd course
 vagrant up
+vagrant reload
 ```
 
 You should now see a virtual machine running Xubuntu. The course materials are checked out to
