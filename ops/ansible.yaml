@@ -38,4 +38,5 @@
         path: /usr/share/lightdm/lightdm.conf.d/60-xubuntu.conf
       become: yes
 
+    - include: haskell.yaml
     - include: vs-code.yaml
