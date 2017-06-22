@@ -10,7 +10,9 @@ If you'd rather use a pre-configured haskell development environment, then this 
  - sublime
  - VS Code
 
-**WARNING** Building the environment might take a while and download gigabytes of pacakges over the internet.
+**NOTE**: The VM's default user is `ubuntu` and their password is `ubuntu`
+
+**WARNING**: Building the environment might take a while and download gigabytes of pacakges over the internet.
 
 ## Prerequisites
 
