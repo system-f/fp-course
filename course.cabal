@@ -104,3 +104,31 @@ test-suite            doctests
 
   hs-source-dirs:
                       test
+
+
+test-suite            tasty
+  type:
+                      exitcode-stdio-1.0
+
+  main-is:
+                      Tasty.hs
+
+  default-language:
+                      Haskell2010
+
+  build-depends:
+                      base < 5 && >= 3
+                      , course
+                      , HUnit >= 1.5
+                      , QuickCheck >= 2.9
+                      , tasty >= 0.11
+                      , tasty-discover >= 3.0.2
+                      , tasty-hunit >= 0.9
+                      , tasty-quickcheck >= 0.8
+
+  ghc-options:
+                      -Wall
+                      -threaded
+
+  hs-source-dirs:
+                      test
