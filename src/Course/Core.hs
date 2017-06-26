@@ -45,6 +45,7 @@ module Course.Core(
 , IsString(..)
 , module Data.Char
 , ifThenElse
+, bool
 ) where
 
 
