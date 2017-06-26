@@ -27,8 +27,8 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+mapOptional _ Empty = Empty
+mapOptional func (Full x) = Full (func x)
 
 -- | Bind the given function on the possible value.
 --
@@ -41,11 +41,15 @@ mapOptional =
 -- >>> bindOptional (\n -> if even n then Full (n - 1) else Full (n + 1)) (Full 9)
 -- Full 10
 bindOptional ::
-  (a -> Optional b)
-  -> Optional a
-  -> Optional b
-bindOptional =
-  error "todo: Course.Optional#bindOptional"
+  (z -> Optional w)
+  -> Optional z
+  -> Optional w
+bindOptional _ Empty = Empty
+bindOptional func (Full x) = func x
+
+-- func :: z -> Optional w
+-- x :: z
+-- ? :: Optional w
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
