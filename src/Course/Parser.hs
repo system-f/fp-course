@@ -91,7 +91,8 @@ valueParser =
 -- >>> isErrorResult (parse failed "abc")
 -- True
 failed ::
-  Parser a
+  ParseError
+  -> Parser a
 failed =
   error "todo: Course.Parser#failed"
 
