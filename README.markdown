@@ -313,6 +313,22 @@ covered first.
 * running the tests
   * `doctest`
 
+### Parser grammar assistance
+
+The exercises in `Parser.hs` can be assisted by stating problems in a specific way, with a conversion to code.
+
+| English   | Parser library                    |
+|-----------|-----------------------------------|
+| and then  | `bindParser` `flbindParser` `>>=` |
+| always    | `valueParser` `pure`              |
+| or        | `|||`                             |
+| 0 or many | `list`                            |
+| 1 or many | `list1`                           |
+| is        | `is`                              |
+| exactly n | `thisMany n`                      |
+| fail      | `failed`                          |
+| call it x | `\x ->`                           |
+
 ### One-day
 
 Sometimes this course material is condensed into one-day. In these cases, the
