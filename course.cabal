@@ -122,7 +122,6 @@ test-suite            tasty
                       , HUnit >= 1.5
                       , QuickCheck >= 2.9
                       , tasty >= 0.11
-                      , tasty-discover >= 3.0.2
                       , tasty-hunit >= 0.9
                       , tasty-quickcheck >= 0.8
 

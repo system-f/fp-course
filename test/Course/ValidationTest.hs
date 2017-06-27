@@ -16,8 +16,8 @@ import Course.Validation
 instance Arbitrary a => Arbitrary (Validation a) where
   arbitrary = P.fmap (P.either Error Value) arbitrary
 
-test_validation :: TestTree
-test_validation =
+test_Validation :: TestTree
+test_Validation =
   testGroup "Validation" [
     isErrorTest
   , isValueTest
