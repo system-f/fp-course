@@ -329,6 +329,25 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 | fail      | `failed`                          |
 | call it x | `\x ->`                           |
 
+### Monad comprehension
+
+##### do-notation
+
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+
+##### LINQ
+
+* write `from` on each line
+* turn `>>=` into in
+* delete `->`
+* delete `\`
+* swap each side of `in`
+* turn value into `select`
+
 ### One-day
 
 Sometimes this course material is condensed into one-day. In these cases, the
