@@ -8,9 +8,9 @@ import Test.Tasty.HUnit (testCase, (@?=))
 import Test.Tasty.QuickCheck (testProperty)
 
 import Course.Core
-import Course.Applicative (lift2, pure, (<$>), (<*>))
+import Course.Applicative (lift2, lift3, pure, (<$>), (<*>))
 import Course.Id (Id (..))
-import Course.List (List (..), length, listh, sum)
+import Course.List (List (..), length, listh, product, sum)
 import Course.Optional (Optional (..))
 import Course.TestHelpers ((+:))
 
@@ -99,4 +99,24 @@ lift2Test =
       lift2 (+:) (Full 7) Empty @?= Empty
   , testCase "+ over functions" $
       lift2 (+) length sum (listh [4,5,6]) @?= 18
+  ]
+
+lift3Test :: TestTree
+lift3Test =
+  testGroup "lift3" [
+    testCase "+ over Id" $
+      lift3 (\a b c -> a +: b +: c) (Id 7) (Id 8) (Id 9) @?= Id 24
+  , testCase "+ over List" $
+      lift3 (\a b c -> a +: b +: c) (listh [1,2,3]) (listh [4,5]) (listh [6,7,8]) @?=
+        listh [11,12,13,12,13,14,12,13,14,13,14,15,13,14,15,14,15,16]
+  , testCase "+ over Optional" $
+      lift3 (\a b c -> a +: b +: c) (Full 7) (Full 8) (Full 9) @?= Full 24
+  , testCase "+ over Optional - third Empty" $
+      lift3 (\a b c -> a +: b +: c) (Full 7) (Full 8) Empty @?= Empty
+  , testCase "+ over Optional - first Empty" $
+      lift3 (\a b c -> a +: b +: c) Empty (Full 8) (Full 9) @?= Empty
+  , testCase "+ over Optional - first and second Empty" $
+      lift3 (\a b c -> a +: b +: c) Empty Empty (Full 9) @?= Empty
+  , testCase "+ over functions" $
+      lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6]) @?= 138
   ]
