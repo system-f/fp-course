@@ -50,6 +50,12 @@ instance Show a => Show (ParseResult a) where
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
 
+instance Functor ParseResult where
+  _ <$> ErrorResult e =
+    ErrorResult e
+  f <$> Result i a =
+    Result i (f a)
+
 -- Function to determine is a parse result is an error.
 isErrorResult ::
   ParseResult a
@@ -85,7 +91,8 @@ valueParser =
 -- >>> isErrorResult (parse failed "abc")
 -- True
 failed ::
-  Parser a
+  ParseError
+  -> Parser a
 failed =
   error "todo: Course.Parser#failed"
 
