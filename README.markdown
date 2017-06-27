@@ -321,7 +321,7 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 |-----------|-----------------------------------|
 | and then  | `bindParser` `flbindParser` `>>=` |
 | always    | `valueParser` `pure`              |
-| or        | `|||`                             |
+| or        | `\|\|\|`                             |
 | 0 or many | `list`                            |
 | 1 or many | `list1`                           |
 | is        | `is`                              |
