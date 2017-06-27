@@ -24,6 +24,7 @@ class Functor f where
     (a -> b)
     -> f a
     -> f b
+ -- (a -> b) -> Int a -> Int b -- WTF, kind error
 
 infixl 4 <$>
 
@@ -41,8 +42,16 @@ instance Functor ExactlyOne where
     (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance ExactlyOne"
+  (<$>) k (ExactlyOne x) =
+    ExactlyOne (k x)
+
+-- k :: a -> b
+-- x :: a
+-- k x :: b
+-- ExactlyOne (k x) :: ExactlyOne b
+-- ? :: ExactlyOne b
+
+-- data ExactlyOne a = ExactlyOne a
 
 -- | Maps a function on the List functor.
 --
@@ -56,8 +65,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) f =
+    foldRight ((:.) . f) Nil
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +80,8 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) f =
+    bindOptional (Full . f)
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -80,11 +89,12 @@ instance Functor Optional where
 -- 17
 instance Functor ((->) t) where
   (<$>) ::
-    (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
-  (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    (a -> b)-> (t -> a) -> (t -> b)
+  (<$>)  a b c = a (b c) -- \joushau -> \shujoa -> \hai -> joushau (shujoa hai)
+    -- joushau :: a -> b
+    -- shujoa :: t -> a
+    -- hai :: t
+    -- ? :: b
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -95,12 +105,22 @@ instance Functor ((->) t) where
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
-  Functor f =>
-  a
-  -> f b
-  -> f a
+  Functor f => a-> f b -> f a
 (<$) =
-  error "todo: Course.Functor#(<$)"
+  -- \b -> (<$>) (const b)
+  (<$>) . const
+
+anonymousmapOptional :: a-> Optional b -> Optional a
+anonymousmapOptional =
+  -- \b -> (<$>) (const b)
+  mapOptional . const
+
+anonymousmapList :: a-> List b -> List a
+anonymousmapList =
+  -- \b -> (<$>) (const b)
+  map . const
+
+-- (<$) b c = (<$>) (\ _ -> b) c
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +140,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo: Course.Functor#void"
+  (() <$)
 
 -----------------------
 -- SUPPORT LIBRARIES --

@@ -62,8 +62,12 @@ bindOptional func (Full x) = func x
   Optional a
   -> a
   -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+(??) Empty a =
+  a
+(??) (Full a) _ =
+  a
+
+-- q = x ?? y;
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -83,8 +87,10 @@ bindOptional func (Full x) = func x
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"  
+Full a <+> _ =
+  Full a
+Empty <+> x =
+  x
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional (\a' -> f' a') a) f

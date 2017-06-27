@@ -329,6 +329,17 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
+-- seqOptional =
+  -- foldRight (twiceOptional (:.)) (Full Nil)
+seqOptional Nil =
+  Full Nil
+seqOptional (h:.t) =
+  twiceOptional (:.) h (seqOptional t)
+  
+-- twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
+
+
+  {-
 seqOptional Nil =
   Full Nil
 seqOptional (h:.t) =
@@ -337,6 +348,8 @@ seqOptional (h:.t) =
   flip bindOptional h (\a ->
   flip bindOptional (seqOptional t) (\q ->
   Full (a :. q)))
+-}
+
 
 -- h :: Optional a
 -- t :: List (Optional a)
