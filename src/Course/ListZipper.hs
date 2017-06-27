@@ -7,7 +7,7 @@ import Course.Core
 import Course.List
 import Course.Optional
 import Course.Functor
-import Course.Applicative
+import Course.Applicative hiding ((<$>))
 import Course.Extend
 import Course.Comonad
 import Course.Traversable

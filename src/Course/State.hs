@@ -10,7 +10,7 @@ import qualified Prelude as P
 import Course.Optional
 import Course.List
 import Course.Functor
-import Course.Applicative
+import Course.Applicative hiding ((<$>))
 import Course.Monad
 import qualified Data.Set as S
 

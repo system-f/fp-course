@@ -23,7 +23,7 @@ import Course.Core
 import Course.Optional
 import Course.List
 import Course.Functor
-import Course.Applicative
+import Course.Applicative hiding ((<$>))
 import Course.Monad
 
 -- $setup

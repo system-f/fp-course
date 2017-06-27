@@ -16,6 +16,7 @@ module Course.Applicative(
 , return
 , fail
 , (>>)
+, (<$>)
 ) where
 
 import Course.Core

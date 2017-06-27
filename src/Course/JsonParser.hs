@@ -10,7 +10,7 @@ import Course.Parser
 import Course.MoreParser
 import Course.JsonValue
 import Course.Functor
-import Course.Applicative
+import Course.Applicative hiding ((<$>))
 import Course.Monad
 import Course.List
 import Course.Optional

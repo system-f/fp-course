@@ -8,7 +8,7 @@ import Course.Core
 import Course.Parser
 import Course.List
 import Course.Optional
-import Course.Applicative
+import Course.Applicative hiding ((<$>))
 import Course.Monad
 import Course.Functor
 import Course.Traversable

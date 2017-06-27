@@ -6,11 +6,11 @@
 module Course.Monad(
   Monad(..)
 , join
-, (>>=)  
+, (>>=)
 , (<=<)
 ) where
 
-import Course.Applicative hiding ((<*>))
+import Course.Applicative hiding ((<*>), (<$>))
 import Course.Core
 import Course.ExactlyOne
 import Course.Functor
