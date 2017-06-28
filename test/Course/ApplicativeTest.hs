@@ -8,8 +8,8 @@ import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
-import           Course.Applicative    (lift2, lift3, lift4, pure, sequence,
-                                        (*>), (<$>), (<*), (<*>))
+import           Course.Applicative    (lift2, lift3, lift4, pure, replicateA,
+                                        sequence, (*>), (<$>), (<*), (<*>))
 import           Course.Core
 import           Course.Id             (Id (..))
 import           Course.List           (List (..), filter, length, listh,
@@ -198,4 +198,22 @@ sequenceTest =
       sequence (Full 7 :. Full 8 :. Nil) @?= Full (listh [7,8])
   , testCase "" $
       sequence ((*10) :. (+2) :. Nil) 6 @?= (listh [60,8])
+  ]
+
+replicateATest :: TestTree
+replicateATest =
+  testGroup "replicateA" [
+    testCase "" $
+      replicateA 4 (Id "hi") @?= Id (listh ["hi","hi","hi","hi"])
+  , testCase "" $
+      replicateA 4 (Full "hi") @?= Full (listh ["hi","hi","hi","hi"])
+  , testCase "" $
+      replicateA 4 Empty @?= (Empty :: Optional (List Integer))
+  , testCase "" $
+      replicateA 4 (*2) 5 @?= (listh [10,10,10,10])
+  , testCase "" $
+      let expected = listh <$> (listh ["aaa","aab","aac","aba","abb","abc","aca","acb","acc",
+                                        "baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc",
+                                        "caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"])
+       in replicateA 3 ('a' :. 'b' :. 'c' :. Nil) @?= expected
   ]
