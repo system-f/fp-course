@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -10,7 +11,6 @@ import Test.Tasty.HUnit
 import Test.Tasty.QuickCheck
 
 import Course.Core
-import Course.TestHelpers ((+:))
 import Course.Validation
 
 instance Arbitrary a => Arbitrary (Validation a) where
@@ -53,9 +53,9 @@ mapValidationTest :: TestTree
 mapValidationTest =
   testGroup "mapValidation" [
     testCase "errors unchanged" $
-      mapValidation (+: 10) (Error "message") @?= Error "message"
+      mapValidation (+ 10) (Error "message") @?= Error "message"
   , testCase "values changed" $
-      mapValidation (+: 10) (Value 7) @?= Value 17
+      mapValidation (+ 10) (Value 7) @?= Value 17
   , testProperty "map with id causes no change" $
       \(x :: Validation Int) -> mapValidation id x == x
   ]
@@ -63,7 +63,7 @@ mapValidationTest =
 bindValidationTest :: TestTree
 bindValidationTest =
   let
-    f n = if even n then Value (n +: 10) else Error "odd"
+    f n = if even n then Value (n + 10) else Error "odd"
   in
     testGroup "bindValidation" [
       testCase "error unchanged" $
