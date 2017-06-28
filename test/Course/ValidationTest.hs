@@ -1,17 +1,17 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ValidationTest where
 
-import qualified Prelude as P(either, fmap)
-import Test.Tasty
-import Test.Tasty.HUnit
-import Test.Tasty.QuickCheck
+import qualified Prelude               as P (either, fmap)
+import           Test.Tasty
+import           Test.Tasty.HUnit
+import           Test.Tasty.QuickCheck
 
-import Course.Core
-import Course.Validation
+import           Course.Core
+import           Course.Validation
 
 instance Arbitrary a => Arbitrary (Validation a) where
   arbitrary = P.fmap (P.either Error Value) arbitrary

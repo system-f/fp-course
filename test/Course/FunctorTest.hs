@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.FunctorTest where
@@ -9,8 +9,8 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
+import           Course.ExactlyOne     (ExactlyOne (..))
 import           Course.Functor        (void, (<$), (<$>))
-import           Course.ExactlyOne             (ExactlyOne (..))
 import           Course.List           (List (..))
 import           Course.Optional       (Optional (..))
 
