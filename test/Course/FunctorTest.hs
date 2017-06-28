@@ -9,7 +9,7 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.Functor        ((<$), (<$>))
+import           Course.Functor        (void, (<$), (<$>))
 import           Course.ExactlyOne             (ExactlyOne (..))
 import           Course.List           (List (..))
 import           Course.Optional       (Optional (..))
@@ -22,6 +22,7 @@ test_Functor =
   , optionalTest
   , functionTest
   , anonMapTest
+  , voidTest
   ]
 
 idTest :: TestTree
@@ -57,4 +58,13 @@ anonMapTest =
       \x a b c -> (x :: Integer) <$ ((a :. b :. c :. Nil) :: List Integer) == (x :. x :. x :. Nil)
   , testProperty "Always maps a constant value over Full (Optional)" $
       \(x :: Integer) (q :: Integer) -> x <$ Full q == Full x
+  ]
+
+voidTest :: TestTree
+voidTest =
+  testGroup "void" [
+    testCase "List"  $ void (1 :. 2 :. 3 :. Nil) @?= () :. () :. () :. Nil
+  , testCase "Full"  $ void (Full 7) @?= Full ()
+  , testCase "Empty" $ void Empty @?= Empty
+  , testCase "(->)"  $ void (+10) 5 @?= ()
   ]
