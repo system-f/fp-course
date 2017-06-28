@@ -1,18 +1,21 @@
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# OPTIONS_GHC -fno-warn-type-defaults #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ApplicativeTest where
 
-import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (testCase, (@?=))
-import Test.Tasty.QuickCheck (testProperty)
+import           Test.Tasty            (TestTree, testGroup)
+import           Test.Tasty.HUnit      (testCase, (@?=))
+import           Test.Tasty.QuickCheck (testProperty)
 
-import Course.Core
-import Course.Applicative (lift2, lift3, lift4, pure, (<$>), (<*>))
-import Course.Id (Id (..))
-import Course.List (List (..), filter, length, listh, product, sum)
-import Course.Optional (Optional (..))
-import Course.TestHelpers ((+:))
+import           Course.Applicative    (lift2, lift3, lift4, pure, (*>), (<$>),
+                                        (<*), (<*>))
+import           Course.Core
+import           Course.Id             (Id (..))
+import           Course.List           (List (..), filter, length, listh,
+                                        product, sum)
+import           Course.Optional       (Optional (..))
+import           Course.TestHelpers    ((+:))
 
 test_Applicative :: TestTree
 test_Applicative =
@@ -139,4 +142,44 @@ lift4Test =
       lift4 (\a b c d -> a +: b +: c +: d) Empty Empty (Full 9) (Full 10) @?= Empty
   , testCase "+ over functions" $
       lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6]) @?= 148
+  ]
+
+rightApplyTest :: TestTree
+rightApplyTest =
+  testGroup "rightApply" [
+    testCase "*> over List" $
+      listh [1,  2,  3] *> listh [4,  5,  6] @?= listh [4,5,6,4,5,6,4,5,6]
+  , testCase "*> over List" $
+      listh [1,  2] *> listh [4,  5,  6] @?= listh [4,5,6,4,5,6]
+  , testCase "another *> over List" $
+      listh [1,  2,  3] *> listh [4,  5] @?= listh [4,5,4,5,4,5]
+  , testCase "*> over Optional" $
+      Full 7 *> Full 8 @?= Full 8
+  , testProperty "*> over List property" $
+      \a b c x y z ->
+        let l1 = (listh [a,  b,  c] :: List Integer)
+            l2 = (listh [x,  y,  z] :: List Integer)
+         in l1 *> l2 == listh [x,  y,  z,  x,  y,  z,  x,  y,  z]
+  , testProperty "*> over Optional property" $
+      \x y -> (Full x :: Optional Integer) *> (Full y :: Optional Integer) == Full y
+  ]
+
+leftApplyTest :: TestTree
+leftApplyTest =
+  testGroup "leftApply" [
+    testCase "<* over List" $
+      (1 :. 2 :. 3 :. Nil) <* (4 :. 5 :. 6 :. Nil) @?= listh [1,1,1,2,2,2,3,3,3]
+  , testCase "another <* over List" $
+      (1 :. 2 :. Nil) <* (4 :. 5 :. 6 :. Nil) @?= listh [1,1,1,2,2,2]
+  , testCase "Yet another <* over List" $
+      (1 :. 2 :. 3 :. Nil) <* (4 :. 5 :. Nil) @?= listh [1,1,2,2,3,3]
+  , testCase "<* over Optional" $
+      Full 7 <* Full 8 @?= Full 7
+  , testProperty "<* over List property" $
+      \x y z a b c ->
+        let l1 = (x :. y :. z :. Nil) :: List Integer
+            l2 = (a :. b :. c :. Nil) :: List Integer
+         in l1 <* l2 == listh [x,  x,  x,  y,  y,  y,  z,  z,  z]
+  , testProperty "<* over Optional property" $
+      \x y -> Full (x :: Integer) <* Full (y :: Integer) == Full x
   ]
