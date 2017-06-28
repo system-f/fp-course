@@ -8,8 +8,9 @@ import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
-import           Course.Applicative    (lift2, lift3, lift4, pure, replicateA,
-                                        sequence, (*>), (<$>), (<*), (<*>))
+import           Course.Applicative    (filtering, lift2, lift3, lift4, pure,
+                                        replicateA, sequence, (*>), (<$>), (<*),
+                                        (<*>))
 import           Course.Core
 import           Course.Id             (Id (..))
 import           Course.List           (List (..), filter, length, listh,
@@ -192,28 +193,46 @@ sequenceTest =
       sequence (listh [Id 7, Id 8, Id 9]) @?= Id (listh [7,8,9])
   , testCase "List" $
       sequence ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil) @?= (listh <$> (listh [[1,1],[1,2],[2,1],[2,2],[3,1],[3,2]]))
-  , testCase "" $
+  , testCase "Optional with an empty" $
       sequence (Full 7 :. Empty :. Nil) @?= Empty
-  , testCase "" $
+  , testCase "Optional" $
       sequence (Full 7 :. Full 8 :. Nil) @?= Full (listh [7,8])
-  , testCase "" $
+  , testCase "(->)" $
       sequence ((*10) :. (+2) :. Nil) 6 @?= (listh [60,8])
   ]
 
 replicateATest :: TestTree
 replicateATest =
   testGroup "replicateA" [
-    testCase "" $
+    testCase "Id" $
       replicateA 4 (Id "hi") @?= Id (listh ["hi","hi","hi","hi"])
-  , testCase "" $
+  , testCase "Optional - Full" $
       replicateA 4 (Full "hi") @?= Full (listh ["hi","hi","hi","hi"])
-  , testCase "" $
+  , testCase "Optional - Empty" $
       replicateA 4 Empty @?= (Empty :: Optional (List Integer))
-  , testCase "" $
+  , testCase "(->)" $
       replicateA 4 (*2) 5 @?= (listh [10,10,10,10])
-  , testCase "" $
+  , testCase "List" $
       let expected = listh <$> (listh ["aaa","aab","aac","aba","abb","abc","aca","acb","acc",
                                         "baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc",
                                         "caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"])
        in replicateA 3 ('a' :. 'b' :. 'c' :. Nil) @?= expected
+  ]
+
+filteringTest :: TestTree
+filteringTest =
+  testGroup "filtering" [
+    testCase "Id" $
+      filtering (Id . even) (4 :. 5 :. 6 :. Nil) @?= Id (listh [4,6])
+  , testCase "Optional - all true" $
+      filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. Nil) @?= Full (listh [4,5,6])
+  , testCase "Optional - some false" $
+      filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. Nil) @?= Full (listh [4,5,6,7])
+  , testCase "Optional - some empty" $
+      filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. 13 :. 14 :. Nil) @?= Empty
+  , testCase "(->)" $
+      filtering (>) (4 :. 5 :. 6 :. 7 :. 8 :. 9 :. 10 :. 11 :. 12 :. Nil) 8 @?= listh [9,10,11,12]
+  , testCase "List" $
+      let expected = listh <$> listh [[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3]]
+       in filtering (const $ True :. True :.  Nil) (1 :. 2 :. 3 :. Nil) @?= expected
   ]
