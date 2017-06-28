@@ -26,8 +26,13 @@ test_Applicative =
   , optionalTest
   , functionTest
   , lift2Test
+  , lift3Test
+  , lift4Test
   , rightApplyTest
   , leftApplyTest
+  , sequenceTest
+  , replicateATest
+  , filteringTest
   ]
 
 haveFmapTest :: TestTree
