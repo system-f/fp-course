@@ -10,7 +10,7 @@ import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
 import           Course.Functor        ((<$), (<$>))
-import           Course.Id             (Id (..))
+import           Course.ExactlyOne             (ExactlyOne (..))
 import           Course.List           (List (..))
 import           Course.Optional       (Optional (..))
 
@@ -26,7 +26,7 @@ test_Functor =
 
 idTest :: TestTree
 idTest =
-  testCase "Id" $ (+1) <$> Id 2 @?= Id 3
+  testCase "ExactlyOne" $ (+1) <$> ExactlyOne 2 @?= ExactlyOne 3
 
 listTest :: TestTree
 listTest =

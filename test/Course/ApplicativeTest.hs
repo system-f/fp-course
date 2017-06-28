@@ -12,7 +12,7 @@ import           Course.Applicative    (filtering, lift2, lift3, lift4, pure,
                                         replicateA, sequence, (*>), (<$>), (<*),
                                         (<*>))
 import           Course.Core
-import           Course.Id             (Id (..))
+import           Course.ExactlyOne     (ExactlyOne (..))
 import           Course.List           (List (..), filter, length, listh,
                                         product, sum)
 import           Course.Optional       (Optional (..))
@@ -21,7 +21,7 @@ test_Applicative :: TestTree
 test_Applicative =
   testGroup "Applicative" [
     haveFmapTest
-  , idTest
+  , exactlyOneTest
   , listTest
   , optionalTest
   , functionTest
@@ -38,21 +38,21 @@ test_Applicative =
 haveFmapTest :: TestTree
 haveFmapTest =
   testGroup "<$>" [
-    testCase "fmap Id" $
-      (+ 1) <$> (Id 2) @?= Id (3 :: Integer)
+    testCase "fmap ExactlyOne" $
+      (+ 1) <$> (ExactlyOne 2) @?= ExactlyOne (3 :: Integer)
   , testCase "fmap empty List" $
       (+ 1) <$> Nil @?= Nil
   , testCase "fmap List" $
       (+ 1) <$> listh [1,2,3] @?= listh [2,3,4]
   ]
 
-idTest :: TestTree
-idTest =
-  testGroup "Id instance" [
-    testProperty "pure == Id" $
-      \(x :: Integer) -> pure x == Id x
-  , testCase "Applying within Id" $
-      Id (+ 10) <*> Id 8 @?= Id 18
+exactlyOneTest :: TestTree
+exactlyOneTest =
+  testGroup "ExactlyOne instance" [
+    testProperty "pure == ExactlyOne" $
+      \(x :: Integer) -> pure x == ExactlyOne x
+  , testCase "Applying within ExactlyOne" $
+      ExactlyOne (+ 10) <*> ExactlyOne 8 @?= ExactlyOne 18
   ]
 
 listTest :: TestTree
@@ -97,8 +97,8 @@ functionTest =
 lift2Test :: TestTree
 lift2Test =
   testGroup "lift2" [
-    testCase "+ over Id" $
-      lift2 (+) (Id 7) (Id 8) @?= Id 15
+    testCase "+ over ExactlyOne" $
+      lift2 (+) (ExactlyOne 7) (ExactlyOne 8) @?= ExactlyOne 15
   , testCase "+ over List" $
       lift2 (+) (listh [1,2,3]) (listh [4,5]) @?= listh [5,6,6,7,7,8]
   , testCase "+ over Optional - all full" $
@@ -114,8 +114,8 @@ lift2Test =
 lift3Test :: TestTree
 lift3Test =
   testGroup "lift3" [
-    testCase "+ over Id" $
-      lift3 (\a b c -> a + b + c) (Id 7) (Id 8) (Id 9) @?= Id 24
+    testCase "+ over ExactlyOne" $
+      lift3 (\a b c -> a + b + c) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) @?= ExactlyOne 24
   , testCase "+ over List" $
       lift3 (\a b c -> a + b + c) (listh [1,2,3]) (listh [4,5]) (listh [6,7,8]) @?=
         listh [11,12,13,12,13,14,12,13,14,13,14,15,13,14,15,14,15,16]
@@ -134,8 +134,8 @@ lift3Test =
 lift4Test :: TestTree
 lift4Test =
   testGroup "lift4" [
-    testCase "+ over Id" $
-      lift4 (\a b c d -> a + b + c + d) (Id 7) (Id 8) (Id 9) (Id 10) @?= Id 34
+    testCase "+ over ExactlyOne" $
+      lift4 (\a b c d -> a + b + c + d) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) (ExactlyOne 10) @?= ExactlyOne 34
   , testCase "+ over List" $
       lift4 (\a b c d -> a + b + c + d) (listh [1, 2, 3]) (listh [4, 5]) (listh [6, 7, 8]) (listh [9, 10]) @?=
         (listh [20,21,21,22,22,23,21,22,22,23,23,24,21,22,22,23,23,24,22,23,23,24,24,25,22,23,23,24,24,25,23,24,24,25,25,26])
@@ -194,8 +194,8 @@ leftApplyTest =
 sequenceTest :: TestTree
 sequenceTest =
   testGroup "sequence" [
-    testCase "Id" $
-      sequence (listh [Id 7, Id 8, Id 9]) @?= Id (listh [7,8,9])
+    testCase "ExactlyOne" $
+      sequence (listh [ExactlyOne 7, ExactlyOne 8, ExactlyOne 9]) @?= ExactlyOne (listh [7,8,9])
   , testCase "List" $
       sequence ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil) @?= (listh <$> (listh [[1,1],[1,2],[2,1],[2,2],[3,1],[3,2]]))
   , testCase "Optional with an empty" $
@@ -209,8 +209,8 @@ sequenceTest =
 replicateATest :: TestTree
 replicateATest =
   testGroup "replicateA" [
-    testCase "Id" $
-      replicateA 4 (Id "hi") @?= Id (listh ["hi","hi","hi","hi"])
+    testCase "ExactlyOne" $
+      replicateA 4 (ExactlyOne "hi") @?= ExactlyOne (listh ["hi","hi","hi","hi"])
   , testCase "Optional - Full" $
       replicateA 4 (Full "hi") @?= Full (listh ["hi","hi","hi","hi"])
   , testCase "Optional - Empty" $
@@ -227,8 +227,8 @@ replicateATest =
 filteringTest :: TestTree
 filteringTest =
   testGroup "filtering" [
-    testCase "Id" $
-      filtering (Id . even) (4 :. 5 :. 6 :. Nil) @?= Id (listh [4,6])
+    testCase "ExactlyOne" $
+      filtering (ExactlyOne . even) (4 :. 5 :. 6 :. Nil) @?= ExactlyOne (listh [4,6])
   , testCase "Optional - all true" $
       filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. Nil) @?= Full (listh [4,5,6])
   , testCase "Optional - some false" $
