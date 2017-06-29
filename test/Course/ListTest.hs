@@ -12,9 +12,9 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.List           (List (..), filter, foldLeft, headOr,
-                                        infinity, length, listh, map, product,
-                                        sum, (++))
+import           Course.List           (List (..), filter, flatten, foldLeft,
+                                        headOr, infinity, length, listh, map,
+                                        product, sum, (++))
 
 -- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
 genList :: Arbitrary a => Gen (List a)
@@ -22,6 +22,9 @@ genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
 
 genIntegerList :: Gen (List Integer)
 genIntegerList = genList
+
+genIntegerAndList :: Gen (Integer, List Integer)
+genIntegerAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,)
 
 test_List :: TestTree
 test_List =
@@ -33,6 +36,7 @@ test_List =
   , mapTest
   , filterTest
   , appendTest
+  , flattenTest
   ]
 
 headOrTest :: TestTree
@@ -101,11 +105,23 @@ appendTest =
   , testProperty "append empty to infinite" $
       \x -> headOr x (Nil ++ infinity) == 0
   , testProperty "append anything to infinity" $
-      let intAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,) :: Gen (Integer, List Integer)
-       in forAll intAndList (\(x, y) -> headOr x (y ++ infinity) == headOr 0 y)
+       forAll genIntegerAndList (\(x, y) -> headOr x (y ++ infinity) == headOr 0 y)
   , testProperty "associativity" $
       forAll (liftA3 (,,) genIntegerList genIntegerList genIntegerList)
              (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
   , testProperty "append to empty list" $
       forAll genIntegerList (\x -> x ++ Nil == x)
+  ]
+
+flattenTest :: TestTree
+flattenTest =
+  testGroup "flatten" [
+    testCase "(1..9)" $
+      flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil) @?= listh [1,2,3,4,5,6,7,8,9]
+  , testProperty "flatten (infinity :. y)" $
+      forAll genIntegerAndList (\(x, y) -> headOr x (flatten (infinity :. y :. Nil)) == 0)
+  , testProperty "flatten (y :. infinity)" $
+      forAll genIntegerAndList (\(x, y) -> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y)
+  , testProperty "sum of lengths == sum of flattened" $
+      forAll genIntegerList (\x -> sum (map length x) == length (flatten x))
   ]
