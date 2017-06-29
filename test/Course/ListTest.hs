@@ -3,7 +3,8 @@
 
 module Course.ListTest where
 
-import qualified Prelude               as P (fmap, foldr)
+import           Control.Applicative   (liftA3)
+import qualified Prelude               as P (fmap, foldr, (<$>), (>>=))
 
 import           Test.QuickCheck       (Arbitrary (..), Gen, forAll)
 import           Test.Tasty            (TestTree, testGroup)
@@ -12,7 +13,8 @@ import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
 import           Course.List           (List (..), filter, foldLeft, headOr,
-                                        infinity, length, map, product, sum)
+                                        infinity, length, listh, map, product,
+                                        sum, (++))
 
 -- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
 genList :: Arbitrary a => Gen (List a)
@@ -30,6 +32,7 @@ test_List =
   , lengthTest
   , mapTest
   , filterTest
+  , appendTest
   ]
 
 headOrTest :: TestTree
@@ -88,4 +91,21 @@ filterTest =
       forAll genIntegerList (\x -> filter (const True) x == x)
   , testProperty "filter (const False) is the empty list" $
       forAll genIntegerList (\x -> filter (const False) x == Nil)
+  ]
+
+appendTest :: TestTree
+appendTest =
+  testGroup "(++)" [
+    testCase "(1..6)" $
+      (1 :. 2 :. 3 :. Nil) ++ (4 :. 5 :. 6 :. Nil) @?= listh [1,2,3,4,5,6]
+  , testProperty "append empty to infinite" $
+      \x -> headOr x (Nil ++ infinity) == 0
+  , testProperty "append anything to infinity" $
+      let intAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,) :: Gen (Integer, List Integer)
+       in forAll intAndList (\(x, y) -> headOr x (y ++ infinity) == headOr 0 y)
+  , testProperty "associativity" $
+      forAll (liftA3 (,,) genIntegerList genIntegerList genIntegerList)
+             (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
+  , testProperty "append to empty list" $
+      forAll genIntegerList (\x -> x ++ Nil == x)
   ]
