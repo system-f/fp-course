@@ -5,20 +5,21 @@ module Course.ListTest where
 
 import qualified Prelude               as P (fmap, foldr)
 
-import           Test.QuickCheck       (Arbitrary (..))
+import           Test.QuickCheck       (Arbitrary (..), Gen, forAll)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.List           (List (..), foldLeft, headOr, infinity,
-                                        length, map, product, sum)
+import           Course.List           (List (..), filter, foldLeft, headOr,
+                                        infinity, length, map, product, sum)
 
-newtype AList a = AList { aList :: List a}
-                  deriving Show
+-- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
+genList :: Arbitrary a => Gen (List a)
+genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
 
-instance Arbitrary a => Arbitrary (AList a) where
-  arbitrary = P.fmap ((AList . P.foldr (:.) Nil) :: [a] -> AList a) arbitrary
+genIntegerList :: Gen (List Integer)
+genIntegerList = genList
 
 test_List :: TestTree
 test_List =
@@ -27,6 +28,8 @@ test_List =
   , productTest
   , sumTest
   , lengthTest
+  , mapTest
+  , filterTest
   ]
 
 headOrTest :: TestTree
@@ -52,7 +55,7 @@ sumTest =
     testCase "sum 1..3" $ sum (1 :. 2 :. 3 :. Nil) @?= 6
   , testCase "sum 1..4" $ sum (1 :. 2 :. 3 :. 4 :. Nil) @?= 10
   , testProperty "subtracting each element in a list from its sum is always 0" $
-      \x -> foldLeft (-) (sum $ aList x) (aList x) == 0
+      forAll genList (\x -> foldLeft (-) (sum x) x == 0)
   ]
 
 lengthTest :: TestTree
@@ -60,5 +63,29 @@ lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
   , testProperty "summing a list of 1s is equal to its length" $
-      \x -> sum (map (const 1) (aList x)) == length (aList x :: List Integer)
+      forAll genIntegerList (\x -> sum (map (const 1) x) == length x)
+  ]
+
+mapTest :: TestTree
+mapTest =
+  testGroup "map" [
+    testCase "add 10 on list" $
+      map (+10) (1 :. 2 :. 3 :. Nil) @?= (11 :. 12 :. 13 :. Nil)
+  , testProperty "headOr after map" $
+      \x -> headOr (x :: Integer) (map (+1) infinity) == 1
+  , testProperty "map id is id" $
+      forAll genIntegerList (\x -> map id x == x)
+  ]
+
+filterTest :: TestTree
+filterTest =
+  testGroup "filter" [
+    testCase "filter even" $
+      filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil) @?= (2 :. 4 :. Nil)
+  , testProperty "filter (const True) is identity (headOr)" $
+      \x -> headOr x (filter (const True) infinity) == 0
+  , testProperty "filter (const True) is identity" $
+      forAll genIntegerList (\x -> filter (const True) x == x)
+  , testProperty "filter (const False) is the empty list" $
+      forAll genIntegerList (\x -> filter (const False) x == Nil)
   ]
