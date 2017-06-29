@@ -12,7 +12,7 @@ import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
 import           Course.List           (List (..), foldLeft, headOr, infinity,
-                                        product, sum)
+                                        length, map, product, sum)
 
 newtype AList a = AList { aList :: List a}
                   deriving Show
@@ -26,6 +26,7 @@ test_List =
     headOrTest
   , productTest
   , sumTest
+  , lengthTest
   ]
 
 headOrTest :: TestTree
@@ -52,4 +53,12 @@ sumTest =
   , testCase "sum 1..4" $ sum (1 :. 2 :. 3 :. 4 :. Nil) @?= 10
   , testProperty "subtracting each element in a list from its sum is always 0" $
       \x -> foldLeft (-) (sum $ aList x) (aList x) == 0
+  ]
+
+lengthTest :: TestTree
+lengthTest =
+  testGroup "length" [
+    testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
+  , testProperty "summing a list of 1s is equal to its length" $
+      \x -> sum (map (const 1) (aList x)) == length (aList x :: List Integer)
   ]
