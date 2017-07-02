@@ -12,19 +12,9 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.List           (List (..), filter, flatten, foldLeft,
-                                        headOr, infinity, length, listh, map,
-                                        product, sum, (++))
-
--- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
-genList :: Arbitrary a => Gen (List a)
-genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
-
-genIntegerList :: Gen (List Integer)
-genIntegerList = genList
-
-genIntegerAndList :: Gen (Integer, List Integer)
-genIntegerAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,)
+import           Course.List           (List (..), filter, flatMap, flatten,
+                                        foldLeft, headOr, infinity, length,
+                                        listh, map, product, sum, (++))
 
 test_List :: TestTree
 test_List =
@@ -123,5 +113,31 @@ flattenTest =
   , testProperty "flatten (y :. infinity)" $
       forAll genIntegerAndList (\(x, y) -> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y)
   , testProperty "sum of lengths == sum of flattened" $
-      forAll genIntegerList (\x -> sum (map length x) == length (flatten x))
+      forAll genListOfLists (\x -> sum (map length x) == length (flatten x))
   ]
+
+flatMapTest :: TestTree
+flatMapTest =
+  testGroup "flatMap" [
+    testCase "lists of Integer" $
+      flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil) @?= listh [1,2,3,2,3,4,3,4,5]
+  , testProperty "flatMap id flattens a list of lists" $
+      forAll genIntegerAndList (\(x, y) -> headOr x (flatMap id (infinity :. y :. Nil)) == 0)
+  , testProperty "flatMap id on a list of lists take 2" $
+      forAll genIntegerAndList (\(x, y) -> headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y)
+  , testProperty "flatMap id == flatten" $
+      forAll genListOfLists (\x -> flatMap id x == flatten x)
+  ]
+
+-- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
+genList :: Arbitrary a => Gen (List a)
+genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
+
+genIntegerList :: Gen (List Integer)
+genIntegerList = genList
+
+genIntegerAndList :: Gen (Integer, List Integer)
+genIntegerAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,)
+
+genListOfLists :: Gen (List (List Integer))
+genListOfLists = P.fmap (P.fmap listh) (genList :: (Gen (List [Integer])))
