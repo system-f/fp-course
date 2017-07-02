@@ -13,8 +13,10 @@ import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
 import           Course.List           (List (..), filter, flatMap, flatten,
-                                        foldLeft, headOr, infinity, length,
-                                        listh, map, product, sum, (++))
+                                        flattenAgain, foldLeft, headOr,
+                                        infinity, length, listh, map, product,
+                                        seqOptional, sum, (++))
+import           Course.Optional       (Optional (..))
 
 test_List :: TestTree
 test_List =
@@ -127,6 +129,28 @@ flatMapTest =
       forAll genIntegerAndList (\(x, y) -> headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y)
   , testProperty "flatMap id == flatten" $
       forAll genListOfLists (\x -> flatMap id x == flatten x)
+  ]
+
+flattenAgainTest :: TestTree
+flattenAgainTest =
+  testGroup "flattenAgain" [
+    testProperty "lists of Integer" $
+      forAll genListOfLists (\x -> flatten x == flattenAgain x)
+  ]
+
+
+seqOptionalTest :: TestTree
+seqOptionalTest =
+  testGroup "seqOptional" [
+    testCase "all Full" $
+      seqOptional (Full 1 :. Full 10 :. Nil) @?= Full (1 :. 10 :. Nil)
+  , testCase "empty list" $
+      let empty = Nil :: List (Optional Integer)
+       in seqOptional empty @?= Full Nil
+  , testCase "contains Empty" $
+      seqOptional (Full 1 :. Full 10 :. Empty :. Nil) @?= Empty
+  , testCase "Empty at head of infinity" $
+      seqOptional (Empty :. map Full infinity) @?= Empty
   ]
 
 -- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
