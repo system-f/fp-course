@@ -3,8 +3,8 @@
 
 module Course.ListTest where
 
-import           Control.Applicative   (liftA3)
-import qualified Prelude               as P (fmap, foldr, (<$>), (>>=))
+import           Control.Applicative   (liftA2, liftA3)
+import qualified Prelude               as P (fmap, foldr)
 
 import           Test.QuickCheck       (Arbitrary (..), Gen, forAll)
 import           Test.Tasty            (TestTree, testGroup)
@@ -14,8 +14,9 @@ import           Test.Tasty.QuickCheck (testProperty)
 import           Course.Core
 import           Course.List           (List (..), filter, find, flatMap,
                                         flatten, flattenAgain, foldLeft, headOr,
-                                        infinity, length, listh, map, product,
-                                        seqOptional, sum, (++))
+                                        infinity, largeList, length, lengthGT4,
+                                        listh, map, produce, product, reverse,
+                                        seqOptional, sum, take, (++))
 import           Course.Optional       (Optional (..))
 
 test_List :: TestTree
@@ -29,6 +30,13 @@ test_List =
   , filterTest
   , appendTest
   , flattenTest
+  , flatMapTest
+  , flattenAgainTest
+  , seqOptionalTest
+  , findTest
+  , lengthGT4Test
+  , reverseTest
+  , produceTest
   ]
 
 headOrTest :: TestTree
@@ -99,8 +107,7 @@ appendTest =
   , testProperty "append anything to infinity" $
        forAll genIntegerAndList (\(x, y) -> headOr x (y ++ infinity) == headOr 0 y)
   , testProperty "associativity" $
-      forAll (liftA3 (,,) genIntegerList genIntegerList genIntegerList)
-             (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
+      forAll genThreeLists (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
   , testProperty "append to empty list" $
       forAll genIntegerList (\x -> x ++ Nil == x)
   ]
@@ -167,6 +174,43 @@ findTest =
       find (const True) infinity @?= Full 0
   ]
 
+lengthGT4Test :: TestTree
+lengthGT4Test =
+  testGroup "lengthGT4" [
+    testCase "list of length 3" $
+      lengthGT4 (1 :. 3 :. 5 :. Nil) @?= False
+  , testCase "empty list" $
+      lengthGT4 Nil @?= False
+  , testCase "list of length 5" $
+      lengthGT4 (1 :. 2 :. 3 :. 4 :. 5 :. Nil) @?= True
+  , testCase "infinite list" $
+      lengthGT4 infinity @?= True
+  ]
+
+reverseTest :: TestTree
+reverseTest =
+  testGroup "reverse" [
+    testCase "empty list" $
+      reverse Nil @?= (Nil :: List Integer)
+  , testCase "reverse . reverse on largeList" $
+      take 1 (reverse (reverse largeList)) @?= (1 :. Nil)
+  , testProperty "reverse then append is same as append then reverse" $
+      forAll genTwoLists (\(x, y) -> reverse x ++ reverse y == reverse (y ++ x))
+  , testProperty "" $
+      forAll genIntegerList (\x -> reverse (x :. Nil) == x :. Nil)
+  ]
+
+produceTest :: TestTree
+produceTest =
+  testGroup "produce" [
+    testCase "increment" $
+      let (x:.y:.z:.w:._) = produce (+1) 0
+       in (x:.y:.z:.w:.Nil) @?= (0:.1:.2:.3:.Nil)
+  , testCase "double" $
+      let (x:.y:.z:.w:._) = produce (*2) 1
+       in (x:.y:.z:.w:.Nil) @?= (1:.2:.4:.8:.Nil)
+  ]
+
 -- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
 genList :: Arbitrary a => Gen (List a)
 genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
@@ -175,7 +219,13 @@ genIntegerList :: Gen (List Integer)
 genIntegerList = genList
 
 genIntegerAndList :: Gen (Integer, List Integer)
-genIntegerAndList = arbitrary P.>>= (P.<$> genIntegerList) . (,)
+genIntegerAndList = P.fmap (P.fmap listh) arbitrary
+
+genTwoLists :: Gen (List Integer, List Integer)
+genTwoLists = liftA2 (,) genIntegerList genIntegerList -- (arbitrary :: (List Integer, List Integer))
+
+genThreeLists :: Gen (List Integer, List Integer, List Integer)
+genThreeLists = liftA3 (,,) genIntegerList genIntegerList genIntegerList
 
 genListOfLists :: Gen (List (List Integer))
 genListOfLists = P.fmap (P.fmap listh) (genList :: (Gen (List [Integer])))
