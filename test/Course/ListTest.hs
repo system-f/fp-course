@@ -12,8 +12,8 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.List           (List (..), filter, flatMap, flatten,
-                                        flattenAgain, foldLeft, headOr,
+import           Course.List           (List (..), filter, find, flatMap,
+                                        flatten, flattenAgain, foldLeft, headOr,
                                         infinity, length, listh, map, product,
                                         seqOptional, sum, (++))
 import           Course.Optional       (Optional (..))
@@ -151,6 +151,20 @@ seqOptionalTest =
       seqOptional (Full 1 :. Full 10 :. Empty :. Nil) @?= Empty
   , testCase "Empty at head of infinity" $
       seqOptional (Empty :. map Full infinity) @?= Empty
+  ]
+
+findTest :: TestTree
+findTest =
+  testGroup "find" [
+    testCase "find no matches" $
+      find even (1 :. 3 :. 5 :. Nil) @?= Empty
+  , testCase "empty list" $ find even Nil @?= Empty
+  , testCase "find only even" $
+      find even (1 :. 2 :. 3 :. 5 :. Nil) @?= Full 2
+  , testCase "find first, not second even" $
+      find even (1 :. 2 :. 3 :. 4 :. 5 :. Nil) @?= Full 2
+  , testCase "find on infinite list" $
+      find (const True) infinity @?= Full 0
   ]
 
 -- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
