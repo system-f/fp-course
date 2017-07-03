@@ -11,7 +11,7 @@ import Course.MoreParser
 import Course.JsonValue
 import Course.Functor
 import Course.Applicative hiding ((<$>))
-import Course.Monad
+import Course.Monad hiding ((<*>))
 import Course.List
 import Course.Optional
 

@@ -12,7 +12,7 @@ import Course.Optional
 import Course.List
 import Course.Functor
 import Course.Applicative hiding ((<$>))
-import Course.Monad
+import Course.Monad hiding ((<*>))
 import Course.State
 import qualified Data.Set as S
 import qualified Prelude as P

@@ -11,7 +11,7 @@ import Course.Optional
 import Course.List
 import Course.Functor
 import Course.Applicative hiding ((<$>))
-import Course.Monad
+import Course.Monad hiding ((<*>))
 import qualified Data.Set as S
 
 -- $setup
