@@ -1,11 +1,11 @@
-import           Test.Tasty
+import           Test.Tasty             (defaultMain, testGroup)
 
-import           Course.ApplicativeTest
-import           Course.FunctorTest
-import           Course.ListTest
-import           Course.OptionalTest
-import           Course.ValidationTest
-import Course.MonadTest
+import           Course.ApplicativeTest (test_Applicative)
+import           Course.FunctorTest     (test_Functor)
+import           Course.ListTest        (test_List)
+import           Course.MonadTest       (test_Monad)
+import           Course.OptionalTest    (test_Optional)
+import           Course.ValidationTest  (test_Validation)
 
 main :: IO ()
 main =
