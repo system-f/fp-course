@@ -2,6 +2,7 @@ import           Test.Tasty             (defaultMain, testGroup)
 
 import           Course.ApplicativeTest (test_Applicative)
 import           Course.FunctorTest     (test_Functor)
+import           Course.JsonParserTest  (test_JsonParser)
 import           Course.ListTest        (test_List)
 import           Course.MonadTest       (test_Monad)
 import           Course.OptionalTest    (test_Optional)
@@ -16,4 +17,5 @@ main =
   , test_Functor
   , test_Applicative
   , test_Monad
+  , test_JsonParser
   ]
