@@ -8,6 +8,7 @@ module Course.Monad(
 , join
 , (>>=)
 , (<=<)
+, (<*>)
 ) where
 
 import Course.Applicative hiding ((<*>), (<$>))

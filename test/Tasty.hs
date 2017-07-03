@@ -5,6 +5,7 @@ import           Course.FunctorTest
 import           Course.ListTest
 import           Course.OptionalTest
 import           Course.ValidationTest
+import Course.MonadTest
 
 main :: IO ()
 main =
@@ -14,4 +15,5 @@ main =
   , test_List
   , test_Functor
   , test_Applicative
+  , test_Monad
   ]
