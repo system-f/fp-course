@@ -2,12 +2,11 @@
 
 module Course.OptionalTest where
 
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
-import           Test.Tasty.QuickCheck (testProperty)
+import           Test.Tasty       (TestTree, testGroup)
+import           Test.Tasty.HUnit (testCase, (@?=))
 
-import Course.Core
-import Course.Optional (Optional (..), mapOptional, bindOptional, (??), (<+>))
+import           Course.Optional  (Optional (..), bindOptional, mapOptional,
+                                   (<+>), (??))
 
 test_Optional :: TestTree
 test_Optional =
