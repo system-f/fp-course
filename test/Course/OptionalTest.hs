@@ -1,10 +1,12 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.OptionalTest where
 
 import           Test.Tasty       (TestTree, testGroup)
 import           Test.Tasty.HUnit (testCase, (@?=))
 
+import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
                                    (<+>), (??))
 
