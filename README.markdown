@@ -148,15 +148,21 @@ however, your first post might be moderated. This is simply to prevent spam.
    Your instructor must guide you where types fall short, but you should also
    take the first step. Do it.
 
-#### Running the tests
+### Running the tests
 
-Some exercises include examples and properties, which appear in a comment above
-the code for that exercise. Examples begin with `>>>` while properties begin
-with `prop>`.
+Tests are available both as a [tasty](https://hackage.haskell.org/package/tasty)
+test suite, and as doctests. Tasty is the recommended and supported method,
+however you're free to use the doctests if you prefer.
 
-The solution to the exercise must satisfy these tests. You can check if you have
-satisfied all tests with cabal-install and doctest. From the base directory of
-this source code:
+#### tasty
+
+Tasty tests are stored under the `test/` directory. Each module from the course
+that has tests has a corresponding `<MODULE>Test.hs` file. Within each test
+module, tests for each function are grouped using the `testGroup` function.
+Within each test group there are test cases (`testCase` function), and
+properties (`testProperty` function).
+
+To run the full test suite, build the project as follows:
 
     > cabal update
     > cabal install cabal-install
@@ -164,15 +170,53 @@ this source code:
     > cabal configure --enable-tests
     > cabal build
     > cabal test
+    
+Tasty will also allow you to run only those tests whose description match a
+pattern. Tests are organised in nested groups named after the relevant module
+and function, so pattern matching should be intuitive. For example, to run the
+tests for the `List` module you could run:
 
-Alternatively, you may run the tests in a single source file by using `doctest`
-explicitly. From the base directory of this source code:
+    > cabal test tasty --show-detail=direct --test-option=--pattern=List
+
+Likewise, to run only the tests for the `headOr` function in the `List` module, you could use:
+
+    > cabal test tasty --show-detail=direct --test-option=--pattern=List/headOr
+    
+In addition, GHCi may be used to run tasty tests. Assuming you have run `ghci`
+from the root of the project, you may do the following. Remember that GHCi has
+tab completion, so you can save yourself some typing.
+
+    > -- import the defaultMain function from Tasty - runs something of type TestTree
+    > import Test.Tasty (defaultMain)
+    >
+    > -- Load the test module you'd like to run tests for
+    > :l test/Course.ListTest.hs
+    >
+    > -- Browse the contents of the loaded module - anything of type TestTree
+    > -- may be run
+    > :browse Course.ListTest
+    >
+    > -- Run test for a particular function
+    > defaultMain headOrTest
+
+
+#### doctest
+
+The doctest tests are a mirror of the tasty tests that reside in comments
+alongside the code. They are executable, however this is not supported. Examples
+begin with `>>>` while properties begin with `prop>`.
+
+Executing the tests is done with the `doctest` executable, which you may install
+using:
+
+    > cabal install doctest
+    
+Once installed, you may use doctest to run the doctests for a given module:
 
     > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
 
-Note: There is a [bug in GHC 7.4.1](http://ghc.haskell.org/trac/ghc/ticket/5820)
-where for some configurations, running the tests will cause an unjustified
-compiler error.
+Binding this command to a keyboard shortcut in your favourite editor, such that
+tests for the current file are executed, is an exercise left to the reader.
 
 ### Progression
 
