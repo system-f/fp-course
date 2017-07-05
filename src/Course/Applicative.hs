@@ -37,6 +37,7 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- * The law of right identity
 --   `∀x. x <*> pure id ≅ x`
 class Functor f => Applicative f where
+  -- point, return, unit, mu, lift0
   pure ::
     a -> f a
   (<*>) ::
@@ -61,8 +62,8 @@ infixl 4 <*>
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo: Course.Applicative#(<$>)"
+(<$>) f fa = pure f <*> fa
+  
 
 -- | Insert into ExactlyOne.
 --
