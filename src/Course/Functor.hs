@@ -98,7 +98,7 @@ instance Functor ((->) t) where
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
-  Functor f =>
+  Functor f => -- such that (f) is constrained by Functor "meets the definition of a Functor (has an instance)"
   a
   -> f b
   -> f a
