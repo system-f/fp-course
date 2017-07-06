@@ -96,7 +96,7 @@ getFiles =
   error "todo: Course.FileIO#getFiles"
 
 -- Given a file name, return (file name and file contents).
--- Use @readFile@
+-- Use @readFile@.
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
@@ -104,7 +104,7 @@ getFile =
   error "todo: Course.FileIO#getFile"
 
 -- Given a list of (file name and file contents), print each.
--- Use @printFile@
+-- Use @printFile@.
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
@@ -112,7 +112,7 @@ printFiles =
   error "todo: Course.FileIO#printFiles"
 
 -- Given the file name, and file contents, print them.
--- Use @putStrLn@
+-- Use @putStrLn@.
 printFile ::
   FilePath
   -> Chars
