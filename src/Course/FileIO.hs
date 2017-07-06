@@ -26,6 +26,12 @@ Abstractions --
 
     <$>, <*>, >>=, =<<, pure
 
+Tuple Functions that could help --
+
+  fst :: (a, b) -> a
+  snd :: (a, b) -> b
+  (,) :: a -> b -> (a, b)
+
 Problem --
   Given a single argument of a file name, read that file,
   each line of that file contains the name of another file,
