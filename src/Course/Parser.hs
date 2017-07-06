@@ -88,7 +88,7 @@ valueParser =
 
 -- | Return a parser that always fails with the given error.
 --
--- >>> isErrorResult (parse failed "abc")
+-- >>> isErrorResult (parse (failed UnexpectedEof) "abc")
 -- True
 failed ::
   ParseError
