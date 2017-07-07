@@ -26,6 +26,12 @@ Abstractions --
 
     <$>, <*>, >>=, =<<, pure
 
+Tuple Functions that could help --
+
+  fst :: (a, b) -> a
+  snd :: (a, b) -> b
+  (,) :: a -> b -> (a, b)
+
 Problem --
   Given a single argument of a file name, read that file,
   each line of that file contains the name of another file,
@@ -74,40 +80,128 @@ the contents of c
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  do  a <- getArgs
+      headOr (putStrLn "giz some args pls") (run <$> a)
+  {-
+  do  a <- getArgs
+      case a of
+        Nil -> putStrLn "giz some args pls"
+        h:._ -> run h
+  -}
 
 type FilePath =
   Chars
 
--- /Tip:/ Use @getFiles@ and @printFiles@.
+-- Given a file name, read it and for each line in that file, read and print contents of each.
+-- Use @getFiles@ and @printFiles@.
 run ::
   FilePath
   -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+run n =
+  do  c <- readFile n
+    --string c = readFile(n);
+      x <- getFiles (lines c)
+    --sdfsdf x = getFiles(lines(n));
+      printFiles x
+    --printFiles(x);
 
+-- Given a list of file names, return list of (file name and file contents).
+-- Use @getFile@.
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  traversee getFile 
+  -- sequence . (<$>) getFile
 
+-- \x -> f (g x)
+-- \x -> (f . g) x
+-- f . g
+
+-- Given a file name, return (file name and file contents).
+-- Use @readFile@
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+  lift2 (<$>) (,) readFile
 
+-- \x -> f (g x) (h x)
+-- \x -> lift2 f g h x
+-- lift2 f g h
+
+
+-- \f g x -> f x (g x)
+-- \x -> (f <*> g) x
+-- f <*> g
+
+-- \x -> f (g x) (h x) (i x)
+-- \x -> lift3 f g h i x
+-- lift3 f g h i
+
+-- lift2 :: (a -> b -> c) -> f a -> f b -> f c
+-- lift2 :: (a -> b -> c) -> (t -> a) -> (t -> b) -> (t -> c)
+
+  {-
+  do  f <- readFile filename
+      pure (filename, f)
+  -}
+--readFile filename >>= \f -> pure (filename, f)
+-- (\f -> (filename, f)) <$> readFile filename
+
+-- Given a list of (file name and file contents), print each.
+-- Use @printFile@
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+-- \x -> void (sequence ((<$>) (uncurry printFile) x))
+  -- void . sequence . (<$>) (uncurry printFile)
+  traverse_ (uncurry printFile)
+ 
+-- \x -> f (g (h x))
+-- f . g . h
 
+-- Given the file name, and file contents, print them.
+-- Use @putStrLn@
 printFile ::
   FilePath
   -> Chars
   -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+printFile filename contents =
+  {-
+  let list = (("====== " ++ filename) :. contents :. Nil)
+  in  traverse_ putStrLn list -- void (sequence (putStrLn <$> list))
+  -}
 
+  {-
+  putStrLn ("====== " ++ filename) *>
+  putStrLn contents
+  -}
+
+  {-
+  putStrLn ("====== " ++ filename ++ "\n" ++ contents)
+  -}
+
+  {-
+  putStrLn ("====== " ++ filename) >>= \_ ->
+  putStrLn contents
+  -}
+
+  do
+      putStrLn ("====== " ++ filename)
+      putStrLn contents
+
+traverse_ f =
+  void . sequence . (<$>) f
+
+traversee f = 
+  sequence . (<$>) f
+
+args = "arg1" :. "arg2" :. Nil
+
+p :: List (IO ())
+p = run <$> args
+
+q :: IO ()
+q = headOr (putStrLn "gimme args") p

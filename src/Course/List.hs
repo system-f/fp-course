@@ -187,7 +187,8 @@ filter _ Nil = Nil
 -- t :: List a
 -- ? :: List a
 filter p (h:.t) =
-  (bool id ((:.) h) (p h)) (filter p t)
+  if p h then h:.filter p t else filter p t
+--(bool id ((:.) h) (p h)) (filter p t)
 
 filterAgain :: (a -> Bool) -> List a -> List a
 filterAgain p =

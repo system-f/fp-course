@@ -313,40 +313,32 @@ covered first.
 * running the tests
   * `doctest`
 
-### Parser grammar assistance
+### Demonstrate IO maintains referential transparency
 
-The exercises in `Parser.hs` can be assisted by stating problems in a specific way, with a conversion to code.
+Are these two programs, the same program?
 
-| English   | Parser library                    |
-|-----------|-----------------------------------|
-| and then  | `bindParser` `flbindParser` `>>=` |
-| always    | `valueParser` `pure`              |
-| or        | `\|\|\|`                             |
-| 0 or many | `list`                            |
-| 1 or many | `list1`                           |
-| is        | `is`                              |
-| exactly n | `thisMany n`                      |
-| fail      | `failed`                          |
-| call it x | `\x ->`                           |
+    p1 ::
+      IO ()
+    p1 =
+      let file = "/tmp/file"
+      in  do  _ <- writeFile file "abcdef"
+              x <- readFile file
+              _ <- putStrLn x
+              _ <- writeFile file "ghijkl"
+              y <- readFile file
+              putStrLn (show (x, y))
 
-### Monad comprehension
-
-##### do-notation
-
-* insert the word `do`
-* turn `>>=` into `<-`
-* delete `->`
-* delete `\`
-* swap each side of `<-`
-
-##### LINQ
-
-* write `from` on each line
-* turn `>>=` into in
-* delete `->`
-* delete `\`
-* swap each side of `in`
-* turn value into `select`
+    p2 ::
+      IO ()
+    p2 =
+      let file = "/tmp/file"
+          expr = readFile file
+      in  do  _ <- writeFile file "abcdef"
+              x <- expr
+              _ <- putStrLn x
+              _ <- writeFile file "ghijkl"
+              y <- expr
+              putStrLn (show (x, y))
 
 ### One-day
 
