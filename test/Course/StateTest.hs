@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.StateTest where
 
@@ -10,7 +11,10 @@ import           Test.Tasty               (TestTree, testGroup)
 import           Test.Tasty.HUnit         (testCase, (@?=))
 import           Test.Tasty.QuickCheck    (testProperty)
 
+import           Course.Applicative       hiding ((<$>))
 import           Course.Core
+import           Course.Functor
+import           Course.Monad             hiding ((<*>))
 import           Course.State             (State (..), exec, put, runState)
 
 test_State :: TestTree
@@ -33,8 +37,7 @@ applicativeTest =
     testCase "pure" $ runState (pure 2) 0 @?= (2,0)
   , testCase "<*>" $ runState (pure (+1) <*> pure 0) 0 @?= (1,0)
   , testCase "complicated <*>" $
-      let state = (<*>) State (\s -> ((+3), s P.++ ["apple"]))
-                        State (\s -> (7, s P.++ ["banana"]))
+      let state = State (\s -> ((+3), s P.++ ["apple"])) <*> State (\s -> (7, s P.++ ["banana"]))
        in runState state [] @?= (10,["apple","banana"])
   ]
 
@@ -51,4 +54,4 @@ monadTest =
 execTest :: TestTree
 execTest =
   testProperty "exec" $
-    \(Fun _ f) s -> exec (State f) s == snd (runState (State f) s)
+    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
