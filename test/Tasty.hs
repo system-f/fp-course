@@ -6,6 +6,7 @@ import           Course.JsonParserTest  (test_JsonParser)
 import           Course.ListTest        (test_List)
 import           Course.MonadTest       (test_Monad)
 import           Course.OptionalTest    (test_Optional)
+import           Course.StateTest       (test_State)
 import           Course.ValidationTest  (test_Validation)
 
 main :: IO ()
@@ -18,4 +19,5 @@ main =
   , test_Applicative
   , test_Monad
   , test_JsonParser
+  , test_State
   ]
