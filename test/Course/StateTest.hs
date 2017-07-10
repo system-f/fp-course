@@ -14,15 +14,15 @@ import           Test.Tasty.QuickCheck    (forAllShrink, testProperty)
 
 import           Course.Applicative       hiding ((<$>))
 import           Course.Core
-import           Course.Functor
+import           Course.Functor           ((<$>))
 import           Course.List              (List (..), filter, flatMap, hlist,
                                            length, listh, span, (++))
 import           Course.ListTest          (genIntegerList, shrinkList)
 import           Course.Monad             hiding ((<*>))
 import           Course.Optional          (Optional (..))
-import           Course.State             (isHappy, State (..), distinct, eval, exec,
-                                           findM, firstRepeat, get, put, put,
-                                           runState)
+import           Course.State             (State (..), distinct, eval, exec,
+                                           findM, firstRepeat, get, isHappy,
+                                           put, put, runState)
 
 test_State :: TestTree
 test_State =
