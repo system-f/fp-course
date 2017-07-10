@@ -10,14 +10,14 @@ import qualified Prelude                  as P ((++))
 import           Test.QuickCheck.Function (Fun (..))
 import           Test.Tasty               (TestTree, testGroup)
 import           Test.Tasty.HUnit         (testCase, (@?=))
-import           Test.Tasty.QuickCheck    (forAll, testProperty)
+import           Test.Tasty.QuickCheck    (forAllShrink, testProperty)
 
 import           Course.Applicative       hiding ((<$>))
 import           Course.Core
 import           Course.Functor
 import           Course.List              (List (..), filter, hlist, length,
                                            listh, span, (++))
-import           Course.ListTest          (genIntegerList)
+import           Course.ListTest          (genIntegerList, shrinkList)
 import           Course.Monad             hiding ((<*>))
 import           Course.Optional          (Optional (..))
 import           Course.State             (State (..), eval, exec, findM,
@@ -95,14 +95,14 @@ findMTest =
 firstRepeatTest :: TestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" $ forAll genIntegerList (\xs ->
+    testProperty "finds repeats" $ forAllShrink genIntegerList shrinkList (\xs ->
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
            in nub xs' == xs'
         Full x -> length (filter (== x) xs) > 1
     )
-  , testProperty "" $ forAll genIntegerList (\xs ->
+  , testProperty "" $ forAllShrink genIntegerList shrinkList (\xs ->
       case firstRepeat xs of
         Empty -> True
         Full x ->
