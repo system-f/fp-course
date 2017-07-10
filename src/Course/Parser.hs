@@ -9,7 +9,7 @@ module Course.Parser where
 import Course.Core
 import Course.Person
 import Course.Functor
-import Course.Applicative hiding ((<$>))
+import Course.Applicative
 import Course.Monad hiding ((<*>))
 import Course.List
 import Course.Optional

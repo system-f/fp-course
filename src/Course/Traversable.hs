@@ -5,7 +5,7 @@
 module Course.Traversable where
 
 import Course.Functor
-import Course.Applicative hiding ((<$>))
+import Course.Applicative
 import Course.List
 
 -- | All instances of the `Traversable` type-class must satisfy two laws. These

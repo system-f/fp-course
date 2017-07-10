@@ -6,7 +6,7 @@ module Course.Interactive where
 
 import Course.Core
 import Course.Functor
-import Course.Applicative hiding ((<$>))
+import Course.Applicative
 import Course.Monad hiding ((<*>))
 import Course.Traversable
 import Course.List

@@ -12,7 +12,7 @@ import           Test.Tasty               (TestTree, testGroup)
 import           Test.Tasty.HUnit         (testCase, (@?=))
 import           Test.Tasty.QuickCheck    (forAllShrink, testProperty)
 
-import           Course.Applicative       hiding ((<$>))
+import           Course.Applicative       (pure, (<*>))
 import           Course.Core
 import           Course.Functor           ((<$>))
 import           Course.List              (List (..), filter, flatMap, hlist,

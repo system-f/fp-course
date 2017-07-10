@@ -11,7 +11,7 @@ module Course.Monad(
 , (<*>)
 ) where
 
-import Course.Applicative hiding ((<*>), (<$>))
+import Course.Applicative hiding ((<*>))
 import Course.Core
 import Course.ExactlyOne
 import Course.Functor

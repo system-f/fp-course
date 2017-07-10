@@ -16,7 +16,7 @@ module Course.Applicative(
 , return
 , fail
 , (>>)
-, (<$>)
+, (<$$>)
 ) where
 
 import Course.Core
@@ -49,21 +49,21 @@ infixl 4 <*>
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
--- >>> (+1) <$> (ExactlyOne 2)
+-- >>> (+1) <$$> (ExactlyOne 2)
 -- ExactlyOne 3
 --
--- >>> (+1) <$> Nil
+-- >>> (+1) <$$> Nil
 -- []
 --
--- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
+-- >>> (+1) <$$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
-(<$>) ::
+(<$$>) ::
   Applicative f =>
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo: Course.Applicative#(<$>)"
+(<$$>) =
+  error "todo: Course.Applicative#(<$$>)"
 
 -- | Insert into ExactlyOne.
 --

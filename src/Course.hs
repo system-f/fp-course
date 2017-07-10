@@ -4,7 +4,7 @@
 module Course (module X) where
 
 import Course.Anagrams as X
-import Course.Applicative as X hiding ((<$>))
+import Course.Applicative as X
 import Course.Cheque as X
 import Course.Comonad as X
 import Course.Compose as X
