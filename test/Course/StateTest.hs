@@ -15,13 +15,14 @@ import           Test.Tasty.QuickCheck    (forAllShrink, testProperty)
 import           Course.Applicative       hiding ((<$>))
 import           Course.Core
 import           Course.Functor
-import           Course.List              (List (..), filter, hlist, length,
-                                           listh, span, (++))
+import           Course.List              (List (..), filter, flatMap, hlist,
+                                           length, listh, span, (++))
 import           Course.ListTest          (genIntegerList, shrinkList)
 import           Course.Monad             hiding ((<*>))
 import           Course.Optional          (Optional (..))
-import           Course.State             (State (..), eval, exec, findM,
-                                           firstRepeat, get, put, put, runState)
+import           Course.State             (isHappy, State (..), distinct, eval, exec,
+                                           findM, firstRepeat, get, put, put,
+                                           runState)
 
 test_State :: TestTree
 test_State =
@@ -35,6 +36,8 @@ test_State =
   , putTest
   , findMTest
   , firstRepeatTest
+  , distinctTest
+  , isHappyTest
   ]
 
 functorTest :: TestTree
@@ -111,4 +114,22 @@ firstRepeatTest =
                in let l3 = hlist (l ++ (rx :. Nil) ++ l2)
                    in nub l3 == l3
     )
+  ]
+
+distinctTest :: TestTree
+distinctTest =
+  testGroup "distinct" [
+    testProperty "No repeats after distinct" $
+      forAllShrink genIntegerList shrinkList (\xs -> firstRepeat (distinct xs) == Empty)
+  , testProperty "" $
+      forAllShrink genIntegerList shrinkList (\xs -> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
+  ]
+
+isHappyTest :: TestTree
+isHappyTest =
+  testGroup "isHappy" [
+    testCase "4" $ isHappy 4 @?= False
+  , testCase "7" $ isHappy 7 @?= True
+  , testCase "42" $ isHappy 42 @?=  False
+  , testCase "44" $ isHappy 44 @?=  True
   ]
