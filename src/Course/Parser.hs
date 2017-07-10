@@ -10,7 +10,7 @@ import Course.Core
 import Course.Person
 import Course.Functor
 import Course.Applicative
-import Course.Monad hiding ((<*>))
+import Course.Monad
 import Course.List
 import Course.Optional
 import Data.Char

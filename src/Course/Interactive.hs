@@ -7,7 +7,7 @@ module Course.Interactive where
 import Course.Core
 import Course.Functor
 import Course.Applicative
-import Course.Monad hiding ((<*>))
+import Course.Monad
 import Course.Traversable
 import Course.List
 import Course.Optional

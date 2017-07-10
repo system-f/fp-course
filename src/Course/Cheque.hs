@@ -24,7 +24,7 @@ import Course.Optional
 import Course.List
 import Course.Functor
 import Course.Applicative
-import Course.Monad hiding ((<*>))
+import Course.Monad
 
 -- $setup
 -- >>> :set -XOverloadedStrings

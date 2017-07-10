@@ -7,7 +7,7 @@ module Course.FileIO where
 
 import Course.Core
 import Course.Applicative
-import Course.Monad hiding ((<*>))
+import Course.Monad
 import Course.Functor
 import Course.List
 

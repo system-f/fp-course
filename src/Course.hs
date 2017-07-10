@@ -19,7 +19,7 @@ import Course.JsonParser as X
 import Course.JsonValue as X
 import Course.List as X
 import Course.ListZipper as X
-import Course.Monad as X hiding ((<*>))
+import Course.Monad as X
 import Course.MoreParser as X
 import Course.Optional as X
 import Course.Parser as X

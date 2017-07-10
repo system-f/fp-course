@@ -6,7 +6,7 @@ module Course.Compose where
 import Course.Core
 import Course.Functor
 import Course.Applicative
-import Course.Monad hiding ((<*>))
+import Course.Monad
 
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
 

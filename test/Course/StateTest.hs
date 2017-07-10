@@ -18,7 +18,7 @@ import           Course.Functor           ((<$>))
 import           Course.List              (List (..), filter, flatMap, hlist,
                                            length, listh, span, (++))
 import           Course.ListTest          (genIntegerList, shrinkList)
-import           Course.Monad             hiding ((<*>))
+import           Course.Monad
 import           Course.Optional          (Optional (..))
 import           Course.State             (State (..), distinct, eval, exec,
                                            findM, firstRepeat, get, isHappy,
