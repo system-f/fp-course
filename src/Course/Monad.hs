@@ -3,13 +3,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
-module Course.Monad(
-  Monad(..)
-, join
-, (>>=)
-, (<=<)
-, (<**>)
-) where
+module Course.Monad where
 
 import Course.Applicative
 import Course.Core

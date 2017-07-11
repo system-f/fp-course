@@ -3,25 +3,11 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
-module Course.Applicative(
-  Applicative(..)
-, lift2
-, lift3
-, lift4
-, (*>)
-, (<*)
-, sequence
-, replicateA
-, filtering
-, return
-, fail
-, (>>)
-, (<$$>)
-) where
+module Course.Applicative where
 
 import Course.Core
 import Course.ExactlyOne
-import Course.Functor hiding ((<$>))
+import Course.Functor
 import Course.List
 import Course.Optional
 import qualified Prelude as P(fmap, return, (>>=))
