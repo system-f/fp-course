@@ -9,14 +9,15 @@ author:               James Earl Douglas <james@earldouglas.com>
 author:               Eric Torreborre <etorreborre@yahoo.com>
 maintainer:           Tony Morris
 copyright:            Copyright (C) 2010-2013 Tony Morris
-copyright:            Copyright (C) 2012-2015 National ICT Australia Limited 
+copyright:            Copyright (C) 2012-2015 National ICT Australia Limited
 copyright:            Copyright (C) 2012      James Earl Douglas
 copyright:            Copyright (C) 2012      Ben Sinclair
+copyright:            Copyright (C) 2016-2017 Data61
 synopsis:             Source code for a functional programming course
 category:             Education
 description:          Source code for a course in functional programming using Haskell
-homepage:             https://github.com/NICTA/course
-bug-reports:          https://github.com/NICTA/course/issues
+homepage:             https://github.com/data61/fp-course
+bug-reports:          https://github.com/data61/fp-course/issues
 cabal-version:        >= 1.10
 build-type:           Custom
 extra-source-files:   etc/CONTRIBUTORS,
@@ -25,7 +26,7 @@ extra-source-files:   etc/CONTRIBUTORS,
 
 source-repository     head
   type:               git
-  location:           git@github.com:NICTA/course.git
+  location:           git@github.com:data61/fp-course.git
 
 flag                  small_base
   description:        Choose the new, split-up base package.
