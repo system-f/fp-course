@@ -3,7 +3,7 @@
 
 module Course.StateTTest where
 
-import qualified Prelude               as P ((++))
+import qualified Prelude               as P ((++), String)
 
 import           Test.QuickCheck       (forAllShrink)
 import           Test.Tasty            (TestTree, testGroup)
@@ -21,7 +21,7 @@ import           Course.Optional       (Optional (..))
 import           Course.State          (put, runState)
 import           Course.StateT         (OptionalT (..), StateT (..), distinct',
                                         distinctF, getT, putT, runOptionalT,
-                                        runState', state')
+                                        runState', state', log1, distinctG, Logger (..))
 
 test_StateT :: TestTree
 test_StateT =
@@ -36,6 +36,13 @@ test_StateT =
   , distinct'Test
   , distinctFTest
   , optionalTFunctorTest
+  , optionalTApplicativeTest
+  , optionalTMonadTest
+  , loggerFunctorTest
+  , loggerApplicativeTest
+  , loggerMonadTest
+  , log1Test
+  , distinctGTest
   ]
 
 functorTest :: TestTree
@@ -104,3 +111,51 @@ optionalTFunctorTest :: TestTree
 optionalTFunctorTest =
   testCase "(<$>) for OptionalT" $
     runOptionalT ((+1) <$> OptionalT (Full 1 :. Empty :. Nil)) @?= (Full 2 :. Empty :. Nil)
+
+optionalTApplicativeTest :: TestTree
+optionalTApplicativeTest =
+  testCase "(<*>) for OptionalT" $
+    let ot = (OptionalT (Full (+1) :. Full (+2) :. Nil)) <*> OptionalT (Full 1 :. Empty :. Nil)
+     in runOptionalT ot @?= (Full 2:.Empty:.Full 3:.Empty:.Nil)
+
+optionalTMonadTest :: TestTree
+optionalTMonadTest =
+  testCase "(=<<) for OptionalT" $
+    let ot = (\a -> OptionalT (Full (a+1) :. Full (a+2) :. Nil)) =<< OptionalT (Full 1 :. Empty :. Nil)
+     in runOptionalT ot @?= (Full 2:.Full 3:.Empty:.Nil)
+
+loggerFunctorTest :: TestTree
+loggerFunctorTest =
+  testCase "(<$>) for Logger" $
+    (+3) <$> Logger (1 :. 2 :. Nil) 3 @?= Logger (1 :. 2 :. Nil) 6
+
+loggerApplicativeTest :: TestTree
+loggerApplicativeTest =
+  testGroup "Logger Applicative" [
+    testCase "pure" $
+      (pure "table" :: Logger Int P.String) @?= Logger Nil "table"
+  , testCase "<*>" $
+      Logger (1:.2:.Nil) (+7) <*> Logger (3:.4:.Nil) 3 @?= Logger (1:.2:.3:.4:.Nil) 10
+  ]
+
+loggerMonadTest :: TestTree
+loggerMonadTest =
+  testCase "(=<<) for Logger" $
+    ((\a -> Logger (4:.5:.Nil) (a+3)) =<< Logger (1:.2:.Nil) 3) @?= Logger (1:.2:.4:.5:.Nil) 6
+
+log1Test :: TestTree
+log1Test =
+  testCase "log1" $
+    log1 1 2 @?= Logger (1:.Nil) 2
+
+distinctGTest :: TestTree
+distinctGTest =
+  testGroup "distinctG" [
+    testCase "Full case" $
+      let expected = Logger (listh <$> ("even number: 2":."even number: 2":."even number: 6":.Nil))
+                            (Full (1:.2:.3:.6:.Nil))
+       in distinctG (1:.2:.3:.2:.6:.Nil) @?= expected
+  , testCase "Empty case" $
+      let expected = Logger (listh <$> ("even number: 2":."even number: 2":."even number: 6":."aborting > 100: 106":.Nil)) Empty
+       in distinctG (listh [1,2,3,2,6,106]) @?= expected
+  ]
