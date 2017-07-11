@@ -18,12 +18,12 @@
 - name: Add cabal bin directory to PATH
   lineinfile:
     line: export PATH="{{ ansible_env.HOME }}/.cabal/bin:$PATH"
-    path: ~/.profile
+    dest: ~/.profile
 
 - name: Add /opt/ghc/bin to the path
   lineinfile:
     line: export PATH=/opt/ghc/bin:$PATH
-    path: ~/.profile
+    dest: ~/.profile
 
 - name: Update cabal
   command: cabal update

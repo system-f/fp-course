@@ -34,7 +34,7 @@
     - name: "Automatically login as ubuntu user"
       lineinfile:
         line: autologin-user=ubuntu
-        path: /usr/share/lightdm/lightdm.conf.d/60-xubuntu.conf
+        dest: /usr/share/lightdm/lightdm.conf.d/60-xubuntu.conf
       become: yes
 
     - name: "Checkout course repo"
