@@ -3,20 +3,25 @@
 
 module Course.StateTTest where
 
-import qualified Prelude            as P ((++))
+import qualified Prelude               as P ((++))
 
-import           Test.Tasty         (TestTree, testGroup)
-import           Test.Tasty.HUnit   (testCase, (@?=))
+import           Test.QuickCheck       (forAllShrink)
+import           Test.Tasty            (TestTree, testGroup)
+import           Test.Tasty.HUnit      (testCase, (@?=))
+import           Test.Tasty.QuickCheck (testProperty)
 
-import           Course.Applicative (pure, (<*>))
+import           Course.Applicative    (pure, (<*>))
 import           Course.Core
-import           Course.ExactlyOne  (ExactlyOne (..))
-import           Course.Functor     ((<$>))
-import           Course.List        (List (..))
-import           Course.Monad       ((=<<), (>>=))
-import           Course.Optional    (Optional (..))
-import           Course.State       (put, runState)
-import           Course.StateT      (StateT (..), putT, state')
+import           Course.ExactlyOne     (ExactlyOne (..))
+import           Course.Functor        ((<$>))
+import           Course.List           (List (..), flatMap, listh)
+import           Course.ListTest       (genIntegerList, shrinkList)
+import           Course.Monad          ((=<<), (>>=))
+import           Course.Optional       (Optional (..))
+import           Course.State          (put, runState)
+import           Course.StateT         (OptionalT (..), StateT (..), distinct',
+                                        distinctF, getT, putT, runOptionalT,
+                                        runState', state')
 
 test_StateT :: TestTree
 test_StateT =
@@ -25,6 +30,12 @@ test_StateT =
   , applicativeTest
   , monadTest
   , state'Test
+  , runState'Test
+  , getTTest
+  , putTTest
+  , distinct'Test
+  , distinctFTest
+  , optionalTFunctorTest
   ]
 
 functorTest :: TestTree
@@ -60,3 +71,36 @@ state'Test :: TestTree
 state'Test =
   testCase "state'" $
     runStateT (state' $ runState $ put 1) 0 @?= ExactlyOne ((), 1)
+
+runState'Test :: TestTree
+runState'Test =
+  testCase "runState'" $
+    runState' (state' $ runState $ put 1) 0 @?= ((),1)
+
+getTTest :: TestTree
+getTTest =
+  testCase "getTTest" $
+    runStateT (getT :: StateT Int List Int) 3 @?= ((3,3) :. Nil)
+
+putTTest :: TestTree
+putTTest =
+  testCase "putTTest" $
+    runStateT (putT 2 :: StateT Int List ()) 0 @?= (((),2) :. Nil)
+
+distinct'Test :: TestTree
+distinct'Test =
+  testProperty "distinct'" $
+    forAllShrink genIntegerList shrinkList (\xs ->
+      distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
+
+distinctFTest :: TestTree
+distinctFTest =
+  testGroup "distinctF" [
+    testCase "Full case" $ distinctF (listh [1,2,3,2,1]) @?= Full (listh [1,2,3])
+  , testCase "Empty case" $ distinctF (listh [1,2,3,2,1,101]) @?= Empty
+  ]
+
+optionalTFunctorTest :: TestTree
+optionalTFunctorTest =
+  testCase "(<$>) for OptionalT" $
+    runOptionalT ((+1) <$> OptionalT (Full 1 :. Empty :. Nil)) @?= (Full 2 :. Empty :. Nil)
