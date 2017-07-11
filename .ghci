@@ -1,4 +1,5 @@
 :set -isrc
+:set -itest
 :l src/Course.hs
 :set prompt ">> "
 :set -Wall

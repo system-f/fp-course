@@ -91,7 +91,7 @@ valueParser =
 
 -- | Return a parser that always fails with the given error.
 --
--- >>> isErrorResult (parse failed "abc")
+-- >>> isErrorResult (parse (failed Failed) "abc")
 -- True
 failed ::
   Parser a
@@ -200,13 +200,13 @@ flbindParser =
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (failed ||| valueParser 'v') ""
+-- >>> parse (failed Failed ||| valueParser 'v') ""
 -- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (failed ||| valueParser 'v') "abc"
+-- >>> parse (failed Failed ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a

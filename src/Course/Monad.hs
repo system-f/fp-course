@@ -3,14 +3,9 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
-module Course.Monad(
-  Monad(..)
-, join
-, (>>=)  
-, (<=<)
-) where
+module Course.Monad where
 
-import Course.Applicative hiding ((<*>))
+import Course.Applicative
 import Course.Core
 import Course.ExactlyOne
 import Course.Functor
@@ -34,44 +29,44 @@ infixr 1 =<<
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
--- >>> ExactlyOne (+10) <*> ExactlyOne 8
+-- >>> ExactlyOne (+10) <**> ExactlyOne 8
 -- ExactlyOne 18
 --
--- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
+-- >>> (+1) :. (*2) :. Nil <**> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 --
--- >>> Full (+8) <*> Full 7
+-- >>> Full (+8) <**> Full 7
 -- Full 15
 --
--- >>> Empty <*> Full 7
+-- >>> Empty <**> Full 7
 -- Empty
 --
--- >>> Full (+8) <*> Empty
+-- >>> Full (+8) <**> Empty
 -- Empty
 --
--- >>> ((+) <*> (+10)) 3
+-- >>> ((+) <**> (+10)) 3
 -- 16
 --
--- >>> ((+) <*> (+5)) 3
+-- >>> ((+) <**> (+5)) 3
 -- 11
 --
--- >>> ((+) <*> (+5)) 1
+-- >>> ((+) <**> (+5)) 1
 -- 7
 --
--- >>> ((*) <*> (+10)) 3
+-- >>> ((*) <**> (+10)) 3
 -- 39
 --
--- >>> ((*) <*> (+2)) 3
+-- >>> ((*) <**> (+2)) 3
 -- 15
-(<*>) ::
+(<**>) ::
   Monad f =>
   f (a -> b)
   -> f a
   -> f b
-(<*>) =
-  error "todo: Course.Monad#(<*>)"
+(<**>) =
+  error "todo: Course.Monad#(<**>)"
 
-infixl 4 <*>
+infixl 4 <**>
 
 -- | Binds a function on the ExactlyOne monad.
 --
