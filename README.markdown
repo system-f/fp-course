@@ -15,7 +15,7 @@ https://github.com/data61/fp-course
 #### Special note 2
 
 Since February 2017, this repository is no longer hosted at
-https://github.com/NICTA/course which is deprecated. Data61 replaces what was 
+https://github.com/NICTA/course which is deprecated. Data61 replaces what was
 NICTA since July 2016. The new repository is located at
 https://github.com/data61/fp-course
 
@@ -47,11 +47,11 @@ however, your first post might be moderated. This is simply to prevent spam.
 2. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
    is a Google Group for queries related specifically to this Data61 functional
    programming course material. This mailing list is not owned by Data61, but is
-   run by others who are keen to share ideas relating to the course. 
+   run by others who are keen to share ideas relating to the course.
 
 3. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
-   general. Most of the participants of this channel have completed the Data61 
+   general. Most of the participants of this channel have completed the Data61
    functional programming course to some extent. They are in various timezones
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
@@ -61,6 +61,10 @@ however, your first post might be moderated. This is simply to prevent spam.
    own time and effort.
 
 ### Getting Started
+
+**NOTE** If you do not wish to install these dependencies, you may use a virtual machine
+instead. [Instructions](ops/README.markdown) for automatically building a virtual machine are
+available in this repository for your convenience.
 
 1. Install the Glasgow Haskell Compiler (GHC) version 7.6 or higher.
 
@@ -170,7 +174,7 @@ To run the full test suite, build the project as follows:
     > cabal configure --enable-tests
     > cabal build
     > cabal test
-    
+
 Tasty will also allow you to run only those tests whose description match a
 pattern. Tests are organised in nested groups named after the relevant module
 and function, so pattern matching should be intuitive. For example, to run the
@@ -181,7 +185,7 @@ tests for the `List` module you could run:
 Likewise, to run only the tests for the `headOr` function in the `List` module, you could use:
 
     > cabal test tasty --show-detail=direct --test-option=--pattern=List/headOr
-    
+
 In addition, GHCi may be used to run tasty tests. Assuming you have run `ghci`
 from the root of the project, you may do the following. Remember that GHCi has
 tab completion, so you can save yourself some typing.
@@ -210,7 +214,7 @@ Executing the tests is done with the `doctest` executable, which you may install
 using:
 
     > cabal install doctest
-    
+
 Once installed, you may use doctest to run the doctests for a given module:
 
     > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
@@ -258,7 +262,7 @@ others. For example, in the progression, `Course.Functor` to `Course.Monad`, the
 exercises repeat a similar theme. Instead, a participant may wish to do
 different exercises, such as `Course.Parser`. In this case, the remaining
 answers are filled out, so that progress on to `Course.Parser` can begin
-(which depends on correct answers up to `Course.Monad`). It is recommended to 
+(which depends on correct answers up to `Course.Monad`). It is recommended to
 take this deviation if it is felt that there is more reward in doing so.
 
 Answers for the exercises can be found here:

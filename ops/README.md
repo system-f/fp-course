@@ -1,8 +1,9 @@
 # Vagrant Box
 
-If you'd rather use a pre-configured haskell development environment, then this will get you up and running in a Virtual Box virtual machine. You'll get:
+If you'd rather use a pre-configured haskell development environment, then these instructions will
+get you up and running in a VirtualBox virtual machine. The machine includes:
 
- - Xubuntu desktop environment
+ - A Xubuntu desktop environment
  - GHC 8.0.2 installed
  - doctest
  - emacs with haskell-mode
@@ -16,17 +17,20 @@ If you'd rather use a pre-configured haskell development environment, then this 
 
 ## Prerequisites
 
- - Install VirtualBox
- - Install Vagrant
- - Install ansible
- 
+ - Install [VirtualBox](https://www.virtualbox.org/)
+ - Install [Vagrant](https://www.vagrantup.com/)
+ - Install [ansible](https://www.ansible.com/)
+
 ## Make it so
 
-The following will download a VM image of Ubuntu and then provision it to build a desktop environment for Haskell development. Once it's provisioned, reload the machine, which will log you straight into a graphical environment.
+The following will download a VM image of Ubuntu and then provision it to build a desktop
+environment for Haskell development. Once it's provisioned, reload the machine, which will log you
+straight into a graphical environment.
 
 ```
-cd course
+cd fp-course
 vagrant up
+# go have lunch - this could take a while
 vagrant reload
 ```
 
