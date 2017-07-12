@@ -63,7 +63,7 @@ however, your first post might be moderated. This is simply to prevent spam.
 ### Getting Started
 
 **NOTE** If you do not wish to install these dependencies, you may use a virtual machine
-instead. [Instructions](ops/README.markdown) for automatically building a virtual machine are
+instead. [Instructions](ops/README.md) for automatically building a virtual machine are
 available in this repository for your convenience.
 
 1. Install the Glasgow Haskell Compiler (GHC) version 7.6 or higher.
