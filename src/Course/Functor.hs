@@ -5,7 +5,7 @@
 module Course.Functor where
 
 import Course.Core
-import Course.Id
+import Course.ExactlyOne
 import Course.Optional
 import Course.List
 import qualified Prelude as P(fmap)
@@ -32,17 +32,17 @@ infixl 4 <$>
 -- >>> import Course.Core
 -- >>> import qualified Prelude as P(return, (>>))
 
--- | Maps a function on the Id functor.
+-- | Maps a function on the ExactlyOne functor.
 --
--- >>> (+1) <$> Id 2
--- Id 3
-instance Functor Id where
+-- >>> (+1) <$> ExactlyOne 2
+-- ExactlyOne 3
+instance Functor ExactlyOne where
   (<$>) ::
     (a -> b)
-    -> Id a
-    -> Id b
+    -> ExactlyOne a
+    -> ExactlyOne b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance Id"
+    error "todo: Course.Functor (<$>)#instance ExactlyOne"
 
 -- | Maps a function on the List functor.
 --

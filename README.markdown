@@ -1,16 +1,23 @@
 # Functional Programming Course
 
-![NICTA](http://i.imgur.com/sMXB9XB.jpg)
+![Data61](http://i.imgur.com/0h9dFhl.png)
 
-### Written by Tony Morris & Mark Hibberd for NICTA
+### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
 
 ### With contributions from individuals (thanks!)
 
-#### Special note
+#### Special note 1
 
-If you have arrived here by https://github.com/tonymorris/course and you are
+If you have arrived here by https://github.com/tonymorris/fp-course and you are
 looking for the *exercises* (not the answers), please go to
-https://github.com/NICTA/course
+https://github.com/data61/fp-course
+
+#### Special note 2
+
+Since February 2017, this repository is no longer hosted at
+https://github.com/NICTA/course which is deprecated. Data61 replaces what was 
+NICTA since July 2016. The new repository is located at
+https://github.com/data61/fp-course
 
 #### Introduction
 
@@ -34,17 +41,17 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 1. [[nicta-fp]](https://groups.google.com/forum/#!forum/nicta-fp) is a Google
    Group for any queries related to functional programming. This mailing list is
-   owned by NICTA and is open to the public. Questions relating to this course
+   owned by Data61 and is open to the public. Questions relating to this course
    are most welcome here.
 
 2. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
-   is a Google Group for queries related specifically to this NICTA funtional
-   programming course material. This mailing list is not owned by NICTA, but is
+   is a Google Group for queries related specifically to this Data61 functional
+   programming course material. This mailing list is not owned by Data61, but is
    run by others who are keen to share ideas relating to the course. 
 
 3. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
-   general. Most of the participants of this channel have completed the NICTA 
+   general. Most of the participants of this channel have completed the Data61 
    functional programming course to some extent. They are in various timezones
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
@@ -64,8 +71,9 @@ however, your first post might be moderated. This is simply to prevent spam.
    file, `chmod 600 .ghci ./`.
 
 4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
-   on to the exercises starting with `Course.List`. The [Progression](#progression)
-   section of this document lists the recommended order in which to attempt the exercises.
+   on to the exercises starting with `Course.Optional`. The
+   [Progression](#progression) section of this document lists the recommended
+   order in which to attempt the exercises.
 
 5. Edit a source file to a proposed solution to an exercise. At the `ghci`
    prompt, issue the command `:reload`. This will compile your solution and
@@ -140,15 +148,21 @@ however, your first post might be moderated. This is simply to prevent spam.
    Your instructor must guide you where types fall short, but you should also
    take the first step. Do it.
 
-#### Running the tests
+### Running the tests
 
-Some exercises include examples and properties, which appear in a comment above
-the code for that exercise. Examples begin with `>>>` while properties begin
-with `prop>`.
+Tests are available both as a [tasty](https://hackage.haskell.org/package/tasty)
+test suite, and as doctests. Tasty is the recommended and supported method,
+however you're free to use the doctests if you prefer.
 
-The solution to the exercise must satisfy these tests. You can check if you have
-satisfied all tests with cabal-install and doctest. From the base directory of
-this source code:
+#### tasty
+
+Tasty tests are stored under the `test/` directory. Each module from the course
+that has tests has a corresponding `<MODULE>Test.hs` file. Within each test
+module, tests for each function are grouped using the `testGroup` function.
+Within each test group there are test cases (`testCase` function), and
+properties (`testProperty` function).
+
+To run the full test suite, build the project as follows:
 
     > cabal update
     > cabal install cabal-install
@@ -156,34 +170,72 @@ this source code:
     > cabal configure --enable-tests
     > cabal build
     > cabal test
+    
+Tasty will also allow you to run only those tests whose description match a
+pattern. Tests are organised in nested groups named after the relevant module
+and function, so pattern matching should be intuitive. For example, to run the
+tests for the `List` module you could run:
 
-Alternatively, you may run the tests in a single source file by using `doctest`
-explicitly. From the base directory of this source code:
+    > cabal test tasty --show-detail=direct --test-option=--pattern=List
+
+Likewise, to run only the tests for the `headOr` function in the `List` module, you could use:
+
+    > cabal test tasty --show-detail=direct --test-option=--pattern=List/headOr
+    
+In addition, GHCi may be used to run tasty tests. Assuming you have run `ghci`
+from the root of the project, you may do the following. Remember that GHCi has
+tab completion, so you can save yourself some typing.
+
+    > -- import the defaultMain function from Tasty - runs something of type TestTree
+    > import Test.Tasty (defaultMain)
+    >
+    > -- Load the test module you'd like to run tests for
+    > :l test/Course.ListTest.hs
+    >
+    > -- Browse the contents of the loaded module - anything of type TestTree
+    > -- may be run
+    > :browse Course.ListTest
+    >
+    > -- Run test for a particular function
+    > defaultMain headOrTest
+
+
+#### doctest
+
+The doctest tests are a mirror of the tasty tests that reside in comments
+alongside the code. They are executable, however this is not supported. Examples
+begin with `>>>` while properties begin with `prop>`.
+
+Executing the tests is done with the `doctest` executable, which you may install
+using:
+
+    > cabal install doctest
+    
+Once installed, you may use doctest to run the doctests for a given module:
 
     > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
 
-Note: There is a [bug in GHC 7.4.1](http://ghc.haskell.org/trac/ghc/ticket/5820)
-where for some configurations, running the tests will cause an unjustified
-compiler error.
+Binding this command to a keyboard shortcut in your favourite editor, such that
+tests for the current file are executed, is an exercise left to the reader.
 
 ### Progression
 
 It is recommended to perform some exercises before others. The first step is to
 inspect the introduction modules.
 
-* `Course.Id`
-* `Course.Optional`
+* `Course.ExactlyOne`
 * `Course.Validation`
 
 They contain examples of data structures and Haskell syntax. They do not contain
 exercises and exist to provide a cursory examination of Haskell syntax. The next
-step is to complete the exercises in `Course.List`.
+step is to complete the exercises in `Course.Optional`.
 
 After this, the following progression of modules is recommended:
 
+* `Course.List`
 * `Course.Functor`
 * `Course.Applicative`
-* `Course.Monad` (please see [this issue](https://github.com/NICTA/course/issues/118))
+* `Course.Monad`
 * `Course.FileIO`
 * `Course.State`
 * `Course.StateT`
@@ -210,7 +262,7 @@ answers are filled out, so that progress on to `Course.Parser` can begin
 take this deviation if it is felt that there is more reward in doing so.
 
 Answers for the exercises can be found here:
-[https://github.com/tonymorris/course](https://github.com/tonymorris/course)
+[https://github.com/tonymorris/fp-course](https://github.com/tonymorris/fp-course)
 
 After these are completed, complete the exercises in the `projects` directory.
 
@@ -274,6 +326,130 @@ these points should be covered before attempting the exercises.
   * when constructors appear on the left side of `=` we are *pattern-matching*
   * when constructors appear on the right side of `=` we are *constructing*
 * type-classes
+
+### Learning the tools
+
+When this course is run in-person, some tools, particularly within Haskell, are
+covered first.
+
+* GHCi
+  * `:type`
+  * `:info`
+* values
+* type signatures
+  * `x :: T` is read as *x is of the type T*
+* functions are values
+* functions take arguments
+* functions take one argument
+* lambda expressions
+* operators (infix/prefix)
+  * identifiers starting with `isAlpha` are prefix by default, infix surrounded in backticks (\`)
+  * other identifiers are infix by default, prefix surrounded in parentheses
+* data types
+  * `data` keyword
+  * recursive data types
+* pattern matching
+* `deriving` keyword
+* type-classes
+* type parameters
+  * always lower-case 'a'..'z'
+  * aka generics, templates C++, parametric polymorphism
+* running the tests
+  * `doctest`
+
+### Parser grammar assistance
+
+The exercises in `Parser.hs` can be assisted by stating problems in a specific way, with a conversion to code.
+
+| English   | Parser library                    |
+|-----------|-----------------------------------|
+| and then  | `bindParser` `flbindParser` `>>=` |
+| always    | `valueParser` `pure`              |
+| or        | `\|\|\|`                             |
+| 0 or many | `list`                            |
+| 1 or many | `list1`                           |
+| is        | `is`                              |
+| exactly n | `thisMany n`                      |
+| fail      | `failed`                          |
+| call it x | `\x ->`                           |
+
+### Monad comprehension
+
+##### do-notation
+
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+
+##### LINQ
+
+* write `from` on each line
+* turn `>>=` into in
+* delete `->`
+* delete `\`
+* swap each side of `in`
+* turn value into `select`
+
+### Demonstrate IO maintains referential transparency
+
+Are these two programs, the same program?
+
+    p1 ::
+      IO ()
+    p1 =
+      let file = "/tmp/file"
+      in  do  _ <- writeFile file "abcdef"
+              x <- readFile file
+              _ <- putStrLn x
+              _ <- writeFile file "ghijkl"
+              y <- readFile file
+              putStrLn (show (x, y))
+
+    p2 ::
+      IO ()
+    p2 =
+      let file = "/tmp/file"
+          expr = readFile file
+      in  do  _ <- writeFile file "abcdef"
+              x <- expr
+              _ <- putStrLn x
+              _ <- writeFile file "ghijkl"
+              y <- expr
+              putStrLn (show (x, y))
+
+### One-day
+
+Sometimes this course material is condensed into one-day. In these cases, the
+following exercises are recommended:
+
+* `Optional`
+  * `mapOptional`
+  * `bindOptional`
+  * `(??)`
+  * `(<+>)`
+* `List`
+  * `headOr`
+  * `product`
+  * `length`
+  * `map`
+  * `filter`
+  * `(++)`
+  * `flatMap`
+  * `reverse`
+* `Functor`
+  * `instance Functor List`
+  * `instance Functor Optional`
+  * `instance Functor ((->) t)`
+  * `instance Functor void`
+* `Applicative`
+  * `instance Applicative List`
+  * `instance Applicative Optional`
+  * `instance Applicative ((->) t)`
+  * `lift2`
+  * `sequence`
+* `FileIO`
 
 ### References
 

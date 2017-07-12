@@ -21,15 +21,15 @@ import Data.Char
 
 type Input = Chars
 
-data ParseError =
-  UnexpectedEof
+data ParseResult a =
+    UnexpectedEof
   | ExpectedEof Input
   | UnexpectedChar Char
   | Failed
+  | Result Input a
   deriving Eq
 
-
-instance Show ParseError where
+instance Show a => Show (ParseResult a) where
   show UnexpectedEof =
     "Unexpected end of stream"
   show (ExpectedEof i) =
@@ -38,26 +38,35 @@ instance Show ParseError where
     stringconcat ["Unexpected character: ", show [c]]
   show Failed =
     "Parse failed"
-
-data ParseResult a =
-  ErrorResult ParseError
-  | Result Input a
-  deriving Eq
-
-instance Show a => Show (ParseResult a) where
-  show (ErrorResult e) =
-    show e
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
+  
+instance Functor ParseResult where
+  _ <$> UnexpectedEof =
+    UnexpectedEof
+  _ <$> ExpectedEof i =
+    ExpectedEof i
+  _ <$> UnexpectedChar c =
+    UnexpectedChar c
+  _ <$> Failed =
+    Failed
+  f <$> Result i a =
+    Result i (f a)
 
 -- Function to determine is a parse result is an error.
 isErrorResult ::
   ParseResult a
   -> Bool
-isErrorResult (ErrorResult _) =
-  True
 isErrorResult (Result _ _) =
   False
+isErrorResult UnexpectedEof =
+  True
+isErrorResult (ExpectedEof _) =
+  True
+isErrorResult (UnexpectedChar _) =
+  True
+isErrorResult Failed =
+  True
 
 data Parser a = P {
   parse :: Input -> ParseResult a
@@ -68,7 +77,7 @@ unexpectedCharParser ::
   Char
   -> Parser a
 unexpectedCharParser c =
-  P (\_ -> ErrorResult (UnexpectedChar c))
+  P (\_ -> UnexpectedChar c)
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -82,7 +91,7 @@ valueParser =
 
 -- | Return a parser that always fails with the given error.
 --
--- >>> isErrorResult (parse failed "abc")
+-- >>> isErrorResult (parse (failed Failed) "abc")
 -- True
 failed ::
   Parser a
@@ -191,13 +200,13 @@ flbindParser =
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (failed ||| valueParser 'v') ""
+-- >>> parse (failed Failed ||| valueParser 'v') ""
 -- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (failed ||| valueParser 'v') "abc"
+-- >>> parse (failed Failed ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a

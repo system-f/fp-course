@@ -80,6 +80,9 @@ headOr =
 
 -- | The product of the elements of a list.
 --
+-- >>> product Nil
+-- 1
+--
 -- >>> product (1 :. 2 :. 3 :. Nil)
 -- 6
 --
@@ -313,8 +316,7 @@ produce ::
   (a -> a)
   -> a
   -> List a
-produce =
-  error "todo: Course.List#produce"
+produce f x = x :. produce f (f x)
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?
