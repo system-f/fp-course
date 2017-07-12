@@ -118,13 +118,13 @@ jsonValueTest =
       parse jsonValue "true" @?= Result "" JsonTrue
   , testCase "object" $
       let result = Result "" (  ("key1",JsonTrue)
-                             :. ("key2",JsonArray (JsonRational False (7 % 1) :. JsonFalse:.Nil))
+                             :. ("key2",JsonArray (JsonRational (7 % 1) :. JsonFalse:.Nil))
                              :. Nil
                              )
        in parse jsonObject "{ \"key1\" : true , \"key2\" : [7, false] }" @?= result
   , testCase "nested object" $
       let result = Result "" (  ("key1",JsonTrue)
-                             :. ("key2",JsonArray (JsonRational False (7 % 1) :. JsonFalse :. Nil))
+                             :. ("key2",JsonArray (JsonRational (7 % 1) :. JsonFalse :. Nil))
                              :. ("key3",JsonObject (("key4",JsonNull) :. Nil))
                              :. Nil
                              )
