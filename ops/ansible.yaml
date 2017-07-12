@@ -45,3 +45,9 @@
     - include: haskell.yaml
     - include: vs-code.yaml
     - include: sublime.yaml
+
+    - name: "Copy emacs.d"
+      copy:
+        src: emacs.d/
+        dest: ~/.emacs.d/
+        mode: 0755
