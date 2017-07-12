@@ -33,7 +33,7 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
-  | t :. List t
+  | (:.) t (List t)
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -75,8 +75,10 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr a Nil =
+  a
+headOr _ (h:._) =
+  h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +93,12 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil =
+  1
+-- h :: Int
+-- t :: List Int
+product (h:.t) =
+  h * product t
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +112,13 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (+) 0
+{-
+sum Nil =
+  0
+sum (h:.t) =
+  h + sum t
+-}
 
 -- | Return the length of the list.
 --
@@ -119,7 +130,21 @@ length ::
   List a
   -> Int
 length =
-  error "todo: Course.List#length"
+--foldLeft (\r _ -> r + 1) 0
+--foldLeft (\r -> const ((+1) r)) 0
+--foldLeft (\r -> (const . (+1)) r) 0
+  foldLeft (const . (+1)) 0
+
+-- \x -> f (g x)
+-- \x -> (f . g) x
+-- f . g
+
+  {-}
+length Nil =
+  0
+length (_:.t) =
+  1 + length t
+  -}
 
 -- | Map the given function on each element of the list.
 --
@@ -133,9 +158,21 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+  {-}
+map _ Nil =
+  Nil
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- ? :: List b
+map f (h:.t) =
+  f h :. map f t
+-}
+map k =
+  foldRight ((:.) . k) Nil
 
+-- Don't Repeat Yourself (DRY)
+-- FP = DRY
 -- | Return elements satisfying the given predicate.
 --
 -- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
@@ -150,8 +187,25 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+  {-}
+filter _ Nil =
+  Nil
+filter p (h:.t) =
+  bool id ((:.) h) (p h) (filter p t)
+-}
+filter p =
+--foldRight (\h t -> bool id ((:.) h) (p h) t) Nil
+  foldRight (\h -> bool id ((:.) h) (p h)) Nil
+--foldRight (bool id <$> (:.) <*> p) Nil
+
+-- \h -> f (q h) (r h)
+-- f <$> q <*> r
+-- lift2 f q r
+
+-- if p then f x else g x
+-- (if p then f else g) x
+-- (p ? f : g) x
+-- (bool g) f p x
 
 -- | Append two lists to a new list.
 --
@@ -170,7 +224,19 @@ filter =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+-- \x y -> foldRight (:.) y x
+-- \x y -> flip (foldRight (:.)) x y
+  flip (foldRight (:.))
+
+-- data Bool = False | True
+-- data Bool = Bool (forall a. a -> a -> a)
+-- data List a = List (forall b. (a -> b -> b) -> b -> b)
+{-
+(++) Nil y =
+  y
+(++) (h:.t) y =
+  h :. t ++ y
+-}
 
 infixr 5 ++
 
@@ -187,8 +253,17 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+{-
+flatten Nil =
+  Nil
+flatten (h:.t) =
+  -- h :: List a
+  -- t :: List (List a)
+  -- flatten t :: List a
+  -- ? :: List a
+  h ++ flatten t
+-}
+flatten = foldRight ((++) . id) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -204,8 +279,18 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+{-}
+flatMap _ Nil =
+  Nil
+  -- f :: a -> List b
+  -- h :: a 
+  -- t :: List a
+  -- flatMap f t :: List b
+  -- ? :: List b
+flatMap f (h:.t) =
+  f h ++ flatMap f t
+-}
+flatMap k = foldRight ((++) . k) Nil
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -215,7 +300,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -242,8 +327,81 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
+
+{-
+seqOptional Nil =
+  Full Nil
+seqOptional (h:.t) =
+  -- h :: Optional a
+  ----------------------- t :: List (Optional a)
+  -- seqOptional t :: Optional (List a)
+  -- ? :: Optional (List a)
+  twiceOptional (:.) h (seqOptional t)
+-}
+  {-}
+  case h of
+    Empty -> Empty
+    Full hh -> 
+    -}
+    {-}
+      bindOptional (\hh -> 
+      mapOptional (\tt -> hh :. tt) (seqOptional t)) h
+    -}
+
+    {-
+      case seqOptional t of
+        Empty -> Empty
+        Full tt -> Full (hh :. tt)
+-}
+
+{-
+
+bindOptional ::
+  (a -> Optional b)
+  -> Optional a
+  -> Optional b
+bindOptional _ Empty =
+  Empty
+bindOptional f (Full x) =
+  f x
+
+
+mapOptional ::
+  (a -> b)
+  -> Optional a
+  -> Optional b
+mapOptional _ Empty =
+  Empty
+mapOptional f (Full x) =
+  Full (f x)
+
+-}
+
+data Natural' = Natural' (Optional Natural')
+data Natural'' = Natural'' (Either () Natural'')
+data Natural''' = Natural''' (List ())
+
+data Natural = Z | Successor Natural
+one = Successor Z
+two = Successor one
+three = Successor two
+four = Successor three
+
+lengthResponsibly :: List a -> Natural
+lengthResponsibly Nil = Z
+lengthResponsibly (_:.t) = Successor (lengthResponsibly t)
+
+lengthResponsibly' :: List a -> Natural
+lengthResponsibly' = foldRight (const Successor) Z
+
+gt :: Natural -> Natural -> Bool
+gt Z _ = False
+gt (Successor _) Z = True
+gt (Successor s) (Successor t) = s `gt` s
+
+lengthGT4Responsibly :: List a -> Bool
+lengthGT4Responsibly x = foldRight (const Successor) Z x `gt` four
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -265,8 +423,10 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find =
-  error "todo: Course.List#find"
+find p x =
+  case filter p x of
+    Nil -> Empty
+    h:._ -> Full h
 
 -- | Determine if the length of the given list is greater than 4.
 --
@@ -284,8 +444,9 @@ find =
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 (_:._:._:._:._) = True
+lengthGT4 _ = False
+  
 
 -- | Reverse a list.
 --
@@ -301,8 +462,9 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse = 
+  foldLeft (flip (:.)) Nil  
+
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

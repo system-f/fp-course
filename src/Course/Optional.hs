@@ -16,6 +16,26 @@ data Optional a =
   | Empty
   deriving (Eq, Show)
 
+-- >>> fromOptional2 5 (Full 9)
+-- 9
+fromOptional2 ::
+  a -> Optional a -> a
+fromOptional2 a Empty = a
+fromOptional2 _ (Full x) = x
+
+onethingeva :: t -> u -> t
+onethingeva = \t _ -> t
+
+  {-
+  \a    o          -> case o of
+                        Empty -> a
+                        Full x -> x
+-}
+
+-- ??
+
+-- theorems for free (parametricity), philip wadler
+
 -- | Map the given function on the possible value.
 --
 -- >>> mapOptional (+1) Empty
@@ -27,8 +47,10 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+mapOptional _ Empty =
+  Empty
+mapOptional f (Full x) =
+  Full (f x)
 
 -- | Bind the given function on the possible value.
 --
@@ -44,8 +66,10 @@ bindOptional ::
   (a -> Optional b)
   -> Optional a
   -> Optional b
-bindOptional =
-  error "todo: Course.Optional#bindOptional"
+bindOptional _ Empty =
+  Empty
+bindOptional f (Full x) =
+  f x
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
@@ -58,8 +82,14 @@ bindOptional =
   Optional a
   -> a
   -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+(??) Empty a =
+  a
+(??) (Full x) _ =
+  x
+
+-- value ?? x
+-- if value == null) retrun null else x
+
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -79,8 +109,11 @@ bindOptional =
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"  
+(<+>) (Full x) _ = Full x
+(<+>) _ (Full x) = Full x
+(<+>) _ _ = Empty
+
+
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional (\a' -> f' a') a) f

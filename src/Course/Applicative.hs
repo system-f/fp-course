@@ -30,6 +30,7 @@ class Functor f => Applicative f where
     f (a -> b)
     -> f a
     -> f b
+-- spaceship, angle bum, star bum, apply, ap
 
 infixl 4 <*>
 
@@ -49,7 +50,10 @@ infixl 4 <*>
   -> f a
   -> f b
 (<$$>) =
-  error "todo: Course.Applicative#(<$$>)"
+  -- pure f :: f (a -> b)
+  -- x      :: f a
+  -- ?      :: f b
+  \f x -> pure f <*> x
 
 -- | Insert into ExactlyOne.
 --
@@ -62,13 +66,13 @@ instance Applicative ExactlyOne where
     a
     -> ExactlyOne a
   pure =
-    error "todo: Course.Applicative pure#instance ExactlyOne"
+    ExactlyOne
   (<*>) :: 
     ExactlyOne (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (<*>) =
-    error "todo: Course.Applicative (<*>)#instance ExactlyOne"
+  ExactlyOne f <*> ExactlyOne a =
+    ExactlyOne (f a)
 
 -- | Insert into a List.
 --
@@ -80,14 +84,34 @@ instance Applicative List where
   pure ::
     a
     -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
+  pure a =
+    a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
   (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+    \fs as -> 
+      flip flatMap fs (\a2b ->
+      flip flatMap as (\a -> 
+      pure (a2b a)))
+
+-- (a -> b) -> List b
+
+--      flatMap :: (x -> List y) -> List x -> List y
+-- flip flatMap :: List x -> (x -> List y) -> List y
+
+
+    {-
+  (<*>) Nil _ =
+    Nil
+    -- 1. pattern match
+    -- 2. flatMap and map
+    -- 3. flatMap (twice) and pure
+    -- 4. foldRight
+  (<*>) (h1:.t1) x =
+    map h1 x ++ (t1 <*> x)
+-}
 
 -- | Insert into an Optional.
 --
@@ -106,13 +130,19 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo: Course.Applicative pure#instance Optional"
+    Full
   (<*>) ::
     Optional (a -> b)
     -> Optional a
     -> Optional b
   (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+    \fs as -> 
+      flip bindOptional fs (\a2b ->
+      flip bindOptional as (\a -> 
+      pure (a2b a)))
+
+null = Empty
+notnull = Full
 
 -- | Insert into a constant function.
 --
@@ -134,18 +164,15 @@ instance Applicative Optional where
 -- prop> pure x y == x
 instance Applicative ((->) t) where
   pure ::
-    a
-    -> ((->) t a)
+    a -> t -> a
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    \x y -> x
   (<*>) ::
-    ((->) t (a -> b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
-
-
+    (t -> a -> b) -> (t -> a) -> t -> b
+  (<*>)  =
+  -- \ta2b t2a t -> ta2b t (t2a t)
+    \x y z -> x z (y z)
+    
 -- | Apply a binary function in the environment.
 --
 -- >>> lift2 (+) (ExactlyOne 7) (ExactlyOne 8)
