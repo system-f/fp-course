@@ -30,6 +30,7 @@
         - git
         - vim
         - xubuntu-desktop
+        - virtualbox-guest-x11
 
     - name: "Automatically login as ubuntu user"
       lineinfile:
