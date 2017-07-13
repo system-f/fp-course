@@ -130,15 +130,6 @@ mapParser ::
 mapParser =
   error "todo: Course.Parser#mapParser"
 
--- | This is @mapParser@ with the arguments flipped.
--- It might be more helpful to use this function if you prefer this argument order.
-flmapParser ::
-  Parser a
-  -> (a -> b)
-  -> Parser b
-flmapParser =
-  flip mapParser
-
 -- | Return a parser that puts its input into the given parser and
 --
 --   * if that parser succeeds with a value (a), put that value into the given function
