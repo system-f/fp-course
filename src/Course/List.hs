@@ -329,6 +329,9 @@ seqOptional ::
   -> Optional (List a)
 seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
 
+-- twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
+-- Full :: x -> Optional x
+
 {-
 seqOptional Nil =
   Full Nil
