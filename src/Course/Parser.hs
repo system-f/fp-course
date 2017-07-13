@@ -68,9 +68,15 @@ isErrorResult (UnexpectedChar _) =
 isErrorResult Failed =
   True
 
-data Parser a = P {
-  parse :: Input -> ParseResult a
-}
+data Parser a = P (Input -> ParseResult a)
+
+parse ::
+  Parser a
+  -> Input
+  -> ParseResult a
+parse (P p) =
+  p
+
 
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::
