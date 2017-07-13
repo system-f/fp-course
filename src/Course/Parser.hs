@@ -158,15 +158,6 @@ bindParser ::
 bindParser =
   error "todo: Course.Parser#bindParser"
 
--- | This is @bindParser@ with the arguments flipped.
--- It might be more helpful to use this function if you prefer this argument order.
-flbindParser ::
-  Parser a
-  -> (a -> Parser b)
-  -> Parser b
-flbindParser =
-  flip bindParser
-
 -- | Return a parser that puts its input into the given parser and
 --
 --   * if that parser succeeds with a value (a), ignore that value
