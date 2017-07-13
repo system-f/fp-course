@@ -68,6 +68,22 @@ isErrorResult (UnexpectedChar _) =
 isErrorResult Failed =
   True
 
+-- | Runs the given function on a successful parse result. Otherwise return the same failing parse result.
+onResult ::
+  ParseResult a
+  -> (Input -> a -> ParseResult b)
+  -> ParseResult b
+onResult UnexpectedEof _ = 
+  UnexpectedEof
+onResult (ExpectedEof i) _ = 
+  ExpectedEof i
+onResult (UnexpectedChar c) _ = 
+  UnexpectedChar c
+onResult Failed _ = 
+  Failed
+onResult (Result i a) k = 
+  k i a
+
 data Parser a = P (Input -> ParseResult a)
 
 parse ::
