@@ -62,7 +62,7 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 ### Getting Started
 
-1. Install the Glasgow Haskell Compiler (GHC) version 7.6 or higher.
+1. Install the Glasgow Haskell Compiler (GHC) version 7.10 or higher.
 
 2. Change to the directory containing this document.
 
