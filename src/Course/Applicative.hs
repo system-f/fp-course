@@ -3,24 +3,11 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
 
-module Course.Applicative(
-  Applicative(..)
-, lift2
-, lift3
-, lift4
-, (*>)
-, (<*)
-, sequence
-, replicateA
-, filtering
-, return
-, fail
-, (>>)
-) where
+module Course.Applicative where
 
 import Course.Core
 import Course.ExactlyOne
-import Course.Functor hiding ((<$>))
+import Course.Functor
 import Course.List
 import Course.Optional
 import qualified Prelude as P(fmap, return, (>>=))
@@ -48,21 +35,21 @@ infixl 4 <*>
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
--- >>> (+1) <$> (ExactlyOne 2)
+-- >>> (+1) <$$> (ExactlyOne 2)
 -- ExactlyOne 3
 --
--- >>> (+1) <$> Nil
+-- >>> (+1) <$$> Nil
 -- []
 --
--- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
+-- >>> (+1) <$$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
-(<$>) ::
+(<$$>) ::
   Applicative f =>
   (a -> b)
   -> f a
   -> f b
-(<$>) =
-  error "todo: Course.Applicative#(<$>)"
+(<$$>) =
+  error "todo: Course.Applicative#(<$$>)"
 
 -- | Insert into ExactlyOne.
 --

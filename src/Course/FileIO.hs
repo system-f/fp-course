@@ -26,6 +26,12 @@ Abstractions --
 
     <$>, <*>, >>=, =<<, pure
 
+Tuple Functions that could help --
+
+  fst :: (a, b) -> a
+  snd :: (a, b) -> b
+  (,) :: a -> b -> (a, b)
+
 Problem --
   Given a single argument of a file name, read that file,
   each line of that file contains the name of another file,
@@ -79,35 +85,43 @@ main =
 type FilePath =
   Chars
 
--- /Tip:/ Use @getFiles@ and @printFiles@.
+-- Given a file name, read it and for each line in that file, read and print contents of each.
+-- Use @getFiles@ and @printFiles@.
 run ::
-  Chars
+  FilePath
   -> IO ()
 run =
   error "todo: Course.FileIO#run"
 
+-- Given a list of file names, return list of (file name and file contents).
+-- Use @getFile@.
 getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
   error "todo: Course.FileIO#getFiles"
 
+-- Given a file name, return (file name and file contents).
+-- Use @readFile@.
 getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
   error "todo: Course.FileIO#getFile"
 
+-- Given a list of (file name and file contents), print each.
+-- Use @printFile@.
 printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
   error "todo: Course.FileIO#printFiles"
 
+-- Given the file name, and file contents, print them.
+-- Use @putStrLn@.
 printFile ::
   FilePath
   -> Chars
   -> IO ()
 printFile =
   error "todo: Course.FileIO#printFile"
-
