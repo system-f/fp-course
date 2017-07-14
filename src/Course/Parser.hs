@@ -102,7 +102,7 @@ unexpectedCharParser c =
 
 --- | Return a parser that always fails with the given error.
 ---
---- >>> isErrorResult (parse (failed Failed) "abc")
+--- >>> isErrorResult (parse (failed UnexpectedEof) "abc")
 --- True
 failed ::
   ParseResult a
@@ -211,13 +211,13 @@ bindParser =
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (failed ||| valueParser 'v') ""
+-- >>> parse (failed UnexpectedEof ||| valueParser 'v') ""
 -- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (failed ||| valueParser 'v') "abc"
+-- >>> parse (failed UnexpectedEof ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a
