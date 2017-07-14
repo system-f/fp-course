@@ -19,8 +19,8 @@ homepage:             https://github.com/NICTA/course
 bug-reports:          https://github.com/NICTA/course/issues
 cabal-version:        >= 1.10
 build-type:           Custom
+tested-with:          GHC == 7.10.3, GHC == 8.0.2
 extra-source-files:   etc/CONTRIBUTORS,
-                      etc/CREDITS,
                       changelog
 
 source-repository     head
