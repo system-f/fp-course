@@ -111,9 +111,9 @@ valueParser ::
 valueParser =
   error "todo: Course.Parser#valueParser"
 
--- | Return a parser that always fails with the given error.
+-- | Return a parser that always fails.
 --
--- >>> isErrorResult (parse (failed Failed) "abc")
+-- >>> isErrorResult (parse failed "abc")
 -- True
 failed ::
   Parser a
@@ -204,13 +204,13 @@ bindParser =
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (failed Failed ||| valueParser 'v') ""
+-- >>> parse (failed ||| valueParser 'v') ""
 -- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (failed Failed ||| valueParser 'v') "abc"
+-- >>> parse (failed ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a
