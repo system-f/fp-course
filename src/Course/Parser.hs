@@ -211,13 +211,13 @@ bindParser =
 -- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (failed Failed ||| valueParser 'v') ""
+-- >>> parse (failed ||| valueParser 'v') ""
 -- Result >< 'v'
 --
 -- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (failed Failed ||| valueParser 'v') "abc"
+-- >>> parse (failed ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a
