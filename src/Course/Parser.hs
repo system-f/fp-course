@@ -25,7 +25,7 @@ data ParseResult a =
     UnexpectedEof
   | ExpectedEof Input
   | UnexpectedChar Char
-  | Failed
+  | UnexpectedString Chars
   | Result Input a
   deriving Eq
 
@@ -36,8 +36,8 @@ instance Show a => Show (ParseResult a) where
     stringconcat ["Expected end of stream, but got >", show i, "<"]
   show (UnexpectedChar c) =
     stringconcat ["Unexpected character: ", show [c]]
-  show Failed =
-    "Parse failed"
+  show (UnexpectedString s) =
+    stringconcat ["Unexpected string: ", show s]
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
   
@@ -48,8 +48,8 @@ instance Functor ParseResult where
     ExpectedEof i
   _ <$> UnexpectedChar c =
     UnexpectedChar c
-  _ <$> Failed =
-    Failed
+  _ <$> UnexpectedString s =
+    UnexpectedString s
   f <$> Result i a =
     Result i (f a)
 
@@ -65,7 +65,7 @@ isErrorResult (ExpectedEof _) =
   True
 isErrorResult (UnexpectedChar _) =
   True
-isErrorResult Failed =
+isErrorResult (UnexpectedString _) =
   True
 
 -- | Runs the given function on a successful parse result. Otherwise return the same failing parse result.
@@ -79,8 +79,8 @@ onResult (ExpectedEof i) _ =
   ExpectedEof i
 onResult (UnexpectedChar c) _ = 
   UnexpectedChar c
-onResult Failed _ = 
-  Failed
+onResult (UnexpectedString s)  _ = 
+  UnexpectedString s
 onResult (Result i a) k = 
   k i a
 
@@ -93,13 +93,29 @@ parse ::
 parse (P p) =
   p
 
-
 -- | Produces a parser that always fails with @UnexpectedChar@ using the given character.
 unexpectedCharParser ::
   Char
   -> Parser a
 unexpectedCharParser c =
   P (\_ -> UnexpectedChar c)
+
+--- | Return a parser that always fails with the given error.
+---
+--- >>> isErrorResult (parse (failed Failed) "abc")
+--- True
+failed ::
+  ParseResult a
+  -> Parser a
+failed =
+  P . const
+
+-- | A parser that produces zero or a positive integer.
+natural ::
+  Parser Int
+natural =
+  bindParser (\k -> case read k of Empty  -> failed (UnexpectedString k)
+                                   Full h -> valueParser h) (list1 digit)
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -110,15 +126,6 @@ valueParser ::
   -> Parser a
 valueParser =
   error "todo: Course.Parser#valueParser"
-
--- | Return a parser that always fails with the given error.
---
--- >>> isErrorResult (parse (failed Failed) "abc")
--- True
-failed ::
-  Parser a
-failed =
-  error "todo: Course.Parser#failed"
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -309,30 +316,6 @@ digit ::
   Parser Char
 digit =
   error "todo: Course.Parser#digit"
-
--- | Return a parser that produces zero or a positive integer but fails if
---
---   * The input is empty.
---
---   * The input does not produce a valid series of digits
---
--- /Tip:/ Use the @bindParser@, @valueParser@, @list1@, @read@ and @digit@
--- functions.
--- >>> parse natural "123"
--- Result >< 123
---
--- >>> parse natural "123ab"
--- Result >ab< 123
---
--- >>> isErrorResult (parse natural "abc")
--- True
---
--- >>> isErrorResult (parse natural "")
--- True
-natural ::
-  Parser Int
-natural =
-  error "todo: Course.Parser#natural"
 
 --
 -- | Return a parser that produces a space character but fails if
