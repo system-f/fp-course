@@ -8,14 +8,14 @@ copyright:          Copyright (C) 2013 National ICT Australia Limited 2013
 synopsis:           A network server
 category:           Education
 description:        A network server
-homepage:           https://github.com/NICTA/course
-bug-reports:        https://github.com/NICTA/course/issues
+homepage:           https://github.com/data61/fp-course
+bug-reports:        https://github.com/data61/fp-course/issues
 cabal-version:      >= 1.10
 build-type:         Custom
 
 source-repository   head
   type:             git
-  location:         git@github.com:NICTA/course.git
+  location:         git@github.com:data61/fp-course.git
 
 flag                small_base
   description:      Choose the new, split-up base package.
