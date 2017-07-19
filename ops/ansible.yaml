@@ -1,0 +1,54 @@
+---
+- name: "Install ansible deps (Python 2.7 stuff)"
+  hosts: all
+  user: ubuntu
+  gather_facts: false
+  tasks:
+    - name: "Install ansible requirements"
+      raw: apt-get update && apt-get install -y python2.7 python-simplejson
+      become: yes
+
+- name: "Setup Ubuntu 16.04"
+  hosts: all
+  user: ubuntu
+
+  tasks:
+    - name: "Set ubuntu user's password to 'ubuntu'"
+      user:
+        name: ubuntu
+        password: $6$hVCglTDqXKLR45$b4M1N30zbQmieXbHpqm3z1yYCZKNq1jF554WU7AwiBI/z8DkbV1zyE.aYeZvOkCgxsWIJv63IBEwB9riNmdyY/
+      become: yes
+
+    - name: "Install packages"
+      apt:
+        name: "{{ item }}"
+        update_cache: yes
+        state: present
+      become: yes
+      with_items:
+        - emacs
+        - git
+        - vim
+        - xubuntu-desktop
+        - virtualbox-guest-x11
+
+    - name: "Automatically login as ubuntu user"
+      lineinfile:
+        line: autologin-user=ubuntu
+        dest: /usr/share/lightdm/lightdm.conf.d/60-xubuntu.conf
+      become: yes
+
+    - name: "Checkout course repo"
+      git:
+        repo: https://github.com/data61/fp-course
+        dest: ~/fp-course
+
+    - include: haskell.yaml
+    - include: vs-code.yaml
+    - include: sublime.yaml
+
+    - name: "Copy emacs.d"
+      copy:
+        src: emacs.d/
+        dest: ~/.emacs.d/
+        mode: 0755
