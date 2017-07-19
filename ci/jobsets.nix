@@ -10,7 +10,7 @@
             "hidden": false,
             "description": "FP Course",
             "nixexprinput": "fp-course",
-            "nixexprpath": "ci/ci.nix",
+            "nixexprpath": "./ci/ci.nix",
             "checkinterval": 300,
             "schedulingshares": 1,
             "enableemail": false,
