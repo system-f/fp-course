@@ -1,0 +1,16 @@
+{
+    "enabled": 1,
+    "hidden": false,
+    "description": "jobsets",
+    "nixexprinput": "fp-course",
+    "nixexprpath": "ci/jobsets.nix",
+    "checkinterval": 300,
+    "schedulingshares": 1,
+    "enableemail": false,
+    "emailoverride": "",
+    "keepnr": 5,
+    "inputs": {
+        "fp-course": { "type": "git", "value": "https://github.com/data61/fp-course.git master", "emailresponsible": false },
+        "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.03", "emailresponsible": false }
+    }
+}
