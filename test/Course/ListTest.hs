@@ -4,7 +4,7 @@
 module Course.ListTest where
 
 import           Control.Applicative   (liftA2, liftA3)
-import qualified Prelude               as P (fmap, foldr)
+import qualified Prelude               as P (fmap, foldr, length)
 
 import           Test.QuickCheck       (Arbitrary (..), Gen, forAllShrink)
 import           Test.Tasty            (TestTree, testGroup)
@@ -70,7 +70,7 @@ lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
   , testProperty "summing a list of 1s is equal to its length" $
-      forAllShrink genIntegerList shrinkList (\x -> sum (map (const 1) x) == length x)
+      forAllShrink genIntegerList shrinkList (\x -> P.length x == length x)
   ]
 
 mapTest :: TestTree
