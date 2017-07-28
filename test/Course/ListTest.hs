@@ -121,7 +121,7 @@ flattenTest =
       forAllShrink genIntegerAndList shrinkIntegerAndList (\(x, y) -> headOr x (flatten (infinity :. y :. Nil)) == 0)
   , testProperty "flatten (y :. infinity)" $
       forAllShrink genIntegerAndList shrinkIntegerAndList (\(x, y) -> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y)
-  , testProperty "sum of lengths == sum of flattened" $
+  , testProperty "sum of lengths == length of flattened" $
       forAllShrink genListOfLists shrinkListOfLists (\x -> sum (map length x) == length (flatten x))
   ]
 
