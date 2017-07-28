@@ -70,7 +70,7 @@ lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
   , testProperty "summing a list of 1s is equal to its length" $
-      forAllShrink genIntegerList shrinkList (\x -> P.length x == length x)
+      forAllShrink genIntegerList shrinkList (\x -> P.length (hlist x) == length x)
   ]
 
 mapTest :: TestTree
