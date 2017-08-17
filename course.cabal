@@ -31,6 +31,12 @@ source-repository     head
 flag                  small_base
   description:        Choose the new, split-up base package.
 
+custom-setup
+  setup-depends:
+    base          >= 4.3 && <5,
+    Cabal         >= 1.10,
+    cabal-doctest >= 1 && <1.1
+
 library
   default-language:   Haskell2010
 
