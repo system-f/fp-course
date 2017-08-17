@@ -9,10 +9,11 @@ let
 
   modifiedHaskellPackages = haskellPackages.override {
     overrides = self: super: {
+      # work-around for some older versions of nixpkgs
       tasty-discover = 
-        if compiler == "ghc821" 
-        then super.tasty-discover
-        else pkgs.haskell.lib.dontCheck super.tasty-discover_3_0_2;
+         if super ? tasty-discover_3_0_2
+         then pkgs.haskell.lib.dontCheck super.tasty-discover_3_0_2
+         else  super.tasty-discover;
     };
   };
 
