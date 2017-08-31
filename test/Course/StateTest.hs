@@ -27,18 +27,36 @@ import           Course.State             (State (..), distinct, eval, exec,
 test_State :: TestTree
 test_State =
   testGroup "State" [
-    functorTest
-  , applicativeTest
-  , monadTest
-  , execTest
+    execTest
   , evalTest
   , getTest
   , putTest
+  , functorTest
+  , applicativeTest
+  , monadTest
   , findMTest
   , firstRepeatTest
   , distinctTest
   , isHappyTest
   ]
+
+execTest :: TestTree
+execTest =
+  testProperty "exec" $
+    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
+
+evalTest :: TestTree
+evalTest =
+  testProperty "eval" $
+    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> eval (State f) s == fst (runState (State f) s)
+
+getTest :: TestTree
+getTest =
+  testCase "get" $ runState get 0 @?= (0,0)
+
+putTest :: TestTree
+putTest =
+  testCase "put" $ runState (put 1) 0 @?= ((),1)
 
 functorTest :: TestTree
 functorTest =
@@ -64,25 +82,6 @@ monadTest =
       let modify f = State (\s -> ((), f s))
        in runState (modify (+1) >>= \() -> modify (*2)) 7  @?= ((),16)
   ]
-
-execTest :: TestTree
-execTest =
-  testProperty "exec" $
-    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
-
-evalTest :: TestTree
-evalTest =
-  testProperty "eval" $
-    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> eval (State f) s == fst (runState (State f) s)
-
-getTest :: TestTree
-getTest =
-  testCase "get" $ runState get 0 @?= (0,0)
-
-putTest :: TestTree
-putTest =
-  testCase "put" $ runState (put 1) 0 @?= ((),1)
-
 
 findMTest :: TestTree
 findMTest =

@@ -31,6 +31,45 @@ newtype State s a =
       -> (a, s)
   }
 
+-- | Run the `State` seeded with `s` and retrieve the resulting state.
+--
+-- prop> \(Fun _ f) -> exec (State f) s == snd (runState (State f) s)
+exec ::
+  State s a
+  -> s
+  -> s
+exec =
+  error "todo: Course.State#exec"
+
+-- | Run the `State` seeded with `s` and retrieve the resulting value.
+--
+-- prop> \(Fun _ f) -> eval (State f) s == fst (runState (State f) s)
+eval ::
+  State s a
+  -> s
+  -> a
+eval =
+  error "todo: Course.State#eval"
+
+-- | A `State` where the state also distributes into the produced value.
+--
+-- >>> runState get 0
+-- (0,0)
+get ::
+  State s s
+get =
+  error "todo: Course.State#get"
+
+-- | A `State` where the resulting state is seeded with the given value.
+--
+-- >>> runState (put 1) 0
+-- ((),1)
+put ::
+  s
+  -> State s ()
+put =
+  error "todo: Course.State#put"
+
 -- | Implement the `Functor` instance for `State s`.
 --
 -- >>> runState ((+1) <$> State (\s -> (9, s * 2))) 3
@@ -81,45 +120,6 @@ instance Monad (State s) where
     -> State s b
   (=<<) =
     error "todo: Course.State (=<<)#instance (State s)"
-
--- | Run the `State` seeded with `s` and retrieve the resulting state.
---
--- prop> \(Fun _ f) -> exec (State f) s == snd (runState (State f) s)
-exec ::
-  State s a
-  -> s
-  -> s
-exec =
-  error "todo: Course.State#exec"
-
--- | Run the `State` seeded with `s` and retrieve the resulting value.
---
--- prop> \(Fun _ f) -> eval (State f) s == fst (runState (State f) s)
-eval ::
-  State s a
-  -> s
-  -> a
-eval =
-  error "todo: Course.State#eval"
-
--- | A `State` where the state also distributes into the produced value.
---
--- >>> runState get 0
--- (0,0)
-get ::
-  State s s
-get =
-  error "todo: Course.State#get"
-
--- | A `State` where the resulting state is seeded with the given value.
---
--- >>> runState (put 1) 0
--- ((),1)
-put ::
-  s
-  -> State s ()
-put =
-  error "todo: Course.State#put"
 
 -- | Find the first element in a `List` that satisfies a given predicate.
 -- It is possible that no element is found, hence an `Optional` result.
