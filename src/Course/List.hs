@@ -689,8 +689,8 @@ show' =
   listh . show
 
 instance P.Functor List where
-  fmap =
-    M.liftM
+  fmap f =
+    listh . P.fmap f . hlist
 
 instance A.Applicative List where
   (<*>) =
