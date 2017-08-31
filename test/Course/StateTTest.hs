@@ -48,7 +48,8 @@ test_StateT =
 functorTest :: TestTree
 functorTest =
   testCase "<$>" $
-    runStateT ((+1) <$> (pure 2) :: StateT Int List Int) 0 @?= ((3,0) :. Nil)
+    let st = StateT (\s -> ((2, s) :. Nil))
+     in runStateT ((+1) <$> st) 0 @?= ((3,0) :. Nil)
 
 applicativeTest :: TestTree
 applicativeTest =
@@ -68,7 +69,8 @@ monadTest :: TestTree
 monadTest =
   testGroup "Monad" [
     testCase "bind const" $
-      runStateT (const (putT 2) =<< putT 1) 0 @?= (((), 2) :. Nil)
+      let s n = StateT $ const (((), n) :. Nil)
+       in runStateT (const (s 2) =<< s 1) 0 @?= (((), 2) :. Nil)
   , testCase "modify" $
       let modify f = StateT (\s -> pure ((), f s))
        in runStateT (modify (+1) >>= \() -> modify (*2)) 7 @?= (((), 16) :. Nil)
