@@ -48,7 +48,8 @@ test_StateT =
 functorTest :: TestTree
 functorTest =
   testCase "<$>" $
-    runStateT ((+1) <$> (pure 2) :: StateT Int List Int) 0 @?= ((3,0) :. Nil)
+    let st = StateT (\s -> ((2, s) :. Nil))
+     in runStateT ((+1) <$> st) 0 @?= ((3,0) :. Nil)
 
 applicativeTest :: TestTree
 applicativeTest =
