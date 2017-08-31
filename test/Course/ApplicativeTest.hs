@@ -21,9 +21,9 @@ import           Course.Optional       (Optional (..))
 test_Applicative :: TestTree
 test_Applicative =
   testGroup "Applicative" [
-    haveFmapTest
-  , exactlyOneTest
+   exactlyOneTest
   , listTest
+  , haveFmapTest
   , optionalTest
   , functionTest
   , lift2Test
@@ -34,17 +34,6 @@ test_Applicative =
   , sequenceTest
   , replicateATest
   , filteringTest
-  ]
-
-haveFmapTest :: TestTree
-haveFmapTest =
-  testGroup "<$$>" [
-    testCase "ExactlyOne" $
-      (+ 1) <$$> (ExactlyOne 2) @?= ExactlyOne (3 :: Integer)
-  , testCase "empty List" $
-      (+ 1) <$$> Nil @?= Nil
-  , testCase "List" $
-      (+ 1) <$$> listh [1,2,3] @?= listh [2,3,4]
   ]
 
 exactlyOneTest :: TestTree
@@ -63,6 +52,17 @@ listTest =
       \x -> pure x == (x :. Nil :: List Integer)
   , testCase "<*>" $
       (+1) :. (*2) :. Nil <*> listh [1,2,3] @?= listh [2,3,4,2,4,6]
+  ]
+
+haveFmapTest :: TestTree
+haveFmapTest =
+  testGroup "<$$>" [
+    testCase "ExactlyOne" $
+      (+ 1) <$$> (ExactlyOne 2) @?= ExactlyOne (3 :: Integer)
+  , testCase "empty List" $
+      (+ 1) <$$> Nil @?= Nil
+  , testCase "List" $
+      (+ 1) <$$> listh [1,2,3] @?= listh [2,3,4]
   ]
 
 optionalTest :: TestTree
