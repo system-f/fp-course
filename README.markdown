@@ -194,7 +194,7 @@ tab completion, so you can save yourself some typing.
     > import Test.Tasty (defaultMain)
     >
     > -- Load the test module you'd like to run tests for
-    > :l test/Course.ListTest.hs
+    > :l test/Course/ListTest.hs
     >
     > -- Browse the contents of the loaded module - anything of type TestTree
     > -- may be run
