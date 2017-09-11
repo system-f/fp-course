@@ -33,3 +33,6 @@ TAGS
 # Stack
 .stack-work/
 
+# Vagrant
+.vagrant
+ops/*.retry
