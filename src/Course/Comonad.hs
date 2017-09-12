@@ -34,7 +34,7 @@ instance Comonad ExactlyOne where
 
 -- | Witness that all things with (<<=) and copure also have (<$>).
 --
--- >>> (+10) <$> ExactlyOne 7
+-- >>> (+10) <$$> ExactlyOne 7
 -- ExactlyOne 17
 (<$$>) ::
   Comonad f =>
