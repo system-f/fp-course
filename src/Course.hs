@@ -6,7 +6,7 @@ module Course (module X) where
 import Course.Anagrams as X
 import Course.Applicative as X
 import Course.Cheque as X
-import Course.Comonad as X
+import Course.Comonad as X (Comonad (..))
 import Course.Compose as X
 import Course.Core as X
 import Course.ExactlyOne as X
