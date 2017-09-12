@@ -2,10 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE InstanceSigs #-}
 
-module Course.Comonad
-(
-  Comonad(..)
-) where
+module Course.Comonad where
 
 import Course.Core
 import Course.ExactlyOne
@@ -39,10 +36,10 @@ instance Comonad ExactlyOne where
 --
 -- >>> (+10) <$> ExactlyOne 7
 -- ExactlyOne 17
-(<$>) ::
+(<$$>) ::
   Comonad f =>
   (a -> b)
   -> f a
   -> f b
-(<$>) =
+(<$$>) =
   error "todo: Course.Comonad#(<$>)"
