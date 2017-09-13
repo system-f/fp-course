@@ -4,13 +4,17 @@
 module Course.ListZipperTest where
 
 
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+import           Test.QuickCheck       (forAllShrink)
+import           Test.Tasty            (TestTree, testGroup)
+import           Test.Tasty.HUnit      (testCase, (@?=))
+import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
-import           Course.Functor    ((<$>))
-import           Course.List       (List (..))
-import           Course.ListZipper (MaybeListZipper (..), fromList, zipper)
+import           Course.Functor        ((<$>))
+import           Course.List           (List (..))
+import           Course.ListZipper     (MaybeListZipper (..), fromList, zipper, toListZ)
+
+import           Course.ListTest       (genIntegerList, shrinkList)
 
 test_ListZipper :: TestTree
 test_ListZipper =
@@ -34,4 +38,7 @@ fromListTest :: TestTree
 fromListTest =
   testGroup "fromList" [
     testCase "non-empty" $ fromList (1 :. 2 :. 3 :. Nil) @?= IsZ (zipper [] 1 [2,3])
+  , testCase "empty" $ fromList Nil @?= (IsNotZ :: MaybeListZipper Integer)
+  , testProperty "round trip" $
+      forAllShrink genIntegerList shrinkList (\xs -> toListZ (fromList xs) == xs)
   ]
