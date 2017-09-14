@@ -4,6 +4,8 @@
 module Course.ListZipperTest where
 
 
+import           Control.Applicative   (liftA2)
+import           Test.QuickCheck       (Arbitrary (arbitrary), Gen, forAll)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
@@ -11,12 +13,13 @@ import           Test.Tasty.QuickCheck (testProperty)
 import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
-import           Course.ListZipper     (MaybeListZipper (..), fromList,
-                                        setFocus, toList, toListZ, toOptional,
-                                        withFocus, zipper)
+import           Course.ListZipper     (MaybeListZipper (..), findLeft,
+                                        fromList, hasLeft, hasRight, setFocus,
+                                        toList, toListZ, toOptional, withFocus,
+                                        zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
-import           Course.ListTest       (forAllLists)
+import           Course.Gens           (forAllLists, genIntegerList)
 
 test_ListZipper :: TestTree
 test_ListZipper =
@@ -28,6 +31,9 @@ test_ListZipper =
   , toListTest
   , withFocusTest
   , setFocusTest
+  , hasLeftTest
+  , hasRightTest
+  , findLeftTest
   ]
 
 functorTest :: TestTree
@@ -84,3 +90,35 @@ setFocusTest =
   , testCase "left and right" $
       setFocus 1 (zipper [1,0] 2 [3,4]) @?= zipper [1,0] 1 [3,4]
   ]
+
+hasLeftTest :: TestTree
+hasLeftTest =
+  testGroup "hasLeft" [
+    testCase "left and right" $ hasLeft (zipper [1,0] 2 [3,4]) @?= True
+  , testCase "empty left" $ hasLeft (zipper [] 0 [1,2]) @?= False
+  ]
+
+hasRightTest :: TestTree
+hasRightTest =
+  testGroup "hasRight" [
+    testCase "left and right" $ hasRight (zipper [1,0] 2 [3,4]) @?= True
+  , testCase "empty right" $ hasRight (zipper [1,0] 2 []) @?= False
+  ]
+
+findLeftTest :: TestTree
+findLeftTest =
+  testGroup "findLeft" [
+    testProperty "missing element returns IsNotZ" $
+      forAll genListAndBool (\(xs, p) -> findLeft (const p) -<< fromList xs == IsNotZ)
+  , testCase "found in left" $
+      findLeft (== 1) (zipper [2,1] 3 [4,5]) @?= IsZ (zipper [] 1 [2,3,4,5])
+  , testCase "not found" $
+      findLeft (== 6) (zipper [2,1] 3 [4,5]) @?= IsNotZ
+  , testCase "one match in left" $
+      findLeft (== 1) (zipper [2,1] 1 [4,5]) @?= IsZ (zipper [] 1 [2,1,4,5])
+  , testCase "multiple matches in left" $
+      findLeft (== 1) (zipper [1,2,1] 3 [4,5]) @?= IsZ (zipper [2,1] 1 [3,4,5])
+  ]
+
+genListAndBool :: Gen (List Integer, Bool)
+genListAndBool = liftA2 (,) genIntegerList arbitrary
