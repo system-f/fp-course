@@ -6,7 +6,7 @@ module Course.ListTest where
 import           Control.Applicative   (liftA2, liftA3)
 import qualified Prelude               as P (fmap, foldr, length)
 
-import           Test.QuickCheck       (Arbitrary (..), Gen, forAllShrink)
+import           Test.QuickCheck       (Testable, Property, Arbitrary (..), Gen, forAllShrink)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
@@ -70,7 +70,7 @@ lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
   , testProperty "summing a list of 1s is equal to its length" $
-      forAllShrink genIntegerList shrinkList (\x -> P.length (hlist x) == length x)
+      forAllLists (\x -> P.length (hlist x) == length x)
   ]
 
 mapTest :: TestTree
@@ -81,7 +81,7 @@ mapTest =
   , testProperty "headOr after map" $
       \x -> headOr (x :: Integer) (map (+1) infinity) == 1
   , testProperty "map id is id" $
-      forAllShrink genIntegerList shrinkList (\x -> map id x == x)
+      forAllLists (\x -> map id x == x)
   ]
 
 filterTest :: TestTree
@@ -92,9 +92,9 @@ filterTest =
   , testProperty "filter (const True) is identity (headOr)" $
       \x -> headOr x (filter (const True) infinity) == 0
   , testProperty "filter (const True) is identity" $
-      forAllShrink genIntegerList shrinkList (\x -> filter (const True) x == x)
+      forAllLists (\x -> filter (const True) x == x)
   , testProperty "filter (const False) is the empty list" $
-      forAllShrink genIntegerList shrinkList (\x -> filter (const False) x == Nil)
+      forAllLists (\x -> filter (const False) x == Nil)
   ]
 
 appendTest :: TestTree
@@ -109,7 +109,7 @@ appendTest =
   , testProperty "associativity" $
       forAllShrink genThreeLists shrinkThreeLists (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
   , testProperty "append to empty list" $
-      forAllShrink genIntegerList shrinkList (\x -> x ++ Nil == x)
+      forAllLists (\x -> x ++ Nil == x)
   ]
 
 flattenTest :: TestTree
@@ -197,7 +197,7 @@ reverseTest =
   , testProperty "reverse then append is same as append then reverse" $
       forAllShrink genTwoLists shrinkTwoLists (\(x, y) -> reverse x ++ reverse y == reverse (y ++ x))
   , testProperty "" $
-      forAllShrink genIntegerList shrinkList (\x -> reverse (x :. Nil) == x :. Nil)
+      forAllLists (\x -> reverse (x :. Nil) == x :. Nil)
   ]
 
 produceTest :: TestTree
@@ -245,3 +245,6 @@ genListOfLists = P.fmap (P.fmap listh) (genList :: (Gen (List [Integer])))
 
 shrinkListOfLists :: Arbitrary a => List (List a) -> [List (List a)]
 shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
+
+forAllLists :: Testable prop => (List Integer -> prop) -> Property
+forAllLists = forAllShrink genIntegerList shrinkList
