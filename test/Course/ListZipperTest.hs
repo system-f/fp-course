@@ -23,6 +23,7 @@ test_ListZipper =
     functorTest
   , functorMaybeTest
   , fromListTest
+  , toOptionalTest
   ]
 
 functorTest :: TestTree
