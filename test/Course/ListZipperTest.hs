@@ -14,9 +14,9 @@ import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
 import           Course.ListZipper     (MaybeListZipper (..), findLeft,
-                                        fromList, hasLeft, hasRight, setFocus,
-                                        toList, toListZ, toOptional, withFocus,
-                                        zipper, (-<<))
+                                        findRight, fromList, hasLeft, hasRight,
+                                        setFocus, toList, toListZ, toOptional,
+                                        withFocus, zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
 import           Course.Gens           (forAllLists, genIntegerList)
@@ -34,6 +34,7 @@ test_ListZipper =
   , hasLeftTest
   , hasRightTest
   , findLeftTest
+  , findRightTest
   ]
 
 functorTest :: TestTree
@@ -118,6 +119,21 @@ findLeftTest =
       findLeft (== 1) (zipper [2,1] 1 [4,5]) @?= IsZ (zipper [] 1 [2,1,4,5])
   , testCase "multiple matches in left" $
       findLeft (== 1) (zipper [1,2,1] 3 [4,5]) @?= IsZ (zipper [2,1] 1 [3,4,5])
+  ]
+
+findRightTest :: TestTree
+findRightTest =
+  testGroup "findRight" [
+    testProperty "missing element returns IsNotZ" $
+      forAllLists (\xs -> findRight (const False) -<< fromList xs == IsNotZ)
+  , testCase "found in right" $
+      findRight (== 5) (zipper [2,1] 3 [4,5]) @?= IsZ (zipper [4,3,2,1] 5 [])
+  , testCase "not found" $
+      findRight (== 6) (zipper [2,1] 3 [4,5]) @?= IsNotZ
+  , testCase "one match in right" $
+      findRight (== 1) (zipper [2,3] 1 [4,5,1]) @?= IsZ (zipper [5,4,1,2,3] 1 [])
+  , testCase "multiple matches in right" $
+      findRight (== 1) (zipper [2,3] 1 [1,4,5,1]) @?= IsZ (zipper [1,2,3] 1 [4,5,1])
   ]
 
 genListAndBool :: Gen (List Integer, Bool)
