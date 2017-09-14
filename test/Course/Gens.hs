@@ -47,3 +47,16 @@ shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
 
 forAllLists :: Testable prop => (List Integer -> prop) -> Property
 forAllLists = forAllShrink genIntegerList shrinkList
+
+-- (List Integer) and a Bool
+genListAndBool :: Gen (List Integer, Bool)
+genListAndBool = liftA2 (,) genIntegerList arbitrary
+
+shrinkListAndBool :: (List Integer, Bool) -> [(List Integer, Bool)]
+shrinkListAndBool (xs,b) = liftA2 (,) (shrinkList xs) (shrink b)
+
+forAllListsAndBool :: Testable prop
+                  => ((List Integer, Bool) -> prop)
+                  -> Property
+forAllListsAndBool =
+  forAllShrink genListAndBool shrinkListAndBool
