@@ -11,12 +11,13 @@ import           Test.Tasty.QuickCheck (testProperty)
 import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
-import           Course.ListZipper     (ListZipper, MaybeListZipper (..), dropLefts,
-                                        findLeft, findRight, fromList, hasLeft,
-                                        hasRight, moveLeft, moveLeftLoop,
-                                        moveRight, moveRightLoop, setFocus,
-                                        swapLeft, swapRight, toList, toListZ,
-                                        toOptional, withFocus, zipper, (-<<))
+import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
+                                        dropLefts, dropRights, findLeft,
+                                        findRight, fromList, hasLeft, hasRight,
+                                        moveLeft, moveLeftLoop, moveRight,
+                                        moveRightLoop, setFocus, swapLeft,
+                                        swapRight, toList, toListZ, toOptional,
+                                        withFocus, zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
 import           Course.Gens           (forAllLists, forAllListsAndBool)
@@ -41,6 +42,8 @@ test_ListZipper =
   , moveRightTest
   , swapLeftTest
   , swapRightTest
+  , dropLeftsTest
+  , dropRightsTest
   ]
 
 functorTest :: TestTree
@@ -203,6 +206,17 @@ dropLeftsTest =
       dropLefts (zipper [3,2,1] 4 [5,6,7]) @?= zipper [] 4 [5,6,7]
   , testCase "empty left" $
       dropLefts (zipper [] 1 [2,3,4]) @?= zipper [] 1 [2,3,4]
-  , testProperty "dropLefts empties left of zipper" $
-      (\(l,x,r) -> dropLefts (zipper l x r) == (zipper [] x r :: ListZipper Integer))
+  , testProperty "dropLefts empties left of zipper"
+      (\l x r -> dropLefts (zipper l x r) == (zipper [] x r :: ListZipper Integer))
+  ]
+
+dropRightsTest :: TestTree
+dropRightsTest =
+  testGroup "dropRights" [
+    testCase "with right" $
+      dropRights (zipper [3,2,1] 4 [5,6,7]) @?= zipper [3,2,1] 4 []
+  , testCase "empty right" $
+      dropRights (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 4 []
+  , testProperty "dropRights empties right of zipper"
+      (\l x r -> dropRights (zipper l x r) == (zipper l x [] :: ListZipper Integer))
   ]
