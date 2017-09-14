@@ -16,9 +16,9 @@ import           Course.List           (List (..), isEmpty)
 import           Course.ListZipper     (MaybeListZipper (..), findLeft,
                                         findRight, fromList, hasLeft, hasRight,
                                         moveLeft, moveLeftLoop, moveRight,
-                                        moveRightLoop, setFocus, toList,
-                                        toListZ, toOptional, withFocus, zipper,
-                                        (-<<))
+                                        moveRightLoop, setFocus, swapLeft,
+                                        swapRight, toList, toListZ, toOptional,
+                                        withFocus, zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
 import           Course.Gens           (forAllLists, genIntegerList)
@@ -41,6 +41,8 @@ test_ListZipper =
   , moveRightLoopTest
   , moveLeftTest
   , moveRightTest
+  , swapLeftTest
+  , swapRightTest
   ]
 
 functorTest :: TestTree
@@ -176,6 +178,24 @@ moveRightTest =
       moveRight (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [4,3,2,1] 5 [6,7])
   , testCase "empty right" $
       moveRight (zipper [3,2,1] 4 []) @?= IsNotZ
+  ]
+
+swapLeftTest :: TestTree
+swapLeftTest =
+  testGroup "swapLeft" [
+    testCase "with left" $
+      swapLeft (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [4,2,1] 3 [5,6,7])
+  , testCase "empty left" $
+      swapLeft (zipper [] 1 [2,3,4]) @?= IsNotZ
+  ]
+
+swapRightTest :: TestTree
+swapRightTest =
+  testGroup "swapRight" [
+    testCase "with right" $
+      swapRight (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [3,2,1] 5 [4,6,7])
+  , testCase "empty right" $
+      swapRight (zipper [3,2,1] 4 []) @?= IsNotZ
   ]
 
 genListAndBool :: Gen (List Integer, Bool)
