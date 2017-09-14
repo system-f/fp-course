@@ -10,14 +10,14 @@ import qualified Prelude                  as P ((++))
 import           Test.QuickCheck.Function (Fun (..))
 import           Test.Tasty               (TestTree, testGroup)
 import           Test.Tasty.HUnit         (testCase, (@?=))
-import           Test.Tasty.QuickCheck    (forAllShrink, testProperty)
+import           Test.Tasty.QuickCheck    (testProperty)
 
 import           Course.Applicative       (pure, (<*>))
 import           Course.Core
 import           Course.Functor           ((<$>))
 import           Course.List              (List (..), filter, flatMap, hlist,
                                            length, listh, span, (++))
-import           Course.ListTest          (genIntegerList, shrinkList)
+import           Course.Gens          (forAllLists)
 import           Course.Monad
 import           Course.Optional          (Optional (..))
 import           Course.State             (State (..), distinct, eval, exec,
@@ -97,14 +97,14 @@ findMTest =
 firstRepeatTest :: TestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" $ forAllShrink genIntegerList shrinkList (\xs ->
+    testProperty "finds repeats" $ forAllLists (\xs ->
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
            in nub xs' == xs'
         Full x -> length (filter (== x) xs) > 1
     )
-  , testProperty "" $ forAllShrink genIntegerList shrinkList (\xs ->
+  , testProperty "" $ forAllLists (\xs ->
       case firstRepeat xs of
         Empty -> True
         Full x ->
@@ -119,9 +119,9 @@ distinctTest :: TestTree
 distinctTest =
   testGroup "distinct" [
     testProperty "No repeats after distinct" $
-      forAllShrink genIntegerList shrinkList (\xs -> firstRepeat (distinct xs) == Empty)
+      forAllLists (\xs -> firstRepeat (distinct xs) == Empty)
   , testProperty "" $
-      forAllShrink genIntegerList shrinkList (\xs -> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
+      forAllLists (\xs -> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
   ]
 
 isHappyTest :: TestTree
