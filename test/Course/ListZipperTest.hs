@@ -11,8 +11,9 @@ import           Test.Tasty.QuickCheck (testProperty)
 import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
-import           Course.ListZipper     (MaybeListZipper (..), fromList, toList,
-                                        toListZ, toOptional, withFocus, zipper)
+import           Course.ListZipper     (MaybeListZipper (..), fromList,
+                                        setFocus, toList, toListZ, toOptional,
+                                        withFocus, zipper)
 import           Course.Optional       (Optional (Empty))
 
 import           Course.ListTest       (forAllLists)
@@ -26,6 +27,7 @@ test_ListZipper =
   , toOptionalTest
   , toListTest
   , withFocusTest
+  , setFocusTest
   ]
 
 functorTest :: TestTree
@@ -72,4 +74,13 @@ withFocusTest =
       withFocus (+1) (zipper [] 0 [1]) @?= zipper [] 1 [1]
   , testCase "left and right" $
       withFocus (+1) (zipper [1,0] 2 [3,4]) @?= zipper [1,0] 3 [3,4]
+  ]
+
+setFocusTest :: TestTree
+setFocusTest =
+  testGroup "setFocus" [
+    testCase "empty left" $
+      setFocus 1 (zipper [] 0 [1]) @?= zipper [] 1 [1]
+  , testCase "left and right" $
+      setFocus 1 (zipper [1,0] 2 [3,4]) @?= zipper [1,0] 1 [3,4]
   ]
