@@ -27,9 +27,9 @@ test_ListZipper =
   testGroup "ListZipper" [
     functorTest
   , functorMaybeTest
+  , toListTest
   , fromListTest
   , toOptionalTest
-  , toListTest
   , withFocusTest
   , setFocusTest
   , hasLeftTest
@@ -56,6 +56,17 @@ functorMaybeTest =
   testCase "MaybeListZipper (<$>)" $
     (+1) <$> (IsZ (zipper [3,2,1] 4 [5,6,7])) @?= IsZ (zipper [4,3,2] 5 [6,7,8])
 
+toListTest :: TestTree
+toListTest =
+  testGroup "toList" [
+    testCase "Optional empty list" $
+      toList <$> Empty @?= (Empty :: Optional (List Int))
+  , testCase "empty left" $
+      toList (zipper [] 1 [2,3,4]) @?= (1:.2:.3:.4:.Nil)
+  , testCase "lefts and rights" $
+      toList (zipper [3,2,1] 4 [5,6,7]) @?= (1:.2:.3:.4:.5:.6:.7:.Nil)
+  ]
+
 fromListTest :: TestTree
 fromListTest =
   testGroup "fromList" [
@@ -70,17 +81,6 @@ toOptionalTest =
   testGroup "toOptional" [
     testProperty "empty" $
       forAllLists (\xs -> isEmpty xs == (toOptional (fromList xs) == Empty))
-  ]
-
-toListTest :: TestTree
-toListTest =
-  testGroup "toList" [
-    testCase "Optional empty list" $
-      toList <$> toOptional (fromList Nil) @?= (Empty :: Optional (List Int))
-  , testCase "empty left" $
-      toList (zipper [] 1 [2,3,4]) @?= (1:.2:.3:.4:.Nil)
-  , testCase "lefts and rights" $
-      toList (zipper [3,2,1] 4 [5,6,7]) @?= (1:.2:.3:.4:.5:.6:.7:.Nil)
   ]
 
 withFocusTest :: TestTree
