@@ -12,13 +12,14 @@ import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
 import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
-                                        dropLefts, dropRights, findLeft,
+                                        dropLefts, dropRights, end, findLeft,
                                         findRight, fromList, hasLeft, hasRight,
-                                        moveLeft, moveLeftLoop, moveLeftN,
-                                        moveLeftN', moveRight, moveRightLoop,
-                                        moveRightN, moveRightN', setFocus,
-                                        swapLeft, swapRight, toList, toListZ,
-                                        toOptional, withFocus, zipper, (-<<))
+                                        index, moveLeft, moveLeftLoop,
+                                        moveLeftN, moveLeftN', moveRight,
+                                        moveRightLoop, moveRightN, moveRightN',
+                                        nth, setFocus, swapLeft, swapRight,
+                                        toList, toListZ, toOptional, withFocus,
+                                        zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
 import           Course.Gens           (forAllLists, forAllListsAndBool)
@@ -69,12 +70,12 @@ test_ListZipper =
 functorTest :: TestTree
 functorTest =
   testCase "ListZipper (<$>)" $
-    (+1) <$> (zipper [3,2,1] 4 [5,6,7]) @?= zipper [4,3,2] 5 [6,7,8]
+    (+1) <$> defaultZipper @?= zipper [4,3,2] 5 [6,7,8]
 
 functorMaybeTest :: TestTree
 functorMaybeTest =
   testCase "MaybeListZipper (<$>)" $
-    (+1) <$> (IsZ (zipper [3,2,1] 4 [5,6,7])) @?= IsZ (zipper [4,3,2] 5 [6,7,8])
+    (+1) <$> (IsZ defaultZipper) @?= IsZ (zipper [4,3,2] 5 [6,7,8])
 
 toListTest :: TestTree
 toListTest =
@@ -84,7 +85,7 @@ toListTest =
   , testCase "empty left" $
       toList (zipper [] 1 [2,3,4]) @?= (1:.2:.3:.4:.Nil)
   , testCase "lefts and rights" $
-      toList (zipper [3,2,1] 4 [5,6,7]) @?= (1:.2:.3:.4:.5:.6:.7:.Nil)
+      toList defaultZipper @?= (1:.2:.3:.4:.5:.6:.7:.Nil)
   ]
 
 fromListTest :: TestTree
@@ -171,7 +172,7 @@ moveLeftLoopTest :: TestTree
 moveLeftLoopTest =
   testGroup "moveLeftLoop" [
     testCase "with left" $
-      moveLeftLoop (zipper [3,2,1] 4 [5,6,7]) @?= zipper [2,1] 3 [4,5,6,7]
+      moveLeftLoop defaultZipper @?= zipper [2,1] 3 [4,5,6,7]
   , testCase "empty left" $
       moveLeftLoop (zipper [] 1 [2,3,4]) @?= zipper [3,2,1] 4 []
   ]
@@ -180,7 +181,7 @@ moveRightLoopTest :: TestTree
 moveRightLoopTest =
   testGroup "moveRightLoop" [
     testCase "with right" $
-      moveRightLoop (zipper [3,2,1] 4 [5,6,7]) @?= zipper [4,3,2,1] 5 [6,7]
+      moveRightLoop defaultZipper @?= zipper [4,3,2,1] 5 [6,7]
   , testCase "empty right" $
       moveRightLoop (zipper [3,2,1] 4 []) @?= zipper [] 1 [2,3,4]
   ]
@@ -189,7 +190,7 @@ moveLeftTest :: TestTree
 moveLeftTest =
   testGroup "moveLeft" [
     testCase "with left" $
-      moveLeft (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [2,1] 3 [4,5,6,7])
+      moveLeft defaultZipper @?= IsZ (zipper [2,1] 3 [4,5,6,7])
   , testCase "empty left" $
       moveLeft (zipper [] 1 [2,3,4]) @?= IsNotZ
   ]
@@ -198,7 +199,7 @@ moveRightTest :: TestTree
 moveRightTest =
   testGroup "moveRight" [
     testCase "with right" $
-      moveRight (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [4,3,2,1] 5 [6,7])
+      moveRight defaultZipper @?= IsZ (zipper [4,3,2,1] 5 [6,7])
   , testCase "empty right" $
       moveRight (zipper [3,2,1] 4 []) @?= IsNotZ
   ]
@@ -207,7 +208,7 @@ swapLeftTest :: TestTree
 swapLeftTest =
   testGroup "swapLeft" [
     testCase "with left" $
-      swapLeft (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [4,2,1] 3 [5,6,7])
+      swapLeft defaultZipper @?= IsZ (zipper [4,2,1] 3 [5,6,7])
   , testCase "empty left" $
       swapLeft (zipper [] 1 [2,3,4]) @?= IsNotZ
   ]
@@ -216,7 +217,7 @@ swapRightTest :: TestTree
 swapRightTest =
   testGroup "swapRight" [
     testCase "with right" $
-      swapRight (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [3,2,1] 5 [4,6,7])
+      swapRight defaultZipper @?= IsZ (zipper [3,2,1] 5 [4,6,7])
   , testCase "empty right" $
       swapRight (zipper [3,2,1] 4 []) @?= IsNotZ
   ]
@@ -225,7 +226,7 @@ dropLeftsTest :: TestTree
 dropLeftsTest =
   testGroup "dropLeft" [
     testCase "with left" $
-      dropLefts (zipper [3,2,1] 4 [5,6,7]) @?= zipper [] 4 [5,6,7]
+      dropLefts defaultZipper @?= zipper [] 4 [5,6,7]
   , testCase "empty left" $
       dropLefts (zipper [] 1 [2,3,4]) @?= zipper [] 1 [2,3,4]
   , testProperty "dropLefts empties left of zipper"
@@ -236,7 +237,7 @@ dropRightsTest :: TestTree
 dropRightsTest =
   testGroup "dropRights" [
     testCase "with right" $
-      dropRights (zipper [3,2,1] 4 [5,6,7]) @?= zipper [3,2,1] 4 []
+      dropRights defaultZipper @?= zipper [3,2,1] 4 []
   , testCase "empty right" $
       dropRights (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 4 []
   , testProperty "dropRights empties right of zipper"
@@ -265,15 +266,15 @@ moveLeftN'Test :: TestTree
 moveLeftN'Test =
   testGroup "moveLeftN'" [
     testCase "positive - out of bounds both sides" $
-      moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+      moveLeftN' 4 defaultZipper @?= Left 3
   , testCase "positive in range" $
-      moveLeftN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [2,1] 3 [4,5,6,7])
+      moveLeftN' 1 defaultZipper @?= Right (zipper [2,1] 3 [4,5,6,7])
   , testProperty "moving zero is `Right . id`" $
       (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveLeftN' 0 lz == (Right . id $ lz))
   , testCase "negative in range" $
-      moveLeftN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [5,4,3,2,1] 6 [7])
+      moveLeftN' (-2) defaultZipper @?= Right (zipper [5,4,3,2,1] 6 [7])
   , testCase "negative out of bounds" $
-      moveLeftN' (-4 ) (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+      moveLeftN' (-4 ) defaultZipper @?= Left 3
   , testCase "positive - out of bounds on left only" $
       moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7,8,9]) @?= Left 3
   , testCase "negative - out of bounds on right only" $
@@ -284,19 +285,24 @@ moveRightN'Test :: TestTree
 moveRightN'Test =
   testGroup "moveRightN'" [
     testCase "positive - out of bounds both sides" $
-      moveRightN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+      moveRightN' 4 defaultZipper @?= Left 3
   , testCase "positive in range" $
-      moveRightN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [4,3,2,1] 5 [6,7])
+      moveRightN' 1 defaultZipper @?= Right (zipper [4,3,2,1] 5 [6,7])
   , testProperty "moving zero is `Right . id`" $
       (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveRightN' 0 lz == (Right . id $ lz))
   , testCase "negative in range" $
-      moveRightN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [1] 2 [3,4,5,6,7])
+      moveRightN' (-2) defaultZipper @?= Right (zipper [1] 2 [3,4,5,6,7])
   , testCase "negative - out of bounds both sides" $
-      moveRightN' (-4) (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+      moveRightN' (-4) defaultZipper @?= Left 3
   ]
 
 nthTest :: TestTree
-nthTest = error "todo"
+nthTest =
+  testGroup "nthTest" [
+    testCase "have 1"    $ nth 1 defaultZipper @?= IsZ (zipper [1] 2 [3,4,5,6,7])
+  , testCase "have 5"    $ nth 5 defaultZipper @?= IsZ (zipper [5,4,3,2,1] 6 [7])
+  , testCase "missing 8" $ nth 8 defaultZipper @?= IsNotZ
+  ]
 
 indexTest :: TestTree
 indexTest = error "todo"
@@ -339,3 +345,6 @@ traversableTest = error "todo"
 
 traversableMaybeTest :: TestTree
 traversableMaybeTest = error "todo"
+
+defaultZipper :: ListZipper Integer
+defaultZipper = zipper [3,2,1] 4 [5,6,7]
