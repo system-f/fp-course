@@ -14,8 +14,9 @@ import           Course.List           (List (..), isEmpty)
 import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
                                         dropLefts, dropRights, findLeft,
                                         findRight, fromList, hasLeft, hasRight,
-                                        moveLeft, moveLeftLoop, moveRight,
-                                        moveRightLoop, setFocus, swapLeft,
+                                        moveLeft, moveLeftLoop, moveLeftN,
+                                        moveLeftN', moveRight, moveRightLoop,
+                                        moveRightN, setFocus, swapLeft,
                                         swapRight, toList, toListZ, toOptional,
                                         withFocus, zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
@@ -44,6 +45,9 @@ test_ListZipper =
   , swapRightTest
   , dropLeftsTest
   , dropRightsTest
+  , moveLeftNTest
+  , moveRightNTest
+  , moveLeftN'Test
   ]
 
 functorTest :: TestTree
@@ -219,4 +223,41 @@ dropRightsTest =
       dropRights (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 4 []
   , testProperty "dropRights empties right of zipper"
       (\l x r -> dropRights (zipper l x r) == (zipper l x [] :: ListZipper Integer))
+  ]
+
+moveLeftNTest :: TestTree
+moveLeftNTest =
+  testGroup "moveLeftN" [
+    testCase "positive moves" $
+      moveLeftN 2 (zipper [2,1,0] 3 [4,5,6]) @?= IsZ (zipper [0] 1 [2,3,4,5,6])
+  , testCase "negative moves" $
+      moveLeftN (-1) (zipper [2,1,0] 3 [4,5,6]) @?= IsZ (zipper [3,2,1,0] 4 [5,6])
+  ]
+
+moveRightNTest :: TestTree
+moveRightNTest =
+  testGroup "moveRightN" [
+    testCase "positive moves" $
+      moveRightN 1 (zipper [2,1,0] 3 [4,5,6]) @?= IsZ (zipper [3,2,1,0] 4 [5,6])
+  , testCase "negative moves" $
+      moveRightN (-1) (zipper [2,1,0] 3 [4,5,6]) @?= IsZ (zipper [1,0] 2 [3,4,5,6])
+  ]
+
+moveLeftN'Test :: TestTree
+moveLeftN'Test =
+  testGroup "moveLeftN'" [
+    testCase "positive - out of bounds both sides" $
+      moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+  , testCase "positive in range" $
+      moveLeftN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [2,1] 3 [4,5,6,7])
+  , testProperty "moving zero is `Right . id`" $
+      (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveLeftN' 0 lz == (Right . id $ lz))
+  , testCase "negative in range" $
+      moveLeftN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [5,4,3,2,1] 6 [7])
+  , testCase "negative out of bounds" $
+      moveLeftN' (-4 ) (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+  , testCase "positive - out of bounds on left only" $
+      moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7,8,9]) @?= Left 3
+  , testCase "negative - out of bounds on right only" $
+      moveLeftN' (-4) (zipper [5,4,3,2,1] 6 [7,8,9]) @?= Left 3
   ]
