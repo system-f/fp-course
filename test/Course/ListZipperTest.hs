@@ -61,6 +61,7 @@ test_ListZipper =
   , applicativeMaybeTest
   , extendTest
   , extendMaybeTest
+  , comonadTest
   , traversableTest
   , traversableMaybeTest
   ]
@@ -329,6 +330,9 @@ extendTest = error "todo"
 
 extendMaybeTest :: TestTree
 extendMaybeTest = error "todo"
+
+comonadTest :: TestTree
+comonadTest = error "todo"
 
 traversableTest :: TestTree
 traversableTest = error "todo"
