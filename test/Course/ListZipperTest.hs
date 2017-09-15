@@ -132,6 +132,8 @@ findLeftTest =
       findLeft (== 1) (zipper [2,1] 1 [4,5]) @?= IsZ (zipper [] 1 [2,1,4,5])
   , testCase "multiple matches in left" $
       findLeft (== 1) (zipper [1,2,1] 3 [4,5]) @?= IsZ (zipper [2,1] 1 [3,4,5])
+  , testCase "elements shifted to right correctly" $
+      findLeft (== 1) (zipper [3,4,1,5] 9 [2,7]) @?= IsZ (zipper [5] 1 [4,3,9,2,7])
   ]
 
 findRightTest :: TestTree
