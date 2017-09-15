@@ -16,9 +16,9 @@ import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
                                         findRight, fromList, hasLeft, hasRight,
                                         moveLeft, moveLeftLoop, moveLeftN,
                                         moveLeftN', moveRight, moveRightLoop,
-                                        moveRightN, setFocus, swapLeft,
-                                        swapRight, toList, toListZ, toOptional,
-                                        withFocus, zipper, (-<<))
+                                        moveRightN, moveRightN', setFocus,
+                                        swapLeft, swapRight, toList, toListZ,
+                                        toOptional, withFocus, zipper, (-<<))
 import           Course.Optional       (Optional (Empty))
 
 import           Course.Gens           (forAllLists, forAllListsAndBool)
@@ -48,6 +48,21 @@ test_ListZipper =
   , moveLeftNTest
   , moveRightNTest
   , moveLeftN'Test
+  , moveRightN'Test
+  , nthTest
+  , indexTest
+  , endTest
+  , startTest
+  , deletePullLeftTest
+  , deletePullRightTest
+  , insertPushLeftTest
+  , insertPushRightTest
+  , applicativeTest
+  , applicativeMaybeTest
+  , extendTest
+  , extendMaybeTest
+  , traversableTest
+  , traversableMaybeTest
   ]
 
 functorTest :: TestTree
@@ -263,3 +278,60 @@ moveLeftN'Test =
   , testCase "negative - out of bounds on right only" $
       moveLeftN' (-4) (zipper [5,4,3,2,1] 6 [7,8,9]) @?= Left 3
   ]
+
+moveRightN'Test :: TestTree
+moveRightN'Test =
+  testGroup "moveRightN'" [
+    testCase "positive - out of bounds both sides" $
+      moveRightN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+  , testCase "positive in range" $
+      moveRightN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [4,3,2,1] 5 [6,7])
+  , testProperty "moving zero is `Right . id`" $
+      (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveRightN' 0 lz == (Right . id $ lz))
+  , testCase "negative in range" $
+      moveRightN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [1] 2 [3,4,5,6,7])
+  , testCase "negative - out of bounds both sides" $
+      moveRightN' (-4) (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
+  ]
+
+nthTest :: TestTree
+nthTest = error "todo"
+
+indexTest :: TestTree
+indexTest = error "todo"
+
+endTest :: TestTree
+endTest = error "todo"
+
+startTest :: TestTree
+startTest = error "todo"
+
+deletePullLeftTest :: TestTree
+deletePullLeftTest = error "todo"
+
+deletePullRightTest :: TestTree
+deletePullRightTest = error "todo"
+
+insertPushLeftTest :: TestTree
+insertPushLeftTest = error "todo"
+
+insertPushRightTest :: TestTree
+insertPushRightTest = error "todo"
+
+applicativeTest :: TestTree
+applicativeTest = error "todo"
+
+applicativeMaybeTest :: TestTree
+applicativeMaybeTest = error "todo"
+
+extendTest :: TestTree
+extendTest = error "todo"
+
+extendMaybeTest :: TestTree
+extendMaybeTest = error "todo"
+
+traversableTest :: TestTree
+traversableTest = error "todo"
+
+traversableMaybeTest :: TestTree
+traversableMaybeTest = error "todo"
