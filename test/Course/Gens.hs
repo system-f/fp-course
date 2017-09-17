@@ -3,13 +3,13 @@
 
 module Course.Gens where
 
-import           Control.Applicative (liftA2, liftA3)
-import qualified Prelude             as P (fmap, foldr)
+import qualified Prelude             as P (fmap, foldr, (<$>), (<*>))
 import           Test.QuickCheck     (Arbitrary (..), Gen, Property, Testable,
                                       forAllShrink)
 
 import           Course.Core
 import           Course.List         (List (..), hlist, listh)
+import           Course.ListZipper   (ListZipper (..), zipper)
 
 genList :: Arbitrary a => Gen (List a)
 genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
@@ -28,13 +28,13 @@ shrinkIntegerAndList :: (Integer, List Integer) -> [(Integer, List Integer)]
 shrinkIntegerAndList = P.fmap (P.fmap listh) . shrink . P.fmap hlist
 
 genTwoLists :: Gen (List Integer, List Integer)
-genTwoLists = liftA2 (,) genIntegerList genIntegerList -- (arbitrary :: (List Integer, List Integer))
+genTwoLists = (,) P.<$> genIntegerList P.<*> genIntegerList
 
 shrinkTwoLists :: (List Integer, List Integer) -> [(List Integer, List Integer)]
 shrinkTwoLists (a,b) = P.fmap (\(as,bs) -> (listh as, listh bs)) $ shrink (hlist a, hlist b)
 
 genThreeLists :: Gen (List Integer, List Integer, List Integer)
-genThreeLists = liftA3 (,,) genIntegerList genIntegerList genIntegerList
+genThreeLists = (,,) P.<$> genIntegerList P.<*> genIntegerList P.<*> genIntegerList
 
 shrinkThreeLists :: (List Integer, List Integer, List Integer) -> [(List Integer, List Integer, List Integer)]
 shrinkThreeLists (a,b,c) = P.fmap (\(as,bs,cs) -> (listh as, listh bs, listh cs)) $ shrink (hlist a, hlist b, hlist c)
@@ -50,13 +50,28 @@ forAllLists = forAllShrink genIntegerList shrinkList
 
 -- (List Integer) and a Bool
 genListAndBool :: Gen (List Integer, Bool)
-genListAndBool = liftA2 (,) genIntegerList arbitrary
+genListAndBool = (,) P.<$> genIntegerList P.<*> arbitrary
 
 shrinkListAndBool :: (List Integer, Bool) -> [(List Integer, Bool)]
-shrinkListAndBool (xs,b) = liftA2 (,) (shrinkList xs) (shrink b)
+shrinkListAndBool (xs,b) = (,) P.<$> (shrinkList xs) P.<*> (shrink b)
 
 forAllListsAndBool :: Testable prop
                   => ((List Integer, Bool) -> prop)
                   -> Property
 forAllListsAndBool =
   forAllShrink genListAndBool shrinkListAndBool
+
+-- ListZipper Integer
+genListZipper :: Gen (ListZipper Integer)
+genListZipper =
+  zipper P.<$> arbitrary P.<*> arbitrary P.<*> arbitrary
+
+shrinkListZipper :: ListZipper Integer -> [ListZipper Integer]
+shrinkListZipper (ListZipper l x r) =
+  ListZipper P.<$> (shrinkList l) P.<*> (shrink x) P.<*> (shrinkList r)
+
+forAllListZipper :: Testable prop
+                 => (ListZipper Integer -> prop)
+                 -> Property
+forAllListZipper =
+  forAllShrink genListZipper shrinkListZipper
