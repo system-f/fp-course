@@ -4,6 +4,7 @@
 module Course.ListZipperTest where
 
 
+import           Prelude               (fromIntegral)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
@@ -12,17 +13,21 @@ import           Course.Core
 import           Course.Functor        ((<$>))
 import           Course.List           (List (..), isEmpty)
 import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
+                                        deletePullLeft, deletePullRight,
                                         dropLefts, dropRights, end, findLeft,
                                         findRight, fromList, hasLeft, hasRight,
-                                        index, moveLeft, moveLeftLoop,
+                                        index, insertPushLeft, insertPushRight,
+                                        lefts, moveLeft, moveLeftLoop,
                                         moveLeftN, moveLeftN', moveRight,
                                         moveRightLoop, moveRightN, moveRightN',
-                                        nth, setFocus, swapLeft, swapRight,
-                                        toList, toListZ, toOptional, withFocus,
-                                        zipper, (-<<))
-import           Course.Optional       (Optional (Empty))
+                                        nth, rights, setFocus, start, swapLeft,
+                                        swapRight, toList, toListZ, toOptional,
+                                        withFocus, zipper, (-<<))
+import           Course.Optional       (Optional (Empty, Full))
 
-import           Course.Gens           (forAllLists, forAllListsAndBool)
+import           Course.Gens           (forAllListZipper,
+                                        forAllListZipperWithInt, forAllLists,
+                                        forAllListsAndBool)
 
 test_ListZipper :: TestTree
 test_ListZipper =
@@ -298,32 +303,75 @@ moveRightN'Test =
 
 nthTest :: TestTree
 nthTest =
-  testGroup "nthTest" [
+  testGroup "nth" [
     testCase "have 1"    $ nth 1 defaultZipper @?= IsZ (zipper [1] 2 [3,4,5,6,7])
   , testCase "have 5"    $ nth 5 defaultZipper @?= IsZ (zipper [5,4,3,2,1] 6 [7])
   , testCase "missing 8" $ nth 8 defaultZipper @?= IsNotZ
   ]
 
 indexTest :: TestTree
-indexTest = error "todo"
+indexTest =
+  testGroup "index" [
+    testCase "index works" $ index defaultZipper @?= 3
+  , testProperty "Always returns the index on a valid zipper" $
+      forAllListZipperWithInt (\(z,i) -> optional True (\z' -> index z' == i) (toOptional (nth i z)))
+  ]
 
 endTest :: TestTree
-endTest = error "todo"
+endTest =
+  testGroup "end" [
+    testCase "end" $ end defaultZipper @?= zipper [6,5,4,3,2,1] 7 []
+  , testProperty "end never changes the zipper's contents" $
+      forAllListZipper (\z -> toList z == toList (end z))
+  , testProperty "never have rights after calling end" $
+      forAllListZipper (\z -> rights (end z) == Nil)
+  ]
 
 startTest :: TestTree
-startTest = error "todo"
+startTest =
+  testGroup "start" [
+    testCase "start" $ start defaultZipper @?= zipper [] 1 [2,3,4,5,6,7]
+  , testProperty "start never changes the zipper's contents" $
+      forAllListZipper (\z -> toList z == toList (start z))
+  , testProperty "never have lefts after calling start" $
+      forAllListZipper (\z -> lefts (start z) == Nil)
+  ]
 
 deletePullLeftTest :: TestTree
-deletePullLeftTest = error "todo"
+deletePullLeftTest =
+  testGroup "deletePullLeft" [
+    testCase "non-empty lefts" $ deletePullLeft defaultZipper @?= IsZ (zipper [2,1] 3 [5,6,7])
+  , testCase "empty lefts" $ deletePullLeft (zipper [] 1 [2,3,4]) @?= IsNotZ
+  ]
 
 deletePullRightTest :: TestTree
-deletePullRightTest = error "todo"
+deletePullRightTest =
+  testGroup "deletePullRight" [
+    testCase "non-empty rights" $ deletePullRight defaultZipper @?= IsZ (zipper [3,2,1] 5 [6,7])
+  , testCase "empty rights" $ deletePullLeft (zipper [3,2,1] 4 []) @?= IsNotZ
+  ]
 
 insertPushLeftTest :: TestTree
-insertPushLeftTest = error "todo"
+insertPushLeftTest =
+  testGroup "insertPushLeft" [
+    testCase "non-empty lefts" $
+      insertPushLeft 15 defaultZipper @?= zipper [4,3,2,1] 15 [5,6,7]
+  , testCase "empty lefts" $
+      insertPushLeft 15 (zipper [] 1 [2,3,4]) @?= zipper [1] 15 [2,3,4]
+  , testProperty "deletePullLeft . insertPushLeft == id" $
+      forAllListZipperWithInt (\(z,i) -> optional False (==z) (toOptional (deletePullLeft (insertPushLeft (fromIntegral i) z))))
+  ]
 
 insertPushRightTest :: TestTree
-insertPushRightTest = error "todo"
+insertPushRightTest =
+  testGroup "insertPushRight" [
+    testCase "non-empty rights" $
+      insertPushRight 15 defaultZipper @?= zipper [3,2,1] 15 [4,5,6,7]
+  , testCase "empty rights" $
+      insertPushRight 15 (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 15 [4]
+  , testProperty "deletePullRight . insertPushRight == id" $
+      forAllListZipperWithInt (\(z,i) -> optional False (==z) (toOptional (deletePullRight (insertPushRight (fromIntegral i) z))))
+  ]
 
 applicativeTest :: TestTree
 applicativeTest = error "todo"
@@ -348,3 +396,7 @@ traversableMaybeTest = error "todo"
 
 defaultZipper :: ListZipper Integer
 defaultZipper = zipper [3,2,1] 4 [5,6,7]
+
+optional :: b -> (a -> b) -> Optional a -> b
+optional e _ Empty    = e
+optional _ f (Full a) = f a
