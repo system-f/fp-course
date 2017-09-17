@@ -75,3 +75,17 @@ forAllListZipper :: Testable prop
                  -> Property
 forAllListZipper =
   forAllShrink genListZipper shrinkListZipper
+
+genListZipperWithInt :: Gen (ListZipper Integer, Int)
+genListZipperWithInt =
+  (,) P.<$> genListZipper P.<*> arbitrary
+
+shrinkListZipperWithInt :: (ListZipper Integer, Int) -> [(ListZipper Integer, Int)]
+shrinkListZipperWithInt (z, i) =
+  (,) P.<$> (shrinkListZipper z) P.<*> (shrink i)
+
+forAllListZipperWithInt :: Testable prop
+                        => ((ListZipper Integer, Int) -> prop)
+                        -> Property
+forAllListZipperWithInt =
+  forAllShrink genListZipperWithInt shrinkListZipperWithInt
