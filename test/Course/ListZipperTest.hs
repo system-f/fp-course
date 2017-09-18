@@ -4,31 +4,36 @@
 module Course.ListZipperTest where
 
 
-import           Prelude               (fromIntegral)
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
-import           Test.Tasty.QuickCheck (testProperty)
+import qualified Prelude                  as P (fromIntegral, (<$>))
+import           Test.QuickCheck.Function (Fun (..))
+import           Test.Tasty               (TestTree, testGroup)
+import           Test.Tasty.HUnit         (testCase, (@?=))
+import           Test.Tasty.QuickCheck    (testProperty)
 
-import           Course.Applicative    (pure, (<*>))
+import           Course.Applicative       (pure, (<*>))
+import           Course.Comonad           (copure)
 import           Course.Core
-import           Course.Functor        ((<$>))
-import           Course.List           (List (..), all, isEmpty, take)
-import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
-                                        deletePullLeft, deletePullRight,
-                                        dropLefts, dropRights, end, findLeft,
-                                        findRight, fromList, hasLeft, hasRight,
-                                        index, insertPushLeft, insertPushRight,
-                                        lefts, moveLeft, moveLeftLoop,
-                                        moveLeftN, moveLeftN', moveRight,
-                                        moveRightLoop, moveRightN, moveRightN',
-                                        nth, rights, setFocus, start, swapLeft,
-                                        swapRight, toList, toListZ, toOptional,
-                                        withFocus, zipper, (-<<))
-import           Course.Optional       (Optional (Empty, Full))
+import           Course.Extend            ((<<=))
+import           Course.Functor           ((<$>))
+import           Course.List              (List (..), all, isEmpty, take)
+import           Course.ListZipper        (ListZipper, MaybeListZipper (..),
+                                           deletePullLeft, deletePullRight,
+                                           dropLefts, dropRights, end, findLeft,
+                                           findRight, fromList, hasLeft,
+                                           hasRight, index, insertPushLeft,
+                                           insertPushRight, lefts, moveLeft,
+                                           moveLeftLoop, moveLeftN, moveLeftN',
+                                           moveRight, moveRightLoop, moveRightN,
+                                           moveRightN', nth, rights, setFocus,
+                                           start, swapLeft, swapRight, toList,
+                                           toListZ, toOptional, withFocus,
+                                           zipper, (-<<))
+import           Course.Optional          (Optional (Empty, Full))
+import           Course.Traversable       (traverse)
 
-import           Course.Gens           (forAllListZipper,
-                                        forAllListZipperWithInt, forAllLists,
-                                        forAllListsAndBool)
+import           Course.Gens              (forAllListZipper,
+                                           forAllListZipperWithInt, forAllLists,
+                                           forAllListsAndBool)
 
 test_ListZipper :: TestTree
 test_ListZipper =
@@ -386,25 +391,74 @@ applicativeTest =
   ]
 
 applicativeMaybeTest :: TestTree
-applicativeMaybeTest = error "todo"
+applicativeMaybeTest =
+  let is (IsZ z) = z
+      is _       = error "MaybeListZipper's Applicative instances is busted"
+      notZ       = IsNotZ :: MaybeListZipper Integer
+  in
+    testGroup "Applicative (MaybeListZipper)" [
+      testProperty "pure produces infinite lefts" $
+        (\a n -> (all . (==) <*> take (n :: Int) . lefts . is . pure) (a :: Integer))
+    , testProperty "pure produces infinite rights" $
+        (\a n -> (all . (==) <*> take (n :: Int) . rights . is . pure) (a :: Integer))
+    , testCase "IsZ <*> IsZ" $
+        let z = IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
+         in z @?= IsZ (zipper [5,12] 8 [15,24,12])
+    , testProperty "IsNotZ <*> IsZ" $
+        let fs = (IsNotZ :: MaybeListZipper (Integer -> Integer))
+         in forAllListZipper (\z -> (fs <*> IsZ z) == IsNotZ)
+    , testProperty "IsZ <*> IsNotZ" $
+         (\(Fun _ f) -> (IsZ (pure f) <*> notZ) == notZ)
+    , testCase "IsNotZ <*> IsNotZ" $
+        IsNotZ <*> notZ @?= notZ
+    ]
 
 extendTest :: TestTree
-extendTest = error "todo"
+extendTest =
+  testGroup "Extend" [
+    testCase "zipper o' zippers" $
+      let z = zipper [2,1] 3 [4,5]
+          l = [zipper [1] 2 [3,4,5], zipper [] 1 [2,3,4,5]]
+          r = [zipper [3,2,1] 4 [5], zipper [4,3,2,1] 5 []]
+       in (id <<= z) @?= zipper l z r
+  ]
 
 extendMaybeTest :: TestTree
-extendMaybeTest = error "todo"
+extendMaybeTest =
+  testGroup "Extend (MaybeListZipper)" [
+    testCase "IsNotZ" $ (id <<= IsNotZ) @?= (IsNotZ :: MaybeListZipper (MaybeListZipper Integer))
+  , testCase "IsZ" $
+      let z = IsZ (zipper [2,1] 3 [4,5])
+          l = IsZ P.<$> [zipper [1] 2 [3,4,5], zipper [] 1 [2,3,4,5]]
+          r = IsZ P.<$> [zipper [3,2,1] 4 [5], zipper [4,3,2,1] 5 []]
+       in (id <<= z) @?= IsZ (zipper l z r)
+  ]
 
 comonadTest :: TestTree
-comonadTest = error "todo"
+comonadTest =
+  testGroup "Comonad" [
+    testCase "copure" $ copure (zipper [2,1] 3 [4,5]) @?= 3
+  ]
 
 traversableTest :: TestTree
-traversableTest = error "todo"
+traversableTest =
+  testGroup "Traversable" [
+    testProperty "All Full" $
+      forAllListZipper (\z -> traverse id (Full <$> z) == Full z)
+  , testCase "One Empty" $
+      traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Empty, Full 6, Full 7]) @?= Empty
+  ]
 
 traversableMaybeTest :: TestTree
-traversableMaybeTest = error "todo"
 
 defaultZipper :: ListZipper Integer
 defaultZipper = zipper [3,2,1] 4 [5,6,7]
+traversableMaybeTest =
+  testGroup "Traversable (MaybeListZipper)" [
+    testCase "IsNotZ" $ traverse id IsNotZ @?= (Empty :: Optional (MaybeListZipper Integer))
+  , testProperty "IsZ Full" $
+      forAllListZipper (\z -> traverse id (Full <$> IsZ z) == Full (IsZ z))
+  ]
 
 optional :: b -> (a -> b) -> Optional a -> b
 optional e _ Empty    = e
