@@ -9,9 +9,10 @@ import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
+import           Course.Applicative    (pure, (<*>))
 import           Course.Core
 import           Course.Functor        ((<$>))
-import           Course.List           (List (..), isEmpty)
+import           Course.List           (List (..), all, isEmpty, take)
 import           Course.ListZipper     (ListZipper, MaybeListZipper (..),
                                         deletePullLeft, deletePullRight,
                                         dropLefts, dropRights, end, findLeft,
@@ -374,7 +375,15 @@ insertPushRightTest =
   ]
 
 applicativeTest :: TestTree
-applicativeTest = error "todo"
+applicativeTest =
+  testGroup "Applicative" [
+    testProperty "pure produces infinite lefts" $
+      (\a n -> (all . (==) <*> take (n :: Int) . lefts . pure) (a :: Integer))
+  , testProperty "pure produces infinite rights" $
+      (\a n -> (all . (==) <*> take (n :: Int) . rights . pure) (a :: Integer))
+  , testCase "<*> applies functions to corresponding elements in zipper" $
+      zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7] @?= zipper [5,12] 8 [15,24,12]
+  ]
 
 applicativeMaybeTest :: TestTree
 applicativeMaybeTest = error "todo"
