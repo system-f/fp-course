@@ -81,12 +81,12 @@ test_ListZipper =
 functorTest :: TestTree
 functorTest =
   testCase "ListZipper (<$>)" $
-    (+1) <$> (zipper [3,2,1] 4 [5,6,7]) @?= zipper [4,3,2] 5 [6,7,8]
+    (+1) <$> zipper [3,2,1] 4 [5,6,7] @?= zipper [4,3,2] 5 [6,7,8]
 
 functorMaybeTest :: TestTree
 functorMaybeTest =
   testCase "MaybeListZipper (<$>)" $
-    (+1) <$> (IsZ (zipper [3,2,1] 4 [5,6,7])) @?= IsZ (zipper [4,3,2] 5 [6,7,8])
+    (+1) <$> IsZ (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [4,3,2] 5 [6,7,8])
 
 toListTest :: TestTree
 toListTest =
@@ -280,8 +280,9 @@ moveLeftN'Test =
       moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveLeftN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [2,1] 3 [4,5,6,7])
-  , testProperty "moving zero is `Right . id`" $
-      (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveLeftN' 0 lz == (Right . id $ lz))
+  , testProperty "moving zero is `Right . id`"
+      (\l x r -> let lz = zipper l x r :: ListZipper Integer
+                  in moveLeftN' 0 lz == (Right . id $ lz))
   , testCase "negative in range" $
       moveLeftN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [5,4,3,2,1] 6 [7])
   , testCase "negative out of bounds" $
@@ -299,7 +300,7 @@ moveRightN'Test =
       moveRightN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveRightN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [4,3,2,1] 5 [6,7])
-  , testProperty "moving zero is `Right . id`" $
+  , testProperty "moving zero is `Right . id`"
       (\l x r -> let lz = (zipper l x r :: ListZipper Integer) in moveRightN' 0 lz == (Right . id $ lz))
   , testCase "negative in range" $
       moveRightN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [1] 2 [3,4,5,6,7])
@@ -382,9 +383,9 @@ insertPushRightTest =
 applicativeTest :: TestTree
 applicativeTest =
   testGroup "Applicative" [
-    testProperty "pure produces infinite lefts" $
+    testProperty "pure produces infinite lefts"
       (\a n -> (all . (==) <*> take (n :: Int) . lefts . pure) (a :: Integer))
-  , testProperty "pure produces infinite rights" $
+  , testProperty "pure produces infinite rights"
       (\a n -> (all . (==) <*> take (n :: Int) . rights . pure) (a :: Integer))
   , testCase "<*> applies functions to corresponding elements in zipper" $
       zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7] @?= zipper [5,12] 8 [15,24,12]
@@ -397,9 +398,9 @@ applicativeMaybeTest =
       notZ       = IsNotZ :: MaybeListZipper Integer
   in
     testGroup "Applicative (MaybeListZipper)" [
-      testProperty "pure produces infinite lefts" $
+      testProperty "pure produces infinite lefts"
         (\a n -> (all . (==) <*> take (n :: Int) . lefts . is . pure) (a :: Integer))
-    , testProperty "pure produces infinite rights" $
+    , testProperty "pure produces infinite rights"
         (\a n -> (all . (==) <*> take (n :: Int) . rights . is . pure) (a :: Integer))
     , testCase "IsZ <*> IsZ" $
         let z = IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
@@ -407,8 +408,8 @@ applicativeMaybeTest =
     , testProperty "IsNotZ <*> IsZ" $
         let fs = (IsNotZ :: MaybeListZipper (Integer -> Integer))
          in forAllListZipper (\z -> (fs <*> IsZ z) == IsNotZ)
-    , testProperty "IsZ <*> IsNotZ" $
-         (\(Fun _ f) -> (IsZ (pure f) <*> notZ) == notZ)
+    , testProperty "IsZ <*> IsNotZ"
+        (\(Fun _ f) -> (IsZ (pure f) <*> notZ) == notZ)
     , testCase "IsNotZ <*> IsNotZ" $
         IsNotZ <*> notZ @?= notZ
     ]
