@@ -27,8 +27,14 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+mapOptional _ Empty =
+  Empty
+mapOptional func (Full x) =
+  Full (func x)
+
+-- 1. func :: a -> b
+-- 2. x :: a
+-- goal :: Optional b
 
 -- | Bind the given function on the possible value.
 --
@@ -44,22 +50,41 @@ bindOptional ::
   (a -> Optional b)
   -> Optional a
   -> Optional b
-bindOptional =
-  error "todo: Course.Optional#bindOptional"
+bindOptional _ Empty =
+  Empty
+bindOptional func (Full x) =
+  func x
+
+-- func :: a -> Optional b
+-- x :: a
+----
+-- ? :: Optional b
+
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
 -- >>> Full 8 ?? 99
 -- 8
---
--- >>> Empty ?? 99
--- 99
-(??) ::
-  Optional a
-  -> a
-  -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+
+{-
+a nc<a>(Optional<a> o, a x) {
+    if(o.lengthiszero) return x;
+    else return o.getFullvalue; // no exceptions pls
+}
+
+T bang<T>() { return bang(); }
+
+int someprogram() {
+  return nc(Full(55), bang());
+}
+
+f(true || bang())
+-}
+
+(??) :: Optional a -> a -> a
+(??)    Empty         x =  x
+(??)    (Full eff)    _ = eff
+-- p_ttern m_tch
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -79,8 +104,8 @@ bindOptional =
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"  
+Empty <+> qwe = qwe
+Full woteva <+> _ = Full woteva
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional (\a' -> f' a') a) f
