@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE RankNTypes #-}
 
 -- + Complete the 10 exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo: ...") with an appropriate
@@ -35,6 +36,20 @@ data List t =
   Nil
   | t :. List t
   deriving (Eq, Ord)
+
+data List2 a = List2 (forall b. (a -> b -> b) -> b -> b)
+
+{-
+
+cons :: a -> List2 a -> List2 a
+cons a (List2 k) =
+  k undefined _undefined 
+
+interface List<A> {
+  B foldr<B>(Func<A, B, B> cons, B nil);
+}
+
+-}
 
 -- Right-associative
 infixr 5 :.

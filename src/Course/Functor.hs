@@ -56,8 +56,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) f =
+    foldRight ((:.) . f) Nil
 
 -- | Maps a function on the Optional functor.
 --
@@ -84,7 +84,7 @@ instance Functor ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
