@@ -193,7 +193,7 @@ instance Arbitrary Blah where
     player <- arbitrary
     position <- arbitrary
     n <- choose (1, 9)
-    return $ Blah player position	n
+    return $ Blah player position n
 
 prop_eqp :: Position -> Bool
 prop_eqp n = n == n

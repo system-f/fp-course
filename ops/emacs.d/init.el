@@ -1,9 +1,9 @@
 ;; Pull in Marmalade packages
 (require 'package)
 (add-to-list 'package-archives
-			 '("marmalade" . "http://marmalade-repo.org/packages/"))
+  '("marmalade" . "http://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives
-			 '("melpa" . "http://melpa.milkbox.net/packages/"))
+  '("melpa" . "http://melpa.milkbox.net/packages/"))
 (package-initialize)
 
 ;; Ensure our preferred packages are all loaded in this install - taken from
