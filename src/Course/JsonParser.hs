@@ -247,7 +247,7 @@ jsonValue =
 --
 -- /Tip:/ Use @System.IO#readFile@ and `jsonValue`.
 readJsonValue ::
-  Filename
+  FilePath
   -> IO (ParseResult JsonValue)
 readJsonValue =
   error "todo: Course.JsonParser#readJsonValue"

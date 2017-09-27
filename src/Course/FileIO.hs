@@ -82,9 +82,6 @@ main ::
 main =
   error "todo: Course.FileIO#main"
 
-type FilePath =
-  Chars
-
 -- Given a file name, read it and for each line in that file, read and print contents of each.
 -- Use @getFiles@ and @printFiles@.
 run ::

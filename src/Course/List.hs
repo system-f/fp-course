@@ -365,13 +365,13 @@ putStrLn =
   P.putStrLn . hlist
 
 readFile ::
-  Filename
+  FilePath
   -> IO Chars
 readFile =
   P.fmap listh . P.readFile . hlist
 
 writeFile ::
-  Filename
+  FilePath
   -> Chars
   -> IO ()
 writeFile n s =
@@ -666,8 +666,8 @@ instance IsString (List Char) where
 type Chars =
   List Char
 
-type Filename =
-  Chars
+type FilePath =
+  List Char
 
 strconcat ::
   [Chars]
