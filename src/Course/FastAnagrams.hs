@@ -12,7 +12,7 @@ import qualified Data.Set as S
 -- that appear in the given dictionary file.
 fastAnagrams ::
   Chars
-  -> Filename
+  -> FilePath
   -> IO (List Chars)
 fastAnagrams =
   error "todo: Course.FastAnagrams#fastAnagrams"
