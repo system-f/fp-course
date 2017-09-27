@@ -456,6 +456,9 @@ firstNameParser =
 -- >>> parse surnameParser "Abcdef"
 -- Result >< "Abcdef"
 --
+-- >>> parse surnameParser "Abcdefghijklmnopqrstuvwxyz"
+-- Result >< "Abcdefghijklmnopqrstuvwxyz"
+--
 -- >>> isErrorResult (parse surnameParser "Abc")
 -- True
 --
