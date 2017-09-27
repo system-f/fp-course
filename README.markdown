@@ -152,6 +152,12 @@ available in this repository for your convenience.
    Your instructor must guide you where types fall short, but you should also
    take the first step. Do it.
 
+5. Do not use tab characters
+
+   Set up your text editor to use space characters rather than tabs.
+   Using tab characters in Haskell can lead to confusing error messages.
+   GHC will give you a warning if your program contains a tab character.
+
 ### Running the tests
 
 Tests are available both as a [tasty](https://hackage.haskell.org/package/tasty)
