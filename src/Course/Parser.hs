@@ -549,7 +549,14 @@ ageParser =
 firstNameParser ::
   Parser Chars
 firstNameParser =
-  error "todo: Course.Parser#firstNameParser"
+  upper >>= \c ->
+  list lower >>= \d ->
+  pure (c :. d)
+  {-
+  do  c <- upper
+      d <- list lower
+      pure (c :. d)
+-}
 
 -- | Write a parser for Person.surname.
 --
@@ -568,7 +575,10 @@ firstNameParser =
 surnameParser ::
   Parser Chars
 surnameParser =
-  error "todo: Course.Parser#surnameParser"
+  do  c <- upper
+      d <- thisMany 5 lower
+      e <- list lower
+      pure (c :. d ++ e)
 
 -- | Write a parser for Person.smoker.
 --
@@ -587,7 +597,7 @@ surnameParser =
 smokerParser ::
   Parser Char
 smokerParser =
-  error "todo: Course.Parser#smokerParser"
+  is 'y' ||| is 'n'
 
 -- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
@@ -609,7 +619,7 @@ smokerParser =
 phoneBodyParser ::
   Parser Chars
 phoneBodyParser =
-  error "todo: Course.Parser#phoneBodyParser"
+  list (digit ||| is '.' ||| is '-')
 
 -- | Write a parser for Person.phone.
 --
@@ -631,8 +641,17 @@ phoneBodyParser =
 phoneParser ::
   Parser Chars
 phoneParser =
-  error "todo: Course.Parser#phoneParser"
-
+  digit >>= \d ->
+  phoneBodyParser >>= \b ->
+  is '#' >>= \_ ->
+  pure (d :. b)
+  
+{-
+  do  d <- digit
+      b <- phoneBodyParser
+      _ <- is '#'
+      pure (d :. b)
+-}
 -- | Write a parser for Person.
 --
 -- /Tip:/ Use @bindParser@,
@@ -680,7 +699,17 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  error "todo: Course.Parser#personParser"
+  do  a <- ageParser
+      _ <- spaces1
+      f <- firstNameParser
+      _ <- spaces1
+      s <- surnameParser
+      _ <- spaces1
+      k <- smokerParser
+      _ <- spaces1
+      p <- phoneParser
+      pure (Person a f s k p)
+      
 
 -- Make sure all the tests pass!
 

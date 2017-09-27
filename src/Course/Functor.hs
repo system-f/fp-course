@@ -56,8 +56,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) f =
-    foldRight ((:.) . f) Nil
+  (<$>) =
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -119,8 +119,8 @@ void ::
   Functor f =>
   f a
   -> f ()
-void =
-  error "todo: Course.Functor#void"
+void a =
+  const () <$> a
 
 -----------------------
 -- SUPPORT LIBRARIES --

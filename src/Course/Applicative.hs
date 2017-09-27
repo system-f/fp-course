@@ -62,14 +62,14 @@ instance Applicative List where
   pure ::
     a
     -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
+  pure a =
+    a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  (<*>) f x =
+    flatMap (\ff -> map ff x) f
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
@@ -137,14 +137,19 @@ instance Applicative ((->) t) where
     a
     -> ((->) t a)
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    const
   (<*>) ::
     ((->) t (a -> b))
+--  (t -> a -> b)
     -> ((->) t a)
+--     (t -> a)
     -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
+--      t -> b
+  (<*>) v jeff brucealpha =
+    v brucealpha (jeff brucealpha)
 
+-- f(x, g(x));
+-- f <*> g
 
 -- | Apply a binary function in the environment.
 --
@@ -262,8 +267,8 @@ lift4 =
   f a
   -> f b
   -> f b
-(*>) =
-  error "todo: Course.Applicative#(*>)"
+(*>) fa fb =
+  const id <$> fa <*> fb
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -288,8 +293,8 @@ lift4 =
   f b
   -> f a
   -> f b
-(<*) =
-  error "todo: Course.Applicative#(<*)"
+(<*) fa fb =
+  const <$> fa <*> fb
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -312,7 +317,7 @@ sequence ::
   List (f a)
   -> f (List a)
 sequence =
-  error "todo: Course.Applicative#sequence"
+  foldRight (\a b -> (:.) <$> a <*> b) (pure Nil)
 
 -- | Replicate an effect a given number of times.
 --
