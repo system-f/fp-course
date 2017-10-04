@@ -18,10 +18,12 @@ let
   };
 
   fp-course = modifiedHaskellPackages.callPackage ./fp-course.nix {};
-  # Dodgy fun times, make sure that 
-  # - the tests compile
-  # - the tests failing doesn't cause the build to fail
-  modified-fp-course = pkgs.haskell.lib.overrideCabal fp-course (drv: { checkPhase = "true"; });
+  modified-fp-course = pkgs.haskell.lib.overrideCabal fp-course (drv: { 
+    # Dodgy fun times, make sure that 
+    # - the tests compile
+    # - the tests failing doesn't cause the build to fail
+    checkPhase = "true"; 
+  });
 in
   modified-fp-course
 

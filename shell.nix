@@ -1,6 +1,7 @@
-{ nixpkgs ? import <nixpkgs> {}}:
+{ nixpkgs ? import <nixpkgs> {}, compiler ? "default"}:
 let
   inherit (nixpkgs) pkgs;
-  fp-course = import ./default.nix {};
+  drv = import ./default.nix { inherit nixpkgs compiler; };
+  drvWithTools = pkgs.haskell.lib.addBuildDepends drv [ pkgs.cabal-install ];
 in
-  if pkgs.lib.inNixShell then fp-course.env else fp-course
+  if pkgs.lib.inNixShell then drvWithTools.env else drvWithTools

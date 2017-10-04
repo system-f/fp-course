@@ -18,7 +18,7 @@
             "keepnr": 5,
             "inputs": {
                 "fp-course": { "type": "git", "value": "https://github.com/data61/fp-course.git master", "emailresponsible": false },
-                "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.03", "emailresponsible": false }
+                "nixpkgs": { "type": "git", "value": "https://github.com/NixOS/nixpkgs.git release-17.09", "emailresponsible": false }
             }
         }
     }
