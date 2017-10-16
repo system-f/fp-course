@@ -462,7 +462,7 @@ firstNameParser =
 -- >>> isErrorResult (parse surnameParser "Abc")
 -- True
 --
--- >>> isErrorResult (parse surnameParser "abc")
+-- >>> isErrorResult (parse surnameParser "abcdef")
 -- True
 surnameParser ::
   Parser Chars
