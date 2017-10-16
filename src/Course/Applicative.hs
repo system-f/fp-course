@@ -87,7 +87,7 @@ instance Applicative List where
   -> f a
   -> f b
 (<$$>) =
-  (<*>) . pure
+  error "todo: Course.Applicative#(<$$>)"
 
 -- | Insert into an Optional.
 --
