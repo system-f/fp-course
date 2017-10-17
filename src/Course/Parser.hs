@@ -181,6 +181,40 @@ bindParser ::
 bindParser =
   error "todo: Course.Parser#bindParser"
 
+-- | Write a Functor instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Functor Parser where
+  (<$>) ::
+    (a -> b)
+    -> Parser a
+    -> Parser b
+  (<$>) =
+     error "todo: Course.Parser (<$>)#instance Parser"
+
+-- | Write an Applicative functor instance for a @Parser@.
+-- /Tip:/ Use @bindParser@ and @valueParser@.
+instance Applicative Parser where
+  pure ::
+    a
+    -> Parser a
+  pure =
+    error "todo: Course.Parser pure#instance Parser"
+  (<*>) ::
+    Parser (a -> b)
+    -> Parser a
+    -> Parser b
+  (<*>) =
+    error "todo: Course.Parser (<*>)#instance Parser"
+
+-- | Write a Monad instance for a @Parser@.
+instance Monad Parser where
+  (=<<) ::
+    (a -> Parser b)
+    -> Parser a
+    -> Parser b
+  (=<<) =
+    error "todo: Course.Parser (=<<)#instance Parser"
+
 -- | Return a parser that puts its input into the given parser and
 --
 --   * if that parser succeeds with a value (a), ignore that value
@@ -227,52 +261,6 @@ bindParser =
   error "todo: Course.Parser#(|||)"
 
 infixl 3 |||
-
--- | Return a parser that continues producing a list of values from the given parser.
---
--- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
---
--- >>> parse (list character) ""
--- Result >< ""
---
--- >>> parse (list digit) "123abc"
--- Result >abc< "123"
---
--- >>> parse (list digit) "abc"
--- Result >abc< ""
---
--- >>> parse (list character) "abc"
--- Result >< "abc"
---
--- >>> parse (list (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> parse (list (character *> valueParser 'v')) ""
--- Result >< ""
-list ::
-  Parser a
-  -> Parser (List a)
-list =
-  error "todo: Course.Parser#list"
-
--- | Return a parser that produces at least one value from the given parser then
--- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
---
--- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
---
--- >>> parse (list1 (character)) "abc"
--- Result >< "abc"
---
--- >>> parse (list1 (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
--- True
-list1 ::
-  Parser a
-  -> Parser (List a)
-list1 =
-  error "todo: Course.Parser#list1"
 
 -- | Return a parser that produces a character but fails if
 --
@@ -330,19 +318,6 @@ space ::
 space =
   error "todo: Course.Parser#space"
 
--- | Return a parser that produces one or more space characters
--- (consuming until the first non-space) but fails if
---
---   * The input is empty.
---
---   * The first produced character is not a space.
---
--- /Tip:/ Use the @list1@ and @space@ functions.
-spaces1 ::
-  Parser Chars
-spaces1 =
-  error "todo: Course.Parser#spaces1"
-
 -- | Return a parser that produces a lower-case character but fails if
 --
 --   * The input is empty.
@@ -378,6 +353,65 @@ alpha ::
   Parser Char
 alpha =
   error "todo: Course.Parser#alpha"
+
+-- | Return a parser that continues producing a list of values from the given parser.
+--
+-- /Tip:/ Use @list1@, @valueParser@ and @(|||)@.
+--
+-- >>> parse (list character) ""
+-- Result >< ""
+--
+-- >>> parse (list digit) "123abc"
+-- Result >abc< "123"
+--
+-- >>> parse (list digit) "abc"
+-- Result >abc< ""
+--
+-- >>> parse (list character) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> parse (list (character *> valueParser 'v')) ""
+-- Result >< ""
+list ::
+  Parser a
+  -> Parser (List a)
+list =
+  error "todo: Course.Parser#list"
+
+-- | Return a parser that produces at least one value from the given parser then
+-- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
+--
+-- /Tip:/ Use @bindParser@, @list@ and @valueParser@.
+--
+-- >>> parse (list1 (character)) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
+-- True
+list1 ::
+  Parser a
+  -> Parser (List a)
+list1 =
+  error "todo: Course.Parser#list1"
+
+-- | Return a parser that produces one or more space characters
+-- (consuming until the first non-space) but fails if
+--
+--   * The input is empty.
+--
+--   * The first produced character is not a space.
+--
+-- /Tip:/ Use the @list1@ and @space@ functions.
+spaces1 ::
+  Parser Chars
+spaces1 =
+  error "todo: Course.Parser#spaces1"
 
 -- | Return a parser that sequences the given list of parsers by producing all their results
 -- but fails on the first failing parser of the list.
@@ -582,38 +616,3 @@ personParser =
   error "todo: Course.Parser#personParser"
 
 -- Make sure all the tests pass!
-
-
--- | Write a Functor instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Functor Parser where
-  (<$>) ::
-    (a -> b)
-    -> Parser a
-    -> Parser b
-  (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
-
--- | Write an Applicative functor instance for a @Parser@.
--- /Tip:/ Use @bindParser@ and @valueParser@.
-instance Applicative Parser where
-  pure ::
-    a
-    -> Parser a
-  pure =
-    error "todo: Course.Parser pure#instance Parser"
-  (<*>) ::
-    Parser (a -> b)
-    -> Parser a
-    -> Parser b
-  (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
-
--- | Write a Monad instance for a @Parser@.
-instance Monad Parser where
-  (=<<) ::
-    (a -> Parser b)
-    -> Parser a
-    -> Parser b
-  (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
