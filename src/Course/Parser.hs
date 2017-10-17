@@ -124,8 +124,8 @@ natural =
 valueParser ::
   a
   -> Parser a
-valueParser =
-  error "todo: Course.Parser#valueParser"
+valueParser x =
+  P (\input -> Result input x)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -137,7 +137,9 @@ valueParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\input -> case input of
+                 Nil -> UnexpectedEof
+                 h:.t -> Result t h)
 
 -- | Return a parser that maps any succeeding result with the given function.
 --
@@ -150,8 +152,12 @@ mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
-mapParser =
-  error "todo: Course.Parser#mapParser"
+mapParser a2b pa =
+--P (\input -> a2b <$> parse pa input)
+--P (\input -> (<$>) a2b ((parse pa) input))
+--P (\input -> ((<$>) a2b . (parse pa)) input)
+  P ((<$>) a2b <$> parse pa)
+
 
 -- | Return a parser that puts its input into the given parser and
 --

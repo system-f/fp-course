@@ -372,6 +372,22 @@ reverse ::
 reverse = 
   foldLeft (flip (:.)) Nil
 
+amapOptional ::
+  a
+  -> Optional b
+  -> Optional a
+amapOptional a value =
+  mapOptional (\_ -> a) value
+
+amapList ::
+  a
+  -> List b
+  -> List a
+amapList a value =
+  map (\_ -> a) value
+
+
+
 {- reverse0 Nil
 
 reverse0 :: List a -> List a -> List a

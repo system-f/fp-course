@@ -18,12 +18,12 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
-class Functor f where
+class Functor thing where
   -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
-    -> f a
-    -> f b
+    -> thing a
+    -> thing b
 
 infixl 4 <$>
 
@@ -56,8 +56,8 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) f Nil = Nil
+  (<$>) f (h:.t) = f h :. (f <$> t)
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +71,11 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) _ Empty = Empty
+  (<$>) f (Full x) = Full (f x)
+
+jj :: ((->) Int) Int
+jj x = (+) x 2
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -80,11 +83,11 @@ instance Functor Optional where
 -- 17
 instance Functor ((->) t) where
   (<$>) ::
+  -- (a -> b) -> (t -> a) -> (t -> b)
     (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
-  (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    -> ((->) t a) -- -> (t -> a)
+    -> ((->) t b) -- -> (t -> b)
+  (<$>) = (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -95,12 +98,12 @@ instance Functor ((->) t) where
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
-  Functor f =>
-  a
-  -> f b
-  -> f a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+  Functor thing =>
+  b
+  -> thing a
+  -> thing b
+(<$) a value =
+  (<$>) (\_ -> a) value
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +123,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo: Course.Functor#void"
+  (<$) ()
 
 -----------------------
 -- SUPPORT LIBRARIES --

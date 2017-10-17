@@ -12,11 +12,14 @@ import Course.List
 --     * Surname: string that starts with a capital letter and is followed by 5 or more lower-case letters
 --     * Smoker: character that must be 'y' or 'n'
 --     * Phone: string of digits, dots or hyphens but must start with a digit and end with a hash (#)
+
 data Person = Person {
   age :: Int,
   firstName :: Chars,
   surname :: Chars,
-  smoker :: Char,
+  smoker :: IsSmoker,
   phone :: Chars
 } deriving (Eq, Show)
+
+type IsSmoker = Char
 

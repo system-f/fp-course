@@ -25,13 +25,16 @@ import qualified Prelude as P(fmap, return, (>>=))
 --   `∀x. x <*> pure id ≅ x`
 class Functor f => Applicative f where
   pure ::
-    a -> f a
+    z -> f z
   (<*>) ::
     f (a -> b)
     -> f a
     -> f b
 
 infixl 4 <*>
+
+effmap :: Applicative f => (a -> b) -> f a -> f b
+effmap = \func fa -> pure func <*> fa
 
 -- | Insert into ExactlyOne.
 --
@@ -63,13 +66,19 @@ instance Applicative List where
     a
     -> List a
   pure =
-    error "todo: Course.Applicative pure#instance List"
+    \z -> z :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  (<*>) Nil _ = Nil
+  (<*>) (f:.fs) aas = map f aas ++ (fs <*> aas)
+    -- f :: a -> b
+    -- fs :: List (a -> b)
+    -- a :: a
+    -- as :: List a
+
+
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
@@ -106,13 +115,19 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo: Course.Applicative pure#instance Optional"
+    \a -> Full a
   (<*>) ::
     Optional (a -> b)
     -> Optional a
     -> Optional b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+  (<*>) (Full f) (Full a) = Full (f a)
+  (<*>) _ _ = Empty
+
+{-
+  (<*>) Empty _ = Empty
+  (<*>) _ Empty = Empty
+  (<*>) (Full f) (Full a) = Full (f a)
+-}
 
 -- | Insert into a constant function.
 --
@@ -134,16 +149,24 @@ instance Applicative Optional where
 -- prop> pure x y == x
 instance Applicative ((->) t) where
   pure ::
+  -- a -> thing a
     a
     -> ((->) t a)
+    -- (t -> a)
+    -- t -> a
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    const
+
   (<*>) ::
     ((->) t (a -> b))
+--  (t -> (a -> b))
+--  (t -> a -> b)
     -> ((->) t a)
+--  (t -> a)
     -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
+--  (t -> b)
+--  t -> b
+  (<*>) tab ta t = tab t (ta t)
 
 
 -- | Apply a binary function in the environment.
@@ -165,14 +188,23 @@ instance Applicative ((->) t) where
 --
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
+
+-- lift0 :: a -> f a (aka pure)
+-- lift1 :: (a -> b) -> f a -> f b (aka (<$>))
+-- lift2 :: (a -> b -> c) -> f a -> f b -> f c
+-- lift3 :: (a -> b -> c -> d) -> f a -> f b -> f c -> f d
+
+-- liftN can be written using lift[N-1] & (<*>)
+
+-- (<*>) :: f (b -> c) -> f b -> f c
 lift2 ::
   Applicative f =>
   (a -> b -> c)
   -> f a
   -> f b
   -> f c
-lift2 =
-  error "todo: Course.Applicative#lift2"
+lift2 abc fa fb =
+  abc <$> fa <*> fb
 
 -- | Apply a ternary function in the environment.
 --
@@ -199,12 +231,10 @@ lift2 =
 lift3 ::
   Applicative f =>
   (a -> b -> c -> d)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
-lift3 =
-  error "todo: Course.Applicative#lift3"
+  -> (f a -> f b -> f c -> f d)
+lift3 abcd fa fb fc =
+  abcd <$> fa <*> fb <*> fc
+-- [| abcd fa fb fc |]
 
 -- | Apply a quaternary function in the environment.
 --
@@ -236,8 +266,8 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Applicative#lift4"
+lift4 abcde fa fb fc fd =
+  abcde <$> fa <*> fb <*> fc <*> fd
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -263,7 +293,7 @@ lift4 =
   -> f b
   -> f b
 (*>) =
-  error "todo: Course.Applicative#(*>)"
+  lift2 (const id)
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -289,7 +319,7 @@ lift4 =
   -> f a
   -> f b
 (<*) =
-  error "todo: Course.Applicative#(<*)"
+  lift2 const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -308,13 +338,24 @@ lift4 =
 -- >>> sequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
 sequence ::
-  Applicative f =>
-  List (f a)
-  -> f (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+  Applicative thing =>
+  List (thing a)
+  -> thing (List a)
+sequence = foldRight (lift2 (:.)) (pure Nil)
+{-
+sequence Nil =
+  pure Nil
+sequence (h:.t) =
+  lift2 (:.) h (sequence t)
+-}
+
+-- h ::          thing a
+-- sequence t :: thing (List a)
+----
+-- ? ::          thing (List a)
 
 -- | Replicate an effect a given number of times.
+-- t :: List (thing a)
 --
 -- >>> replicateA 4 (ExactlyOne "hi")
 -- ExactlyOne ["hi","hi","hi","hi"]
