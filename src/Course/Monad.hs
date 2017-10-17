@@ -18,12 +18,12 @@ import qualified Prelude as P((=<<))
 --
 -- * The law of associativity
 --   `∀f g x. g =<< (f =<< x) ≅ ((g =<<) . f) =<< x`
-class Applicative f => Monad f where
+class Applicative thing => Monad thing where
   -- Pronounced, bind.
   (=<<) ::
-    (a -> f b)
-    -> f a
-    -> f b
+    (a -> thing b)
+    -> thing a
+    -> thing b
 
 infixr 1 =<<
 
@@ -59,10 +59,10 @@ infixr 1 =<<
 -- >>> ((*) <**> (+2)) 3
 -- 15
 (<**>) ::
-  Monad f =>
-  f (a -> b)
-  -> f a
-  -> f b
+  Monad thing =>
+  thing (a -> b)
+  -> thing a
+  -> thing b
 (<**>) =
   error "todo: Course.Monad#(<**>)"
 
@@ -130,9 +130,9 @@ instance Monad ((->) t) where
 -- >>> join (+) 7
 -- 14
 join ::
-  Monad f =>
-  f (f a)
-  -> f a
+  Monad thing =>
+  thing (thing a)
+  -> thing a
 join =
   error "todo: Course.Monad#join"
 
@@ -143,10 +143,10 @@ join =
 -- >>> ((+10) >>= (*)) 7
 -- 119
 (>>=) ::
-  Monad f =>
-  f a
-  -> (a -> f b)
-  -> f b
+  Monad thing =>
+  thing a
+  -> (a -> thing b)
+  -> thing b
 (>>=) =
   error "todo: Course.Monad#(>>=)"
 
@@ -158,11 +158,11 @@ infixl 1 >>=
 -- >>> ((\n -> n :. n :. Nil) <=< (\n -> n+1 :. n+2 :. Nil)) 1
 -- [2,2,3,3]
 (<=<) ::
-  Monad f =>
-  (b -> f c)
-  -> (a -> f b)
+  Monad thing =>
+  (b -> thing c)
+  -> (a -> thing b)
   -> a
-  -> f c
+  -> thing c
 (<=<) =
   error "todo: Course.Monad#(<=<)"
 

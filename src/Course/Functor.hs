@@ -18,12 +18,12 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
-class Functor f where
+class Functor thing where
   -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
-    -> f a
-    -> f b
+    -> thing a
+    -> thing b
 
 infixl 4 <$>
 
@@ -95,10 +95,10 @@ instance Functor ((->) t) where
 --
 -- prop> x <$ Full q == Full x
 (<$) ::
-  Functor f =>
+  Functor thing =>
   a
-  -> f b
-  -> f a
+  -> thing b
+  -> thing a
 (<$) =
   error "todo: Course.Functor#(<$)"
 
@@ -116,9 +116,9 @@ instance Functor ((->) t) where
 -- >>> void (+10) 5
 -- ()
 void ::
-  Functor f =>
-  f a
-  -> f ()
+  Functor thing =>
+  thing a
+  -> thing ()
 void =
   error "todo: Course.Functor#void"
 

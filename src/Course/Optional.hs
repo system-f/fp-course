@@ -11,8 +11,8 @@ import qualified Prelude as P
 -- | The `Optional` data type contains 0 or 1 value.
 --
 -- It might be thought of as a list, with a maximum length of one.
-data Optional a =
-  Full a
+data Optional t =
+  Full t
   | Empty
   deriving (Eq, Show)
 

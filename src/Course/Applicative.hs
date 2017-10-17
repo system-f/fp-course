@@ -23,13 +23,13 @@ import qualified Prelude as P(fmap, return, (>>=))
 --
 -- * The law of right identity
 --   `∀x. x <*> pure id ≅ x`
-class Functor f => Applicative f where
+class Functor thing => Applicative thing where
   pure ::
-    a -> f a
+    a -> thing a
   (<*>) ::
-    f (a -> b)
-    -> f a
-    -> f b
+    thing (a -> b)
+    -> thing a
+    -> thing b
 
 infixl 4 <*>
 
@@ -82,10 +82,10 @@ instance Applicative List where
 -- >>> (+1) <$$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 (<$$>) ::
-  Applicative f =>
+  Applicative thing =>
   (a -> b)
-  -> f a
-  -> f b
+  -> thing a
+  -> thing b
 (<$$>) =
   error "todo: Course.Applicative#(<$$>)"
 
@@ -166,11 +166,11 @@ instance Applicative ((->) t) where
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
 lift2 ::
-  Applicative f =>
+  Applicative thing =>
   (a -> b -> c)
-  -> f a
-  -> f b
-  -> f c
+  -> thing a
+  -> thing b
+  -> thing c
 lift2 =
   error "todo: Course.Applicative#lift2"
 
@@ -197,12 +197,12 @@ lift2 =
 -- >>> lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6])
 -- 138
 lift3 ::
-  Applicative f =>
+  Applicative thing =>
   (a -> b -> c -> d)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
+  -> thing a
+  -> thing b
+  -> thing c
+  -> thing d
 lift3 =
   error "todo: Course.Applicative#lift3"
 
@@ -229,13 +229,13 @@ lift3 =
 -- >>> lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6])
 -- 148
 lift4 ::
-  Applicative f =>
+  Applicative thing =>
   (a -> b -> c -> d -> e)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
-  -> f e
+  -> thing a
+  -> thing b
+  -> thing c
+  -> thing d
+  -> thing e
 lift4 =
   error "todo: Course.Applicative#lift4"
 
@@ -258,10 +258,10 @@ lift4 =
 --
 -- prop> Full x *> Full y == Full y
 (*>) ::
-  Applicative f =>
-  f a
-  -> f b
-  -> f b
+  Applicative thing =>
+  thing a
+  -> thing b
+  -> thing b
 (*>) =
   error "todo: Course.Applicative#(*>)"
 
@@ -284,10 +284,10 @@ lift4 =
 --
 -- prop> Full x <* Full y == Full x
 (<*) ::
-  Applicative f =>
-  f b
-  -> f a
-  -> f b
+  Applicative thing =>
+  thing b
+  -> thing a
+  -> thing b
 (<*) =
   error "todo: Course.Applicative#(<*)"
 
@@ -308,9 +308,9 @@ lift4 =
 -- >>> sequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
 sequence ::
-  Applicative f =>
-  List (f a)
-  -> f (List a)
+  Applicative thing =>
+  List (thing a)
+  -> thing (List a)
 sequence =
   error "todo: Course.Applicative#sequence"
 
@@ -331,10 +331,10 @@ sequence =
 -- >>> replicateA 3 ('a' :. 'b' :. 'c' :. Nil)
 -- ["aaa","aab","aac","aba","abb","abc","aca","acb","acc","baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc","caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"]
 replicateA ::
-  Applicative f =>
+  Applicative thing =>
   Int
-  -> f a
-  -> f (List a)
+  -> thing a
+  -> thing (List a)
 replicateA =
   error "todo: Course.Applicative#replicateA"
 
@@ -359,10 +359,10 @@ replicateA =
 -- [[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3]]
 --
 filtering ::
-  Applicative f =>
-  (a -> f Bool)
+  Applicative thing =>
+  (a -> thing Bool)
   -> List a
-  -> f (List a)
+  -> thing (List a)
 filtering =
   error "todo: Course.Applicative#filtering"
 
@@ -377,23 +377,23 @@ instance Applicative IO where
     f P.>>= \f' -> P.fmap f' a
 
 return ::
-  Applicative f =>
+  Applicative thing =>
   a
-  -> f a
+  -> thing a
 return =
   pure
 
 fail ::
-  Applicative f =>
+  Applicative thing =>
   Chars
-  -> f a
+  -> thing a
 fail =
   error . hlist
 
 (>>) ::
-  Applicative f =>
-  f a
-  -> f b
-  -> f b
+  Applicative thing =>
+  thing a
+  -> thing b
+  -> thing b
 (>>) =
   (*>)
