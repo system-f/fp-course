@@ -31,9 +31,9 @@ test_Parser =
   , bindParserTest
   , ignoreFirstTest
   , alternationTest
+  , satisfyTest
   , listTest
   , list1Test
-  , satisfyTest
   , sequenceParserTest
   , thisManyTest
   , ageParserTest
@@ -115,6 +115,15 @@ alternationTest =
       parse (constantParser UnexpectedEof ||| valueParser 'v') "abc" @?= Result "abc" 'v'
   ]
 
+satisfyTest :: TestTree
+satisfyTest =
+  testGroup "satisfy" [
+    testCase "isUpper" $
+      parse (satisfy isUpper) "Abc" @?= Result "bc" 'A'
+  , testCase "isUpper with lower case input is an error" $
+      isErrorResult (parse (satisfy isUpper) "abc") @?= True
+  ]
+
 listTest :: TestTree
 listTest =
   testGroup "list" [
@@ -141,15 +150,6 @@ list1Test =
       parse (list1 (character *> valueParser 'v')) "abc" @?= Result "" "vvv"
   , testCase "empty input is an error" $
       isErrorResult (parse (list1 (character *> valueParser 'v')) "") @?= True
-  ]
-
-satisfyTest :: TestTree
-satisfyTest =
-  testGroup "satisfy" [
-    testCase "isUpper" $
-      parse (satisfy isUpper) "Abc" @?= Result "bc" 'A'
-  , testCase "isUpper with lower case input is an error" $
-      isErrorResult (parse (satisfy isUpper) "abc") @?= True
   ]
 
 sequenceParserTest :: TestTree
