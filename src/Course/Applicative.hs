@@ -166,7 +166,10 @@ instance Applicative ((->) t) where
     -> ((->) t b)
 --  (t -> b)
 --  t -> b
-  (<*>) tab ta t = tab t (ta t)
+  (<*>) a   b  c = a   c (b  c)
+--(<*>) tab ta t = tab t (ta t)
+
+-- (t -> a -> b) -> (t -> a) -> (t -> b)
 
 
 -- | Apply a binary function in the environment.
