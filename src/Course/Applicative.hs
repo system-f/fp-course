@@ -312,7 +312,7 @@ sequence ::
   List (f a)
   -> f (List a)
 sequence =
-  error "todo: Course.Applicative#sequence"
+  foldRight (\h t -> (:.) <$> h <*> t) (pure Nil)
 
 -- | Replicate an effect a given number of times.
 --

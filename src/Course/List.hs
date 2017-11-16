@@ -36,6 +36,8 @@ data List t =
   | t :. List t
   deriving (Eq, Ord)
 
+cons = (:.)
+
 -- Right-associative
 infixr 5 :.
 
@@ -58,6 +60,9 @@ foldLeft :: (b -> a -> b) -> b -> List a -> b
 foldLeft _ b Nil      = b
 foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 
+bottom = bottom
+alist = 1 :. bottom
+
 -- END Helper functions and data types
 
 -- | Returns the head of the list or the given default.
@@ -75,8 +80,8 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr x Nil = x
+headOr _ (h:._) = h
 
 -- | The product of the elements of a list.
 --
@@ -91,9 +96,12 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = foldLeft (*) 1
 
+  {-
+product Nil = 1
+product (h:.t) = h * product t
+-}
 -- | Sum the elements of the list.
 --
 -- >>> sum (1 :. 2 :. 3 :. Nil)
@@ -106,8 +114,8 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (+) 0
+
 
 -- | Return the length of the list.
 --
@@ -118,8 +126,12 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (\r -> \_ -> r + 1) 0
+-- length = foldLeft (\r -> const ((+1) r)) 0
+length = foldLeft (const . (+1)) 0
+
+-- \x -> f (g x)
+-- f . g
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +145,16 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- f h :: b
+-- map f t :: List b
+-- f h :. map f t :: List b
+----
+-- ? :: List b
+map f (h:.t) = f h :. map f t
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +170,8 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter f (h:.t) = bool id (h :.) (f h) (filter f t)
 
 -- | Append two lists to a new list.
 --
@@ -169,9 +189,14 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
-
+-- (++) = \x y -> foldRight (:.) y x
+-- (++) = \x y -> flip (foldRight (:.)) x y
+-- (++) = \x -> flip (foldRight (:.)) x
+(++) = flip (foldRight (:.))
+  {-
+(++) Nil x2 = x2
+(++) (h:.t) x2 = h :. t ++ x2
+-}
 infixr 5 ++
 
 -- | Flatten a list of lists to a list.
@@ -187,8 +212,9 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+--flatten Nil = Nil
+--flatten (h:.t) = h ++ flatten t
+flatten = foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -204,8 +230,86 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap f = flatten . map f
+
+helloworld = 'c':.'o':.'m':.'/':.'h':.' ':.'w':.'o':.'r':.'l':.'d':.Nil
+
+encodeurl = flatMap (\c -> case c of
+                             ' ' -> '%':.'2':.'0':.Nil
+                             _ -> c :. Nil)
+
+pureOptional :: a -> Optional a; pureOptional = Full
+-- bindOptional :: (a -> Optional b) -> Optional a -> Optional b
+pureList     :: a -> List     a; pureList = \a -> a :. Nil
+-- flatMap      :: (a -> List     b) -> List     a -> List     b
+pureIO       :: a -> IO       a; pureIO = P.return
+-- (=<<)        :: (a -> IO       b) -> IO       a -> IO       b        
+
+class Moonad f where
+  bind :: (a -> f b) -> f a -> f b
+  puure :: a -> f a
+
+replikate :: Moonad f => Int -> f a -> f (List a)
+replikate n x = sekuence (replicate n x)
+
+sekuence :: Moonad f => List (f a) -> f (List a)
+sekuence =
+  foldRight (\h t ->
+    bind (\a ->
+      bind (\as ->
+        puure (a:.as)) t) h)
+  (puure Nil)
+
+sequenceOptional :: List (Optional a) -> Optional (List a)
+sequenceOptional =
+  foldRight (\h t ->
+    bindOptional (\a ->
+      bindOptional (\as ->
+        pureOptional (a:.as)) t) h)
+  (pureOptional Nil)
+
+sequenceList :: List (List a) -> List (List a)
+sequenceList =
+  foldRight (\h t ->
+    flatMap (\a ->
+      flatMap (\as ->
+        pureList (a:.as)) t) h)
+  (pureList Nil)
+
+sequenceIO :: List (IO a) -> IO (List a)
+sequenceIO =
+  foldRight (\h t ->
+    (P.=<<) (\a ->
+      (P.=<<) (\as ->
+        pureIO (a:.as)) t) h)
+  (pureIO Nil)
+
+-- http://google.com/hello world
+
+-- ' ' -> "%20"
+
+
+-- \x -> f (g x)
+-- f . g
+
+-- flatMap _ Nil = Nil
+-- h :: a
+-- f :: a -> List b
+-- t :: List a
+-- f h :: List b
+-- flatMap f t :: List b
+----
+-- ? :: List b
+-- flatMap f (h:.t) = f h ++ flatMap f t
+-- flatMap f = foldRight (\h t -> f h ++ t) Nil
+-- flatMap f = foldRight (\h t -> (++) (f h) t) Nil
+-- flatMap f = foldRight (\h -> (++) (f h)) Nil
+-- flatMap f = foldRight (\h -> ((++) . f) h) Nil
+-- flatMap f = foldRight ((++) . f) Nil
+
+-- \x -> f (g x)
+-- \x -> (f . g) x
+-- f . g
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -214,8 +318,10 @@ flatMap =
 flattenAgain ::
   List (List a)
   -> List a
-flattenAgain =
-  error "todo: Course.List#flattenAgain"
+flattenAgain x = flatMap id x
+
+-- flatMap f = foldRight ((++) . f) Nil
+-- flatten =   foldRight ((++)    ) Nil
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -239,11 +345,46 @@ flattenAgain =
 --
 -- >>> seqOptional (Empty :. map Full infinity)
 -- Empty
+-- t :: List (Optional a)
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
 seqOptional =
-  error "todo: Course.List#seqOptional"
+  foldRight (twiceOptional (:.)) (Full Nil)
+{-
+seqOptional Nil =
+  Full Nil
+
+-- h ::             Optional a
+-- seqOptional t :: Optional (List a)
+----
+-- ? ::             Optional (List a)
+
+seqOptional (h:.t) =
+  twiceOptional (:.) h (seqOptional t)
+-}
+
+  -- bindOptional (\a -> 
+  -- mapOptional (\as -> a :. as) (seqOptional t)) h
+  {-
+  case h of
+    Empty -> Empty
+    Full a -> mapOptional (a :.) (seqOptional t)
+    -}
+
+{-
+mapOptional f o =
+  case o of
+    Empty -> Empty
+    Full a -> Full (f a)
+
+bindOptional =
+  \f o ->
+    case o of
+      Empty -> Empty
+      Full as -> f as
+-}
+
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -301,8 +442,13 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse = foldLeft (flip (:.)) Nil
+
+-- reverse0 Nil
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
