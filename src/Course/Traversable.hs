@@ -10,6 +10,7 @@ import Course.Applicative
 import Course.List
 import Course.ExactlyOne
 import Course.Optional
+import Course.Compose
 
 -- | All instances of the `Traversable` type-class must satisfy two laws. These
 -- laws are not checked by the compiler. These laws are given as:
@@ -72,3 +73,9 @@ sequenceA ::
   -> f (t a)
 sequenceA =
   error "todo: Course.Traversable#sequenceA"
+
+instance (Traversable f, Traversable g) =>
+  Traversable (Compose f g) where
+-- Implement the traverse function for a Traversable instance for Compose
+  traverse =
+    error "todo: Course.Traversable traverse#instance (Compose f g)"
