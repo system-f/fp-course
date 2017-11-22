@@ -37,6 +37,6 @@ instance (Monad f, Monad g) =>
 
 instance (Traversable f, Traversable g) =>
   Traversable (Compose f g) where
--- Implement the traverse function for a Monad instance for Compose
+-- Implement the traverse function for a Traversable instance for Compose
   traverse =
     error "todo: Course.Compose traverse#instance (Compose f g)"
