@@ -80,7 +80,7 @@ instance (Traversable f, Traversable g) =>
   traverse =
     error "todo: Course.Traversable traverse#instance (Compose f g)"
 
--- | The `Product` data type contains 2 values from both type constructors.
+-- | The `Product` data type contains one value from each of the two type constructors.
 data Product f g a =
   Product (f a) (g a)
 
@@ -96,7 +96,7 @@ instance (Traversable f, Traversable g) =>
   traverse =
     error "todo: Course.Traversable traverse#instance (Product f g)"
 
--- | The `Coproduct` data type contains 1 value from either type constructor.
+-- | The `Coproduct` data type contains one value from either of the two type constructors.
 data Coproduct f g a =
   InL (f a)
   | InR (g a)
