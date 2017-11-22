@@ -55,3 +55,20 @@ instance Traversable Optional where
     -> f (Optional b)
   traverse =
     error "todo: Course.Traversable traverse#instance Optional"
+
+-- | Sequences a traversable value of structures to a structure of a traversable value.
+--
+-- >>> sequenceA (ExactlyOne 7 :. ExactlyOne 8 :. ExactlyOne 9 :. Nil)
+-- ExactlyOne [7,8,9]
+--
+-- >>> sequenceA (Full (ExactlyOne 7))
+-- ExactlyOne (Full 7)
+--
+-- >>> sequenceA (Full (*10)) 6
+-- Full 60
+sequenceA ::
+  (Applicative f, Traversable t) =>
+  t (f a)
+  -> f (t a)
+sequenceA =
+  error "todo: Course.Traversable#sequenceA"
