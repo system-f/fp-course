@@ -9,6 +9,7 @@ import Course.Functor
 import Course.Applicative
 import Course.List
 import Course.ExactlyOne
+import Course.Optional
 
 -- | All instances of the `Traversable` type-class must satisfy two laws. These
 -- laws are not checked by the compiler. These laws are given as:
@@ -45,3 +46,12 @@ instance Traversable ExactlyOne where
     -> f (ExactlyOne b)
   traverse =
     error "todo: Course.Traversable traverse#instance ExactlyOne"
+
+instance Traversable Optional where
+  traverse ::
+    Applicative f =>
+    (a -> f b)
+    -> Optional a
+    -> f (Optional b)
+  traverse =
+    error "todo: Course.Traversable traverse#instance Optional"
