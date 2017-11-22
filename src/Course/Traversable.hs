@@ -4,9 +4,11 @@
 
 module Course.Traversable where
 
+import Course.Core
 import Course.Functor
 import Course.Applicative
 import Course.List
+import Course.ExactlyOne
 
 -- | All instances of the `Traversable` type-class must satisfy two laws. These
 -- laws are not checked by the compiler. These laws are given as:
@@ -34,3 +36,12 @@ instance Traversable List where
     -> f (List b)
   traverse f =
     foldRight (\a b -> (:.) <$> f a <*> b) (pure Nil)
+
+instance Traversable ExactlyOne where
+  traverse ::
+    Applicative f =>
+    (a -> f b)
+    -> ExactlyOne a
+    -> f (ExactlyOne b)
+  traverse =
+    error "todo: Course.Traversable traverse#instance ExactlyOne"
