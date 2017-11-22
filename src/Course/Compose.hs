@@ -7,6 +7,7 @@ import Course.Core
 import Course.Functor
 import Course.Applicative
 import Course.Monad
+import Course.Traversable
 
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
 
@@ -33,3 +34,9 @@ instance (Monad f, Monad g) =>
 -- Implement the (=<<) function for a Monad instance for Compose
   (=<<) =
     error "todo: Course.Compose (<<=)#instance (Compose f g)"
+
+instance (Traversable f, Traversable g) =>
+  Traversable (Compose f g) where
+-- Implement the traverse function for a Monad instance for Compose
+  traverse =
+    error "todo: Course.Compose traverse#instance (Compose f g)"
