@@ -163,9 +163,8 @@ available in this repository for your convenience.
 
 ### Running the tests
 
-Tests are available both as a [tasty](https://hackage.haskell.org/package/tasty)
-test suite, and as doctests. Tasty is the recommended and supported method,
-however you're free to use the doctests if you prefer.
+Tests are available as a [tasty](https://hackage.haskell.org/package/tasty)
+test suite.
 
 #### tasty
 
@@ -216,20 +215,8 @@ tab completion, so you can save yourself some typing.
 #### doctest
 
 The doctest tests are a mirror of the tasty tests that reside in comments
-alongside the code. They are executable, however this is not supported. Examples
-begin with `>>>` while properties begin with `prop>`.
-
-Executing the tests is done with the `doctest` executable, which you may install
-using:
-
-    > cabal install doctest
-
-Once installed, you may use doctest to run the doctests for a given module:
-
-    > doctest -isrc -Wall -fno-warn-type-defaults <filename.hs>
-
-Binding this command to a keyboard shortcut in your favourite editor, such that
-tests for the current file are executed, is an exercise left to the reader.
+alongside the code. They are not executable, but examples can be copied into
+GHCI. Examples begin with `>>>` while properties begin with `prop>`.
 
 ### Progression
 
@@ -368,7 +355,7 @@ covered first.
   * always lower-case 'a'..'z'
   * aka generics, templates C++, parametric polymorphism
 * running the tests
-  * `doctest`
+  * `cabal test`
 
 ### Parser grammar assistance
 
