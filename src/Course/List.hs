@@ -216,10 +216,7 @@ filter =
   -> List a
   -> List a
 (++) =
-  \a b -> 
-    case a of
-      Nil -> b
-      h:.t -> h :. t ++ b
+  \x y -> foldRight (:.) y x
 
 infixr 5 ++
 
@@ -236,8 +233,8 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten = given x, replace (in x), (:.) with (++), Nil with Nil
+flatten = foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -350,8 +347,17 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse = reverse0 Nil
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+-- reverse' = foldLeft (\r e -> e :. r) Nil
+-- reverse' = foldLeft (\r e -> (:.) e r) Nil
+-- reverse' = foldLeft (\r e -> flip (:.) r e) Nil
+reverse' = foldLeft (flip (:.)) Nil
+
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
