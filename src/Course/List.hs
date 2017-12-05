@@ -75,8 +75,15 @@ headOr ::
   a
   -> List a
   -> a
+{-
+headOr x Nil = x
+headOr _ (h:._) = h
+-}
 headOr =
-  error "todo: Course.List#headOr"
+  \x list ->
+    case list of
+      Nil -> x
+      h:._ -> h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +98,10 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil =
+  1
+product (h:.t) =
+  h * product t
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +115,10 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum Nil =
+  0
+sum (h:.t) =
+  h + sum t
 
 -- | Return the length of the list.
 --
@@ -118,8 +129,16 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+length Nil =
+  0
+length (_:.t) =
+  1 + length t
+
+produkt = foldRight (\h t -> h * t) 1 
+suum = foldRight (+) 0
+leength :: List a -> Int
+leength = foldRight (const ((+)1)) 0
+
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +152,35 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+{-
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+-}
+-- map f = foldRight (\h t -> f h :. t) Nil
+-- map f = foldRight (\h t -> (:.) (f h) t) Nil
+-- map f = foldRight (\h -> \t -> (:.) (f h) t) Nil
+-- map f = foldRight (\h -> (:.) (f h)) Nil
+-- map f = foldRight (\h -> (.) (:.) f h) Nil
+-- map f = foldRight ((.) (:.) f) Nil
+map f = foldRight ((:.) . f) Nil
+
+-- \x -> f (g x)
+-- f . g
+
+-- (b -> c) -> (a -> b) -> a -> c
+
+-- \x -> f x
+-- f
+
+-- list = a :. b :. c :. d :. Nil
+-- map f list = f a :. f b :. f c :. f d :. Nil
+
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- f h :: b
+-- map f t :: List b
+-- _ :: List b
 
 -- | Return elements satisfying the given predicate.
 --
@@ -170,7 +216,10 @@ filter =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+  \a b -> 
+    case a of
+      Nil -> b
+      h:.t -> h :. t ++ b
 
 infixr 5 ++
 
