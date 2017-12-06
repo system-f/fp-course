@@ -19,7 +19,7 @@ description:          Source code for a course in functional programming using H
 homepage:             https://github.com/data61/fp-course
 bug-reports:          https://github.com/data61/fp-course/issues
 cabal-version:        >= 1.10
-build-type:           Custom
+build-type:           Simple
 tested-with:          GHC == 7.10.3, GHC == 8.0.2
 extra-source-files:   etc/CONTRIBUTORS,
                       changelog
@@ -31,18 +31,10 @@ source-repository     head
 flag                  small_base
   description:        Choose the new, split-up base package.
 
-custom-setup
-  setup-depends:
-    base          >= 4.3 && <5,
-    Cabal         >= 1.10,
-    cabal-doctest >= 1 && <1.1
-
 library
   default-language:   Haskell2010
 
   build-depends:      base < 5 && >= 4
-                      , QuickCheck >= 2.0
-                      , doctest >= 0.9.7
                       , containers >= 0.4.0.0
                       , array >= 0.4
 
