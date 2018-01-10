@@ -18,11 +18,15 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- * The law of associative composition
 --   `∀a b c. ((.) <$> a <*> b <*> c) ≅ (a <*> (b <*> c))`
 --
--- * The law of left identity
+-- * The law of identity
 --   `∀x. pure id <*> x ≅ x`
 --
--- * The law of right identity
---   `∀x. x <*> pure id ≅ x`
+-- * The law of homomorphism
+--   `∀f x. pure f <*> pure x ≅ pure (f x)`
+--
+-- * The law of composition
+--   `∀u v w. pure (.) <*> u <*> v <*> w ≅ u <*> (v <*> w)`
+
 class Functor f => Applicative f where
   pure ::
     a -> f a
