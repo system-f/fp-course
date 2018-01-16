@@ -17,7 +17,7 @@ Useful Functions --
 
   getArgs :: IO (List Chars)
   putStrLn :: Chars -> IO ()
-  readFile :: Chars -> IO Chars
+  readFile :: FilePath -> IO Chars
   lines :: Chars -> List Chars
   void :: IO a -> IO ()
 
