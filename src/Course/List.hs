@@ -34,6 +34,7 @@ import qualified Numeric as N
 data List t =
   Nil
   | t :. List t
+  -- | Cons t (List t)
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -75,8 +76,16 @@ headOr ::
   a
   -> List a
   -> a
+headOr d Nil = d
+headOr _ (h:._) = h
+
+{-
 headOr =
-  error "todo: Course.List#headOr"
+  \d list ->
+    case list of
+      Nil -> d
+      h:._ -> h
+-}
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +100,8 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil = 1
+product (h:.t) = h * product t
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +115,11 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum Nil = 0
+sum (h:.t) = h + sum t
+
+suum :: List Int -> Int
+suum = \list -> foldLeft (+) 0 list
 
 -- | Return the length of the list.
 --
@@ -119,7 +131,11 @@ length ::
   List a
   -> Int
 length =
-  error "todo: Course.List#length"
+  \list ->
+    foldLeft (\r -> \_ -> (r + 1)) 0 list
+
+-- length Nil = 0
+-- length (_:.t) = 1 + length t
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +149,15 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- f h :: b
+-- map f t :: List b
+----
+-- ? :: List b
+map f (h:.t) = f h :. map f t
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +173,10 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter p (h:.t) =
+  let z = filter p t
+  in bool z (h:.z) (p h) -- if p h then h :. z else z
 
 -- | Append two lists to a new list.
 --
@@ -169,8 +194,22 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+-- (++) = \list1 list2 -> foldRight (:.) list2 list1
+-- (++) = \list1 list2 -> flip (foldRight (:.)) list1 list2
+(++) = flip (foldRight (:.))
+
+--    1  (2:.Nil) (3:.4:.Nil) = 1 :. (2:.Nil ++ 3:.4:.Nil)
+--    2  (Nil) (3:.4:.Nil) = 2 :. (Nil ++ 3:.4:.Nil)
+--    Nil (3:.4:.Nil) = 3:.4:.Nil
+
+-- (++) (1:.2:.Nil) (3:.4:.Nil)
+
+
+-- h :: a
+-- t :: List a
+-- x :: List a
+----
+-- ? :: List a
 
 infixr 5 ++
 
@@ -187,8 +226,10 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten Nil = Nil
+-- flatten (h:.t) = h ++ flatten t
+flatten = foldRight (++) Nil
+
 
 -- | Map a function then flatten to a list.
 --
@@ -204,8 +245,14 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap _ Nil = Nil
+-- f :: a -> List b
+-- h :: a
+                    -- t :: List a
+-- flatMap f t :: List b
+----
+-- ? :: List b
+flatMap f (h:.t) = f h ++ flatMap f t
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
