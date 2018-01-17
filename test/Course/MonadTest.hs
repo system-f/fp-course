@@ -15,15 +15,35 @@ import           Course.Optional   (Optional (..))
 test_Monad :: TestTree
 test_Monad =
   testGroup "Monad" [
-    appTest
-  , bindExactlyOneTest
+    bindExactlyOneTest
   , bindListTest
   , bindOptionalTest
   , bindReaderTest
+  , appTest
   , joinTest
   , bindFlippedTest
   , kleisliCompositionTest
   ]
+
+bindExactlyOneTest :: TestTree
+bindExactlyOneTest =
+  testCase "(=<<) for ExactlyOne" $
+    ((\x -> ExactlyOne(x+1)) =<< ExactlyOne 2) @?= ExactlyOne 3
+
+bindListTest :: TestTree
+bindListTest =
+  testCase "(=<<) for List" $
+    ((\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)) @?= (1:.1:.2:.2:.3:.3:.Nil)
+
+bindOptionalTest :: TestTree
+bindOptionalTest =
+  testCase "(=<<) for Optional" $
+    ((\n -> Full (n + n)) =<< Full 7) @?= Full 14
+
+bindReaderTest :: TestTree
+bindReaderTest =
+  testCase "(=<<) for (->)" $
+    ((*) =<< (+10)) 7 @?= 119
 
 appTest :: TestTree
 appTest =
@@ -49,26 +69,6 @@ appTest =
   , testCase "(->) 5" $
       ((*) <**> (+2)) 3 @?= 15
   ]
-
-bindExactlyOneTest :: TestTree
-bindExactlyOneTest =
-  testCase "(=<<) for ExactlyOne" $
-    ((\x -> ExactlyOne(x+1)) =<< ExactlyOne 2) @?= ExactlyOne 3
-
-bindListTest :: TestTree
-bindListTest =
-  testCase "(=<<) for List" $
-    ((\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)) @?= (1:.1:.2:.2:.3:.3:.Nil)
-
-bindOptionalTest :: TestTree
-bindOptionalTest =
-  testCase "(=<<) for Optional" $
-    ((\n -> Full (n + n)) =<< Full 7) @?= Full 14
-
-bindReaderTest :: TestTree
-bindReaderTest =
-  testCase "(=<<) for (->)" $
-    ((*) =<< (+10)) 7 @?= 119
 
 joinTest :: TestTree
 joinTest =
