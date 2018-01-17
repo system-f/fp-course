@@ -39,6 +39,7 @@ library
                       , array >= 0.4
 
   ghc-options:        -Wall
+                      -fwarn-incomplete-uni-patterns
                       -fno-warn-unused-binds
                       -fno-warn-unused-do-bind
                       -fno-warn-unused-imports
