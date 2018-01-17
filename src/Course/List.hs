@@ -245,14 +245,26 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap _ Nil = Nil
+-- flatMap _ Nil = Nil
 -- f :: a -> List b
 -- h :: a
                     -- t :: List a
 -- flatMap f t :: List b
 ----
 -- ? :: List b
-flatMap f (h:.t) = f h ++ flatMap f t
+-- flatMap f (h:.t) = f h ++ flatMap f t
+-- flatMap f = foldRight (\a b -> f a ++ b) Nil
+-- flatMap f = foldRight (\a -> \b -> (++) (f a) b) Nil
+-- flatMap f = foldRight (\a -> ((++) . f) a) Nil
+flatMap = \f -> foldRight ((++) . f) Nil
+flatteen =      foldRight ((++) . id) Nil
+-- flatten = foldRight (++) Nil
+
+-- \x -> f (g x)
+-- f . g
+
+-- \a -> f a
+-- f
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -262,7 +274,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -289,8 +301,23 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
+-- seqOptional Nil = Full Nil
+-- h :: Optional a
+                                -- t :: List (Optional a)
+-- seqOptional t :: Optional (List a)
+----
+-- ? :: Optional (List a)
+-- seqOptional (h:.t) =
+  -- bindOptional (\a -> mapOptional (\b -> a:.b) (seqOptional t)) h
+  -- twiceOptional (:.) h (seqOptional t)
 seqOptional =
-  error "todo: Course.List#seqOptional"
+  foldRight (twiceOptional (:.)) (Full Nil)
+-- twiceOptional (:.) :: Optional t -> Optional (List t) -> Optional (List t)
+
+-- bindOptional :: (x -> Optional y) -> Optional x -> Optional y
+-- mapOptional ::  (x -> y) -> Optional x -> Optional y
+
+  
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -312,9 +339,21 @@ find ::
   (a -> Bool)
   -> List a
   -> Optional a
-find =
-  error "todo: Course.List#find"
+find p = foldRight (\a b -> bool b (Full a) (p a)) Empty
 
+data Natural = Zeroo | Successor Natural
+  deriving (Eq, Show)
+
+one = Successor Zeroo
+two = Successor one
+
+leength :: List a -> Natural
+leength = foldRight (const Successor) Zeroo
+
+{-
+find _ Nil = Empty
+find p (h:.t) = bool (find p t) (Full h) (p h)
+-}
 -- | Determine if the length of the given list is greater than 4.
 --
 -- >>> lengthGT4 (1 :. 3 :. 5 :. Nil)
@@ -331,8 +370,8 @@ find =
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 x =
+  length (take 5 x) > 4
 
 -- | Reverse a list.
 --
@@ -348,8 +387,18 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse = reverse0 Nil
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+reversee = foldLeft (flip (:.)) Nil
+
+
+
+
+
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
