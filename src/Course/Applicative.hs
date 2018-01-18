@@ -48,13 +48,13 @@ instance Applicative ExactlyOne where
     a
     -> ExactlyOne a
   pure =
-    error "todo: Course.Applicative pure#instance ExactlyOne"
+    ExactlyOne
   (<*>) :: 
     ExactlyOne (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (<*>) =
-    error "todo: Course.Applicative (<*>)#instance ExactlyOne"
+  (<*>) (ExactlyOne f) (ExactlyOne a) =
+    ExactlyOne (f a)
 
 -- | Insert into a List.
 --
@@ -67,13 +67,14 @@ instance Applicative List where
     a
     -> List a
   pure =
-    error "todo: Course.Applicative pure#instance List"
+    \a -> a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
   (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+    \optf opta ->
+      flatMap (\f -> map f opta) optf
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
@@ -90,8 +91,16 @@ instance Applicative List where
   (a -> b)
   -> f a
   -> f b
-(<$$>) =
-  error "todo: Course.Applicative#(<$$>)"
+(<$$>) f x =
+  pure f <*> x
+  
+-- (<*>) :: f (a -> b) -> f a -> f b
+-- f :: a -> b
+-- pure :: x -> f x
+-- pure :: (a -> b) -> f (a -> b)
+-- pure f :: f (a -> b)
+
+
 
 -- | Insert into an Optional.
 --
@@ -110,13 +119,37 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo: Course.Applicative pure#instance Optional"
+    \a -> Full a
   (<*>) ::
     Optional (a -> b)
     -> Optional a
     -> Optional b
   (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+    \optf opta ->
+      bindOptional (\f -> mapOptional f opta) optf
+      {-case optf of
+        Empty -> Empty
+        Full f -> mapOptional f opta-}
+
+
+        {- case opta of 
+                    Empty -> Empty
+                    Full a -> Full (f a) -}
+
+{-
+mapOptional =
+  \f o -> case o of
+            Empty -> Empty
+            Full a -> Full (f a)
+
+bindOptional =
+  \f o ->
+    case o of
+      Empty -> Empty
+      Full x -> f x
+
+-}
+
 
 -- | Insert into a constant function.
 --
@@ -139,15 +172,26 @@ instance Applicative Optional where
 instance Applicative ((->) t) where
   pure ::
     a
-    -> ((->) t a)
+    -> t -> a
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    const
   (<*>) ::
-    ((->) t (a -> b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
+--  ((->) t (a -> b))
+    (t -> a -> b)
+--  -> ((->) t a)
+    -> (t -> a)
+--  -> ((->) t b)
+    -> t
+    -> b
+  (<*>) f g =
+    \t -> f t (g t)
+
+-- f :: t -> a -> b
+-- g :: t -> a
+-- t :: t
+----
+-- ? :: b
+
 
 
 -- | Apply a binary function in the environment.
@@ -171,12 +215,14 @@ instance Applicative ((->) t) where
 -- 18
 lift2 ::
   Applicative f =>
-  (a -> b -> c)
+  (a -> (b -> c))
   -> f a
   -> f b
   -> f c
-lift2 =
-  error "todo: Course.Applicative#lift2"
+lift2 f2a2b2c a b =
+  (f2a2b2c <$> a) <*> b
+
+-- f (b -> c) -> f b -> f c
 
 -- | Apply a ternary function in the environment.
 --
@@ -207,8 +253,8 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  error "todo: Course.Applicative#lift3"
+lift3 f2a2b2c2d a b c =
+  lift2 f2a2b2c2d a b <*> c
 
 -- | Apply a quaternary function in the environment.
 --
@@ -240,8 +286,8 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Applicative#lift4"
+lift4 f a b c d =
+  lift3 f a b c <*> d
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -266,8 +312,10 @@ lift4 =
   f a
   -> f b
   -> f b
-(*>) =
-  error "todo: Course.Applicative#(*>)"
+(*>) = lift2 (const id)
+
+gazza :: a -> b -> b
+gazza = flip const
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -293,7 +341,7 @@ lift4 =
   -> f a
   -> f b
 (<*) =
-  error "todo: Course.Applicative#(<*)"
+  lift2 const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -315,8 +363,20 @@ sequence ::
   Applicative f =>
   List (f a)
   -> f (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+sequence = foldRight (lift2 (:.)) (pure Nil)
+{-
+sequence Nil =
+  pure Nil
+sequence (h:.t) =
+  lift2 (:.) h (sequence t)
+-}
+
+-- h :: f a
+                            -- t :: List (f a)
+-- sequence t :: f (List a)
+-----
+-- ? :: f (List a)
+
 
 -- | Replicate an effect a given number of times.
 --
