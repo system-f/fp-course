@@ -125,7 +125,7 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  error "todo: Course.Parser#valueParser"
+  \a -> P (\i -> Result i a)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -137,7 +137,9 @@ valueParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\i -> case i of
+             Nil -> UnexpectedEof
+             h:.t -> Result t h)
 
 -- | Return a parser that maps any succeeding result with the given function.
 --
@@ -150,8 +152,14 @@ mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
-mapParser =
-  error "todo: Course.Parser#mapParser"
+mapParser f martin =
+  P ((<$>) f <$> parse martin)
+
+-- i :: Input
+-- f :: a -> b
+                     -- martin :: Parser a
+-- parse martin :: Input -> ParseResult a
+-- ? :: ParseResult b
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -179,7 +187,22 @@ bindParser ::
   -> Parser a
   -> Parser b
 bindParser =
-  error "todo: Course.Parser#bindParser"
+  undefined
+  
+
+
+
+-- a :: a
+-- j :: Input
+-- john :: a -> Parser b
+----
+-- ? :: ParseResult b
+
+
+                                        -- fred :: Parser a
+-- parse fred :: Input -> ParseResult a
+-- i :: Input
+----
 
 -- | Return a parser that puts its input into the given parser and
 --
