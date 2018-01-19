@@ -365,8 +365,8 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 
 | English   | Parser library                    |
 |-----------|-----------------------------------|
-| and then  | `bindParser` `>>=`                |
-| always    | `valueParser` `pure`              |
+| and then  |  `>>=`                   |
+| always    |  `pure`              |
 | or        | `\|\|\|`                             |
 | 0 or many | `list`                            |
 | 1 or many | `list1`                           |

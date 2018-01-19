@@ -219,8 +219,10 @@ lift2 ::
   -> f a
   -> f b
   -> f c
-lift2 f2a2b2c a b =
-  (f2a2b2c <$> a) <*> b
+lift2 f2a2b2c x y =
+  (f2a2b2c <$> x) <*> y
+
+-- (dave -> tony) -> jeff dave -> jeff tony
 
 -- f (b -> c) -> f b -> f c
 
