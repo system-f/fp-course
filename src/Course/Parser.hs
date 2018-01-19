@@ -313,8 +313,8 @@ list1 parsefred =
 
 {-
 (1 or many) parsefred =
-  parsefred (and then) (call it fred)
-  (0 or many) parsefred (and then) (call it otherfreds)
+  parsefred >>= \fred)
+  (0 or many) parsefred >>= \otherfreds)
   always ((:.) fred otherfreds)
 -}
 
@@ -628,7 +628,10 @@ phoneBodyParser =
 phoneParser ::
   Parser Chars
 phoneParser =
-  error "todo: Course.Parser#phoneParser"
+  digit >>= \d ->
+  phoneBodyParser >>= \b ->
+  is '#' >>= \_ ->
+  pure (d :. b)
 
 -- | Write a parser for Person.
 --
@@ -677,8 +680,44 @@ phoneParser =
 personParser ::
   Parser Person
 personParser =
-  error "todo: Course.Parser#personParser"
+  Person <$>
+    ageParser <*>
+    spaces1 *>
+    firstNameParser <*>
+    spaces1 *>
+    surnameParser <*>
+    spaces1 *>
+    smokerParser <*>
+    spaces1 *>
+    phoneParser
+    
+  {-
+  do  a <- ageParser
+      spaces1
+      f <- firstNameParser
+      spaces1
+      s <- surnameParser
+      spaces1
+      k <- smokerParser
+      spaces1
+      p <- phoneParser
+      pure (Person a f s k p)
+  -}
 
+  {-
+  ageParser >>= \a ->
+  spaces1 >>= \_ ->
+  firstNameParser >>= \f ->
+  spaces1 >>= \_ ->
+  surnameParser >>= \s ->
+  spaces1 >>= \_ ->
+  smokerParser >>= \k ->
+  spaces1 >>= \_ ->
+  phoneParser >>= \p ->
+  pure (Person a f s k p)
+  -}
+
+  
 -- Make sure all the tests pass!
 
 
