@@ -97,7 +97,9 @@ findMTest =
 firstRepeatTest :: TestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" $ forAllShrink genIntegerList shrinkList (\xs ->
+    testCase "firstRepeat example" $
+      firstRepeat (1:.2:.3:.2:.4:.1:.Nil) @?= Full 2
+  , testProperty "finds repeats" $ forAllShrink genIntegerList shrinkList (\xs ->
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
