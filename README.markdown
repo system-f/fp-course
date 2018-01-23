@@ -75,7 +75,7 @@ available in this repository for your convenience.
 
 3. Execute the command `ghci`, which will compile and load all the source code.
    You may need to set permissions on the root directory and the ghci configuration
-   file, `chmod 600 .ghci ./`.
+   file, `chmod go-w .ghci ./`.
 
 4. Inspect the introductory modules to get a feel for Haskell's syntax, then move
    on to the exercises starting with `Course.Optional`. The
