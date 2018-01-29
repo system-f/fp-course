@@ -27,8 +27,25 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+-- mapOptional _ Empty = Empty
+-- mapOptional function (Full a) = Full (function a)
+mapOptional f o =
+  case o of
+    Empty -> Empty
+    Full a -> Full (f a)
+
+hh :: t -> t
+hh x = x
+
+{-
+mapOptional function optional =
+  case optional of
+    Empty -> Empty
+    Full a -> Full (function a)
+-}
+
+
+
 
 -- | Bind the given function on the possible value.
 --
@@ -44,8 +61,15 @@ bindOptional ::
   (a -> Optional b)
   -> Optional a
   -> Optional b
-bindOptional =
-  error "todo: Course.Optional#bindOptional"
+bindOptional eff opta =
+  case opta of
+    Empty -> Empty
+    Full a -> eff a
+
+-- eff :: a -> Optional b
+-- a :: a
+----
+-- ? :: Optional b
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
@@ -54,12 +78,15 @@ bindOptional =
 --
 -- >>> Empty ?? 99
 -- 99
+
+-- x ?? y 
+-- x == null ? y : x
 (??) ::
   Optional a
   -> a
   -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+(??) Empty ah = ah
+(??) (Full x) _ = x
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -79,8 +106,8 @@ bindOptional =
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"  
+(<+>) Empty x = x
+(<+>) q@(Full _) _ = q
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional f' a) f

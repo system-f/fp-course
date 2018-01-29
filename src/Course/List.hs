@@ -75,8 +75,16 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr def Nil = def
+headOr _ (h:._) = h
+
+
+-- def :: a
+-- h :: a
+-- t :: List a
+----
+-- ? :: a
+
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +99,15 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = foldLeft (*) 1
+
+-- list = 4 :. (5 :. (6 :. Nil))
+-- product list
+-- 4 * product (5 :. 6 :. Nil)
+-- 4 * (5 * product (6 :. Nil))
+-- 4 * (5 * (6 * product Nil))
+-- 4 * (5 * (6 * 1))
+-- 120
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +121,8 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum Nil = 0
+sum (h:.t) = h + sum t
 
 -- | Return the length of the list.
 --
@@ -118,8 +133,8 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (\i -> kk ((+) 1 i)) 0
+length = foldLeft (const . (+) 1) 0
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +148,26 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+
+-- FAQ
+-- 1. Can I use foldRight for function ...?
+-- Yes.
+-- 
+-- 2. But what if?
+-- Yes.
+
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- f h :: b
+-- map f t :: List b
+-- (:.) (f h) (map f t) :: List b
+-- f h :. map f t :: List b
+----
+-- ? :: List b
+
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +183,18 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter p (h:.t) =
+-- if p h then h :. filter p t else filter p t
+  
+-- in  bool (id frank) ((:.) h frank) (p h)
+  bool id ((:.) h) (p h) (filter p t)
+
+-- DRY (aka Functional Programming)
+
+-- if p then x else y
+-- case p of True -> x; False -> y
+-- bool y x p
 
 -- | Append two lists to a new list.
 --
@@ -169,8 +212,23 @@ filter =
   List a
   -> List a
   -> List a
+(++) Nil y = y
+(++) (h:.t) y = h :. t ++ y
+
+{-
+(++) x y =
+  foldRight (:.) y x
+-}
+{-}
 (++) =
-  error "todo: Course.List#(++)"
+  flip (foldRight (:.))
+-}
+
+-- (a -> b -> c) -> (b -> a -> c)
+
+-- \x y ->
+--  if x is Nil, return y
+--  else x is h:.t, then return h :. t ++ y 
 
 infixr 5 ++
 
@@ -187,8 +245,10 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten Nil = Nil
+-- flatten (h:.t) = h ++ flatten t
+flatten = foldRight ((++) . id) Nil
+--        foldRight ((++) . f) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -204,8 +264,23 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+-- flatMap _ Nil = Nil
+-- flatMap f (h:.t) = f h ++ flatMap f t
+-- flatMap = \f -> flatten . map f
+flatMap f =
+--foldRight (\h -> (++) (f h)) Nil
+  foldRight ((++) . f) Nil
+--           \x -> f    (g x)
+-- f . g
+
+
+-- h :: a
+                            -- t :: List a
+-- flatMap f t :: List b
+-- f :: a -> List b
+-----
+-- ? :: List b
+
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -215,7 +290,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -242,8 +317,43 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
+  {-}
+seqOptional Nil = Full Nil
+seqOptional (h:.t) =
+-- Optional a -> Optional (List a) -> Optional (List a)
+  alice h (seqOptional t)
+-}
+alice ::
+  Optional a -> Optional (List a) -> Optional (List a)
+alice =
+  -- bindOptional (\e -> mapOptional (e:.) y) x
+  twiceOptional (:.)
+  {-}
+  case x of
+    Empty -> Empty
+    Full e -> mapOptional (e:.) y
+    -}
+              {- case y of
+                Empty -> Empty
+                Full lst -> Full (e :. lst) -}
+
+{-
+  case opta of
+    Empty -> Empty
+    Full a -> eff a
+
+mapOptional f o =
+  case o of
+    Empty -> Empty
+    Full a -> Full (f a)
+-}
+
+-- h :: Optional a
+                            -- t :: List (Optional a)
+-- seqOptional t :: Optional (List a)
+----
+-- ? :: Optional (List a)
 
 -- | Find the first element in the list matching the predicate.
 --
