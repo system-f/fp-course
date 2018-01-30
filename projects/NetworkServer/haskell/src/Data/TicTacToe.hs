@@ -41,7 +41,7 @@ instance Show FinishedBoard where
 
 data Position =
   N | E | S | W | NE | NW | SE | SW | C
-  deriving (Enum, Bounded, Ord, Eq, Show)
+  deriving (Ord, Eq, Show)
 
 data Outcome =
     InvalidMove
@@ -144,7 +144,7 @@ move board@(Board m h) p =
               ]
           allEqual (a:b:t) = a == b && allEqual (b:t)
           allEqual _ = True
-          isDraw = all (`M.member` m') [minBound..]
+          isDraw = M.size m' >= 9
           isWin = any (\(a, b, c) -> any allEqual $ mapM (`M.lookup` m') [a, b, c]) wins
           player = whoseTurn board
           b' = Board m' ((p, player):h)
