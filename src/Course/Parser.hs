@@ -88,8 +88,8 @@ data Parser a = P (Input -> ParseResult a)
 
 parse ::
   Parser a
-  -> Input
-  -> ParseResult a
+  -> (Input
+  -> ParseResult a)
 parse (P p) =
   p
 
@@ -125,7 +125,7 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  error "todo: Course.Parser#valueParser"
+  \a -> P (\i -> Result i a)
 
 -- | Return a parser that succeeds with a character off the input or fails with an error if the input is empty.
 --
@@ -137,7 +137,9 @@ valueParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\i -> case i of
+             Nil -> UnexpectedEof
+             h:.t -> Result t h)
 
 -- | Return a parser that maps any succeeding result with the given function.
 --
@@ -146,12 +148,33 @@ character =
 --
 -- >>> parse (mapParser (+10) (valueParser 7)) ""
 -- Result >< 17
+fmap2 ::
+  (Functor f, Functor g) =>
+  (a -> b)
+  -> f (g a)
+  -> f (g b)
+fmap2 = (<$>) . (<$>)
 mapParser ::
   (a -> b)
   -> Parser a
   -> Parser b
 mapParser =
-  error "todo: Course.Parser#mapParser"
+  -- \f p -> P (fmap2 f (parse p))
+  \f p -> P (\i -> f <$> parse p i)
+  -- Parser a ~ Input -> ParseResult a
+  -- Parser a ~ f       (g           a)
+  -- (Input ->) 
+  -- ParseResult 
+
+  -- (<$>) :: (a -> b) -> ParseResult a -> ParseResult b
+
+  -- f :: a -> b
+                              -- p :: Parser a
+  -- parse p :: Input -> ParseResult a
+  -- i :: Input
+  ----
+  -- ? :: ParseResult b
+  -- \f p -> P (\i -> f <$> parse p i)
 
 -- | Return a parser that puts its input into the given parser and
 --
@@ -179,7 +202,13 @@ bindParser ::
   -> Parser a
   -> Parser b
 bindParser =
-  error "todo: Course.Parser#bindParser"
+  \f p ->
+    P (\i -> case parse p i of
+               Result j a -> parse (f a) j
+               UnexpectedEof -> UnexpectedEof
+               ExpectedEof l -> ExpectedEof l
+               UnexpectedChar c -> UnexpectedChar c
+               UnexpectedString s -> UnexpectedString s)
 
 -- | Return a parser that puts its input into the given parser and
 --

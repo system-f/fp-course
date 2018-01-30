@@ -18,12 +18,12 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
-class Functor sumthin where
+class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
-    -> sumthin a
-    -> sumthin b
+    -> f a
+    -> f b
 
 infixl 4 <$>
 
