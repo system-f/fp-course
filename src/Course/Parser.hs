@@ -141,8 +141,8 @@ character =
 
 -- | Return a parser that maps any succeeding result with the given function.
 --
--- >>> parse (mapParser succ character) "amz"
--- Result >mz< 'b'
+-- >>> parse (mapParser toUpper character) "amz"
+-- Result >mz< 'A'
 --
 -- >>> parse (mapParser (+10) (valueParser 7)) ""
 -- Result >< 17
