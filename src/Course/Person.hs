@@ -10,13 +10,13 @@ import Course.List
 --     * Age: positive integer
 --     * First Name: non-empty string that starts with a capital letter and is followed by zero or more lower-case letters
 --     * Surname: string that starts with a capital letter and is followed by 5 or more lower-case letters
---     * Smoker: character that must be 'y' or 'n'
+--     * Smoker: boolean
 --     * Phone: string of digits, dots or hyphens but must start with a digit and end with a hash (#)
 data Person = Person {
   age :: Int,
   firstName :: Chars,
   surname :: Chars,
-  smoker :: Char,
+  smoker :: Bool,
   phone :: Chars
 } deriving (Eq, Show)
 
