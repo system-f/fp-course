@@ -18,12 +18,12 @@ import qualified Prelude as P(fmap)
 --
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
-class Functor f where
+class Functor sumthin where
   -- Pronounced, eff-map.
   (<$>) ::
     (a -> b)
-    -> f a
-    -> f b
+    -> sumthin a
+    -> sumthin b
 
 infixl 4 <$>
 
@@ -56,8 +56,7 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) = map
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,20 +70,21 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) = mapOptional
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
+-- instance TypeClass DataType where
+
 instance Functor ((->) t) where
   (<$>) ::
     (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
-  (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    -> (t -> a)
+    -> t
+    -> b
+  (<$>) = \a2b t2a t -> a2b (t2a t)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -94,13 +94,35 @@ instance Functor ((->) t) where
 -- prop> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
 --
 -- prop> x <$ Full q == Full x
+anon1 ::
+  a
+  -> List b
+  -> List a
+anon1 =
+  \a x -> map (\_ -> a) x
+
+anon2 ::
+  a
+  -> Optional b
+  -> Optional a
+anon2 =
+  \a x -> mapOptional (\_ -> a) x
+
+anon3 ::
+  a
+  -> (t -> b)
+  -> (t -> a)
+anon3 =
+  \a x -> (.) (\_ -> a) x
+
+
 (<$) ::
   Functor f =>
   a
   -> f b
   -> f a
 (<$) =
-  error "todo: Course.Functor#(<$)"
+  (<$>) . const
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +142,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo: Course.Functor#void"
+  (<$) ()
 
 -----------------------
 -- SUPPORT LIBRARIES --

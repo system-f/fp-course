@@ -317,44 +317,34 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional = foldRight (twiceOptional (:.)) (Full Nil)
-  {-}
 seqOptional Nil = Full Nil
-seqOptional (h:.t) =
--- Optional a -> Optional (List a) -> Optional (List a)
-  alice h (seqOptional t)
--}
-alice ::
-  Optional a -> Optional (List a) -> Optional (List a)
-alice =
-  -- bindOptional (\e -> mapOptional (e:.) y) x
-  twiceOptional (:.)
-  {-}
-  case x of
-    Empty -> Empty
-    Full e -> mapOptional (e:.) y
-    -}
-              {- case y of
-                Empty -> Empty
-                Full lst -> Full (e :. lst) -}
+seqOptional (h:.t) = 
+  bindOptional (\a -> mapOptional (a:.) (seqOptional t)) h
 
 {-
+bindOptional (\a -> mapOptional (a:.) (seqOptional t)) h
+
+\eff opta ->
   case opta of
     Empty -> Empty
     Full a -> eff a
 
-mapOptional f o =
+
+
+mapOptional (a:.) (seqOptional t)
+\f o ->
   case o of
     Empty -> Empty
     Full a -> Full (f a)
 -}
 
 -- h :: Optional a
-                            -- t :: List (Optional a)
+                                          -- t :: List (Optional a)
 -- seqOptional t :: Optional (List a)
 ----
--- ? :: Optional (List a)
+-- ? Optional (List a)
 
+ 
 -- | Find the first element in the list matching the predicate.
 --
 -- >>> find even (1 :. 3 :. 5 :. Nil)
@@ -411,8 +401,9 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+-- reverse = foldLeft (\r el -> el :. r) Nil
+-- reverse = foldLeft (\r el -> flip (:.) r el) Nil
+reverse = foldLeft (flip (:.)) Nil
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

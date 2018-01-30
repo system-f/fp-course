@@ -31,7 +31,7 @@ class Functor f => Applicative f where
   pure ::
     a -> f a
   (<*>) ::
-    f (a -> b)
+       f (a -> b)
     -> f a
     -> f b
 
@@ -67,13 +67,25 @@ instance Applicative List where
     a
     -> List a
   pure =
-    error "todo: Course.Applicative pure#instance List"
+    \a -> a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+--  (<*>) fs as =
+-- flatMap :: ((a -> b) -> List b) -> List (a -> b) -> List b
+-- flatMap (\f -> map f as) fs
+--    flatMap (\f -> flatMap (pure . f) as) fs
+
+  (<*>) Nil _ = Nil
+  (<*>) (h:.t) as = map h as ++ (<*>) t as
+
+-- h :: a -> b
+                     -- t :: List (a -> b)
+-- (<*>) t as :: List b
+-- as :: List a
+----
+-- ? :: List b
 
 -- | Witness that all things with (<*>) and pure also have (<$>).
 --
@@ -110,13 +122,30 @@ instance Applicative Optional where
     a
     -> Optional a
   pure =
-    error "todo: Course.Applicative pure#instance Optional"
+    Full
   (<*>) ::
     Optional (a -> b)
     -> Optional a
     -> Optional b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+  (<*>) optf opta =
+    -- bindOptional (\f -> mapOptional f opta) optf
+    bindOptional (\f -> bindOptional (pure . f) opta) optf
+--  flatMap      (\f -> map         f as  ) fs
+--  flatMap      (\f -> flatMap      (pure . f) as  ) fs
+
+-- "things that have bind and pure, have (<*>)"
+
+{-
+bindOptional eff opta =
+  case opta of
+    Empty -> Empty
+    Full a -> eff a
+
+mapOptional function optional =
+  case optional of
+    Empty -> Empty
+    Full a -> Full (function a)
+-}
 
 -- | Insert into a constant function.
 --
@@ -138,17 +167,16 @@ instance Applicative Optional where
 -- prop> pure x y == x
 instance Applicative ((->) t) where
   pure ::
-    a
-    -> ((->) t a)
+    a -> (t -> a)
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    const
   (<*>) ::
-    ((->) t (a -> b))
-    -> ((->) t a)
-    -> ((->) t b)
+    (t -> a -> b)
+    -> (t -> a)
+    -> t
+    -> b
   (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
-
+    \t2a2b t2a t -> t2a2b t (t2a t)
 
 -- | Apply a binary function in the environment.
 --
