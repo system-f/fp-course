@@ -198,13 +198,19 @@ instance Applicative ((->) t) where
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
 lift2 ::
+-- (a -> b -> c) -> f a -> f (b -> c)
   Applicative f =>
-  (a -> b -> c)
+  (a -> (b -> c))
   -> f a
   -> f b
   -> f c
-lift2 =
-  error "todo: Course.Applicative#lift2"
+lift2 abc fa fb =
+--    :: f (b -> c)
+-- fb :: f b
+----
+-- ? :: f c
+-- abc <$> fa <*> fb
+  abc <$> fa <*> fb
 
 -- | Apply a ternary function in the environment.
 --
@@ -235,8 +241,10 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  error "todo: Course.Applicative#lift3"
+lift3 fabcd fa fb fc =
+  fabcd <$> fa <*> fb <*> fc
+-- lift2 :: (a -> b -> c -> d) -> f a -> f b -> f (c -> d)
+-- lift2 fabcd fa fb <*> fc
 
 -- | Apply a quaternary function in the environment.
 --
@@ -268,8 +276,9 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Applicative#lift4"
+lift4 abcde fa fb fc fd =
+  pure abcde <*> fa <*> fb <*> fc <*> fd 
+  -- abcde <$> fa <*> fb <*> fc <*> fd
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -295,7 +304,7 @@ lift4 =
   -> f b
   -> f b
 (*>) =
-  error "todo: Course.Applicative#(*>)"
+  lift2 (flip const)
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -321,7 +330,7 @@ lift4 =
   -> f a
   -> f b
 (<*) =
-  error "todo: Course.Applicative#(<*)"
+  lift2 const
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -343,8 +352,14 @@ sequence ::
   Applicative f =>
   List (f a)
   -> f (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+sequence Nil = pure Nil
+sequence (h:.t) = lift2 (:.) h (sequence t)
+
+-- h          :: f a
+-- sequence t :: f (List a)
+                                          -- t :: List (f a)
+----
+-- ?          :: f (List a)
 
 -- | Replicate an effect a given number of times.
 --
