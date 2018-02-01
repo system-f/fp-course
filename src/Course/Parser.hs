@@ -579,11 +579,14 @@ phoneParser =
 --
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789# rest"
 -- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
+--
+-- >>> parse personParser "123  Fred   Clarkson    y     123-456.789#"
+-- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
 personParser ::
   Parser Person
 personParser =
   error "todo: Course.Parser#personParser"
-  
+
 -- Make sure all the tests pass!
 
 ----
