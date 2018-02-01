@@ -37,6 +37,9 @@ Problem --
   each line of that file contains the name of another file,
   read the referenced file and print out its name and contents.
 
+Consideration --
+  Try to avoid repetition. Factor out any common expressions.
+  
 Example --
 Given file files.txt, containing:
   a.txt
@@ -122,3 +125,10 @@ main ::
   IO ()
 main =
   error "todo: Course.FileIO#main"
+
+----
+
+-- Was there was some repetition in our solution?
+-- ? `sequence . (<$>)`
+-- ? `void . sequence . (<$>)`
+-- Factor it out.
