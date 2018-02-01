@@ -75,24 +75,6 @@ instance Applicative List where
   (<*>) =
     error "todo: Course.Apply (<*>)#instance List"
 
--- | Witness that all things with (<*>) and pure also have (<$>).
---
--- >>> (+1) <$$> (ExactlyOne 2)
--- ExactlyOne 3
---
--- >>> (+1) <$$> Nil
--- []
---
--- >>> (+1) <$$> (1 :. 2 :. 3 :. Nil)
--- [2,3,4]
-(<$$>) ::
-  Applicative f =>
-  (a -> b)
-  -> f a
-  -> f b
-(<$$>) =
-  error "todo: Course.Applicative#(<$$>)"
-
 -- | Insert into an Optional.
 --
 -- prop> pure x == Full x
@@ -179,6 +161,7 @@ lift2 =
   error "todo: Course.Applicative#lift2"
 
 -- | Apply a ternary function in the environment.
+-- /can be written using `lift2` and `(<*>)`./
 --
 -- >>> lift3 (\a b c -> a + b + c) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9)
 -- ExactlyOne 24
@@ -211,6 +194,7 @@ lift3 =
   error "todo: Course.Applicative#lift3"
 
 -- | Apply a quaternary function in the environment.
+-- /can be written using `lift3` and `(<*>)`./
 --
 -- >>> lift4 (\a b c d -> a + b + c + d) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) (ExactlyOne 10)
 -- ExactlyOne 34
@@ -242,6 +226,33 @@ lift4 ::
   -> f e
 lift4 =
   error "todo: Course.Applicative#lift4"
+
+-- | Apply a nullary function in the environment.
+lift0 ::
+  Applicative f =>
+  a
+  -> f a
+lift0 =
+  error "todo: Course.Applicative#lift0"
+
+-- | Apply a unary function in the environment.
+-- /can be written using `lift0` and `(<*>)`./
+--
+-- >>> lift1 (+1) (ExactlyOne 2)
+-- ExactlyOne 3
+--
+-- >>> lift1 (+1) Nil
+-- []
+--
+-- >>> lift1 (+1) (1 :. 2 :. 3 :. Nil)
+-- [2,3,4]
+lift1 ::
+  Applicative f =>
+  (a -> b)
+  -> f a
+  -> f b
+lift1 =
+  error "todo: Course.Applicative#lift1"
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
