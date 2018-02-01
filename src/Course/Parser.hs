@@ -583,5 +583,29 @@ personParser ::
   Parser Person
 personParser =
   error "todo: Course.Parser#personParser"
-
+  
 -- Make sure all the tests pass!
+
+----
+
+-- Did you repeat yourself in `personParser` ? This might help:
+
+(>>=~) ::
+  Parser a
+  -> (a -> Parser b)
+  -> Parser b
+(>>=~) p f =
+  (p <* spaces1) >>= f
+
+infixl 1 >>=~
+
+-- or maybe this
+
+(<*>~) ::
+  Parser (a -> b)
+  -> Parser a
+  -> Parser b
+(<*>~) f a =
+  f <*> spaces1 *> a
+
+infixl 4 <*>~
