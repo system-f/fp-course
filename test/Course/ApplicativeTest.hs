@@ -9,7 +9,7 @@ import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Applicative    (filtering, lift2, lift3, lift4, pure,
-                                        replicateA, sequence, (*>), (<$$>),
+                                        replicateA, sequence, (*>), lift1,
                                         (<*), (<*>))
 import           Course.Core
 import           Course.ExactlyOne     (ExactlyOne (..))
