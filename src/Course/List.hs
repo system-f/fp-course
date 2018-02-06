@@ -33,6 +33,7 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
+  -- | (:.) t (List t)
   | t :. List t
   deriving (Eq, Ord)
 
@@ -68,15 +69,19 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- >>> headOr 3 Nil
 -- 3
 --
--- prop> x `headOr` infinity == 0
+-- prop> \x -> x `headOr` infinity == 0
 --
 -- prop> x `headOr` Nil == x
 headOr ::
   a
   -> List a
   -> a
+-- a headOr(a x, (List a) lx) { ... }
 headOr =
-  error "todo: Course.List#headOr"
+  \x lx ->
+    case lx of
+      Nil -> x
+      h:._ -> h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +96,7 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = foldLeft (*) 1
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +110,16 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (+) 0
+
+-- sum (1:.2:.3:.Nil)
+-- 1 + sum (2:.3:.Nil)
+-- 1 + 2 + sum (3:.Nil)
+-- 1 + 2 + 3 + sum Nil
+-- 1 + 2 + 3 + 0
+-- 6
+
+
 
 -- | Return the length of the list.
 --
@@ -118,8 +130,13 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = \list -> foldLeft (\i _ -> i + 1) 0 list
+-- length = \list -> foldLeft (\i -> \_ -> i + 1) 0 list
+-- length = \list -> foldLeft (\i -> const (1 + i)) 0 list
+-- length = \list -> foldLeft (\i -> const ((+) 1 i)) 0 list
+-- length = \list -> foldLeft ((.) const ((+) 1)) 0 list
+-- length = \list -> foldLeft (const . (+) 1) 0 list
+length = foldLeft (const . (+) 1) 0
 
 -- | Map the given function on each element of the list.
 --
