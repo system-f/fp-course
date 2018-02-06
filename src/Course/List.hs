@@ -261,12 +261,14 @@ flatMap ::
   -> List b
 -- flatMap _ Nil = Nil
 -- flatMap f (h:.t) = f h ++ flatMap f t
-flatMap =
+flatMap f = foldRight ((++) .  f ) Nil
+flattenn =  foldRight  ((++) . id) Nil 
+
 -- \f x -> flatten (map f x)
 -- \f -> flatten . map f
 -- \f -> (.) flatten (map f)
-   (.) flatten . map
-   
+-- (.) flatten . map
+
 -- \x -> f           (g   x)
 -- f . g
 
@@ -295,7 +297,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
