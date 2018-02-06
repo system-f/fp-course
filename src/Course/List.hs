@@ -150,8 +150,27 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map f =
+--foldRight (\h t -> (:.) (f h) t) Nil
+--foldRight (\h -> (:.) (f h)) Nil
+  foldRight ((:.) . f) Nil
+
+-- \x -> f (g x)
+-- f . g
+
+
+-- map _ Nil = Nil
+-- map f (h:.t) = f h :. map f t
+
+-- a   :. b   :. c   :. Nil
+-- f a :. f b :. f c :. Nil
+
+-- h :: a
+-- t :: List a
+-- f :: a -> b
+----
+-- ? :: List b
+
 
 -- | Return elements satisfying the given predicate.
 --
@@ -167,8 +186,17 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter p (h:.t) =
+--(if p h then (h :.) else id) (filter p t)
+  (bool id (h:.) (p h)) (filter p t)
+
+-- p :: a -> Bool
+-- h :: a
+                             -- t :: List a
+-- filter p t :: List a
+-----
+-- ? :: List a
 
 -- | Append two lists to a new list.
 --
@@ -186,8 +214,11 @@ filter =
   List a
   -> List a
   -> List a
+-- (++) Nil y = y
+-- (++) (h:.t) y = h :. ((++) t y)
 (++) =
-  error "todo: Course.List#(++)"
+  flip (foldRight (:.))
+
 
 infixr 5 ++
 
@@ -204,8 +235,15 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten Nil = Nil
+-- flatten (h:.t) = h ++ flatten t
+flatten = foldRight (++) Nil
+
+-- h :: List a
+                          -- t :: List (List a)
+-- flatten t :: List a
+-----
+-- ? :: List a
 
 -- | Map a function then flatten to a list.
 --
@@ -221,8 +259,33 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
+-- flatMap _ Nil = Nil
+-- flatMap f (h:.t) = f h ++ flatMap f t
 flatMap =
-  error "todo: Course.List#flatMap"
+-- \f x -> flatten (map f x)
+-- \f -> flatten . map f
+-- \f -> (.) flatten (map f)
+   (.) flatten . map
+   
+-- \x -> f           (g   x)
+-- f . g
+
+--foldRight (\a bs -> f a ++ bs) Nil
+--foldRight (\a bs -> (++) (f a) bs) Nil
+--foldRight (\a -> (++) (f a)) Nil
+--foldRight ((++) . f) Nil
+
+-- \x -> f (g x)
+-- f . g
+
+
+                      -- h :: a
+                          -- t :: List a
+-- flatMap f t :: List b
+                  -- f :: a -> List b
+-- f h :: List b
+----
+-- ? :: List b
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
