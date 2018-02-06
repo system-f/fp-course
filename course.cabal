@@ -3,16 +3,16 @@ version:              0.1.4
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
-author:               Mark Hibberd <mthibberd@gmail.com>
-author:               Ben Sinclair <ben.d.sinclair@gmail.com>
-author:               James Earl Douglas <james@earldouglas.com>
-author:               Eric Torreborre <etorreborre@yahoo.com>
+                      Mark Hibberd <mthibberd@gmail.com>
+                      Ben Sinclair <ben.d.sinclair@gmail.com>
+                      James Earl Douglas <james@earldouglas.com>
+                      Eric Torreborre <etorreborre@yahoo.com>
 maintainer:           Tony Morris
 copyright:            Copyright (C) 2010-2013 Tony Morris
-copyright:            Copyright (C) 2012-2015 National ICT Australia Limited
-copyright:            Copyright (C) 2012      James Earl Douglas
-copyright:            Copyright (C) 2012      Ben Sinclair
-copyright:            Copyright (C) 2016-2017 Data61
+                      Copyright (C) 2012-2015 National ICT Australia Limited
+                      Copyright (C) 2012      James Earl Douglas
+                      Copyright (C) 2012      Ben Sinclair
+                      Copyright (C) 2016-2018 Data61
 synopsis:             Source code for a functional programming course
 category:             Education
 description:          Source code for a course in functional programming using Haskell
@@ -20,16 +20,13 @@ homepage:             https://github.com/data61/fp-course
 bug-reports:          https://github.com/data61/fp-course/issues
 cabal-version:        >= 1.10
 build-type:           Simple
-tested-with:          GHC == 7.10.3, GHC == 8.0.2
+tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.1
 extra-source-files:   etc/CONTRIBUTORS,
                       changelog
 
 source-repository     head
   type:               git
   location:           git@github.com:data61/fp-course.git
-
-flag                  small_base
-  description:        Choose the new, split-up base package.
 
 library
   default-language:   Haskell2010
