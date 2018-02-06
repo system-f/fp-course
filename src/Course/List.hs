@@ -324,8 +324,34 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional Nil = Full Nil
+seqOptional (h:.t) = 
+  -- bindOptional (\aa -> mapOptional (\aas -> aa :. aas) (seqOptional t)) h
+  twiceOptional (:.) h (seqOptional t)
+
+{-
+  notes: [opt ~ a, f ~ \aa -> mapOptional (\aas -> aa :. aas) as) h (seqOptional t)]
+
+  \f opt ->
+            case a of
+    Empty -> Empty
+    Full aa -> mapOptional (\aas -> aa :. aas) as) h (seqOptional t)
+-}
+
+{- 
+  case as of
+    Empty -> Empty
+    Full aas -> Full (aa :. aas) 
+    -}
+
+{-
+  \f opt -> 
+    case as of
+      Empty -> Empty
+      Full aas -> Full (aa :. aas)
+
+-}
+-- Optional a -> Optional (List a) -> Optional (List a)
 
 -- | Find the first element in the list matching the predicate.
 --
