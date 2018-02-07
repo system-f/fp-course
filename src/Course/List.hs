@@ -409,8 +409,28 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+-- reverse = foldLeft (\r el -> el :. r) Nil 
+-- reverse = foldLeft (\r el -> (:.) el r) Nil
+-- reverse = foldLeft (\r el -> flip (:.) r el) Nil
+-- reverse = foldLeft (\r -> flip (:.) r) Nil
+reverse = foldLeft (flip (:.)) Nil
+
+
+{-
+foldLeft(f, z, list) {
+  var r = Nil
+  for(el in list) {
+    r = flipcons(r, el)
+  }
+  return r
+}
+
+flipcons(r, el) { return el :. r }
+
+-}
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
@@ -439,7 +459,7 @@ notReverse ::
   List a
   -> List a
 notReverse =
-  error "todo: Is it even possible?"
+  foldLeft (flip (:.)) Nil
 
 ---- End of list exercises
 
