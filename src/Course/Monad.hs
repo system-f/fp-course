@@ -36,8 +36,8 @@ instance Monad ExactlyOne where
     (a -> ExactlyOne b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance ExactlyOne"
+  (=<<) f (ExactlyOne a) =
+    f a
 
 -- | Binds a function on a List.
 --
@@ -48,8 +48,8 @@ instance Monad List where
     (a -> List b)
     -> List a
     -> List b
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+  (=<<) f =
+    foldRight ((++) . f) Nil
 
 -- | Binds a function on an Optional.
 --
@@ -61,7 +61,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
