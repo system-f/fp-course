@@ -84,31 +84,10 @@ instance Applicative List where
     List (a -> b)
     -> List a
     -> List b
-  (<*>) Nil _ = Nil
-  (<*>) (h:.t) as = map h as ++ (t <*> as)
+  (<*>) =
+    \wayne garth ->
+      flatMap (\w -> map w garth) wayne
 
-                           -- h :: a -> b
-                          -- t :: List (a -> b)
-    -- t <*> as :: List b
-                         -- as :: List a
-    -- map h as :: List b
-
-    ----
-    -- ? :: List b
-
-
--- | Insert into an Optional.
---
--- prop> pure x == Full x
---
--- >>> Full (+8) <*> Full 7
--- Full 15
---
--- >>> Empty <*> Full 7
--- Empty
---
--- >>> Full (+8) <*> Empty
--- Empty
 instance Applicative Optional where
   pure ::
     a
@@ -120,7 +99,8 @@ instance Applicative Optional where
     -> Optional a
     -> Optional b
   (<*>) =
-    \bill ted -> bindOptional (\b -> mapOptional b ted) bill
+    \bill ted ->
+      bindOptional (\b -> mapOptional b ted) bill
 
       {-
       case bill of
@@ -202,8 +182,8 @@ instance Applicative ((->) t) where
 lift2 ::
   Applicative f =>
   (a -> b -> c) -> (f a -> f b -> f c)
-lift2 =
-  \f fa fb -> (f <$> fa) <*> fb
+lift2 f fa fb =
+  f <$> fa <*> fb 
 
 -- f :: a -> b -> c
 -- fa :: f a
@@ -242,9 +222,8 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  \a2b2c2d fa fb fc ->
-    lift2 a2b2c2d fa fb <*> fc
+lift3 f fa fb fc =
+  f <$> fa <*> fb <*> fc
 
 -- f (c -> d) -> f c -> f d
 -- (c -> d) -> c -> d
@@ -282,7 +261,7 @@ lift4 ::
   -> f d
   -> f e
 lift4 a2b2c2d2e fa fb fc fd =
-  lift3 a2b2c2d2e fa fb fc <*> fd
+  a2b2c2d2e <$> fa <*> fb <*> fc <*> fd
 
 -- | Apply a nullary function in the environment.
 lift0 ::

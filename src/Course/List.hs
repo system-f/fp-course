@@ -78,10 +78,7 @@ headOr ::
   -> a
 -- a headOr(a x, (List a) lx) { ... }
 headOr =
-  \x lx ->
-    case lx of
-      Nil -> x
-      h:._ -> h
+  foldRight const
 
 -- | The product of the elements of a list.
 --
