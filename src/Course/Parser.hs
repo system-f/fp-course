@@ -191,27 +191,6 @@ instance Monad Parser where
   (=<<) =
     error "todo: Course.Parser (=<<)#instance Parser"
 
--- | Return a parser that puts its input into the given parser and
---
---   * if that parser succeeds with a value (a), ignore that value
---     but put the remaining input into the second given parser.
---
---   * if that parser fails with an error the returned parser fails with that error.
---
--- /Tip:/ Use @(=<<)@ or @(>>=)@.
---
--- >>> parse (character >>> pure 'v') "abc"
--- Result >bc< 'v'
---
--- >>> isErrorResult (parse (character >>> pure 'v') "")
--- True
-(>>>) ::
-  Parser a
-  -> Parser b
-  -> Parser b
-(>>>) =
-  error "todo: Course.Parser#(>>>)"
-
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
 --
