@@ -575,13 +575,15 @@ phoneParser =
 -- True
 --
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789#"
--- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
+-- Result >< Person 123 "Fred" "Clarkson" True "123-456.789"
+
 --
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789# rest"
--- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
+-- Result > rest< Person 123 "Fred" "Clarkson" True "123-456.789"
+
 --
 -- >>> parse personParser "123  Fred   Clarkson    y     123-456.789#"
--- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
+-- Result >< Person 123 "Fred" "Clarkson" True "123-456.789"
 personParser ::
   Parser Person
 personParser =
