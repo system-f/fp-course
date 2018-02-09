@@ -91,9 +91,9 @@ instance Functor ((->) t) where
 -- >>> 7 <$ (1 :. 2 :. 3 :. Nil)
 -- [7,7,7]
 --
--- prop> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
+-- prop> \x a b c -> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
 --
--- prop> x <$ Full q == Full x
+-- prop> \x q -> x <$ Full q == Full x
 (<$) ::
   Functor f =>
   a

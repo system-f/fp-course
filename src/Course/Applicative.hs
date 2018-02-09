@@ -39,7 +39,7 @@ infixl 4 <*>
 
 -- | Insert into ExactlyOne.
 --
--- prop> pure x == ExactlyOne x
+-- prop> \x -> pure x == ExactlyOne x
 --
 -- >>> ExactlyOne (+10) <*> ExactlyOne 8
 -- ExactlyOne 18
@@ -58,7 +58,7 @@ instance Applicative ExactlyOne where
 
 -- | Insert into a List.
 --
--- prop> pure x == x :. Nil
+-- prop> \x -> pure x == x :. Nil
 --
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
@@ -77,7 +77,7 @@ instance Applicative List where
 
 -- | Insert into an Optional.
 --
--- prop> pure x == Full x
+-- prop> \x -> pure x == Full x
 --
 -- >>> Full (+8) <*> Full 7
 -- Full 15
@@ -117,7 +117,7 @@ instance Applicative Optional where
 -- >>> ((*) <*> (+2)) 3
 -- 15
 --
--- prop> pure x y == x
+-- prop> \x y -> pure x y == x
 instance Applicative ((->) t) where
   pure ::
     a
@@ -269,9 +269,9 @@ lift1 =
 -- >>> Full 7 *> Full 8
 -- Full 8
 --
--- prop> (a :. b :. c :. Nil) *> (x :. y :. z :. Nil) == (x :. y :. z :. x :. y :. z :. x :. y :. z :. Nil)
+-- prop> \a b c x y z -> (a :. b :. c :. Nil) *> (x :. y :. z :. Nil) == (x :. y :. z :. x :. y :. z :. x :. y :. z :. Nil)
 --
--- prop> Full x *> Full y == Full y
+-- prop> \x y -> Full x *> Full y == Full y
 (*>) ::
   Applicative f =>
   f a
@@ -295,9 +295,9 @@ lift1 =
 -- >>> Full 7 <* Full 8
 -- Full 7
 --
--- prop> (x :. y :. z :. Nil) <* (a :. b :. c :. Nil) == (x :. x :. x :. y :. y :. y :. z :. z :. z :. Nil)
+-- prop> \x y z a b c -> (x :. y :. z :. Nil) <* (a :. b :. c :. Nil) == (x :. x :. x :. y :. y :. y :. z :. z :. z :. Nil)
 --
--- prop> Full x <* Full y == Full x
+-- prop> \x y -> Full x <* Full y == Full x
 (<*) ::
   Applicative f =>
   f b

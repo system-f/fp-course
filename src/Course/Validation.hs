@@ -28,7 +28,7 @@ type Err = P.String
 -- >>> isError (Value 7)
 -- False
 --
--- prop> isError x /= isValue x
+-- prop> \x -> isError x /= isValue x
 isError :: Validation a -> Bool
 isError (Error _) = True
 isError (Value _) = False
@@ -41,7 +41,7 @@ isError (Value _) = False
 -- >>> isValue (Value 7)
 -- True
 --
--- prop> isValue x /= isError x
+-- prop> \x -> isValue x /= isError x
 isValue :: Validation a -> Bool
 isValue = not . isError
 
@@ -53,7 +53,7 @@ isValue = not . isError
 -- >>> mapValidation (+10) (Value 7)
 -- Value 17
 --
--- prop> mapValidation id x == x
+-- prop> \x -> mapValidation id x == x
 mapValidation :: (a -> b) -> Validation a -> Validation b
 mapValidation _ (Error s) = Error s
 mapValidation f (Value a) = Value (f a)
@@ -69,7 +69,7 @@ mapValidation f (Value a) = Value (f a)
 -- >>> bindValidation (\n -> if even n then Value (n + 10) else Error "odd") (Value 8)
 -- Value 18
 --
--- prop> bindValidation Value x == x
+-- prop> \x -> bindValidation Value x == x
 bindValidation :: (a -> Validation b) -> Validation a -> Validation b
 bindValidation _ (Error s) = Error s
 bindValidation f (Value a) = f a
@@ -82,7 +82,7 @@ bindValidation f (Value a) = f a
 -- >>> valueOr (Value 7) 3
 -- 7
 --
--- prop> isValue x || valueOr x n == n
+-- prop> \x -> isValue x || valueOr x n == n
 valueOr :: Validation a -> a -> a
 valueOr (Error _) a = a
 valueOr (Value a) _ = a
@@ -95,7 +95,7 @@ valueOr (Value a) _ = a
 -- >>> errorOr (Value 7) "q"
 -- "q"
 --
--- prop> isError x || errorOr x e == e
+-- prop> \x -> isError x || errorOr x e == e
 errorOr :: Validation a -> Err -> Err
 errorOr (Error e) _ = e
 errorOr (Value _) a = a
