@@ -135,22 +135,32 @@ instance Functor Parser where
   (<$>) =
      error "todo: Course.Parser (<$>)#instance Parser"
 
+-- | Return a parser that always succeeds with the given value and consumes no input.
+--
+-- >>> parse (valueParser 3) "abc"
+-- Result >abc< 3
+valueParser ::
+  a
+  -> Parser a
+valueParser =
+  error "todo: Course.Parser#valueParser"
+
 -- | Return a parser that tries the first parser for a successful value.
 --
 --   * If the first parser succeeds then use this parser.
 --
 --   * If the first parser fails, try the second parser.
 --
--- >>> parse (character ||| pure 'v') ""
+-- >>> parse (character ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (constantParser UnexpectedEof ||| pure 'v') ""
+-- >>> parse (constantParser UnexpectedEof ||| valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (character ||| pure 'v') "abc"
+-- >>> parse (character ||| valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (constantParser UnexpectedEof ||| pure 'v') "abc"
+-- >>> parse (constantParser UnexpectedEof ||| valueParser 'v') "abc"
 -- Result >abc< 'v'
 (|||) ::
   Parser a
@@ -169,19 +179,19 @@ infixl 3 |||
 --
 --   * if that parser fails with an error the returned parser fails with that error.
 --
--- >>> parse ((\c -> if c == 'x' then character else pure 'v') =<< character) "abc"
+-- >>> parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "abc"
 -- Result >bc< 'v'
 --
--- >>> parse ((\c -> if c == 'x' then character else pure 'v') =<< character) "a"
+-- >>> parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "a"
 -- Result >< 'v'
 --
--- >>> parse ((\c -> if c == 'x' then character else pure 'v') =<< character) "xabc"
+-- >>> parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "xabc"
 -- Result >bc< 'a'
 --
--- >>> isErrorResult (parse ((\c -> if c == 'x' then character else pure 'v') =<< character) "")
+-- >>> isErrorResult (parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "")
 -- True
 --
--- >>> isErrorResult (parse ((\c -> if c == 'x' then character else pure 'v') =<< character) "x")
+-- >>> isErrorResult (parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "x")
 -- True
 instance Monad Parser where
   (=<<) ::
@@ -193,17 +203,12 @@ instance Monad Parser where
 
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
---
--- | Return a parser that always succeeds with the given value and consumes no input.
---
--- >>> parse (pure 3) "abc"
--- Result >abc< 3
 instance Applicative Parser where
   pure ::
     a
     -> Parser a
   pure =
-    error "todo: Course.Parser pure#instance Parser"
+    valueParser
   (<*>) ::
     Parser (a -> b)
     -> Parser a
@@ -227,10 +232,10 @@ instance Applicative Parser where
 -- >>> parse (list character) "abc"
 -- Result >< "abc"
 --
--- >>> parse (list (character *> pure 'v')) "abc"
+-- >>> parse (list (character *> valueParser 'v')) "abc"
 -- Result >< "vvv"
 --
--- >>> parse (list (character *> pure 'v')) ""
+-- >>> parse (list (character *> valueParser 'v')) ""
 -- Result >< ""
 list ::
   Parser a
@@ -246,10 +251,10 @@ list =
 -- >>> parse (list1 (character)) "abc"
 -- Result >< "abc"
 --
--- >>> parse (list1 (character *> pure 'v')) "abc"
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
 -- Result >< "vvv"
 --
--- >>> isErrorResult (parse (list1 (character *> pure 'v')) "")
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
 -- True
 list1 ::
   Parser a
