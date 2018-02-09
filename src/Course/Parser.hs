@@ -479,15 +479,15 @@ surnameParser =
 -- /Tip:/ Use @is@ and @(|||)@./
 --
 -- >>> parse smokerParser "yabc"
--- Result >abc< 'y'
+-- Result >abc< True
 --
 -- >>> parse smokerParser "nabc"
--- Result >abc< 'n'
+-- Result >abc< False
 --
 -- >>> isErrorResult (parse smokerParser "abc")
 -- True
 smokerParser ::
-  Parser Char
+  Parser Bool
 smokerParser =
   error "todo: Course.Parser#smokerParser"
 
@@ -575,13 +575,13 @@ phoneParser =
 -- True
 --
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789#"
--- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
+-- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
 --
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789# rest"
--- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
+-- Result > rest< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
 --
 -- >>> parse personParser "123  Fred   Clarkson    y     123-456.789#"
--- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = 'y', phone = "123-456.789"}
+-- Result >< Person {age = 123, firstName = "Fred", surname = "Clarkson", smoker = True, phone = "123-456.789"}
 personParser ::
   Parser Person
 personParser =
