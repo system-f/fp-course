@@ -10,7 +10,7 @@ type Assoc = List (Chars, JsonValue)
 
 data JsonValue =
      JsonString Chars
-   | JsonRational !Rational
+   | JsonRational Rational
    | JsonObject Assoc
    | JsonArray  (List JsonValue)
    | JsonTrue
