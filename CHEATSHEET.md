@@ -85,6 +85,24 @@ Keep in mind that this example is just for demonstrating the mechanics of type h
 from deploying them increases as the difficulty and complexity of your problem increases, as they
 allow you to break your problem into pieces while telling you the type of each piece.
 
+### Use `:type` to ask GHC the type of expressions
+
+If you've forgotten the type of an expression, or want to check if part of a solution type checks
+and has the type that you expect, use `:type` or `:t` in GHCi.
+
+```
+λ> :t (:.)
+(:.) :: t -> List t -> List t
+λ> :t (:.) 5
+(:.) 5 :: Num t => List t -> List t
+λ> :t Nil
+Nil :: List t
+λ> :t (:.) 5 Nil
+(:.) 5 Nil :: Num t => List t
+λ> (:.) 5 Nil
+[5]
+```
+
 ### Use `:info` to ask GHC questions
 
 If you ever want to know what an identifier is, you can ask GHCi using `:info` or just `:i`.
