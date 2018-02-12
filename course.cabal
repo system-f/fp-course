@@ -87,6 +87,18 @@ test-suite            tasty
 
   main-is:
                       TastyLoader.hs
+  other-modules:
+                      Course.ApplicativeTest
+                      Course.ComonadTest
+                      Course.ExtendTest
+                      Course.FunctorTest
+                      Course.JsonParserTest
+                      Course.ListTest
+                      Course.MonadTest
+                      Course.OptionalTest
+                      Course.StateTest
+                      Course.StateTTest
+                      Course.ValidationTest
 
   default-language:
                       Haskell2010
