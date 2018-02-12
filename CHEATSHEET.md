@@ -105,9 +105,10 @@ Nil :: List t
 
 ### Use `:info` to ask GHC questions
 
-If you ever want to know what an identifier is, you can ask GHCi using `:info` or just `:i`.
-For example, if you see `List` somewhere in your code, and want to know more about it, enter
-`:i List` in GHCi.
+If you ever want to know what an identifier is, you can ask GHCi using `:info` or just `:i`. For
+example, if you see `List` somewhere in your code and want to know more about it, enter `:i List` in
+GHCi. As shown below, it will print the constructors for values of that type, as well as the
+instances for any type classes that are in scope.
 
 ```
 λ> :i List
@@ -130,4 +131,89 @@ instance [safe] Applicative List
 instance [safe] Monad List -- Defined at src/Course/Monad.hs:46:10
 instance [safe] Traversable List
   -- Defined at src/Course/Traversable.hs:33:10
+```
+
+### Providing functions
+
+If you're ever stuck providing a function as an argument or return value, insert a lambda with a
+type hole. Continue this process recursively until you need to provide a simple value, then follow
+the definitions back out.
+
+Following on from our type holes example, if we're trying to solve `product` with `foldRight` and we
+know the first argument to `foldRight` is a function, start by inserting the lambda.
+
+```haskell
+product ::
+  List Int
+  -> Int
+product ns =
+  foldRight (\a b -> _c) _n ns
+```
+
+After reloading this code, GHCi will tell us the type of `_c`, which in this case is `Int`. From the
+previous type hole example, we know that both `a` and `b` are type `Int` (`_f :: Int -> Int ->
+Int`), so it looks like we should do something with two `Int`s to produce an `Int`. A few operations
+come to mind, but given we're defining `product`, let's go with multiplication.
+
+```haskell
+product ns =
+  foldRight (\a b -> a * b) _n ns
+```
+
+It type checks. From here we'd need to pick an `Int` to replace `_n` and we'd have a solution that
+at least type checks.
+
+If `_c` had the type of another function, we'd simply insert another lambda in its place and
+continue recursing. Alternatively, if `_c` had type `WhoosyWhatsits` and we didn't know anything
+about that type or how to construct it, we could just ask GHCi using `:i WhoosyWhatsits` and
+continue from there.
+
+### Handling arguments
+
+When you're not sure what to do with a function argument, try pattern matching it and looking at the
+values that are brought into scope.
+
+```haskell
+data Bar = Bar Chars Int Chars
+
+foo :: Bar -> Int
+foo (Bar _ n _) = n
+```
+
+If your argument is a sum type that has multiple constructors, use `case` to pattern match and
+handle each case individually.
+
+```haskell
+data Baz =
+    C1 Int
+  | C2 Chars Int
+
+quux :: Baz -> Int
+quux baz =
+  case baz of
+    C1 n   -> n
+    C2 _ n -> n
+```
+
+You can also nest pattern matches as needed.
+
+```haskell
+data Thingo =
+    X Int
+  | Y (Optional Int)
+    
+f :: Thingo -> List Int
+f t =
+  case t of
+    X n        -> n :. Nil
+    Y (Full n) -> n :. Nil
+    Y Empty    -> Nil
+```
+
+Finally, when you're not sure how to pattern match the argument because you don't know what its
+constructors are, use `:info` as described above to find out.
+
+```
+λ> :i Baz
+data Baz = C1 Int | C2 Chars Int
 ```
