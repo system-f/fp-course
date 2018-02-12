@@ -2,10 +2,12 @@
 
 ### Vocabulary
 
-|**Symbol**|**Pronunciation**    |**Notes**                           |
-|----------|---------------------|------------------------------------|
-|`<$>`     |eff-map              |Member of the Functor type class    |
-|`<*>`     |app, apply, spaceship|Member of the Applicative type class|
+|**Symbol**|**Pronunciation**    |**Notes**                             |
+|----------|---------------------|------------------------------------  |
+|`:.`      |cons                 |Adds an element to the front of a list|
+|`<$>`     |eff-map              |Member of the Functor type class      |
+|`<*>`     |app, apply, spaceship|Member of the Applicative type class  |
+|`>>=`     |bind                 |Member of the Monad type class        |
 
 
 ### Follow the types
