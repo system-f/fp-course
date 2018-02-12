@@ -28,9 +28,6 @@ source-repository     head
   type:               git
   location:           git@github.com:data61/fp-course.git
 
-flag                  small_base
-  description:        Choose the new, split-up base package.
-
 library
   default-language:   Haskell2010
 
