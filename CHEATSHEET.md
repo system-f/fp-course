@@ -2,16 +2,10 @@
 
 ### Vocabulary
 
-+----------|-----------------|---------------+
-|**Symbol**|**Pronunciation**|**Notes**      |
-+----------|-----------------|---------------+
-|`<$>`     |eff-map          |Member of the  |
-|          |                 |Functor type   |
-|          |                 |class          |
-|          |                 |               |
-+----------|-----------------|---------------+
-|          |                 |               |
-+----------|-----------------|---------------+
+|**Symbol**|**Pronunciation**    |**Notes**                           |
+|----------|---------------------|------------------------------------|
+|`<$>`     |eff-map              |Member of the Functor type class    |
+|`<*>`     |app, apply, spaceship|Member of the Applicative type class|
 
 
 ### Follow the types
