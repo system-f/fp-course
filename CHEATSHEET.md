@@ -2,13 +2,13 @@
 
 ### Vocabulary
 
-|**Symbol**|**Pronunciation**    |**Notes**                             |
-|----------|---------------------|------------------------------------  |
-|`:.`      |cons                 |Adds an element to the front of a list|
-|`<$>`     |eff-map              |Member of the Functor type class      |
-|`<*>`     |app, apply, spaceship|Member of the Applicative type class  |
-|`>>=`     |bind                 |Member of the Monad type class        |
-
+|**Symbol**|**Pronunciation**    |**Notes**                                       |
+|----------|---------------------|------------------------------------------------|
+|`:.`      |cons                 |Adds an element to the front of a list          |
+|`<$>`     |eff-map              |Member of the Functor type class                |
+|`<*>`     |app, apply, spaceship|Member of the Applicative type class            |
+|`>>=`     |bind                 |Member of the Monad type class                  |
+|`bool`    |bool                 |if/then/else with arguments in the reverse order|
 
 ### Follow the types
 
