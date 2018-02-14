@@ -10,6 +10,18 @@
 |`>>=`     |bind                 |Member of the Monad type class                  |
 |`bool`    |bool                 |if/then/else with arguments in the reverse order|
 
+### Equivalent expressions
+
+Here are some expressions and their neater, more idiomatic alternatives.
+
+**Function application**
+
+`\x -> f x` may be replaced with `f`
+
+**Composition**
+
+`\x -> f (g x)` may be replaced with `f . g`
+
 ### Follow the types
 
 Rather than thinking operationally, focus on finding values for the types that the compiler is telling you you need.
