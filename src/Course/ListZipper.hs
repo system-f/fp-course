@@ -255,6 +255,9 @@ hasRight =
 --
 -- >>> findLeft (== 1) (zipper [1, 2, 1] 3 [4, 5])
 -- [2,1] >1< [3,4,5]
+--
+-- >>> findLeft (== 1) (zipper [3, 4, 1, 5] 9 [2, 7])
+-- [5] >1< [4,3,9,2,7]
 findLeft ::
   (a -> Bool)
   -> ListZipper a
