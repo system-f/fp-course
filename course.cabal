@@ -89,6 +89,7 @@ test-suite            tasty
                       Course.ComonadTest
                       Course.ExtendTest
                       Course.FunctorTest
+                      Course.Gens
                       Course.JsonParserTest
                       Course.ListTest
                       Course.MonadTest
