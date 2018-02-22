@@ -3,9 +3,8 @@
 
 module Course.StateTTest where
 
-import qualified Prelude               as P ((++), String)
+import qualified Prelude               as P (String, (++))
 
-import           Test.QuickCheck       (forAllShrink)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
@@ -14,14 +13,15 @@ import           Course.Applicative    (pure, (<*>))
 import           Course.Core
 import           Course.ExactlyOne     (ExactlyOne (..))
 import           Course.Functor        ((<$>))
+import           Course.Gens           (forAllLists)
 import           Course.List           (List (..), flatMap, listh)
-import           Course.ListTest       (genIntegerList, shrinkList)
 import           Course.Monad          ((=<<), (>>=))
 import           Course.Optional       (Optional (..))
 import           Course.State          (put, runState)
-import           Course.StateT         (OptionalT (..), StateT (..), distinct',
-                                        distinctF, getT, putT, runOptionalT,
-                                        runState', state', log1, distinctG, Logger (..))
+import           Course.StateT         (Logger (..), OptionalT (..),
+                                        StateT (..), distinct', distinctF,
+                                        distinctG, getT, log1, putT,
+                                        runOptionalT, runState', state')
 
 test_StateT :: TestTree
 test_StateT =
@@ -99,8 +99,7 @@ putTTest =
 distinct'Test :: TestTree
 distinct'Test =
   testProperty "distinct'" $
-    forAllShrink genIntegerList shrinkList (\xs ->
-      distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
+    forAllLists (\xs -> distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
 
 distinctFTest :: TestTree
 distinctFTest =

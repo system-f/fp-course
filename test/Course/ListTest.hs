@@ -3,15 +3,19 @@
 
 module Course.ListTest where
 
-import           Control.Applicative   (liftA2, liftA3)
-import qualified Prelude               as P (fmap, foldr, length)
+import qualified Prelude               as P (length)
 
-import           Test.QuickCheck       (Arbitrary (..), Gen, forAllShrink)
+import           Test.QuickCheck       (forAllShrink)
 import           Test.Tasty            (TestTree, testGroup)
 import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Core
+import           Course.Gens           (forAllLists, genIntegerAndList, genList,
+                                        genListOfLists, genThreeLists,
+                                        genTwoLists, shrinkIntegerAndList,
+                                        shrinkList, shrinkListOfLists,
+                                        shrinkThreeLists, shrinkTwoLists)
 import           Course.List           (List (..), filter, find, flatMap,
                                         flatten, flattenAgain, foldLeft, headOr,
                                         hlist, infinity, largeList, length,
@@ -70,7 +74,7 @@ lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
   , testProperty "summing a list of 1s is equal to its length" $
-      forAllShrink genIntegerList shrinkList (\x -> P.length (hlist x) == length x)
+      forAllLists (\x -> P.length (hlist x) == length x)
   ]
 
 mapTest :: TestTree
@@ -81,7 +85,7 @@ mapTest =
   , testProperty "headOr after map" $
       \x -> headOr (x :: Integer) (map (+1) infinity) == 1
   , testProperty "map id is id" $
-      forAllShrink genIntegerList shrinkList (\x -> map id x == x)
+      forAllLists (\x -> map id x == x)
   ]
 
 filterTest :: TestTree
@@ -92,9 +96,9 @@ filterTest =
   , testProperty "filter (const True) is identity (headOr)" $
       \x -> headOr x (filter (const True) infinity) == 0
   , testProperty "filter (const True) is identity" $
-      forAllShrink genIntegerList shrinkList (\x -> filter (const True) x == x)
+      forAllLists (\x -> filter (const True) x == x)
   , testProperty "filter (const False) is the empty list" $
-      forAllShrink genIntegerList shrinkList (\x -> filter (const False) x == Nil)
+      forAllLists (\x -> filter (const False) x == Nil)
   ]
 
 appendTest :: TestTree
@@ -109,7 +113,7 @@ appendTest =
   , testProperty "associativity" $
       forAllShrink genThreeLists shrinkThreeLists (\(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z))
   , testProperty "append to empty list" $
-      forAllShrink genIntegerList shrinkList (\x -> x ++ Nil == x)
+      forAllLists (\x -> x ++ Nil == x)
   ]
 
 flattenTest :: TestTree
@@ -197,7 +201,7 @@ reverseTest =
   , testProperty "reverse then append is same as append then reverse" $
       forAllShrink genTwoLists shrinkTwoLists (\(x, y) -> reverse x ++ reverse y == reverse (y ++ x))
   , testProperty "" $
-      forAllShrink genIntegerList shrinkList (\x -> reverse (x :. Nil) == x :. Nil)
+      forAllLists (\x -> reverse (x :. Nil) == x :. Nil)
   ]
 
 produceTest :: TestTree
@@ -210,38 +214,3 @@ produceTest =
       let (x:.y:.z:.w:._) = produce (*2) 1
        in (x:.y:.z:.w:.Nil) @?= (1:.2:.4:.8:.Nil)
   ]
-
--- Use generator functions with `forAll` rather than orphans and/or newtype wrappers
-genList :: Arbitrary a => Gen (List a)
-genList = P.fmap ((P.foldr (:.) Nil) :: [a] -> List a) arbitrary
-
-shrinkList :: Arbitrary a => List a -> [List a]
-shrinkList =
-  P.fmap listh . shrink . hlist
-
-genIntegerList :: Gen (List Integer)
-genIntegerList = genList
-
-genIntegerAndList :: Gen (Integer, List Integer)
-genIntegerAndList = P.fmap (P.fmap listh) arbitrary
-
-shrinkIntegerAndList :: (Integer, List Integer) -> [(Integer, List Integer)]
-shrinkIntegerAndList = P.fmap (P.fmap listh) . shrink . P.fmap hlist
-
-genTwoLists :: Gen (List Integer, List Integer)
-genTwoLists = liftA2 (,) genIntegerList genIntegerList -- (arbitrary :: (List Integer, List Integer))
-
-shrinkTwoLists :: (List Integer, List Integer) -> [(List Integer, List Integer)]
-shrinkTwoLists (a,b) = P.fmap (\(as,bs) -> (listh as, listh bs)) $ shrink (hlist a, hlist b)
-
-genThreeLists :: Gen (List Integer, List Integer, List Integer)
-genThreeLists = liftA3 (,,) genIntegerList genIntegerList genIntegerList
-
-shrinkThreeLists :: (List Integer, List Integer, List Integer) -> [(List Integer, List Integer, List Integer)]
-shrinkThreeLists (a,b,c) = P.fmap (\(as,bs,cs) -> (listh as, listh bs, listh cs)) $ shrink (hlist a, hlist b, hlist c)
-
-genListOfLists :: Gen (List (List Integer))
-genListOfLists = P.fmap (P.fmap listh) (genList :: (Gen (List [Integer])))
-
-shrinkListOfLists :: Arbitrary a => List (List a) -> [List (List a)]
-shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
