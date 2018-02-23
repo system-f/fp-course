@@ -453,7 +453,7 @@ traversableTest =
 traversableMaybeTest :: TestTree
 traversableMaybeTest =
   testGroup "Traversable (MaybeListZipper)" [
-    testCase "IsNotZ" $ traverse id IsNotZ @?= (Empty :: Optional (MaybeListZipper Integer))
+    testCase "IsNotZ" $ traverse id IsNotZ @?= (Full IsNotZ :: Optional (MaybeListZipper Integer))
   , testProperty "IsZ Full" $
       forAllListZipper (\z -> traverse id (Full <$> IsZ z) == Full (IsZ z))
   ]
