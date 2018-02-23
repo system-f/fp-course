@@ -355,7 +355,7 @@ deletePullRightTest :: TestTree
 deletePullRightTest =
   testGroup "deletePullRight" [
     testCase "non-empty rights" $ deletePullRight (zipper [3,2,1] 4 [5,6,7]) @?= IsZ (zipper [3,2,1] 5 [6,7])
-  , testCase "empty rights" $ deletePullLeft (zipper [3,2,1] 4 []) @?= IsNotZ
+  , testCase "empty rights" $ deletePullRight (zipper [3,2,1] 4 []) @?= IsNotZ
   ]
 
 insertPushLeftTest :: TestTree
