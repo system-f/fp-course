@@ -92,6 +92,7 @@ test-suite            tasty
                       Course.Gens
                       Course.JsonParserTest
                       Course.ListTest
+                      Course.ListZipperTest
                       Course.MonadTest
                       Course.OptionalTest
                       Course.StateTest
