@@ -115,9 +115,29 @@ optionalTFunctorTest =
 
 optionalTApplicativeTest :: TestTree
 optionalTApplicativeTest =
-  testCase "(<*>) for OptionalT" $
-    let ot = (OptionalT (Full (+1) :. Full (+2) :. Nil)) <*> OptionalT (Full 1 :. Empty :. Nil)
-     in runOptionalT ot @?= (Full 2:.Empty:.Full 3:.Empty:.Nil)
+  testGroup "(<*>) for OptionalT" [
+    testCase "one" $
+      let ot = (OptionalT Nil <*> OptionalT (Full 1 :. Full 2 :. Nil))
+       in runOptionalT ot @?= (Nil :: List (Optional Int))
+  , testCase "two" $
+      let ot = OptionalT (Full (+1) :. Full (+2) :. Nil) <*> OptionalT Nil
+       in runOptionalT ot @?= (Nil :: List (Optional Int))
+  , testCase "three" $
+      let ot = OptionalT (Empty :. Nil) <*> OptionalT (Empty :. Nil)
+       in runOptionalT ot @?= (Empty :. Nil :: List (Optional Int))
+  , testCase "four" $
+      let ot = OptionalT (Full (+1) :. Empty :. Nil) <*> OptionalT (Empty :. Nil)
+       in runOptionalT ot @?= (Empty :. Empty :. Nil :: List (Optional Int))
+  , testCase "five" $
+      let ot = OptionalT (Empty :. Nil) <*> OptionalT (Full 1 :. Full 2 :. Nil)
+       in runOptionalT ot @?= (Empty :. Nil :: List (Optional Int))
+  , testCase "six" $
+      let ot = OptionalT (Full (+1) :. Empty :. Nil) <*> OptionalT (Full 1 :. Full 2 :. Nil)
+       in runOptionalT ot @?= (Full 2 :. Full 3 :. Empty :. Nil)
+  , testCase "seven" $
+      let ot = OptionalT (Full (+1) :. Full (+2) :. Nil) <*> OptionalT (Full 1 :. Empty :. Nil)
+       in runOptionalT ot @?= (Full 2 :. Empty :. Full 3 :. Empty :. Nil)
+  ]
 
 optionalTMonadTest :: TestTree
 optionalTMonadTest =
