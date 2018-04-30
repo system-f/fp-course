@@ -75,8 +75,8 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr h Nil = h
+headOr _ (a:._) = a
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +91,7 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = \list -> foldLeft (*) 1 list
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +105,7 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (\r el -> r + el) 0
 
 -- | Return the length of the list.
 --
@@ -118,8 +116,21 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (\r _ -> 1 + r) 0
+-- length = foldLeft (\r -> \_ -> 1 + r) 0
+-- length = foldLeft (\r -> const (1 + r)) 0
+-- length = foldLeft (\r -> const ((+) 1 r)) 0
+-- length = foldLeft (\r -> const (((+) 1) r)) 0
+length = foldLeft (const . (+) 1) 0
+
+-- (.)
+dot :: (b -> c) -> (a -> b) -> (a -> c)
+dot f g = \x -> f (g x)
+-- \x -> f (g x)
+-- f . g
+
+konst :: x -> y -> x
+konst a _ = a
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +144,24 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+
+-- map (+1) (1:.2:.3:.Nil)
+-- (+1) 1 :. map (+1) (2:.3:.Nil)
+-- (+1) 1 :. (+1) 2 :. map (+1) (3:.Nil)
+-- (+1) 1 :. (+1) 2 :. (+1) 3 :. map (+1) Nil
+-- (+1) 1 :. (+1) 2 :. (+1) 3 :. Nil
+-- 2 :. 3 :. 4 :. Nil
+
+
+-- f :: a -> b
+-- h :: a
+-- t :: List a
+-- f h :: b
+-- map f t :: List b
+----
+-- ? :: List b
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +177,43 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter f (h:.t) =
+--if f h then h :. filter f t else filter f t
+--bool (filter f t) (h :. filter f t) (f h)
+--bool (id (filter f t)) (h :. filter f t) (f h)
+--bool (id (filter f t)) ((:.) h (filter f t)) (f h)
+  (((bool id) ((:.) h)) (f h)) ((filter f) t)
+
+{-
+
+if(p) 
+  return f(x)
+else
+  return g(x)
+
+return 
+  (if(p)
+    f
+  else
+    g)(x)
+
+
+-}
+  {-
+  let
+      n = filter f t
+  in  
+      if f h then h :. n else n
+  -}
+
+-- f :: a -> Bool
+-- h :: a
+-- t :: List a
+-- f h :: Bool
+-- filter f t :: List a
+----
+-- ? :: List a
 
 -- | Append two lists to a new list.
 --
@@ -169,8 +231,18 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+(++) Nil x = x
+(++) (h:.t) x = h :. (t ++ x)
+
+(+++) :: List a -> List a -> List a
+(+++) = flip (foldRight (:.))
+
+-- h :: a
+-- t :: List a
+-- x :: List a
+----
+-- ? :: List a
+
 
 infixr 5 ++
 
