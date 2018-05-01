@@ -260,7 +260,19 @@ flatten ::
   List (List a)
   -> List a
 flatten =
-  error "todo: Course.List#flatten"
+  foldRight ((++) . id) Nil
+--foldRight ((++) . f) Nil
+
+foldReallyRight = foldRight
+
+append = (++)
+
+-- abcdefghijklmnopqrstuvwxyz = x
+
+-- h :: List a
+-- t :: List (List a)
+-- flatten t :: List a
+
 
 -- | Map a function then flatten to a list.
 --
@@ -277,7 +289,36 @@ flatMap ::
   -> List a
   -> List b
 flatMap =
-  error "todo: Course.List#flatMap"
+--foldRight (\a bs -> f a ++ bs) Nil list
+--foldRight (\a bs -> (++) (f a) bs) Nil list
+--foldRight (\a -> (++) (f a)) Nil list
+--foldRight ((++) . f) Nil list
+-- \f list -> flatten (map f list)
+-- \f -> flatten . map f
+-- \f -> (.) flatten (map f)
+--(.) flatten . map
+  (\q -> flatten . q) . map
+
+-- mapOptional :: (a -> b) -> Optional a -> Optional b
+-- map         :: (a -> b) -> List     a -> List     b
+-- (.) ::            (a -> b) -> ((->) t  a) ->((->) t  b)
+-- (.) f g = \x -> f (g x)
+
+{-
+-- \x -> f (g x)
+-- f . g
+
+-}
+{-
+flatMap _ Nil = Nil
+flatMap f (h:.t) = f h ++ flatMap f t
+-}
+
+-- h :: a
+-- t :: List a
+-- flatMap f t :: List b
+-- f h :: List b
+
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -287,7 +328,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -314,8 +355,40 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional Nil = Full Nil
+{-
+seqOptional (h:.t) = case h of
+                       Empty -> Empty
+                       Full v -> mapOptional (\w -> v:.w)
+                                  (seqOptional t)
+-}                                
+seqOptional (h:.t) =
+  bindOptional (\v ->
+    mapOptional (\w -> v:.w)
+      (seqOptional t)) h
+
+
+                       {- 
+                                case seqOptional t of
+                                   Empty -> Empty
+                                   Full w -> Full (v :. w)
+                                   -}
+
+{-
+  \f -> \o -> case o of
+    Empty -> Empty
+    Full a -> f a
+-}
+
+-- h :: Optional a
+-- t :: List (Optional a)
+-- seqOptional t :: Optional (List a)
+-- v :: a
+-- w :: List a
+-- v :. w :: List a
+----
+-- ? :: Optional (List a)
+
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -374,7 +447,89 @@ reverse ::
   List a
   -> List a
 reverse =
-  error "todo: Course.List#reverse"
+--foldLeft (\r elem -> elem :. r) Nil
+--foldLeft (\r elem -> flip (:.) r elem) Nil
+  foldLeft (flip (:.)) Nil
+
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+
+
+
+
+
+
+class AllThingsThatHaveMap f where
+  generalmap :: (a -> b) -> f a -> f b
+
+instance AllThingsThatHaveMap List where
+  generalmap = map
+
+instance AllThingsThatHaveMap Optional where
+  generalmap = mapOptional
+
+-- and so on, (instance)
+
+generalamap :: 
+  AllThingsThatHaveMap f =>
+  a -> f b -> f a
+generalamap =
+  \a l -> generalmap (const a) l
+
+amapList ::
+  a
+  -> List b
+  -> List a
+amapList =
+  \a l -> map (const a) l
+
+amapOptional ::
+  a
+  -> Optional b
+  -> Optional a
+amapOptional =
+  \a l -> mapOptional (const a) l
+
+amapTarrow ::
+  a
+  -> (t -> b)
+  -> (t -> a)
+amapTarrow =
+  \a l -> (.) (const a) l
+
+-- many more that we shall omit 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{-
+amapOptional ::
+  a
+  -> Optional b
+  -> Optional a
+amapOptional =
+  \a l -> mapOptional (const a) l
+
+amapTarrow ::
+  a
+  -> (t -> b)
+  -> (t -> a)
+amapTarrow =
+  \a l -> (.) (const a) l
+-}
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

@@ -25,11 +25,7 @@ data Optional a =
 -- Full 9
 mapOptional :: (a -> b) -> Optional a -> Optional b
 {-
-mapOptional =
-               \f       -> \o         -> case o of
-                Empty -> Empty
-                Full a -> Full (f a)
--}
+c-}
 mapOptional _ Empty = Empty
 mapOptional f (Full a) = Full (f a)
 
@@ -50,8 +46,8 @@ bindOptional ::
   -> Optional b
 bindOptional =
   \f -> \o -> case o of
-                Empty -> Empty
-                Full a -> f a
+    Empty -> Empty
+    Full a -> f a
 
 -- bindOptional _ Empty = Empty
 -- bindOptional f (Full a) = f a

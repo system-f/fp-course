@@ -49,7 +49,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -61,7 +61,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -69,11 +69,16 @@ instance Monad Optional where
 -- 119
 instance Monad ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
+    (a -> t -> b) -> (t -> a) -> t -> b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+    \atb -> \ta -> \t -> atb (ta t) t
+
+-- atb :: a -> t -> b
+-- ta  :: t -> a
+-- t   :: t
+----
+-- ? :: b
+
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -134,7 +139,8 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
+
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +154,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -164,7 +170,15 @@ infixl 1 >>=
   -> a
   -> f c
 (<=<) =
-  error "todo: Course.Monad#(<=<)"
+  \bfc -> \afb -> \a -> afb a >>= bfc
+
+-- (>>=) :: f x -> (x -> f y) -> f y
+-- bfc :: b -> f c
+-- afb :: a -> f b
+-- a :: a
+----
+-- ? :: f c
+
 
 infixr 1 <=<
 
