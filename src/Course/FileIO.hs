@@ -5,6 +5,7 @@
 
 module Course.FileIO where
 
+import System.Directory
 import Course.Core
 import Course.Applicative
 import Course.Monad
@@ -79,6 +80,15 @@ the contents of c
 
 -}
 
+myPair :: (Int, Bool)
+myPair = (2, False)
+
+fstDemo :: Int
+fstDemo = fst myPair -- this is 2
+
+otherFstDemo :: Int
+otherFstDemo = (\(x, _) -> x) myPair -- this is also 2
+
 -- Given the file name, and file contents, print them.
 -- Use @putStrLn@.
 printFile ::
@@ -86,7 +96,9 @@ printFile ::
   -> Chars
   -> IO ()
 printFile =
-  error "todo: Course.FileIO#printFile"
+  \fp c ->
+    putStrLn ("============ " ++ fp) >>= \_ ->
+    putStrLn c
 
 -- Given a list of (file name and file contents), print each.
 -- Use @printFile@.
@@ -94,7 +106,12 @@ printFiles ::
   List (FilePath, Chars)
   -> IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+  -- \list ->
+    -- void (sequence ((<$>) (uncurry printFile) list))
+  void . sequence . (<$>) (uncurry printFile)
+
+-- List (IO ())
+-- IO (List ())
 
 -- Given a file name, return (file name and file contents).
 -- Use @readFile@.
@@ -102,7 +119,20 @@ getFile ::
   FilePath
   -> IO (FilePath, Chars)
 getFile =
-  error "todo: Course.FileIO#getFile"
+
+  -- (\c -> (name, c)) <$> readFile name
+  -- ((,) name) <$> readFile name
+    lift2 (<$>) (,) readFile
+
+  {-
+    do  c <- readFile(name);
+        return (name, c);
+-}
+
+-- IO Chars
+----
+-- IO (FilePath, Chars)
+
 
 -- Given a list of file names, return list of (file name and file contents).
 -- Use @getFile@.
@@ -110,7 +140,12 @@ getFiles ::
   List FilePath
   -> IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+  \ps ->
+    sequence (getFile <$> ps)
+
+-- List (IO (FilePath, Chars))
+
+(|>) = flip (.)
 
 -- Given a file name, read it and for each line in that file, read and print contents of each.
 -- Use @getFiles@ and @printFiles@.
@@ -118,13 +153,33 @@ run ::
   FilePath
   -> IO ()
 run =
-  error "todo: Course.FileIO#run"
+  \name ->
+  {-
+    do  c <- readFile(name);
+        x <- getFiles(lines(c));
+        printFiles(x);
+-}
+  
+    readFile name >>= 
+    getFiles . lines >>=
+    printFiles
+  
 
 -- /Tip:/ use @getArgs@ and @run@
 main ::
   IO ()
 main =
-  error "todo: Course.FileIO#main"
+  getArgs >>= \a ->
+  case a of
+    Nil -> putStrLn "pass args silly"
+    x:._ ->
+      do  e <- doesFileExist (hlist x)
+          if e
+            then
+              run x
+            else
+              putStrLn "file doesn't exist silly"
+              
 
 ----
 

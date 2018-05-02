@@ -71,8 +71,13 @@ instance Applicative List where
     -> List a
     -> List b
   (<*>) =
-    \fs -> \as ->
-      flatMap (\f -> map f as) fs
+    -- flatMap :: (x -> List y) -> List x -> List y
+    -- flatMap :: ((a -> b) -> List b) -> List (a -> b) -> List b
+    -- map     :: (x ->      y) -> List x -> List y
+    -- map     :: (a ->      b) -> List a -> List b
+    \fs as -> flatMap (\a2b -> map a2b as) fs
+
+
       {-
       case fs of
         Nil -> Nil
@@ -378,7 +383,7 @@ sequence ::
   -> f (List a)
 sequence =
   foldRight (lift2 (:.)) (pure Nil)
-  
+
   {-
 sequence Nil = pure Nil
 sequence (h:.t) = lift2 (:.) h (sequence t)
