@@ -1,6 +1,8 @@
 *~
 *#*
 
+.DS_Store
+
 # CABAL
 /dist
 /dist-newstyle
