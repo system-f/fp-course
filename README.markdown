@@ -14,7 +14,7 @@ looking for the *answers* (not the exercises), please go to https://github.com/t
 #### Special note 2
 
 As of February 2017, this repository is taking the place of the repository hosted at
-https://github.com/NICTA/course which is deprecated. 
+https://github.com/NICTA/course which is deprecated.
 
 Data61 replaces what was NICTA since July 2016. The new repository is located at
 https://github.com/data61/fp-course.
@@ -160,8 +160,6 @@ available in this repository for your convenience.
    Set up your text editor to use space characters rather than tabs.
    Using tab characters in Haskell can lead to confusing error messages.
    GHC will give you a warning if your program contains a tab character.
-
-6. Do not use the stack build tool. It does not work.
 
 ### Running the tests
 
