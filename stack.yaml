@@ -1,0 +1,5 @@
+resolver: lts-9.21
+
+packages:
+- .
+- projects/NetworkServer/haskell
