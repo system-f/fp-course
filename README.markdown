@@ -161,7 +161,9 @@ available in this repository for your convenience.
    Using tab characters in Haskell can lead to confusing error messages.
    GHC will give you a warning if your program contains a tab character.
 
-6. Do not use the stack build tool. It does not work.
+6. Do not use the stack build tool. It does not work. If you want to use stack, 
+   please use [the fork of this course](https://www.github.com/bitemyapp/fp-course)
+   that supports it.
 
 ### Running the tests
 
