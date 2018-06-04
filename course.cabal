@@ -107,7 +107,7 @@ test-suite            tasty
                       , course
                       , HUnit >= 1.5
                       , QuickCheck >= 2.9
-                      , tasty >= 0.11
+                      , tasty >= 1
                       , tasty-hunit >= 0.9
                       , tasty-quickcheck >= 0.8
 
