@@ -190,11 +190,11 @@ pattern. Tests are organised in nested groups named after the relevant module
 and function, so pattern matching should be intuitive. For example, to run the
 tests for the `List` module you could run:
 
-    > cabal test tasty --show-detail=direct --test-option=--pattern=Tests/List/
+    > cabal test tasty --show-detail=direct --test-option=--pattern="Tests.List."
 
 Likewise, to run only the tests for the `headOr` function in the `List` module, you could use:
 
-    > cabal test tasty --show-detail=direct --test-option=--pattern=List/headOr
+    > cabal test tasty --show-detail=direct --test-option=--pattern="List.headOr"
 
 In addition, GHCi may be used to run tasty tests. Assuming you have run `ghci`
 from the root of the project, you may do the following. Remember that GHCi has
