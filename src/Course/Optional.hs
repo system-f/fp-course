@@ -28,7 +28,10 @@ mapOptional ::
   -> Optional a
   -> Optional b
 mapOptional =
-  error "todo: Course.Optional#mapOptional"
+  \f o -> case o of
+            Empty -> Empty
+            Full a -> Full (f a)
+
 
 -- | Bind the given function on the possible value.
 --
@@ -45,7 +48,14 @@ bindOptional ::
   -> Optional a
   -> Optional b
 bindOptional =
-  error "todo: Course.Optional#bindOptional"
+  \f o ->  case o of
+             Empty -> Empty
+             Full a -> f a
+
+giggles :: Optional Int -> Optional Int -> Optional Int
+giggles =
+  \x y ->
+    bindOptional (\n -> mapOptional (\o -> n + o) y) x
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --

@@ -67,16 +67,16 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- >>> headOr 3 Nil
 -- 3
+
 --
 -- prop> \x -> x `headOr` infinity == 0
 --
 -- prop> \x -> x `headOr` Nil == x
-headOr ::
-  a
-  -> List a
-  -> a
+headOr :: a -> List a -> a
 headOr =
-  error "todo: Course.List#headOr"
+  \x -> \y -> case y of
+                Nil -> x
+                h:._ -> h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +91,27 @@ headOr =
 product ::
   List Int
   -> Int
+{-
 product =
-  error "todo: Course.List#product"
+  \list -> case list of
+             Nil -> 1
+             h:.t -> h * product t
+-}
+product Nil = 1
+product (h:.t) = h * product t
+
+{-
+
+product (4:.5:.6:.Nil)
+4 * product (5:.6:.Nil)
+4 * 5 * product (6:.Nil)
+4 * 5 * 6 * product Nil
+4 * 5 * 6 * 1
+
+
+
+-}
+
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +125,7 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = \list -> foldLeft (+) 0 list
 
 -- | Return the length of the list.
 --
@@ -118,8 +136,28 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+  {-
+length Nil = 0
+length (_:.t) = 1 + length t
+-}
+-- length list = foldLeft (\r _ -> r + 1) 0 list
+-- length list = foldLeft (\r -> (\_ -> r + 1)) 0 list
+-- length list = foldLeft (\r -> (const (r + 1))) 0 list
+-- length list = foldLeft (\r -> const ((+1) r)) 0 list
+length = foldLeft (const . (+1)) 0
+
+konst :: a -> b -> a
+konst a = \_ -> a
+
+(...) b2c a2b = \a -> b2c (a2b a)
+
+{-
+
+\x -> f (g x)
+f . g
+
+-}
+
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +171,21 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+
+{-
+
+f :: a -> b
+h :: a
+t :: List a
+f h :: b
+map f t :: List b
+f h :. map f t :: List b
+
+? :: List b
+-}
+
 
 -- | Return elements satisfying the given predicate.
 --
@@ -170,7 +221,17 @@ filter =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+-- \list1 list2 -> foldRight (:.) list2 list1
+-- \list1 list2 -> flip (foldRight (:.)) list1 list2
+  flip (foldRight (:.))
+
+{-
+(++) =
+  \list1 list2 -> 
+    case list1 of
+      Nil -> list2
+      h:.t -> h :. (t ++ list2)
+-}
 
 infixr 5 ++
 
@@ -187,8 +248,12 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten list = foldRight (++) Nil list
+
+  {-
+flatten Nil = Nil
+flatten (h:.t) = h ++ flatten t
+-}
 
 -- | Map a function then flatten to a list.
 --
@@ -205,7 +270,7 @@ flatMap ::
   -> List a
   -> List b
 flatMap =
-  error "todo: Course.List#flatMap"
+  \f list -> flatten (map f list)
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -242,8 +307,108 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional Nil = pureOpt Nil
+seqOptional (h:.t) = 
+  bindOpt h (\a ->
+  bindOpt (seqOptional t) (\b ->
+  pureOpt (a :. b)))
+
+seqReader :: List (t -> a) -> t -> List a
+seqReader Nil = pureReader Nil
+seqReader (h:.t) =
+  bindReader h (\a ->
+  bindReader (seqReader t) (\b -> 
+  pureReader (a :. b)))
+
+seqList :: List (List a) -> List (List a)
+seqList Nil = pureList Nil
+seqList (h:.t) =
+  bindList h (\a ->
+  bindList (seqList t) (\b ->
+  pureList (a :. b)))
+
+class Append a where
+  app :: a -> a -> a
+
+instance Append Int where
+  app = (*)
+
+class AllThingsWithBindPure f where
+  bind :: f x -> (x -> f b) -> f b
+  pyooah :: z -> f z
+
+instance AllThingsWithBindPure Optional where
+  bind = bindOpt
+  pyooah = pureOpt
+
+instance AllThingsWithBindPure ((->) t) where
+  bind = bindReader
+  pyooah = pureReader
+
+instance AllThingsWithBindPure List where
+  bind = bindList
+  pyooah = pureList
+
+instance AllThingsWithBindPure IO where
+  bind = undefined
+  pyooah = undefined
+
+
+-- a :: a
+-- b :: List a
+-- a :. b :: List a
+-- pyooah (a :. b) :: k (List a)
+
+-- h :: k a
+-- t :: List (k a)
+-- seqAnything t :: k (List a)
+-- ? :: k (List a)
+
+
+-- a :: a
+-- b :: List a
+-- a :. b :: List a
+-- pureList (a :. b) :: List (List a)
+
+-- h :: List a
+                  -- t :: List (List a)
+-- seqList t :: List (List a)
+-- ? :: List (List a)
+
+bindOpt :: Optional x -> (x -> Optional b) -> Optional b
+bindOpt Empty _ = Empty
+bindOpt (Full a) f = f a
+
+pureOpt :: z -> Optional z
+pureOpt = Full
+
+bindReader :: (t -> x) -> (x -> t -> b) -> t -> b
+bindReader t2x x2t2b t = x2t2b (t2x t) t
+
+pureReader :: z -> t -> z
+pureReader = \a _ -> a
+
+bindList :: List x -> (x -> List b) -> List b
+bindList Nil _ = Nil
+bindList (h:.t) f = f h ++ bindList t f
+
+pureList :: z -> List z
+pureList a = a :. Nil
+
+-- h :: x
+                    -- t :: List x
+-- bindList f t :: List b
+-- f :: x -> List b
+-- f h :: List b
+
+{-
+h :: Optional a
+                                              t :: List (Optional a)
+seqOptional t :: Optional (List a)
+
+goal :: Optional (List a)
+
+-}
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -301,8 +466,15 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
+  {-
+reverse Nil = Nil
+reverse (h:.t) = reverse t ++ (h:.Nil)
+-}
 reverse =
-  error "todo: Course.List#reverse"
+--foldLeft (\r el -> el :. r) Nil
+--foldLeft (\r el -> flip (:.) r el) Nil
+--foldLeft (\r -> flip (:.) r) Nil
+  foldLeft (flip (:.)) Nil
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

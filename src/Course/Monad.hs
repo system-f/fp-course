@@ -13,6 +13,41 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P((=<<))
 
+seqAnything :: Monad k => List (k a) -> k (List a)
+seqAnything Nil = pure Nil
+seqAnything (h:.t) = 
+  do 
+      a <- h
+      b <- seqAnything t
+      pure (a :. b)
+
+{-
+
+from a in h
+from b in seqAnything(t)
+select (a:.b)
+
+for {
+  a <- h
+  b <- seqAnything(t)
+} yield (a:.b)
+
+-}
+
+{-
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+
+seqAnything (h:.t) = 
+  h >>= (\a -> 
+  seqAnything t >>= (\b ->
+  pure (a :. b)))
+
+-}
+
 -- | All instances of the `Monad` type-class must satisfy one law. This law
 -- is not checked by the compiler. This law is given as:
 --
