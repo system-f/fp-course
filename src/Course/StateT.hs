@@ -139,7 +139,7 @@ evalT ::
 evalT =
   error "todo: Course.StateT#evalT"
 
--- | Run the `State` seeded with `s` and retrieve the resulting value.
+-- | Run the `State'` seeded with `s` and retrieve the resulting value.
 eval' ::
   State' s a
   -> s
