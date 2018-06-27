@@ -502,7 +502,7 @@ nth =
 -- >>> index (zipper [3,2,1] 4 [5,6,7])
 -- 3
 --
--- prop> \i z z' -> optional True (\z' -> index z' == i) (toOptional (nth i z))
+-- prop> \i z -> optional True (\z' -> index z' == i) (toOptional (nth i z))
 index ::
   ListZipper a
   -> Int
