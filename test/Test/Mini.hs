@@ -10,7 +10,7 @@
 -- instance for running the test suite with Tasty.
 module Test.Mini where
 
-import           Control.Exception (SomeException, try)
+import           Control.Exception (SomeException, catch)
 import           Data.Bool         (bool)
 import           Data.Foldable     (traverse_)
 import           Data.List         (intercalate)
@@ -29,14 +29,18 @@ class IsString name => Tester t name | t -> name where
   (@?=) :: (Eq a, Show a) => a -> a -> Assertion t
   test :: TestTree t -> IO ()
 
-
 -- | A data type for our embedded instance to hang off
 data CourseTester
 
 -- | The test tree structure used by our embedded instance
 data CourseTestTree =
-  Single { name :: String, assertion :: IO () }
-  | Tree { name :: String, testCases :: [CourseTestTree]}
+  Single String Result
+  | Tree String [CourseTestTree]
+
+data Result =
+  Failure String
+  | Success
+  deriving (Eq)
 
 -- | Run our embedded test tree, printing failures.
 testCourseTree' ::
@@ -46,37 +50,38 @@ testCourseTree' =
   where
     qualifiedName s s' =
       bool (intercalate "." [s,s']) s' (null s)
-    go s t' =
-      case t' of
-      (Single s' a) -> do
-        r <- try a :: IO (Either SomeException ())
-        let
-          quote x = "'" <> x <> "'"
-          printFailure e =
-            putStrLn (quote (qualifiedName s s') <> " failed:")
-            >> print e
-            >> putStrLn ""
-        case r of
-          Left e   -> printFailure e
-          Right () -> pure ()
-      (Tree s' ts) -> foldMap (go (qualifiedName s s')) ts
+    go s (Single s' a) =
+      let
+        quote x = "'" <> x <> "'"
+
+        printFailure :: Show e => e -> IO ()
+        printFailure e =
+          putStrLn (quote (qualifiedName s s') <> " failed:")
+          >> print e
+          >> putStrLn ""
+
+        printResult (Failure e) = printFailure e
+        printResult Success = pure ()
+      in
+        printResult a `catch`
+          \(e :: SomeException) -> printFailure e
+    go s (Tree s' ts) = foldMap (go (qualifiedName s s')) ts
 
 -- | Instance for the embedded test implementation
 instance Tester CourseTester String where
-  data TestTree CourseTester = CTTree CourseTestTree
-  data Assertion CourseTester = CTAssertion (IO ())
+  data TestTree CourseTester = CTTree {unCTTree :: CourseTestTree}
+  data Assertion CourseTester = CTAssertion Result
 
   testGroup s =
-    foldr1 (\(CTTree t1) (CTTree t2) -> CTTree (Tree s [t1, t2]))
+    CTTree . Tree s . foldr ((:) . unCTTree) []
 
   testCase s (CTAssertion a) = CTTree (Single s a)
 
   a @?= b =
     let
-      msg :: Prelude.String
       msg = "Expected " <> show a <> " but got " <> show b
     in
-      CTAssertion $ bool (error msg) (pure ()) (a == b)
+      CTAssertion $ bool (Failure msg) Success (a == b)
 
   test (CTTree t) =
     testCourseTree' t
