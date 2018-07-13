@@ -2,6 +2,7 @@
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE ImplicitPrelude        #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
+{-# LANGUAGE RankNTypes             #-}
 {-# LANGUAGE TypeFamilies           #-}
 
 -- | The smallest possible test library interface and instance that will run the current test suite.
@@ -16,6 +17,8 @@ import           Data.List         (intercalate)
 import           Data.Monoid       ((<>))
 import           Data.String       (IsString, fromString)
 
+type MiniTestTree = forall t name. Tester t name => TestTree t
+
 -- | Test interface required to run course tests
 class IsString name => Tester t name | t -> name where
   data TestTree t
@@ -24,7 +27,7 @@ class IsString name => Tester t name | t -> name where
   testGroup :: name -> [TestTree t] -> TestTree t
   testCase :: name -> Assertion t -> TestTree t
   (@?=) :: (Eq a, Show a) => a -> a -> Assertion t
-  test :: TestTree t -> IO [name]
+  test :: TestTree t -> IO ()
 
 
 -- | A data type for our embedded instance to hang off
@@ -37,25 +40,26 @@ data CourseTestTree =
 
 -- | Run our embedded test tree, printing failures.
 testCourseTree' ::
-  CourseTestTree -> IO [String]
+  CourseTestTree -> IO ()
 testCourseTree' =
   go ""
   where
+    qualifiedName s s' =
+      bool (intercalate "." [s,s']) s' (null s)
     go s t' =
       case t' of
       (Single s' a) -> do
         r <- try a :: IO (Either SomeException ())
         let
-          qualifiedName = bool (intercalate "." [s,s']) s' (null s)
           quote x = "'" <> x <> "'"
           printFailure e =
-            putStrLn (quote qualifiedName <> " failed:")
+            putStrLn (quote (qualifiedName s s') <> " failed:")
             >> print e
             >> putStrLn ""
         case r of
-          Left e   -> printFailure e >> (pure . pure) qualifiedName
-          Right () -> pure []
-      (Tree s' ts) -> foldMap (go s') ts
+          Left e   -> printFailure e
+          Right () -> pure ()
+      (Tree s' ts) -> foldMap (go (qualifiedName s s')) ts
 
 -- | Instance for the embedded test implementation
 instance Tester CourseTester String where
@@ -76,3 +80,9 @@ instance Tester CourseTester String where
 
   test (CTTree t) =
     testCourseTree' t
+
+courseTest ::
+  TestTree CourseTester
+  -> IO ()
+courseTest =
+  test

@@ -1,6 +1,5 @@
--- import Test.Tasty (defaultMain)
-import Test.Tasty.Mini (tastyTest)
-import TestLoader (tests)
+module TestLoader where
+
 import Course.ApplicativeTest (test_Applicative)
 import Course.ComonadTest (test_Comonad)
 import Course.ExtendTest (test_Extend)
@@ -14,8 +13,24 @@ import Course.StateTest (test_State)
 import Course.StateTTest (test_StateT)
 import Course.ValidationTest (test_Validation)
 
-import Prelude (IO)
+import Data.String (fromString)
 
-main :: IO ()
-main = tastyTest tests
+import Test.Mini (MiniTestTree, Tester (..), courseTest)
+
+tests :: MiniTestTree
+tests =
+  testGroup "Tests" [
+  --   test_Optional
+  -- , test_List
+  -- , test_Functor
+  -- , test_Applicative
+  -- , test_Monad
+  -- , test_State
+  -- , test_StateT
+  -- , test_Validation
+  -- , test_Extend
+    test_Comonad
+  -- , test_ListZipper
+  -- , test_JsonParser
+  ]
 

@@ -4,24 +4,24 @@
 module Course.ComonadTest where
 
 
-import           Test.Mini         (Tester (..))
+import           Test.Mini         (MiniTestTree, Tester (..), courseTest)
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
 
-test_Comonad :: Tester t name => TestTree t
+test_Comonad :: MiniTestTree
 test_Comonad =
   testGroup "Comonad" [
     exactlyOneTest
   , fmapTest
   ]
 
-exactlyOneTest :: Tester t name => TestTree t
+exactlyOneTest :: MiniTestTree
 exactlyOneTest =
   testCase "ExactlyOne" $ copure (ExactlyOne 7) @?= 7
 
-fmapTest :: Tester t name => TestTree t
+fmapTest :: MiniTestTree
 fmapTest =
   testCase "<$$>" $
     ((+10) <$$> ExactlyOne 7) @?= ExactlyOne 17
