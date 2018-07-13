@@ -20,17 +20,17 @@ import Test.Mini (MiniTestTree, Tester (..), courseTest)
 tests :: MiniTestTree
 tests =
   testGroup "Tests" [
-  --   test_Optional
-  -- , test_List
-  -- , test_Functor
-  -- , test_Applicative
-  -- , test_Monad
-  -- , test_State
-  -- , test_StateT
-  -- , test_Validation
-  -- , test_Extend
-    test_Comonad
-  -- , test_ListZipper
-  -- , test_JsonParser
+    test_Optional
+  , test_List
+  , test_Functor
+  , test_Applicative
+  , test_Monad
+  , test_State
+  , test_StateT
+  , test_Validation
+  , test_Extend
+  , test_Comonad
+  , test_ListZipper
+  , test_JsonParser
   ]
 

@@ -6,9 +6,9 @@ module Course.ListTest where
 import qualified Prelude               as P (length)
 
 import           Test.QuickCheck       (forAllShrink)
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
 import           Test.Tasty.QuickCheck (testProperty)
+
+import           Test.Mini             (MiniTestTree, Tester (..))
 
 import           Course.Core
 import           Course.Gens           (forAllLists, genIntegerAndList, genList,
@@ -23,7 +23,7 @@ import           Course.List           (List (..), filter, find, flatMap,
                                         reverse, seqOptional, sum, take, (++))
 import           Course.Optional       (Optional (..))
 
-test_List :: TestTree
+test_List :: MiniTestTree
 test_List =
   testGroup "List" [
     headOrTest
@@ -43,7 +43,7 @@ test_List =
   , produceTest
   ]
 
-headOrTest :: TestTree
+headOrTest :: MiniTestTree
 headOrTest =
   testGroup "headOr" [
     testCase "headOr on non-empty list" $ headOr 3 (1 :. 2 :. Nil) @?= 1
@@ -52,7 +52,7 @@ headOrTest =
   , testProperty "headOr on empty list always the default" $ \x -> x `headOr` Nil == (x :: Integer)
   ]
 
-productTest :: TestTree
+productTest :: MiniTestTree
 productTest =
   testGroup "productTest" [
     testCase "product of empty list" $ product Nil @?= 1
@@ -60,7 +60,7 @@ productTest =
   , testCase "product of 1..4" $ product (1 :. 2 :. 3 :. 4 :. Nil) @?= 24
   ]
 
-sumTest :: TestTree
+sumTest :: MiniTestTree
 sumTest =
   testGroup "sum" [
     testCase "sum 1..3" $ sum (1 :. 2 :. 3 :. Nil) @?= 6
@@ -69,7 +69,7 @@ sumTest =
       forAllShrink genList shrinkList (\x -> foldLeft (-) (sum x) x == 0)
   ]
 
-lengthTest :: TestTree
+lengthTest :: MiniTestTree
 lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
@@ -77,7 +77,7 @@ lengthTest =
       forAllLists (\x -> P.length (hlist x) == length x)
   ]
 
-mapTest :: TestTree
+mapTest :: MiniTestTree
 mapTest =
   testGroup "map" [
     testCase "add 10 on list" $
@@ -88,7 +88,7 @@ mapTest =
       forAllLists (\x -> map id x == x)
   ]
 
-filterTest :: TestTree
+filterTest :: MiniTestTree
 filterTest =
   testGroup "filter" [
     testCase "filter even" $
@@ -101,7 +101,7 @@ filterTest =
       forAllLists (\x -> filter (const False) x == Nil)
   ]
 
-appendTest :: TestTree
+appendTest :: MiniTestTree
 appendTest =
   testGroup "(++)" [
     testCase "(1..6)" $
@@ -116,7 +116,7 @@ appendTest =
       forAllLists (\x -> x ++ Nil == x)
   ]
 
-flattenTest :: TestTree
+flattenTest :: MiniTestTree
 flattenTest =
   testGroup "flatten" [
     testCase "(1..9)" $
@@ -129,7 +129,7 @@ flattenTest =
       forAllShrink genListOfLists shrinkListOfLists (\x -> sum (map length x) == length (flatten x))
   ]
 
-flatMapTest :: TestTree
+flatMapTest :: MiniTestTree
 flatMapTest =
   testGroup "flatMap" [
     testCase "lists of Integer" $
@@ -142,7 +142,7 @@ flatMapTest =
       forAllShrink genListOfLists shrinkListOfLists (\x -> flatMap id x == flatten x)
   ]
 
-flattenAgainTest :: TestTree
+flattenAgainTest :: MiniTestTree
 flattenAgainTest =
   testGroup "flattenAgain" [
     testProperty "lists of Integer" $
@@ -150,7 +150,7 @@ flattenAgainTest =
   ]
 
 
-seqOptionalTest :: TestTree
+seqOptionalTest :: MiniTestTree
 seqOptionalTest =
   testGroup "seqOptional" [
     testCase "all Full" $
@@ -164,7 +164,7 @@ seqOptionalTest =
       seqOptional (Empty :. map Full infinity) @?= Empty
   ]
 
-findTest :: TestTree
+findTest :: MiniTestTree
 findTest =
   testGroup "find" [
     testCase "find no matches" $
@@ -178,7 +178,7 @@ findTest =
       find (const True) infinity @?= Full 0
   ]
 
-lengthGT4Test :: TestTree
+lengthGT4Test :: MiniTestTree
 lengthGT4Test =
   testGroup "lengthGT4" [
     testCase "list of length 3" $
@@ -191,7 +191,7 @@ lengthGT4Test =
       lengthGT4 infinity @?= True
   ]
 
-reverseTest :: TestTree
+reverseTest :: MiniTestTree
 reverseTest =
   testGroup "reverse" [
     testCase "empty list" $
@@ -204,7 +204,7 @@ reverseTest =
       forAllLists (\x -> reverse (x :. Nil) == x :. Nil)
   ]
 
-produceTest :: TestTree
+produceTest :: MiniTestTree
 produceTest =
   testGroup "produce" [
     testCase "increment" $

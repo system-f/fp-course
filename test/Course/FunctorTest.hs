@@ -4,9 +4,7 @@
 
 module Course.FunctorTest where
 
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
-import           Test.Tasty.QuickCheck (testProperty)
+import Test.Mini (MiniTestTree, Tester (..))
 
 import           Course.Core
 import           Course.ExactlyOne     (ExactlyOne (..))
@@ -14,7 +12,7 @@ import           Course.Functor        (void, (<$), (<$>))
 import           Course.List           (List (..))
 import           Course.Optional       (Optional (..))
 
-test_Functor :: TestTree
+test_Functor :: MiniTestTree
 test_Functor =
   testGroup "Functor" [
     idTest
@@ -25,11 +23,11 @@ test_Functor =
   , voidTest
   ]
 
-idTest :: TestTree
+idTest :: MiniTestTree
 idTest =
   testCase "ExactlyOne" $ (+1) <$> ExactlyOne 2 @?= ExactlyOne 3
 
-listTest :: TestTree
+listTest :: MiniTestTree
 listTest =
   testGroup "List" [
     testCase "empty list" $
@@ -38,19 +36,19 @@ listTest =
       (+1) <$> (1 :. 2 :. 3 :. Nil) @?= (2 :. 3 :. 4 :. Nil)
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "Optional" [
     testCase "Empty" $ (+1) <$> Empty @?= Empty
   , testCase "Full"  $ (+1) <$> Full 2 @?= Full 3
   ]
 
-functionTest :: TestTree
+functionTest :: MiniTestTree
 functionTest =
   testCase "(->)" $ ((+1) <$> (*2)) 8 @?= 17
 
 
-anonMapTest :: TestTree
+anonMapTest :: MiniTestTree
 anonMapTest =
   testGroup "(<$)" [
     testCase "Map 7" $ 7 <$ (1 :. 2 :. 3 :. Nil) @?= (7 :. 7 :. 7 :. Nil)
@@ -60,7 +58,7 @@ anonMapTest =
       \(x :: Integer) (q :: Integer) -> x <$ Full q == Full x
   ]
 
-voidTest :: TestTree
+voidTest :: MiniTestTree
 voidTest =
   testGroup "void" [
     testCase "List"  $ void (1 :. 2 :. 3 :. Nil) @?= () :. () :. () :. Nil

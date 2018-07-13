@@ -5,8 +5,7 @@ module Course.StateTTest where
 
 import qualified Prelude               as P (String, (++))
 
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
+import           Test.Mini             (MiniTestTree, Tester (..))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Applicative    (pure, (<*>))
@@ -23,7 +22,7 @@ import           Course.StateT         (Logger (..), OptionalT (..),
                                         distinctG, getT, log1, putT,
                                         runOptionalT, runState', state')
 
-test_StateT :: TestTree
+test_StateT :: MiniTestTree
 test_StateT =
   testGroup "StateT" [
     functorTest
@@ -45,13 +44,13 @@ test_StateT =
   , distinctGTest
   ]
 
-functorTest :: TestTree
+functorTest :: MiniTestTree
 functorTest =
   testCase "<$>" $
     let st = StateT (\s -> ((2, s) :. Nil))
      in runStateT ((+1) <$> st) 0 @?= ((3,0) :. Nil)
 
-applicativeTest :: TestTree
+applicativeTest :: MiniTestTree
 applicativeTest =
   testGroup "Applicative" [
     testCase "List (pure)" $ runStateT ((pure 2) :: StateT Int List Int) 0 @?= ((2,0) :. Nil)
@@ -65,7 +64,7 @@ applicativeTest =
        in runStateT st [0] @?= ((4,[0,1,2]) :. (5,[0,1,2]) :. Nil)
   ]
 
-monadTest :: TestTree
+monadTest :: MiniTestTree
 monadTest =
   testGroup "Monad" [
     testCase "bind const" $
@@ -76,44 +75,44 @@ monadTest =
        in runStateT (modify (+1) >>= \() -> modify (*2)) 7 @?= (((), 16) :. Nil)
   ]
 
-state'Test :: TestTree
+state'Test :: MiniTestTree
 state'Test =
   testCase "state'" $
     runStateT (state' $ runState $ put 1) 0 @?= ExactlyOne ((), 1)
 
-runState'Test :: TestTree
+runState'Test :: MiniTestTree
 runState'Test =
   testCase "runState'" $
     runState' (state' $ runState $ put 1) 0 @?= ((),1)
 
-getTTest :: TestTree
+getTTest :: MiniTestTree
 getTTest =
   testCase "getTTest" $
     runStateT (getT :: StateT Int List Int) 3 @?= ((3,3) :. Nil)
 
-putTTest :: TestTree
+putTTest :: MiniTestTree
 putTTest =
   testCase "putTTest" $
     runStateT (putT 2 :: StateT Int List ()) 0 @?= (((),2) :. Nil)
 
-distinct'Test :: TestTree
+distinct'Test :: MiniTestTree
 distinct'Test =
   testProperty "distinct'" $
     forAllLists (\xs -> distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
 
-distinctFTest :: TestTree
+distinctFTest :: MiniTestTree
 distinctFTest =
   testGroup "distinctF" [
     testCase "Full case" $ distinctF (listh [1,2,3,2,1]) @?= Full (listh [1,2,3])
   , testCase "Empty case" $ distinctF (listh [1,2,3,2,1,101]) @?= Empty
   ]
 
-optionalTFunctorTest :: TestTree
+optionalTFunctorTest :: MiniTestTree
 optionalTFunctorTest =
   testCase "(<$>) for OptionalT" $
     runOptionalT ((+1) <$> OptionalT (Full 1 :. Empty :. Nil)) @?= (Full 2 :. Empty :. Nil)
 
-optionalTApplicativeTest :: TestTree
+optionalTApplicativeTest :: MiniTestTree
 optionalTApplicativeTest =
   testGroup "(<*>) for OptionalT" [
     testCase "one" $
@@ -139,18 +138,18 @@ optionalTApplicativeTest =
        in runOptionalT ot @?= (Full 2 :. Empty :. Full 3 :. Empty :. Nil)
   ]
 
-optionalTMonadTest :: TestTree
+optionalTMonadTest :: MiniTestTree
 optionalTMonadTest =
   testCase "(=<<) for OptionalT" $
     let ot = (\a -> OptionalT (Full (a+1) :. Full (a+2) :. Nil)) =<< OptionalT (Full 1 :. Empty :. Nil)
      in runOptionalT ot @?= (Full 2:.Full 3:.Empty:.Nil)
 
-loggerFunctorTest :: TestTree
+loggerFunctorTest :: MiniTestTree
 loggerFunctorTest =
   testCase "(<$>) for Logger" $
     (+3) <$> Logger (1 :. 2 :. Nil) 3 @?= Logger (1 :. 2 :. Nil) 6
 
-loggerApplicativeTest :: TestTree
+loggerApplicativeTest :: MiniTestTree
 loggerApplicativeTest =
   testGroup "Logger Applicative" [
     testCase "pure" $
@@ -159,17 +158,17 @@ loggerApplicativeTest =
       Logger (1:.2:.Nil) (+7) <*> Logger (3:.4:.Nil) 3 @?= Logger (1:.2:.3:.4:.Nil) 10
   ]
 
-loggerMonadTest :: TestTree
+loggerMonadTest :: MiniTestTree
 loggerMonadTest =
   testCase "(=<<) for Logger" $
     ((\a -> Logger (4:.5:.Nil) (a+3)) =<< Logger (1:.2:.Nil) 3) @?= Logger (1:.2:.4:.5:.Nil) 6
 
-log1Test :: TestTree
+log1Test :: MiniTestTree
 log1Test =
   testCase "log1" $
     log1 1 2 @?= Logger (1:.Nil) 2
 
-distinctGTest :: TestTree
+distinctGTest :: MiniTestTree
 distinctGTest =
   testGroup "distinctG" [
     testCase "Full case" $

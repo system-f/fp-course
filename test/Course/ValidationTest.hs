@@ -5,18 +5,13 @@
 
 module Course.ValidationTest where
 
-import qualified Prelude               as P (either, fmap)
-import           Test.Tasty
-import           Test.Tasty.HUnit
-import           Test.Tasty.QuickCheck
+import qualified Prelude           as P (either, fmap)
+import           Test.Mini         (MiniTestTree, Tester (..))
 
 import           Course.Core
 import           Course.Validation
 
-instance Arbitrary a => Arbitrary (Validation a) where
-  arbitrary = P.fmap (P.either Error Value) arbitrary
-
-test_Validation :: TestTree
+test_Validation :: MiniTestTree
 test_Validation =
   testGroup "Validation" [
     isErrorTest
@@ -27,7 +22,7 @@ test_Validation =
   , errorOrTest
   ]
 
-isErrorTest :: TestTree
+isErrorTest :: MiniTestTree
 isErrorTest =
   testGroup "isError" [
     testCase "true for errors" $
@@ -38,7 +33,7 @@ isErrorTest =
       \(x :: Validation Int) -> isError x /= isValue x
   ]
 
-isValueTest :: TestTree
+isValueTest :: MiniTestTree
 isValueTest =
   testGroup "isValue" [
     testCase "false for errors" $
@@ -49,7 +44,7 @@ isValueTest =
       \(x :: Validation Int) -> isValue x /= isError x
   ]
 
-mapValidationTest :: TestTree
+mapValidationTest :: MiniTestTree
 mapValidationTest =
   testGroup "mapValidation" [
     testCase "errors unchanged" $
@@ -60,7 +55,7 @@ mapValidationTest =
       \(x :: Validation Int) -> mapValidation id x == x
   ]
 
-bindValidationTest :: TestTree
+bindValidationTest :: MiniTestTree
 bindValidationTest =
   let
     f n = if even n then Value (n + 10) else Error "odd"
@@ -76,7 +71,7 @@ bindValidationTest =
       \(x :: Validation Int) -> bindValidation Value x == x
     ]
 
-valueOrTest :: TestTree
+valueOrTest :: MiniTestTree
 valueOrTest =
   testGroup "valueOr" [
     testCase "falls through for errors" $
@@ -87,7 +82,7 @@ valueOrTest =
       \(x :: Validation Int) n -> isValue x || valueOr x n == n
   ]
 
-errorOrTest :: TestTree
+errorOrTest :: MiniTestTree
 errorOrTest =
   testGroup "errorOr" [
     testCase "unwraps errors" $

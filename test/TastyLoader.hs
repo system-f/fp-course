@@ -1,4 +1,3 @@
--- import Test.Tasty (defaultMain)
 import Test.Tasty.Mini (tastyTest)
 import TestLoader (tests)
 import Course.ApplicativeTest (test_Applicative)

@@ -4,9 +4,6 @@
 module Course.ExtendTest where
 
 
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
-
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))
 import           Course.Functor    ((<$>))
@@ -15,7 +12,9 @@ import           Course.Optional   (Optional (..))
 
 import           Course.Extend     (cojoin, (<<=))
 
-test_Extend :: TestTree
+import Test.Mini (MiniTestTree, Tester (..), courseTest)
+
+test_Extend :: MiniTestTree
 test_Extend =
   testGroup "Extend" [
     exactlyOneTest
@@ -24,12 +23,12 @@ test_Extend =
   , cojoinTest
   ]
 
-exactlyOneTest :: TestTree
+exactlyOneTest :: MiniTestTree
 exactlyOneTest =
   testCase "ExactlyOne instance" $
     (id <<= ExactlyOne 7) @?= ExactlyOne (ExactlyOne 7)
 
-listTest :: TestTree
+listTest :: MiniTestTree
 listTest =
   testGroup "List" [
     testCase "length" $
@@ -41,7 +40,7 @@ listTest =
         nestedListh3 [[[4,5,6],[1,2,3]],[[4,5,6]]]
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "Optional" [
     testCase "id Full" $
@@ -50,7 +49,7 @@ optionalTest =
       (id <<= Empty) @?= (Empty :: Optional (Optional Integer))
   ]
 
-cojoinTest :: TestTree
+cojoinTest :: MiniTestTree
 cojoinTest =
   testGroup "cojoin" [
     testCase "ExactlyOne" $
