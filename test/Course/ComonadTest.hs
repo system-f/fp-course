@@ -4,25 +4,24 @@
 module Course.ComonadTest where
 
 
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+import           Test.Mini         (Tester (..))
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
 
-test_Comonad :: TestTree
+test_Comonad :: Tester t name => TestTree t
 test_Comonad =
   testGroup "Comonad" [
     exactlyOneTest
   , fmapTest
   ]
 
-exactlyOneTest :: TestTree
+exactlyOneTest :: Tester t name => TestTree t
 exactlyOneTest =
   testCase "ExactlyOne" $ copure (ExactlyOne 7) @?= 7
 
-fmapTest :: TestTree
+fmapTest :: Tester t name => TestTree t
 fmapTest =
   testCase "<$$>" $
     ((+10) <$$> ExactlyOne 7) @?= ExactlyOne 17

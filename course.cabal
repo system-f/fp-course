@@ -98,6 +98,7 @@ test-suite            tasty
                       Course.StateTest
                       Course.StateTTest
                       Course.ValidationTest
+                      Test.Mini
 
   default-language:
                       Haskell2010
