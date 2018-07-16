@@ -12,28 +12,27 @@ import           Test.Tasty.HUnit as T
 import           Test.Mini        (Tester (..), UnitTester (..))
 
 
-data TastyTester
-
 newtype TastyAssertion =
   TA {getTA :: IO ()}
 
-instance Tester TastyTester T.TestName TastyAssertion where
-  data TestTree TastyTester = TTestTree {unTTestTree :: T.TestTree }
+newtype TastyTree =
+  TT {getTT :: T.TestTree}
 
+instance Tester TastyTree T.TestName TastyAssertion where
   testGroup n =
-    TTestTree . T.testGroup n . fmap unTTestTree
+    TT . T.testGroup n . fmap getTT
 
   testCase n =
-    TTestTree . T.testCase n . getTA
+    TT . T.testCase n . getTA
 
-  test = T.defaultMain . unTTestTree
+  test = T.defaultMain . getTT
 
 instance UnitTester TastyAssertion where
   (@?=) = (TA .) . (T.@?=)
 
 
 tastyTest ::
-  TestTree TastyTester
+  TastyTree
   -> IO ()
 tastyTest = test
 
