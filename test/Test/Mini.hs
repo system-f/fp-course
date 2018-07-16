@@ -35,6 +35,11 @@ class IsString name => Tester t name assertion | t -> name, t -> assertion where
 class UnitTester assertion where
   (@?=) :: (Eq a, Show a) => a -> a -> assertion
   infix 1 @?=
+
+class IsString name => PropertyTester t name prop | t -> name, t -> prop where
+  testProperty :: name -> prop -> t
+
+
 -- | A data type for our embedded instance to hang off
 data CourseTester
 
