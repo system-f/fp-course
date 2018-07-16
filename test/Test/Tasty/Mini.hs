@@ -9,24 +9,28 @@ module Test.Tasty.Mini where
 import qualified Test.Tasty as T
 import           Test.Tasty.HUnit as T
 
-import           Test.Mini        (Tester (..))
+import           Test.Mini        (Tester (..), UnitTester (..))
 
 
 data TastyTester
 
-instance Tester TastyTester T.TestName where
+newtype TastyAssertion =
+  TA {getTA :: IO ()}
+
+instance Tester TastyTester T.TestName TastyAssertion where
   data TestTree TastyTester = TTestTree {unTTestTree :: T.TestTree }
-  data Assertion TastyTester = TAssertion { unTAssertion :: IO ()}
 
   testGroup n =
     TTestTree . T.testGroup n . fmap unTTestTree
 
   testCase n =
-    TTestTree . T.testCase n . unTAssertion
-
-  (@?=) a b = TAssertion (a T.@?= b)
+    TTestTree . T.testCase n . getTA
 
   test = T.defaultMain . unTTestTree
+
+instance UnitTester TastyAssertion where
+  (@?=) = (TA .) . (T.@?=)
+
 
 tastyTest ::
   TestTree TastyTester

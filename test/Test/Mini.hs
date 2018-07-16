@@ -17,18 +17,24 @@ import           Data.List         (intercalate)
 import           Data.Monoid       ((<>))
 import           Data.String       (IsString, fromString)
 
-type MiniTestTree = forall t name. Tester t name => TestTree t
+type MiniTestTree =
+  forall t name assertion.
+  ( UnitTester assertion
+  , Tester t name assertion
+  )
+  => TestTree t
 
 -- | Test interface required to run course tests
-class IsString name => Tester t name | t -> name where
+class IsString name => Tester t name assertion | t -> name, t -> assertion where
   data TestTree t
-  data Assertion t
 
   testGroup :: name -> [TestTree t] -> TestTree t
-  testCase :: name -> Assertion t -> TestTree t
-  (@?=) :: (Eq a, Show a) => a -> a -> Assertion t
+  testCase :: name -> assertion -> TestTree t
   test :: TestTree t -> IO ()
 
+class UnitTester assertion where
+  (@?=) :: (Eq a, Show a) => a -> a -> assertion
+  infix 1 @?=
 -- | A data type for our embedded instance to hang off
 data CourseTester
 
@@ -68,23 +74,24 @@ testCourseTree' =
     go s (Tree s' ts) = foldMap (go (qualifiedName s s')) ts
 
 -- | Instance for the embedded test implementation
-instance Tester CourseTester String where
+instance Tester CourseTester String Result where
   data TestTree CourseTester = CTTree {unCTTree :: CourseTestTree}
-  data Assertion CourseTester = CTAssertion Result
 
   testGroup s =
     CTTree . Tree s . foldr ((:) . unCTTree) []
 
-  testCase s (CTAssertion a) = CTTree (Single s a)
+  testCase s a = CTTree (Single s a)
 
+  test (CTTree t) =
+    testCourseTree' t
+
+instance UnitTester Result where
   a @?= b =
     let
       msg = "Expected " <> show a <> " but got " <> show b
     in
-      CTAssertion $ bool (Failure msg) Success (a == b)
+      bool (Failure msg) Success (a == b)
 
-  test (CTTree t) =
-    testCourseTree' t
 
 courseTest ::
   TestTree CourseTester
