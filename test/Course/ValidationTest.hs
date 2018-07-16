@@ -6,7 +6,7 @@
 module Course.ValidationTest where
 
 import qualified Prelude           as P (either, fmap)
-import           Test.Mini         (MiniTestTree, Tester (..))
+import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.Validation

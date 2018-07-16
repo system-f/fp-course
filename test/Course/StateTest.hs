@@ -10,7 +10,8 @@ import qualified Prelude                  as P ((++))
 import           Test.QuickCheck.Function (Fun (..))
 import           Test.Tasty.QuickCheck    (testProperty)
 
-import           Test.Mini                (MiniTestTree, Tester (..))
+import           Test.Mini                (MiniTestTree, Tester (..),
+                                           UnitTester (..))
 
 import           Course.Applicative       (pure, (<*>))
 import           Course.Core

@@ -22,15 +22,13 @@ type MiniTestTree =
   ( UnitTester assertion
   , Tester t name assertion
   )
-  => TestTree t
+  => t
 
 -- | Test interface required to run course tests
 class IsString name => Tester t name assertion | t -> name, t -> assertion where
-  data TestTree t
-
-  testGroup :: name -> [TestTree t] -> TestTree t
-  testCase :: name -> assertion -> TestTree t
-  test :: TestTree t -> IO ()
+  testGroup :: name -> [t] -> t
+  testCase :: name -> assertion -> t
+  test :: t -> IO ()
 
 class UnitTester assertion where
   (@?=) :: (Eq a, Show a) => a -> a -> assertion
@@ -79,16 +77,13 @@ testCourseTree' =
     go s (Tree s' ts) = foldMap (go (qualifiedName s s')) ts
 
 -- | Instance for the embedded test implementation
-instance Tester CourseTester String Result where
-  data TestTree CourseTester = CTTree {unCTTree :: CourseTestTree}
-
+instance Tester CourseTestTree String Result where
   testGroup s =
-    CTTree . Tree s . foldr ((:) . unCTTree) []
-
-  testCase s a = CTTree (Single s a)
-
-  test (CTTree t) =
-    testCourseTree' t
+    Tree s . foldr (:) []
+  testCase =
+    Single
+  test =
+    testCourseTree'
 
 instance UnitTester Result where
   a @?= b =
@@ -99,7 +94,7 @@ instance UnitTester Result where
 
 
 courseTest ::
-  TestTree CourseTester
+  CourseTestTree
   -> IO ()
 courseTest =
   test

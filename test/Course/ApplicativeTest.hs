@@ -4,7 +4,8 @@
 
 module Course.ApplicativeTest where
 
-import           Test.Mini             (MiniTestTree, Tester (..))
+import           Test.Mini             (MiniTestTree, Tester (..),
+                                        UnitTester (..))
 import           Test.Tasty.QuickCheck (testProperty)
 
 import           Course.Applicative    (filtering, lift1, lift2, lift3, lift4,

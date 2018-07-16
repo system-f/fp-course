@@ -3,12 +3,12 @@
 
 module Course.MonadTest where
 
-import Test.Mini (MiniTestTree, Tester (..))
+import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
 import           Course.List       (List (..))
-import           Course.Monad      (join, (<**>), (=<<), (>>=), (<=<))
+import           Course.Monad      (join, (<**>), (<=<), (=<<), (>>=))
 import           Course.Optional   (Optional (..))
 
 test_Monad :: MiniTestTree

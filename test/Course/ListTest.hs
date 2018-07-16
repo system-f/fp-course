@@ -8,7 +8,8 @@ import qualified Prelude               as P (length)
 import           Test.QuickCheck       (forAllShrink)
 import           Test.Tasty.QuickCheck (testProperty)
 
-import           Test.Mini             (MiniTestTree, Tester (..))
+import           Test.Mini             (MiniTestTree, Tester (..),
+                                        UnitTester (..))
 
 import           Course.Core
 import           Course.Gens           (forAllLists, genIntegerAndList, genList,

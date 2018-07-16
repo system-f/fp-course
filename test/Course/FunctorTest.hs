@@ -4,13 +4,13 @@
 
 module Course.FunctorTest where
 
-import Test.Mini (MiniTestTree, Tester (..))
+import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
-import           Course.ExactlyOne     (ExactlyOne (..))
-import           Course.Functor        (void, (<$), (<$>))
-import           Course.List           (List (..))
-import           Course.Optional       (Optional (..))
+import           Course.ExactlyOne (ExactlyOne (..))
+import           Course.Functor    (void, (<$), (<$>))
+import           Course.List       (List (..))
+import           Course.Optional   (Optional (..))
 
 test_Functor :: MiniTestTree
 test_Functor =

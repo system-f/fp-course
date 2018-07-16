@@ -4,7 +4,8 @@
 module Course.ComonadTest where
 
 
-import           Test.Mini         (MiniTestTree, Tester (..), courseTest)
+import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..),
+                                    courseTest)
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core

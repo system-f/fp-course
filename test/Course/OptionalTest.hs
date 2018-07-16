@@ -3,7 +3,7 @@
 
 module Course.OptionalTest where
 
-import           Test.Mini       (MiniTestTree, Tester (..))
+import           Test.Mini       (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.Optional (Optional (..), bindOptional, mapOptional,
