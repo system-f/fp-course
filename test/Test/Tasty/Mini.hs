@@ -1,11 +1,12 @@
-{-# LANGUAGE FlexibleInstances     #-}
-{-# LANGUAGE ImplicitPrelude       #-}
-{-# LANGUAGE InstanceSigs          #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE TypeFamilies          #-}
-{-# LANGUAGE TypeSynonymInstances  #-}
+{-# LANGUAGE FlexibleInstances          #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ImplicitPrelude            #-}
+{-# LANGUAGE InstanceSigs               #-}
+{-# LANGUAGE LambdaCase                 #-}
+{-# LANGUAGE MultiParamTypeClasses      #-}
+{-# LANGUAGE RankNTypes                 #-}
+{-# LANGUAGE TypeFamilies               #-}
+{-# LANGUAGE TypeSynonymInstances       #-}
 
 module Test.Tasty.Mini where
 
@@ -16,7 +17,7 @@ import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
 import qualified Test.Tasty.QuickCheck as T
 
-import           Test.Mini             (Arbitrary (..),
+import           Test.Mini             (Gen (..), PropertyTester (..), Arbitrary (..),
                                         Testable (..), Tester (..),
                                         UnitTester (..))
 
@@ -42,23 +43,30 @@ instance UnitTester TastyTree T.TestName TastyAssertion where
 instance T.Arbitrary (Validation Int) where
   arbitrary = Value <$> Q.arbitrary
 
-instance (T.Arbitrary a, Show a) => T.Testable (Testable TastyTree a) where
-  property (B b) = T.property b
-  property (Fn f) = undefined --T.property f
+-- newtype QGen a =
+--   QGen (Q.Gen a)
+--   deriving
 
--- instance Arbitrary TastyTree T.TestName (Testable )
+newtype QGen a =
+  QGen (Q.Gen a)
+  deriving (Functor, Applicative, Monad)
 
-instance Arbitrary TastyTree T.TestName (Validation Int) where
-  testProperty n (Fn f) = undefined
-    --TT $ T.testProperty n f
+instance Gen TastyTree QGen Int where
+  gen = QGen Q.arbitrary
+  shrink = const Q.shrink
 
-instance Arbitrary TastyTree T.TestName Err where
-  testProperty n (Fn f) = undefined
-    --TT $ T.testProperty n f
+instance PropertyTester TastyTree QGen T.TestName where
+  testProperty n = TT . T.testProperty n . T.property
 
-instance Arbitrary TastyTree T.TestName Int where
-  testProperty n (Fn f) = undefined
-    --TT $ T.testProperty n f
+instance T.Testable (Testable TastyTree QGen) where
+  property = \case
+    B b ->
+      T.property b
+    Fn (QGen (g :: T.Gen a)) f ->
+      let
+        shrink' = shrink (undefined :: p TastyTree)
+      in
+        Q.forAllShrink g shrink' f
 
 
 tastyTest ::
