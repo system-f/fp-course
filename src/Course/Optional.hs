@@ -27,8 +27,15 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+mapOptional = 
+  \k -> \o -> case o of
+    Empty -> Empty
+    Full a -> Full (k a)
+  {-
+  \k -> \o -> case o of
+    Empty -> Empty
+    Full a -> Full (k a)
+-}
 
 -- | Bind the given function on the possible value.
 --
@@ -45,7 +52,10 @@ bindOptional ::
   -> Optional a
   -> Optional b
 bindOptional =
-  error "todo: Course.Optional#bindOptional"
+  \k -> \o -> case o of
+    Empty -> Empty
+    Full a -> k a
+
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
@@ -59,7 +69,11 @@ bindOptional =
   -> a
   -> a
 (??) =
-  error "todo: Course.Optional#(??)"
+  \opt x ->
+    case opt of
+      Empty -> x
+      Full b -> b
+
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -79,8 +93,20 @@ bindOptional =
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"  
+(<+>) Empty rightPocket = rightPocket
+(<+>) q@(Full _) _ = q
+
+  {-
+  \leftPocket rightPocket -> 
+    case leftPocket of
+      Empty -> rightPocket
+      q@(Full _) -> q
+-}
+
+    -- DRY, aka Functional Programming
+    -- if my left pocket is empty, return my right pocket
+    -- else return my left pocket
+
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional f' a) f
