@@ -17,7 +17,7 @@ import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
 import qualified Test.Tasty.QuickCheck as T
 
-import           Test.Mini             (Gen (..), PropertyTester (..), Arbitrary (..),
+import           Test.Mini             (Gen (..), PropertyTester (..), Arbitrary,
                                         Testable (..), Tester (..),
                                         UnitTester (..))
 
@@ -39,13 +39,6 @@ instance UnitTester TastyTree T.TestName TastyAssertion where
     TT . T.testCase n . getTA
 
   (@?=) = (TA .) . (T.@?=)
-
-instance T.Arbitrary (Validation Int) where
-  arbitrary = Value <$> Q.arbitrary
-
--- newtype QGen a =
---   QGen (Q.Gen a)
---   deriving
 
 newtype QGen a =
   QGen (Q.Gen a)
