@@ -22,10 +22,11 @@ import           Data.Monoid       ((<>))
 import           Data.String       (IsString, fromString)
 import GHC.Exts (Constraint)
 
-type MiniTestTree t =
+type MiniTestTree t g =
   forall name assertion.
   ( UnitTester t name assertion
   , Tester t name
+  , PropertyTester t g name
   )
   => t
 
