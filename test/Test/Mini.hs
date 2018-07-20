@@ -1,10 +1,9 @@
 {-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE ImplicitPrelude        #-}
 {-# LANGUAGE LiberalTypeSynonyms #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
@@ -87,7 +86,7 @@ testCourseTree' t =
       in
         printResult a `catch`
           \(e :: SomeException) -> printFailure e
-    go s (Tree s' ts) = foldMap (go (qualifiedName s s')) ts
+    go s (Tree s' ts) = traverse_ (go (qualifiedName s s')) ts
 
 -- | Instance for the embedded test implementation
 instance Tester CourseTestTree String where
@@ -108,7 +107,14 @@ instance UnitTester CourseTestTree String Result where
 
 newtype CourseGen a =
   CourseGen a
-  deriving (Functor, Applicative, Monad)
+  deriving (Functor)
+
+instance Applicative CourseGen where
+  pure = error "pure for CourseGen should never be called"
+  (<*>) = error "(<*>) for CourseGen should never be called"
+
+instance Monad CourseGen where
+  (>>=) = error "(>>=) for CourseGen should never be called"
 
 instance Gen CourseTestTree CourseGen a where
   gen = undefined
