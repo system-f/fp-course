@@ -39,8 +39,6 @@ class IsString name => UnitTester t name assertion | t -> name, t -> assertion, 
   (@?=) :: (Eq a, Show a) => a -> a -> assertion
   infix 1 @?=
 
--- class (IsString name) => Arbitrary t name a | t -> name where
---   testProperty :: name -> Testable t a -> t
 class IsString name => PropertyTester t g name | t -> name, t -> g where
   testProperty :: name -> Testable t g -> t
 
@@ -53,9 +51,7 @@ class (Arbitrary a, Monad g) => Gen t (g :: * -> *) a | g -> t, t -> g where
 
 data Testable t g where
   B :: Bool -> Testable t g
-  --FnBool :: forall t n a. Arbitrary t n a => (a -> Bool)-> Testable t a
-  --Fn :: forall t n a b. Gen t a => (a -> Testable t b) -> Testable t a
-  Fn :: forall a t g. Gen t g a => g a -> (a -> Testable t g) -> Testable t g
+  Fn :: forall a t g. Gen t g a => (a -> Testable t g) -> Testable t g
 
 -- | The test tree structure used by our embedded instance
 data CourseTestTree =

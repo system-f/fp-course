@@ -62,11 +62,12 @@ instance T.Testable (Testable TastyTree QGen) where
   property = \case
     B b ->
       T.property b
-    Fn (QGen (g :: T.Gen a)) f ->
+    Fn (f :: a -> Testable TastyTree QGen) ->
       let
         shrink' = shrink (undefined :: p TastyTree)
+        (QGen gen') = gen
       in
-        Q.forAllShrink g shrink' f
+        Q.forAllShrink gen' shrink' f
 
 
 tastyTest ::
