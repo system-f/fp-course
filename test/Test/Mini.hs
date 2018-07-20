@@ -52,6 +52,7 @@ class IsString name => PropertyTester t g name | t -> name, t -> g where
 data Gen t a where
   GenInt :: Gen t Int
   GenString :: Gen t String
+  GenMaybe :: Gen t a -> Gen t (Maybe a)
   GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
   --GenValidationInt :: Gen (Validation Int)
 

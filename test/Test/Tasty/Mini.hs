@@ -12,6 +12,7 @@ module Test.Tasty.Mini where
 
 import           Course.Validation
 
+import Data.Monoid ((<>))
 import qualified Test.QuickCheck       as Q
 import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
@@ -55,6 +56,15 @@ instance Arbitrary TastyTree QGen where
         QGen qg _ = gen foo
       in
         QGen (f <$> qg) s
+    GenMaybe (foo :: Gen TastyTree a) ->
+      let
+        QGen qg s = gen foo
+        gen' = Q.oneof [Just <$> qg, pure Nothing]
+        shrink' = \case
+          Just a -> s a <> pure Nothing
+          Nothing -> []
+      in
+        QGen gen' shrink'
   shrink = \case
     GenInt -> Q.shrink
     GenString -> Q.shrink

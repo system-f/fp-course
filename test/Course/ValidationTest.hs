@@ -10,20 +10,12 @@ module Course.ValidationTest where
 import qualified Prelude           as P
 import           Test.Mini         (Gen (..), MiniTestTree,
                                     PropertyTester (..), Testable (..),
-                                    Tester (..), UnitTester (..))
+                                    Tester (..), UnitTester (..), genValidationInt)
 
 import           Course.Core
 import           Course.Validation
 
-type ValidationTestTree =
-  forall t g.
-  ( Gen t g (Validation Int)
-  , Gen t g Int
-  , Gen t g Err
-  )
-  => MiniTestTree t g
-
-test_Validation :: ValidationTestTree
+test_Validation :: MiniTestTree
 test_Validation =
   testGroup "Validation" [
     isErrorTest
@@ -34,29 +26,29 @@ test_Validation =
   , errorOrTest
   ]
 
-isErrorTest :: ValidationTestTree
+isErrorTest :: MiniTestTree
 isErrorTest =
   testGroup "isError" [
     testCase "true for errors" $
       isError (Error "Message") @?= True
   , testCase "false for values" $
       isError (Value "7") @?= False
-  , testProperty "not the same as isValue" . Fn $
+  , testProperty "not the same as isValue" . Fn genValidationInt $
       \(x :: Validation Int) -> B (isError x /= isValue x)
   ]
 
-isValueTest :: ValidationTestTree
+isValueTest :: MiniTestTree
 isValueTest =
   testGroup "isValue" [
     testCase "false for errors" $
       isValue (Error "Message") @?= False
   , testCase "false for values" $
       isValue (Value "7") @?= True
-  , testProperty "not the same as isValue" . Fn $
+  , testProperty "not the same as isValue" . Fn genValidationInt $
       \(x :: Validation Int) -> B (isValue x /= isError x)
   ]
 
-mapValidationTest :: ValidationTestTree
+mapValidationTest :: MiniTestTree
 mapValidationTest =
   testGroup "mapValidation" [
     testCase "errors unchanged" $
@@ -67,7 +59,7 @@ mapValidationTest =
       \(x :: Validation Int) -> B (mapValidation id x == x)
   ]
 
-bindValidationTest :: ValidationTestTree
+bindValidationTest :: MiniTestTree
 bindValidationTest =
   let
     f n = if even n then Value (n + 10) else Error "odd"
@@ -83,7 +75,7 @@ bindValidationTest =
       \(x :: Validation Int) -> B $ bindValidation Value x == x
     ]
 
-valueOrTest :: ValidationTestTree
+valueOrTest :: MiniTestTree
 valueOrTest =
   testGroup "valueOr" [
     testCase "falls through for errors" $
@@ -94,7 +86,7 @@ valueOrTest =
       \(x :: Validation Int) -> Fn $ \n -> B $ isValue x || valueOr x n == n
   ]
 
-errorOrTest :: ValidationTestTree
+errorOrTest :: MiniTestTree
 errorOrTest =
   testGroup "errorOr" [
     testCase "unwraps errors" $
