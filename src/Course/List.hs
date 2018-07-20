@@ -165,9 +165,6 @@ length = foldLeft (const . ((+) 1)) 0
 -- \x -> f (g x)
 -- f . g
 
-konst a = \_ -> a
-konst' = \a -> \_ -> a
-
   {-
 length Nil = 0
 length (_:.t) = 1 + length t
