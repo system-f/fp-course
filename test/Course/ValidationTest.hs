@@ -1,30 +1,27 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts    #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
-{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ValidationTest where
 
-import qualified Prelude           as P (either, fmap)
-import           Test.Mini         (MiniTestTree,
-                                    Tester (..), UnitTester (..), Arbitrary (..), Testable (..))
+import qualified Prelude           as P
+import           Test.Mini         (Gen (..), MiniTestTree,
+                                    PropertyTester (..), Testable (..),
+                                    Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.Validation
 
--- instance Arbitrary a => Arbitrary (Validation a) where
---   arbitrary = P.fmap (P.either Error Value) arbitrary
-
 type ValidationTestTree =
-  forall t name.
-  ( Arbitrary t name (Validation Int)
-  , Arbitrary t name Int
-  , Arbitrary t name Err
-  , Arbitrary t name ()
+  forall t g.
+  ( Gen t g (Validation Int)
+  , Gen t g Int
+  , Gen t g Err
   )
-  => MiniTestTree t
+  => MiniTestTree t g
 
 test_Validation :: ValidationTestTree
 test_Validation =

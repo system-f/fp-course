@@ -17,7 +17,7 @@ import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
 import qualified Test.Tasty.QuickCheck as T
 
-import           Test.Mini             (Gen (..), PropertyTester (..), Arbitrary,
+import           Test.Mini             (Gen (..), PropertyTester (..),
                                         Testable (..), Tester (..),
                                         UnitTester (..))
 
@@ -45,6 +45,15 @@ newtype QGen a =
   deriving (Functor, Applicative, Monad)
 
 instance Gen TastyTree QGen Int where
+  gen = QGen Q.arbitrary
+  shrink = const Q.shrink
+
+instance Gen TastyTree QGen (Validation Int) where
+  gen = QGen (Value <$> Q.arbitrary)
+  shrink _ (Value n) = Value <$> Q.shrink n
+  shrink _ e = pure e
+
+instance Gen TastyTree QGen String where
   gen = QGen Q.arbitrary
   shrink = const Q.shrink
 

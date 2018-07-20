@@ -43,16 +43,13 @@ class IsString name => UnitTester t name assertion | t -> name, t -> assertion, 
 class IsString name => PropertyTester t g name | t -> name, t -> g where
   testProperty :: name -> Testable t g -> t
 
-class Show a => Arbitrary a
-instance Arbitrary Int
-
-class (Arbitrary a, Monad g) => Gen t (g :: * -> *) a | g -> t, t -> g where
-  gen :: Arbitrary a => g a
-  shrink :: Arbitrary a => p t -> a -> [a]
+class (Monad g) => Gen t (g :: * -> *) a | g -> t, t -> g where
+  gen :: g a
+  shrink :: p t -> a -> [a]
 
 data Testable t g where
   B :: Bool -> Testable t g
-  Fn :: forall a t g. Gen t g a => (a -> Testable t g) -> Testable t g
+  Fn :: forall a t g. (Show a, Gen t g a) => (a -> Testable t g) -> Testable t g
 
 -- | The test tree structure used by our embedded instance
 data CourseTestTree =
