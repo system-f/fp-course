@@ -1,7 +1,10 @@
 {-# LANGUAGE ConstraintKinds #-}
+{-# LANGUAGE DeriveAnyClass #-}
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE ImplicitPrelude        #-}
 {-# LANGUAGE LiberalTypeSynonyms #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
@@ -102,6 +105,17 @@ instance UnitTester CourseTestTree String Result where
       msg = "Expected " <> show a <> " but got " <> show b
     in
       bool (Failure msg) Success (a == b)
+
+newtype CourseGen a =
+  CourseGen a
+  deriving (Functor, Applicative, Monad)
+
+instance Gen CourseTestTree CourseGen a where
+  gen = undefined
+  shrink = undefined
+
+instance PropertyTester CourseTestTree CourseGen String where
+  testProperty n = const (Tree n [])
 
 courseTest ::
   CourseTestTree
