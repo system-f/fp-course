@@ -1,5 +1,5 @@
 {-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE GADTs #-}
 {-# LANGUAGE ImplicitPrelude            #-}
 {-# LANGUAGE InstanceSigs               #-}
 {-# LANGUAGE LambdaCase                 #-}
@@ -19,7 +19,7 @@ import qualified Test.Tasty.QuickCheck as T
 
 import           Test.Mini             (Gen (..), PropertyTester (..),
                                         Testable (..), Tester (..),
-                                        UnitTester (..))
+                                        UnitTester (..), Arbitrary (..))
 
 
 newtype TastyAssertion =
@@ -40,22 +40,25 @@ instance UnitTester TastyTree T.TestName TastyAssertion where
 
   (@?=) = (TA .) . (T.@?=)
 
-newtype QGen a =
-  QGen (Q.Gen a)
-  deriving (Functor, Applicative, Monad)
+data QGen a =
+  QGen
+  { qGen :: Q.Gen a
+  , qShrink :: a -> [a]
+  }
 
-instance Gen TastyTree QGen Int where
-  gen = QGen Q.arbitrary
-  shrink = const Q.shrink
-
-instance Gen TastyTree QGen (Validation Int) where
-  gen = QGen (Value <$> Q.arbitrary)
-  shrink _ (Value n) = Value <$> Q.shrink n
-  shrink _ e = pure e
-
-instance Gen TastyTree QGen String where
-  gen = QGen Q.arbitrary
-  shrink = const Q.shrink
+instance Arbitrary TastyTree QGen where
+  gen = \case
+    GenInt -> QGen Q.arbitrary Q.shrink
+    GenString -> QGen Q.arbitrary Q.shrink
+    GenA (foo :: Gen TastyTree a) (f :: a -> b) (s :: b -> [b]) ->
+      let
+        QGen qg _ = gen foo
+      in
+        QGen (f <$> qg) s
+  shrink = \case
+    GenInt -> Q.shrink
+    GenString -> Q.shrink
+    GenA _ _ s -> s
 
 instance PropertyTester TastyTree QGen T.TestName where
   testProperty n = TT . T.testProperty n . T.property
@@ -64,10 +67,10 @@ instance T.Testable (Testable TastyTree QGen) where
   property = \case
     B b ->
       T.property b
-    Fn (f :: a -> Testable TastyTree QGen) ->
+    Fn foo f ->
       let
-        shrink' = shrink (undefined :: p TastyTree)
-        (QGen gen') = gen
+        shrink' = shrink foo
+        (QGen gen' s) = gen foo
       in
         Q.forAllShrink gen' shrink' f
 

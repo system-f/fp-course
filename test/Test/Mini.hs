@@ -1,14 +1,16 @@
-{-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE ConstraintKinds        #-}
+{-# LANGUAGE DeriveFunctor          #-}
+{-# LANGUAGE FlexibleContexts       #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
-{-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs                  #-}
 {-# LANGUAGE ImplicitPrelude        #-}
-{-# LANGUAGE LiberalTypeSynonyms #-}
+{-# LANGUAGE LambdaCase             #-}
+{-# LANGUAGE LiberalTypeSynonyms    #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
-{-# LANGUAGE PolyKinds #-}
+{-# LANGUAGE PolyKinds              #-}
 {-# LANGUAGE RankNTypes             #-}
+{-# LANGUAGE ScopedTypeVariables    #-}
 {-# LANGUAGE TypeFamilies           #-}
 
 -- | The smallest possible test library interface and instance that will run the current test suite.
@@ -17,18 +19,20 @@
 module Test.Mini where
 
 import           Control.Exception (SomeException, catch)
+import           Course.Validation (Validation (..))
 import           Data.Bool         (bool)
 import           Data.Foldable     (traverse_)
 import           Data.List         (intercalate)
 import           Data.Monoid       ((<>))
 import           Data.String       (IsString, fromString)
-import GHC.Exts (Constraint)
+import           GHC.Exts          (Constraint)
 
-type MiniTestTree t g =
-  forall name assertion.
+type MiniTestTree =
+  forall name assertion t g.
   ( UnitTester t name assertion
   , Tester t name
   , PropertyTester t g name
+  , Arbitrary t g
   )
   => t
 
@@ -45,13 +49,31 @@ class IsString name => UnitTester t name assertion | t -> name, t -> assertion, 
 class IsString name => PropertyTester t g name | t -> name, t -> g where
   testProperty :: name -> Testable t g -> t
 
-class (Monad g) => Gen t (g :: * -> *) a | g -> t, t -> g where
-  gen :: g a
-  shrink :: p t -> a -> [a]
+data Gen t a where
+  GenInt :: Gen t Int
+  GenString :: Gen t String
+  GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
+  --GenValidationInt :: Gen (Validation Int)
+
+genValidationInt ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (Validation Int)
+genValidationInt =
+  let
+    shrink' = \case
+      (Value n) -> Value <$> shrink (GenInt :: Gen t Int) n
+      e@(Error _) -> [e]
+  in
+    GenA GenInt Value shrink'
+
+class Arbitrary t (g :: * -> *) | g -> t, t -> g where
+  gen :: Gen t a -> g a
+  shrink :: Gen t a -> a -> [a]
 
 data Testable t g where
   B :: Bool -> Testable t g
-  Fn :: forall a t g. (Show a, Gen t g a) => (a -> Testable t g) -> Testable t g
+  Fn :: forall a t g. (Show a, Arbitrary t g) => Gen t a -> (a -> Testable t g) -> Testable t g
 
 -- | The test tree structure used by our embedded instance
 data CourseTestTree =
@@ -82,7 +104,7 @@ testCourseTree' t =
           >> putStrLn ""
 
         printResult (Failure e) = printFailure e
-        printResult Success = pure ()
+        printResult Success     = pure ()
       in
         printResult a `catch`
           \(e :: SomeException) -> printFailure e
@@ -116,7 +138,7 @@ instance Applicative CourseGen where
 instance Monad CourseGen where
   (>>=) = error "(>>=) for CourseGen should never be called"
 
-instance Gen CourseTestTree CourseGen a where
+instance Arbitrary CourseTestTree CourseGen where
   gen = undefined
   shrink = undefined
 
