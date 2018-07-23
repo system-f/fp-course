@@ -84,19 +84,27 @@ testCourseTree' t =
     go s (Single s' a) =
       let
         quote x = "'" <> x <> "'"
+        qName = quote (qualifiedName s s')
 
         printFailure :: Show e => e -> IO ()
         printFailure e =
-          putStrLn (quote (qualifiedName s s') <> " failed:")
-          >> print e
-          >> putStrLn ""
+          putStrLn ""
+          >> putStrLn ("FAILED: " <> qName)
+          >> putStrLn (indent 2 (show e))
 
         printResult (Failure e) = printFailure e
-        printResult Success     = pure ()
+        printResult Success     = putStrLn $ "PASSED: " <> qName
       in
         printResult a `catch`
           \(e :: SomeException) -> printFailure e
     go s (Tree s' ts) = traverse_ (go (qualifiedName s s')) ts
+
+indent ::
+  Int
+  -> String
+  -> String
+indent n =
+  unlines . fmap (replicate n ' ' <>) . lines
 
 -- | Instance for the embedded test implementation
 instance Tester CourseTestTree String where
@@ -111,7 +119,7 @@ instance UnitTester CourseTestTree String Result where
 
   a @?= b =
     let
-      msg = "Expected " <> show a <> " but got " <> show b
+      msg = "Expected " <> show b <> " but got " <> show a
     in
       bool (Failure msg) Success (a == b)
 
@@ -120,15 +128,15 @@ newtype CourseGen a =
   deriving (Functor)
 
 instance Applicative CourseGen where
-  pure = error "pure for CourseGen should never be called"
-  (<*>) = error "(<*>) for CourseGen should never be called"
+  pure = error "pure should never be called for CourseGen"
+  (<*>) = error "(<*>) should never be called for CourseGen"
 
 instance Monad CourseGen where
-  (>>=) = error "(>>=) for CourseGen should never be called"
+  (>>=) = error "(>>=) should never be called for CourseGen"
 
 instance Arbitrary CourseTestTree CourseGen where
-  gen = undefined
-  shrink = undefined
+  gen = error "`gen` should never be called for CourseGen"
+  shrink = error "`shrink` should never be called for CourseGen"
 
 instance PropertyTester CourseTestTree CourseGen String where
   testProperty n = const (Tree n [])
