@@ -1,8 +1,16 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Course.ComonadTest where
+module Course.ComonadTest
+  ( test_Comonad
+  , exactlyOneTest
+  , fmapTest
+  , courseTest
+  )
+  where
 
+import Data.String (fromString)
 
 import           Test.Course.Mini  (courseTest)
 import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))

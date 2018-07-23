@@ -13,7 +13,7 @@
 -- module with a type and instance for running the test suite with Tasty.
 module Test.Mini where
 
-import           Data.String (IsString)
+import           Data.String (IsString, fromString)
 
 type MiniTestTree =
   forall name assertion t g.
@@ -49,6 +49,12 @@ class Arbitrary t (g :: * -> *) | g -> t, t -> g where
   gen :: Gen t a -> g a
   shrink :: Gen t a -> a -> [a]
 
+newtype Fun a b =
+  Fun (a -> b)
+
+instance Show (Fun a b) where
+  show = const "Fun <some f>"
+
 -- | Abstract generators.
 data Gen t a where
   GenInt :: Gen t Int
@@ -57,3 +63,4 @@ data Gen t a where
   GenList :: Gen t a -> Gen t [a]
   GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
   GenAB :: Gen t a -> Gen t b -> (a -> b -> c) -> (c -> [c]) -> Gen t c
+  --GenFn :: Gen t a -> Gen t b -> Gen t (Fun a b)

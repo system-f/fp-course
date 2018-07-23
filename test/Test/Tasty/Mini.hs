@@ -20,7 +20,7 @@ import qualified Test.Tasty.QuickCheck as T
 
 import           Test.Mini             (Gen (..), PropertyTester (..),
                                         Testable (..), Tester (..),
-                                        UnitTester (..), Arbitrary (..))
+                                        UnitTester (..), Arbitrary (..), Fun (Fun))
 
 
 newtype TastyAssertion =
@@ -62,17 +62,38 @@ instance Arbitrary TastyTree QGen where
         gen' = Q.oneof [Just <$> qg, pure Nothing]
       in
         QGen gen' (shrink gm)
+    gl@(GenList (g :: Gen TastyTree a)) ->
+      let
+        QGen qg _ = gen g
+      in
+        QGen (Q.listOf qg) (shrink gl)
+    GenAB ga gb f s ->
+      let
+        QGen qga _ = gen ga
+        QGen qgb _ = gen gb
+      in
+        QGen (f <$> qga <*> qgb) s
+    -- GenFn ga gb ->
+    --   let
+    --     unFn (Q.Fn f) = f
+    --     genFn = unFn <$> Q.arbitrary
+    --   in
+    --     QGen genFn (unFn . Q.shrink . \(Fun f) ->Q.Fn f)
   shrink = \case
     GenInt -> Q.shrink
     GenString -> Q.shrink
     GenA _ _ s -> s
+    GenAB _ _ _ s -> s
     GenMaybe (g :: Gen TastyTree a) ->
       let
         QGen qg s = gen g
       in
         \case
-        Just a -> (Just <$> s a) <> pure Nothing
-        Nothing -> [Nothing]
+          -- Matches QuickCheck 2.11.3's implementation. See `Arbitrary1` instance for `Maybe`
+          Just a -> Nothing : (Just <$> s a)
+          Nothing -> []
+    GenList (g :: Gen TastyTree a) ->
+      Q.shrinkList (shrink g)
 
 instance PropertyTester TastyTree QGen T.TestName where
   testProperty n = TT . T.testProperty n . T.property

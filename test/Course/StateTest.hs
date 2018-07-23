@@ -1,22 +1,21 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateTest where
 
 import           Data.List                (nub)
 import qualified Prelude                  as P ((++))
 
-import           Test.QuickCheck.Function (Fun (..))
-import           Test.Tasty.QuickCheck    (testProperty)
-
-import           Test.Mini                (MiniTestTree, Tester (..),
-                                           UnitTester (..))
+import           Test.Mini                (MiniTestTree, Tester (..), PropertyTester (..), Testable (..),
+                                           UnitTester (..), Arbitrary (..), Gen (..))
+import Course.Gens (genInteger)
 
 import           Course.Applicative       (pure, (<*>))
 import           Course.Core
 import           Course.Functor           ((<$>))
-import           Course.Gens              (forAllLists)
+--import           Course.Gens              (forAllLists)
 import           Course.List              (List (..), filter, flatMap, hlist,
                                            length, listh, span, (++))
 import           Course.Monad
@@ -43,13 +42,13 @@ test_State =
 
 execTest :: MiniTestTree
 execTest =
-  testProperty "exec" $
-    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
+  testProperty "exec" . Fn genFn $
+    \f -> Fn genInteger (B . \s -> exec (State f) s == snd (runState (State f) s))
 
 evalTest :: MiniTestTree
 evalTest =
-  testProperty "eval" $
-    \(Fun _ f :: Fun Integer (Integer, Integer)) s -> eval (State f) s == fst (runState (State f) s)
+  testProperty "eval" . Fn genFn $
+    \f -> Fn genInteger $ \s -> eval (State f) s == fst (runState (State f) s)
 
 getTest :: MiniTestTree
 getTest =
@@ -78,7 +77,7 @@ monadTest :: MiniTestTree
 monadTest =
   testGroup "Monad" [
     testCase "(=<<)" $
-      runState ((const $ put 2) =<< put 1) 0 @?= ((),2)
+      runState (const (put 2) =<< put 1) 0 @?= ((),2)
   , testCase "(>>=)" $
       let modify f = State (\s -> ((), f s))
        in runState (modify (+1) >>= \() -> modify (*2)) 7  @?= ((),16)
@@ -88,10 +87,10 @@ findMTest :: MiniTestTree
 findMTest =
   testGroup "findM" [
     testCase "find 'c' in 'a'..'h'" $
-      let p x = (\s -> (const $ pure (x == 'c')) =<< put (1+s)) =<< get
+      let p x = (\s -> const (pure (x == 'c')) =<< put (1+s)) =<< get
        in runState (findM p $ listh ['a'..'h']) 0 @?= (Full 'c',3)
   , testCase "find 'i' in 'a'..'h'" $
-      let p x = (\s -> (const $ pure (x == 'i')) =<< put (1+s)) =<< get
+      let p x = (\s -> const (pure (x == 'i')) =<< put (1+s)) =<< get
        in runState (findM p $ listh ['a'..'h']) 0 @?= (Empty,8)
   ]
 
@@ -109,7 +108,7 @@ firstRepeatTest =
       case firstRepeat xs of
         Empty -> True
         Full x ->
-          let (l, (rx :. rs)) = span (/= x) xs
+          let (l, rx :. rs) = span (/= x) xs
            in let (l2, _) = span (/= x) rs
                in let l3 = hlist (l ++ (rx :. Nil) ++ l2)
                    in nub l3 == l3
@@ -133,3 +132,15 @@ isHappyTest =
   , testCase "42" $ isHappy 42 @?=  False
   , testCase "44" $ isHappy 44 @?=  True
   ]
+
+genFn ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (Integer -> (Integer, Integer))
+genFn =
+  let
+    shrink' (a, b) = zip (shrink genInteger a) (shrink genInteger b)
+    genTwoIntegers =
+      GenAB genInteger genInteger (,) shrink'
+  in
+    GenFn genInteger genTwoIntegers

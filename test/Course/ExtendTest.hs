@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Course.ExtendTest where
-
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))

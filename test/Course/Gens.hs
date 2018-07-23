@@ -1,8 +1,8 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 
 module Course.Gens where
@@ -22,38 +22,78 @@ genList gl =
   GenA gl listh $ P.fmap listh . shrink gl . hlist
 
 genInteger ::
+  forall t g.
   Arbitrary t g
   => Gen t Integer
 genInteger =
   let
-    toInteger = P.fromIntegral :: Int -> Integer
+    toInteger' :: Int -> Integer
+    toInteger' = P.fromIntegral
+
+    genInt :: Gen t Int
+    genInt = GenInt
+
+    shrink' :: Integer -> [Integer]
+    shrink' = P.fmap toInteger' . shrink genInt . P.fromIntegral
   in
-    GenA GenInt toInteger (P.fmap toInteger . shrink GenInt)
+    GenA genInt toInteger' shrink'
 
-genIntegerList :: Gen t (List Integer)
-genIntegerList = genList $ GenA GenInt
+genIntegerList ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (List Integer)
+genIntegerList =
+  genList $ GenList genInteger
 
-genIntegerAndList :: Gen t (Integer, List Integer)
+genIntegerAndList ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (Integer, List Integer)
 genIntegerAndList =
-  GenAB genInteger genIntegerList (,) $ \(n, ns) ->
-    P.zip (shrink genInteger n) (shrink genIntegerList)
+  let
+    gi :: Gen t Integer
+    gi = genInteger
 
-genTwoLists :: Gen t (List Integer, List Integer)
-genTwoLists = GenAB genIntegerList genIntegerList (,) $ \(as, bs) ->
-  P.zip (shrink genIntegerList as) (shrink genIntegerList bs)
+    gl :: Gen t (List Integer)
+    gl = genIntegerList
+  in
+    GenAB gi genIntegerList (,) $ \(n, ns) ->
+      P.zip (shrink gi n) (shrink gl ns)
 
--- genThreeLists :: Gen t (List Integer, List Integer, List Integer)
--- genThreeLists = (,,) P.<$> genIntegerList P.<*> genIntegerList P.<*> genIntegerList
+genTwoLists ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (List Integer, List Integer)
+genTwoLists =
+  let
+    gl :: Gen t (List Integer)
+    gl = genIntegerList
+  in
+    GenAB gl gl (,) $ \(as, bs) ->
+      P.zip (shrink gl as) (shrink gl bs)
 
--- shrinkThreeLists :: (List Integer, List Integer, List Integer) -> [(List Integer, List Integer, List Integer)]
--- shrinkThreeLists (a,b,c) = P.fmap (\(as,bs,cs) -> (listh as, listh bs, listh cs)) $ shrink (hlist a, hlist b, hlist c)
+genThreeLists ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (List Integer, List Integer, List Integer)
+genThreeLists =
+  let
+    gl :: Gen t (List Integer)
+    gl = genIntegerList
 
--- genListOfLists :: gen (List (List Integer))
--- genListOfLists = P.fmap (P.fmap listh) (genList :: (gen (List [Integer])))
+    smoosh a (b, c) = (a, b, c)
 
--- --shrinkListOfLists :: Arbitrary a => List (List a) -> [List (List a)]
--- shrinkListOfLists :: List (List a) -> [List (List a)]
--- shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
+    zip3 a b = P.zipWith smoosh a . P.zip b
+  in
+    GenAB gl genTwoLists smoosh $ \(a, b, c) ->
+      zip3 (shrink gl a) (shrink gl b) (shrink gl c)
+
+genListOfLists ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (List (List Integer))
+genListOfLists =
+  genList $ GenList genIntegerList
 
 -- forAllLists :: (List Integer -> prop) -> Property t
 -- forAllLists = forAllShrink genIntegerList shrinkList
