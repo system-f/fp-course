@@ -54,4 +54,6 @@ data Gen t a where
   GenInt :: Gen t Int
   GenString :: Gen t String
   GenMaybe :: Gen t a -> Gen t (Maybe a)
+  GenList :: Gen t a -> Gen t [a]
   GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
+  GenAB :: Gen t a -> Gen t b -> (a -> b -> c) -> (c -> [c]) -> Gen t c

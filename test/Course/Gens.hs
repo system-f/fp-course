@@ -8,103 +8,94 @@
 module Course.Gens where
 
 import qualified Prelude             as P --(fmap, foldr, (<$>), (<*>))
--- import           Test.QuickCheck     (Arbitrary (..), Gen, Property, Testable,
---                                       forAllShrink)
-import GHC.Exts (Constraint)
-import Test.Mini (PropertyTester (..))
+import Test.Mini (PropertyTester (..), Arbitrary (..), Gen (..), Testable)
 
 import           Course.Core
 import           Course.List         (List (..), hlist, listh)
 import           Course.ListZipper   (ListZipper (..), zipper)
 
-type G a = forall t name. PropertyTester t name => Gen t a
+genList ::
+  Arbitrary t g
+  => Gen t [a]
+  -> Gen t (List a)
+genList gl =
+  GenA gl listh $ P.fmap listh . shrink gl . hlist
 
---type family A'' a t name :: Constraint
-type A t name a = (PropertyTester t name, Arbitrary t a)
+genInteger ::
+  Arbitrary t g
+  => Gen t Integer
+genInteger =
+  let
+    toInteger = P.fromIntegral :: Int -> Integer
+  in
+    GenA GenInt toInteger (P.fmap toInteger . shrink GenInt)
 
--- type family A' a :: Constraint
--- type instance A' a = forall t name. A'' a t name
+genIntegerList :: Gen t (List Integer)
+genIntegerList = genList $ GenA GenInt
 
---type A a = forall t name. A'' a t name --(PropertyTester t name, Arbitrary t a)
+genIntegerAndList :: Gen t (Integer, List Integer)
+genIntegerAndList =
+  GenAB genInteger genIntegerList (,) $ \(n, ns) ->
+    P.zip (shrink genInteger n) (shrink genIntegerList)
 
---genList :: Arbitrary a => Gen (List a)
-genList :: G (List a)
-genList = P.fmap (P.foldr (:.) Nil :: [a] -> List a) arbitrary
+genTwoLists :: Gen t (List Integer, List Integer)
+genTwoLists = GenAB genIntegerList genIntegerList (,) $ \(as, bs) ->
+  P.zip (shrink genIntegerList as) (shrink genIntegerList bs)
 
---shrinkList :: Arbitrary a => List a -> [List a]
-shrinkList :: forall a t name. A t name a => List a -> [List a]
-shrinkList =
-  P.fmap listh . shrink . hlist
+-- genThreeLists :: Gen t (List Integer, List Integer, List Integer)
+-- genThreeLists = (,,) P.<$> genIntegerList P.<*> genIntegerList P.<*> genIntegerList
 
-genIntegerList :: gen (List Integer)
-genIntegerList = genList
+-- shrinkThreeLists :: (List Integer, List Integer, List Integer) -> [(List Integer, List Integer, List Integer)]
+-- shrinkThreeLists (a,b,c) = P.fmap (\(as,bs,cs) -> (listh as, listh bs, listh cs)) $ shrink (hlist a, hlist b, hlist c)
 
-genIntegerAndList :: gen (Integer, List Integer)
-genIntegerAndList = P.fmap (P.fmap listh) arbitrary
+-- genListOfLists :: gen (List (List Integer))
+-- genListOfLists = P.fmap (P.fmap listh) (genList :: (gen (List [Integer])))
 
-shrinkIntegerAndList :: (Integer, List Integer) -> [(Integer, List Integer)]
-shrinkIntegerAndList = P.fmap (P.fmap listh) . shrink . P.fmap hlist
+-- --shrinkListOfLists :: Arbitrary a => List (List a) -> [List (List a)]
+-- shrinkListOfLists :: List (List a) -> [List (List a)]
+-- shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
 
-genTwoLists :: gen (List Integer, List Integer)
-genTwoLists = (,) P.<$> genIntegerList P.<*> genIntegerList
+-- forAllLists :: (List Integer -> prop) -> Property t
+-- forAllLists = forAllShrink genIntegerList shrinkList
 
-shrinkTwoLists :: (List Integer, List Integer) -> [(List Integer, List Integer)]
-shrinkTwoLists (a,b) = P.fmap (\(as,bs) -> (listh as, listh bs)) $ shrink (hlist a, hlist b)
+-- -- (List Integer) and a Bool
+-- genListAndBool :: gen (List Integer, Bool)
+-- genListAndBool = (,) P.<$> genIntegerList P.<*> arbitrary
 
-genThreeLists :: gen (List Integer, List Integer, List Integer)
-genThreeLists = (,,) P.<$> genIntegerList P.<*> genIntegerList P.<*> genIntegerList
+-- shrinkListAndBool :: (List Integer, Bool) -> [(List Integer, Bool)]
+-- shrinkListAndBool (xs,b) = (,) P.<$> (shrinkList xs) P.<*> (shrink b)
 
-shrinkThreeLists :: (List Integer, List Integer, List Integer) -> [(List Integer, List Integer, List Integer)]
-shrinkThreeLists (a,b,c) = P.fmap (\(as,bs,cs) -> (listh as, listh bs, listh cs)) $ shrink (hlist a, hlist b, hlist c)
+-- forAllListsAndBool ::
+--   ((List Integer, Bool) -> prop)
+--   -> Property t
+-- forAllListsAndBool =
+--   forAllShrink genListAndBool shrinkListAndBool
 
-genListOfLists :: gen (List (List Integer))
-genListOfLists = P.fmap (P.fmap listh) (genList :: (gen (List [Integer])))
+-- -- ListZipper Integer
+-- genListZipper :: gen (ListZipper Integer)
+-- genListZipper =
+--   zipper P.<$> arbitrary P.<*> arbitrary P.<*> arbitrary
 
---shrinkListOfLists :: Arbitrary a => List (List a) -> [List (List a)]
-shrinkListOfLists :: List (List a) -> [List (List a)]
-shrinkListOfLists = P.fmap (P.fmap listh). shrinkList . P.fmap hlist
+-- shrinkListZipper :: ListZipper Integer -> [ListZipper Integer]
+-- shrinkListZipper (ListZipper l x r) =
+--   ListZipper P.<$> (shrinkList l) P.<*> (shrink (undefined :: t) x) P.<*> (shrinkList r)
 
-forAllLists :: (List Integer -> prop) -> Property t
-forAllLists = forAllShrink genIntegerList shrinkList
+-- forAllListZipper ::
+--   (ListZipper Integer -> prop)
+--   -> Property t
+-- forAllListZipper =
+--   forAllShrink genListZipper shrinkListZipper
 
--- (List Integer) and a Bool
-genListAndBool :: gen (List Integer, Bool)
-genListAndBool = (,) P.<$> genIntegerList P.<*> arbitrary
+-- genListZipperWithInt :: gen (ListZipper Integer, Int)
+-- genListZipperWithInt =
+--   (,) P.<$> genListZipper P.<*> arbitrary
 
-shrinkListAndBool :: (List Integer, Bool) -> [(List Integer, Bool)]
-shrinkListAndBool (xs,b) = (,) P.<$> (shrinkList xs) P.<*> (shrink b)
+-- shrinkListZipperWithInt :: (ListZipper Integer, Int) -> [(ListZipper Integer, Int)]
+-- shrinkListZipperWithInt (z, i) =
+--   (,) P.<$> (shrinkListZipper z) P.<*> (shrink i)
 
-forAllListsAndBool ::
-  ((List Integer, Bool) -> prop)
-  -> Property t
-forAllListsAndBool =
-  forAllShrink genListAndBool shrinkListAndBool
-
--- ListZipper Integer
-genListZipper :: gen (ListZipper Integer)
-genListZipper =
-  zipper P.<$> arbitrary P.<*> arbitrary P.<*> arbitrary
-
-shrinkListZipper :: ListZipper Integer -> [ListZipper Integer]
-shrinkListZipper (ListZipper l x r) =
-  ListZipper P.<$> (shrinkList l) P.<*> (shrink (undefined :: t) x) P.<*> (shrinkList r)
-
-forAllListZipper ::
-  (ListZipper Integer -> prop)
-  -> Property t
-forAllListZipper =
-  forAllShrink genListZipper shrinkListZipper
-
-genListZipperWithInt :: gen (ListZipper Integer, Int)
-genListZipperWithInt =
-  (,) P.<$> genListZipper P.<*> arbitrary
-
-shrinkListZipperWithInt :: (ListZipper Integer, Int) -> [(ListZipper Integer, Int)]
-shrinkListZipperWithInt (z, i) =
-  (,) P.<$> (shrinkListZipper z) P.<*> (shrink i)
-
-forAllListZipperWithInt ::
-  ((ListZipper Integer, Int) -> prop)
-  -> Property t
-forAllListZipperWithInt =
-  forAllShrink genListZipperWithInt shrinkListZipperWithInt
+-- forAllListZipperWithInt ::
+--   ((ListZipper Integer, Int) -> prop)
+--   -> Property t
+-- forAllListZipperWithInt =
+--   forAllShrink genListZipperWithInt shrinkListZipperWithInt
