@@ -1,16 +1,18 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE FlexibleContexts    #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE RankNTypes          #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ValidationTest where
 
+import Data.Maybe (maybe)
 import qualified Prelude           as P
 import           Test.Mini         (Gen (..), MiniTestTree,
                                     PropertyTester (..), Testable (..),
-                                    Tester (..), UnitTester (..), genValidationInt)
+                                    Tester (..), UnitTester (..), Arbitrary (..))
 
 import           Course.Core
 import           Course.Validation
@@ -55,7 +57,7 @@ mapValidationTest =
       mapValidation (+ 10) (Error "message") @?= Error "message"
   , testCase "values changed" $
       mapValidation (+ 10) (Value 7) @?= Value 17
-  , testProperty "map with id causes no change" . Fn $
+  , testProperty "map with id causes no change" . Fn genValidationInt $
       \(x :: Validation Int) -> B (mapValidation id x == x)
   ]
 
@@ -71,7 +73,7 @@ bindValidationTest =
         bindValidation f (Value 7) @?= Error "odd"
     , testCase "even value" $
         bindValidation f (Value 8) @?= Value 18
-    , testProperty "bind with Value causes no change" . Fn $
+    , testProperty "bind with Value causes no change" . Fn genValidationInt $
       \(x :: Validation Int) -> B $ bindValidation Value x == x
     ]
 
@@ -82,8 +84,8 @@ valueOrTest =
       valueOr (Error "message") "foo" @?= "foo"
   , testCase "unwraps values" $
       valueOr (Value "foo") "bar" @?= "foo"
-  , testProperty "isValue or valueOr falls through" . Fn $
-      \(x :: Validation Int) -> Fn $ \n -> B $ isValue x || valueOr x n == n
+  , testProperty "isValue or valueOr falls through" . Fn genValidationInt $
+      \(x :: Validation Int) -> Fn GenInt $ \n -> B $ isValue x || valueOr x n == n
   ]
 
 errorOrTest :: MiniTestTree
@@ -93,6 +95,20 @@ errorOrTest =
       errorOr (Error "message") "q" @?= "message"
   , testCase "falls through for values" $
       errorOr (Value (7 :: Integer)) "q" @?= "q"
-  , testProperty "isError or errorOr falls through" . Fn $
-      \(x :: Validation Int) -> Fn $ \n -> B (isError x || errorOr x n == n)
+  , testProperty "isError or errorOr falls through" . Fn genValidationInt $
+      \(x :: Validation Int) -> Fn GenString $ \s -> B (isError x || errorOr x s == s)
   ]
+
+genValidationInt ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (Validation Int)
+genValidationInt =
+  let
+    gmi = GenMaybe GenInt
+    f = maybe (Error "no value") Value
+    shrink' = \case
+      (Value n) -> Value P.<$> shrink (GenInt :: Gen t Int) n
+      e@(Error _) -> [e]
+  in
+    GenA gmi f shrink'

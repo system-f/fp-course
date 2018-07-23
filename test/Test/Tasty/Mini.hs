@@ -56,19 +56,23 @@ instance Arbitrary TastyTree QGen where
         QGen qg _ = gen foo
       in
         QGen (f <$> qg) s
-    GenMaybe (foo :: Gen TastyTree a) ->
+    gm@(GenMaybe (g :: Gen TastyTree a)) ->
       let
-        QGen qg s = gen foo
+        QGen qg _ = gen g
         gen' = Q.oneof [Just <$> qg, pure Nothing]
-        shrink' = \case
-          Just a -> s a <> pure Nothing
-          Nothing -> []
       in
-        QGen gen' shrink'
+        QGen gen' (shrink gm)
   shrink = \case
     GenInt -> Q.shrink
     GenString -> Q.shrink
     GenA _ _ s -> s
+    GenMaybe (g :: Gen TastyTree a) ->
+      let
+        QGen qg s = gen g
+      in
+        \case
+        Just a -> (Just <$> s a) <> pure Nothing
+        Nothing -> [Nothing]
 
 instance PropertyTester TastyTree QGen T.TestName where
   testProperty n = TT . T.testProperty n . T.property

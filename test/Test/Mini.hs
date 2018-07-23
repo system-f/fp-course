@@ -54,19 +54,6 @@ data Gen t a where
   GenString :: Gen t String
   GenMaybe :: Gen t a -> Gen t (Maybe a)
   GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
-  --GenValidationInt :: Gen (Validation Int)
-
-genValidationInt ::
-  forall t g.
-  Arbitrary t g
-  => Gen t (Validation Int)
-genValidationInt =
-  let
-    shrink' = \case
-      (Value n) -> Value <$> shrink (GenInt :: Gen t Int) n
-      e@(Error _) -> [e]
-  in
-    GenA GenInt Value shrink'
 
 class Arbitrary t (g :: * -> *) | g -> t, t -> g where
   gen :: Gen t a -> g a
