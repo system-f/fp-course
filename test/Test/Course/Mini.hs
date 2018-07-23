@@ -12,6 +12,7 @@ import           Data.Bool         (bool)
 import           Data.Foldable     (traverse_)
 import           Data.List         (intercalate)
 import           Data.Monoid       ((<>))
+import           Data.String       (fromString)
 
 import           Test.Mini         (Arbitrary (..), PropertyTester (..),
                                     Tester (..), UnitTester (..))

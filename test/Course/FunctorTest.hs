@@ -4,7 +4,8 @@
 
 module Course.FunctorTest where
 
-import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
+import           Test.Mini         (MiniTestTree, PropertyTester (..),
+                                    Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))

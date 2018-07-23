@@ -12,8 +12,8 @@ import           Course.Optional   (Optional (..))
 
 import           Course.Extend     (cojoin, (<<=))
 
-import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..),
-                                    courseTest)
+import           Test.Course.Mini  (courseTest)
+import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 test_Extend :: MiniTestTree
 test_Extend =
