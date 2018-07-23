@@ -85,7 +85,7 @@ bindOptional =
 -- | Replaces the Full and Empty constructors in an optional.
 --
 -- >>> optional (+1) 0 (Full 8)
--- Full 9
+-- 9
 --
 -- >>> optional (+1) 0 Empty
 -- 0
