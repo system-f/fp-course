@@ -273,11 +273,28 @@ After these are completed, complete the exercises in the `projects` directory.
 If you choose to use the [Leksah IDE for Haskell](http://leksah.org/), the
 following tips are recommended:
 
-* Clone the git repo use Package -> Add to add course.cabal.
-* Click on the green tick on the toolbar to include `cabal test`
-  in each build and list the failures in the Errors pane.
-* Choose Package -> Configure to make sure `--enable-tests`
-  is used (just building may cause cabal to configure without).
+* [Install Leksah from github](https://github.com/leksah/leksah#getting-leksah).
+  If you are using Nix to install Leksah launch it with `./leksah-nix.sh ghc822`
+  as the Nix files for this course use GHC 8.2.2.
+* Clone this fp-course git repo use File -> Open Project to open the cabal.project file.
+* Mouse over the toolbar items near the middle of toolbar to see the names of them.
+  Set the following items on/off:
+  * `Build in the background and report errors` ON - unless you prefer to triger builds
+     manualy with Ctrl + B to build (Command + B on OS X)
+  * `Use GHC to compile` ON
+  * `Use GHCJS to compile` OFF
+  * `Use GHCi debugger to build and run` ON
+  * `Make documentation while building` OFF
+  * `Run unit tests when building` ON
+  * `Run benchmakrs when building` OFF
+  * `Make dependent packages` ON
+* If you are using Nix, click on the nix button on the toolbar (tool tip is "Refresh
+  Leksah's cached nix environment variables for the active project").  This will use
+  `nix-shell` to build an environment for running the builds in.  If `nix-shell` has
+  not been run before for the `fp-course` repo it may take some time to complete.
+  When it is finished a line of green '-' characters should be printed in the Panes -> Log.
+* Restart Leksah as there is a bug in the metadata collection that
+  will prevent it from indexing the new project without a restart.
 * Ctrl + B to build (Command + B on OS X).
 * The test failures should show up in Panes -> Errors.
 * Pane -> Log often has useful error messages.
@@ -286,12 +303,9 @@ following tips are recommended:
   to go to previous item).
 * Ctrl + Enter on a line starting "-- >>>" will run the
   selected expression in GHCi (Ctrl + Enter on OS X too).
-  The output goes to Panes -> Log and Panes -> Output.
+  The output goes to Panes -> Log (on Linux it will also show up in Panes -> Output).
 * The last GHCi expression is reevaluated after each :reload
   triggered by changes in the code.
-* Uncheck Debug -> GHCi when you are done with GHCi and
-  Leksah will go back to running cabal build and cabal test
-  instead.
 
 ### Introducing Haskell
 
