@@ -1,11 +1,9 @@
 {-# LANGUAGE ConstraintKinds        #-}
-{-# LANGUAGE DeriveFunctor          #-}
 {-# LANGUAGE FlexibleContexts       #-}
 {-# LANGUAGE FlexibleInstances      #-}
 {-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GADTs                  #-}
 {-# LANGUAGE ImplicitPrelude        #-}
-{-# LANGUAGE LambdaCase             #-}
 {-# LANGUAGE LiberalTypeSynonyms    #-}
 {-# LANGUAGE MultiParamTypeClasses  #-}
 {-# LANGUAGE PolyKinds              #-}
@@ -18,14 +16,7 @@
 -- instance for running the test suite with Tasty.
 module Test.Mini where
 
-import           Control.Exception (SomeException, catch)
-import           Course.Validation (Validation (..))
-import           Data.Bool         (bool)
-import           Data.Foldable     (traverse_)
-import           Data.List         (intercalate)
-import           Data.Monoid       ((<>))
-import           Data.String       (IsString, fromString)
-import           GHC.Exts          (Constraint)
+import           Data.String       (IsString)
 
 type MiniTestTree =
   forall name assertion t g.

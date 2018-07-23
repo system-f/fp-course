@@ -1,18 +1,21 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-{-# LANGUAGE FlexibleContexts    #-}
-{-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE NoImplicitPrelude   #-}
-{-# LANGUAGE RankNTypes          #-}
-{-# LANGUAGE ScopedTypeVariables #-}
+
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE OverloadedStrings     #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 
 module Course.ValidationTest where
 
-import Data.Maybe (maybe)
+import           Data.Maybe        (maybe)
 import qualified Prelude           as P
-import           Test.Mini         (Gen (..), MiniTestTree,
+import           Test.Mini         (Arbitrary (..), Gen (..), MiniTestTree,
                                     PropertyTester (..), Testable (..),
-                                    Tester (..), UnitTester (..), Arbitrary (..))
+                                    Tester (..), UnitTester (..))
 
 import           Course.Core
 import           Course.Validation
