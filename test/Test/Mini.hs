@@ -49,17 +49,16 @@ class IsString name => UnitTester t name assertion | t -> name, t -> assertion, 
 class IsString name => PropertyTester t g name | t -> name, t -> g where
   testProperty :: name -> Testable t g -> t
 
-data Gen t a where
-  GenInt :: Gen t Int
-  GenString :: Gen t String
-  GenMaybe :: Gen t a -> Gen t (Maybe a)
-  GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
+data Testable t g where
+  B :: Bool -> Testable t g
+  Fn :: forall a t g. (Show a, Arbitrary t g) => Gen t a -> (a -> Testable t g) -> Testable t g
 
 class Arbitrary t (g :: * -> *) | g -> t, t -> g where
   gen :: Gen t a -> g a
   shrink :: Gen t a -> a -> [a]
 
-data Testable t g where
-  B :: Bool -> Testable t g
-  Fn :: forall a t g. (Show a, Arbitrary t g) => Gen t a -> (a -> Testable t g) -> Testable t g
-
+data Gen t a where
+  GenInt :: Gen t Int
+  GenString :: Gen t String
+  GenMaybe :: Gen t a -> Gen t (Maybe a)
+  GenA :: Gen t a -> (a -> b) -> (b -> [b]) -> Gen t b
