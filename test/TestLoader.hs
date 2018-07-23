@@ -17,8 +17,9 @@ import           Course.ValidationTest (test_Validation)
 
 import           Data.String           (fromString)
 
+import           Test.Course.Mini      (courseTest)
 import           Test.Mini             (MiniTestTree, Tester (..),
-                                        UnitTester (..), courseTest)
+                                        UnitTester (..))
 
 tests :: MiniTestTree
 tests =
