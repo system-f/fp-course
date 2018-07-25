@@ -3,25 +3,25 @@
 
 module Course.StateTTest where
 
-import qualified Prelude               as P (String, (++))
+import qualified Prelude            as P (String, (++))
 
-import           Test.Mini             (MiniTestTree, Tester (..),
-                                        UnitTester (..))
-import           Test.Tasty.QuickCheck (testProperty)
+import           Test.Mini          (MiniTestTree, PropertyTester (..),
+                                     Testable (..), Tester (..),
+                                     UnitTester (..))
 
-import           Course.Applicative    (pure, (<*>))
+import           Course.Applicative (pure, (<*>))
 import           Course.Core
-import           Course.ExactlyOne     (ExactlyOne (..))
-import           Course.Functor        ((<$>))
-import           Course.Gens           (forAllLists)
-import           Course.List           (List (..), flatMap, listh)
-import           Course.Monad          ((=<<), (>>=))
-import           Course.Optional       (Optional (..))
-import           Course.State          (put, runState)
-import           Course.StateT         (Logger (..), OptionalT (..),
-                                        StateT (..), distinct', distinctF,
-                                        distinctG, getT, log1, putT,
-                                        runOptionalT, runState', state')
+import           Course.ExactlyOne  (ExactlyOne (..))
+import           Course.Functor     ((<$>))
+import           Course.Gens        (genIntegerList)
+import           Course.List        (List (..), flatMap, listh)
+import           Course.Monad       ((=<<), (>>=))
+import           Course.Optional    (Optional (..))
+import           Course.State       (put, runState)
+import           Course.StateT      (Logger (..), OptionalT (..), StateT (..),
+                                     distinct', distinctF, distinctG, getT,
+                                     log1, putT, runOptionalT, runState',
+                                     state')
 
 test_StateT :: MiniTestTree
 test_StateT =
@@ -48,20 +48,20 @@ test_StateT =
 functorTest :: MiniTestTree
 functorTest =
   testCase "<$>" $
-    let st = StateT (\s -> ((2, s) :. Nil))
+    let st = StateT (\s -> (2, s) :. Nil)
      in runStateT ((+1) <$> st) 0 @?= ((3,0) :. Nil)
 
 applicativeTest :: MiniTestTree
 applicativeTest =
   testGroup "Applicative" [
-    testCase "List (pure)" $ runStateT ((pure 2) :: StateT Int List Int) 0 @?= ((2,0) :. Nil)
-  , testCase "List (<*>)" $ runStateT (pure (+2) <*> ((pure 2) :: StateT Int List Int)) 0 @?= ((4,0) :. Nil)
+    testCase "List (pure)" $ runStateT (pure 2 :: StateT Int List Int) 0 @?= ((2,0) :. Nil)
+  , testCase "List (<*>)" $ runStateT (pure (+2) <*> (pure 2 :: StateT Int List Int)) 0 @?= ((4,0) :. Nil)
   , testCase "Optional" $
-      let st = StateT (\s -> Full ((+2), s P.++ [1])) <*> (StateT (\s -> Full (2, s P.++ [2])))
+      let st = StateT (\s -> Full ((+2), s P.++ [1])) <*> StateT (\s -> Full (2, s P.++ [2]))
        in runStateT st [0] @?= Full (4,[0,1,2])
   , testCase "List" $
       let st =     StateT (\s -> ((+2), s P.++ [1]) :. ((+3), s P.++ [1]) :. Nil)
-               <*> (StateT (\s -> (2, s P.++ [2]) :. Nil))
+               <*> StateT (\s -> (2, s P.++ [2]) :. Nil)
        in runStateT st [0] @?= ((4,[0,1,2]) :. (5,[0,1,2]) :. Nil)
   ]
 
@@ -98,8 +98,8 @@ putTTest =
 
 distinct'Test :: MiniTestTree
 distinct'Test =
-  testProperty "distinct'" $
-    forAllLists (\xs -> distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
+  testProperty "distinct'" . Fn genIntegerList $
+    (\xs -> B $ distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
 
 distinctFTest :: MiniTestTree
 distinctFTest =
