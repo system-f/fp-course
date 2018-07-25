@@ -8,7 +8,7 @@
 module Course.Gens where
 
 import qualified Prelude             as P --(fmap, foldr, (<$>), (<*>))
-import Test.Mini (PropertyTester (..), Arbitrary (..), Gen (..), Testable)
+import Test.Mini (PropertyTester (..), Arbitrary (..), Gen (..), Testable (..))
 
 import           Course.Core
 import           Course.List         (List (..), hlist, listh)
@@ -16,10 +16,13 @@ import           Course.ListZipper   (ListZipper (..), zipper)
 
 genList ::
   Arbitrary t g
-  => Gen t [a]
+  => Gen t a
   -> Gen t (List a)
-genList gl =
-  GenA gl listh $ P.fmap listh . shrink gl . hlist
+genList g =
+  let
+    gl = GenList g
+  in
+    GenA gl listh $ P.fmap listh . shrink gl . hlist
 
 genInteger ::
   forall t g.
@@ -38,13 +41,6 @@ genInteger =
   in
     GenA genInt toInteger' shrink'
 
-genIntegerList ::
-  forall t g.
-  Arbitrary t g
-  => Gen t (List Integer)
-genIntegerList =
-  genList $ GenList genInteger
-
 genIntegerAndList ::
   forall t g.
   Arbitrary t g
@@ -55,9 +51,9 @@ genIntegerAndList =
     gi = genInteger
 
     gl :: Gen t (List Integer)
-    gl = genIntegerList
+    gl = genList genInteger
   in
-    GenAB gi genIntegerList (,) $ \(n, ns) ->
+    GenAB gi gl (,) $ \(n, ns) ->
       P.zip (shrink gi n) (shrink gl ns)
 
 genTwoLists ::
@@ -67,7 +63,7 @@ genTwoLists ::
 genTwoLists =
   let
     gl :: Gen t (List Integer)
-    gl = genIntegerList
+    gl = genList genInteger
   in
     GenAB gl gl (,) $ \(as, bs) ->
       P.zip (shrink gl as) (shrink gl bs)
@@ -79,17 +75,10 @@ genThreeLists ::
 genThreeLists =
   let
     gl :: Gen t (List Integer)
-    gl = genIntegerList
+    gl = genList genInteger
   in
     GenAB gl genTwoLists smoosh $ \(a, b, c) ->
       zip3 (shrink gl a) (shrink gl b) (shrink gl c)
-
-genListOfLists ::
-  forall t g.
-  Arbitrary t g
-  => Gen t (List (List Integer))
-genListOfLists =
-  genList $ GenList genIntegerList
 
 genIntegerAndTwoLists ::
   forall t g.
@@ -97,7 +86,7 @@ genIntegerAndTwoLists ::
   => Gen t (Integer, List Integer, List Integer)
 genIntegerAndTwoLists =
   let
-    sl = shrink (genIntegerList :: Gen t (List Integer))
+    sl = shrink (genList genInteger :: Gen t (List Integer))
     si = shrink (genInteger :: Gen t Integer)
   in
     GenAB genInteger genTwoLists smoosh $ \(i, is, is') -> zip3 (si i) (sl is) (sl is')

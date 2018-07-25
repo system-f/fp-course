@@ -44,6 +44,18 @@ data Testable t g where
   B :: Bool -> Testable t g
   Fn :: forall a t g. (Show a, Arbitrary t g) => Gen t a -> (a -> Testable t g) -> Testable t g
 
+-- | Helper to make specifying properties a little nicer.
+--
+-- >>> testProperty "succ" . fn GenInt $ \n -> n < succ n
+fn ::
+  forall t g a.
+  (Arbitrary t g, Show a)
+  => Gen t a
+  -> (a -> Bool)
+  -> Testable t g
+fn g =
+  Fn g . (B .)
+
 -- | Generation and shrinking of values for property based tests.
 class Arbitrary t (g :: * -> *) | g -> t, t -> g where
   gen :: Gen t a -> g a
