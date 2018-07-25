@@ -1,35 +1,34 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE OverloadedStrings #-}
 
 module Course.StateTest where
 
-import           Data.List                (nub)
-import qualified Prelude                  as P ((++))
+import           Data.List          (nub)
+import qualified Prelude            as P ((++))
 
-import           Test.Mini                (MiniTestTree, Tester (..), PropertyTester (..), Testable (..),
-                                           UnitTester (..), Arbitrary (..), Gen (..))
-import Course.Gens (genInteger)
+import           Course.Gens        (genInteger, genIntegerList)
+import           Test.Mini          (Arbitrary (..), Gen (..), MiniTestTree,
+                                     PropertyTester (..), Testable (..),
+                                     Tester (..), UnitTester (..))
 
-import           Course.Applicative       (pure, (<*>))
+import           Course.Applicative (pure, (<*>))
 import           Course.Core
-import           Course.Functor           ((<$>))
---import           Course.Gens              (forAllLists)
-import           Course.List              (List (..), filter, flatMap, hlist,
-                                           length, listh, span, (++))
+import           Course.Functor     ((<$>))
+import           Course.List        (List (..), filter, flatMap, hlist, length,
+                                     listh, span, (++))
 import           Course.Monad
-import           Course.Optional          (Optional (..))
-import           Course.State             (State (..), distinct, eval, exec,
-                                           findM, firstRepeat, get, isHappy,
-                                           put, runState)
+import           Course.Optional    (Optional (..))
+import           Course.State       (State (..), distinct, eval, exec, findM,
+                                     firstRepeat, get, isHappy, put, runState)
 
 test_State :: MiniTestTree
 test_State =
   testGroup "State" [
-    execTest
-  , evalTest
-  , getTest
+  --   execTest
+  -- , evalTest
+    getTest
   , putTest
   , functorTest
   , applicativeTest
@@ -40,15 +39,15 @@ test_State =
   , isHappyTest
   ]
 
-execTest :: MiniTestTree
-execTest =
-  testProperty "exec" . Fn genFn $
-    \f -> Fn genInteger (B . \s -> exec (State f) s == snd (runState (State f) s))
+-- execTest :: MiniTestTree
+-- execTest =
+--   testProperty "exec" $
+--     \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
 
-evalTest :: MiniTestTree
-evalTest =
-  testProperty "eval" . Fn genFn $
-    \f -> Fn genInteger $ \s -> eval (State f) s == fst (runState (State f) s)
+-- evalTest :: MiniTestTree
+-- evalTest =
+--   testProperty "eval" $
+--     \(Fun _ f :: Fun Integer (Integer, Integer)) s -> eval (State f) s == fst (runState (State f) s)
 
 getTest :: MiniTestTree
 getTest =
@@ -97,14 +96,14 @@ findMTest =
 firstRepeatTest :: MiniTestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" $ forAllLists (\xs ->
+    testProperty "finds repeats" . Fn genIntegerList $ (\xs -> B $
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
            in nub xs' == xs'
         Full x -> length (filter (== x) xs) > 1
     )
-  , testProperty "" $ forAllLists (\xs ->
+  , testProperty "" . Fn genIntegerList $ (\xs -> B $
       case firstRepeat xs of
         Empty -> True
         Full x ->
@@ -118,10 +117,10 @@ firstRepeatTest =
 distinctTest :: MiniTestTree
 distinctTest =
   testGroup "distinct" [
-    testProperty "No repeats after distinct" $
-      forAllLists (\xs -> firstRepeat (distinct xs) == Empty)
-  , testProperty "" $
-      forAllLists (\xs -> distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
+    testProperty "No repeats after distinct" . Fn genIntegerList $
+      (\xs -> B $ firstRepeat (distinct xs) == Empty)
+  , testProperty "Every element repeated" . Fn genIntegerList $
+      (\xs -> B $ distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
   ]
 
 isHappyTest :: MiniTestTree
@@ -132,15 +131,3 @@ isHappyTest =
   , testCase "42" $ isHappy 42 @?=  False
   , testCase "44" $ isHappy 44 @?=  True
   ]
-
-genFn ::
-  forall t g.
-  Arbitrary t g
-  => Gen t (Integer -> (Integer, Integer))
-genFn =
-  let
-    shrink' (a, b) = zip (shrink genInteger a) (shrink genInteger b)
-    genTwoIntegers =
-      GenAB genInteger genInteger (,) shrink'
-  in
-    GenFn genInteger genTwoIntegers
