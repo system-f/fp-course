@@ -20,7 +20,7 @@ import qualified Test.Tasty.QuickCheck as T
 
 import           Test.Mini             (Gen (..), PropertyTester (..),
                                         Testable (..), Tester (..),
-                                        UnitTester (..), Arbitrary (..), Fun (Fun))
+                                        UnitTester (..), Arbitrary (..))
 
 
 newtype TastyAssertion =
@@ -73,12 +73,6 @@ instance Arbitrary TastyTree QGen where
         QGen qgb _ = gen gb
       in
         QGen (f <$> qga <*> qgb) s
-    -- GenFn ga gb ->
-    --   let
-    --     unFn (Q.Fn f) = f
-    --     genFn = unFn <$> Q.arbitrary
-    --   in
-    --     QGen genFn (unFn . Q.shrink . \(Fun f) ->Q.Fn f)
   shrink = \case
     GenInt -> Q.shrink
     GenString -> Q.shrink
