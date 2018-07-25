@@ -116,7 +116,7 @@ string ::
   Chars
   -> Parser Chars
 string =
-  error "todo: Course.MoreParser#is"
+  error "todo: Course.MoreParser#string"
 
 -- | Write a function that parses the given string, followed by 0 or more spaces.
 --
