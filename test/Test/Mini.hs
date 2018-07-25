@@ -51,6 +51,7 @@ class Arbitrary t (g :: * -> *) | g -> t, t -> g where
 
 -- | Abstract generators.
 data Gen t a where
+  GenBool :: Gen t Bool
   GenInt :: Gen t Int
   GenString :: Gen t String
   GenMaybe :: Gen t a -> Gen t (Maybe a)

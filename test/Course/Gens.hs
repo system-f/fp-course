@@ -80,10 +80,6 @@ genThreeLists =
   let
     gl :: Gen t (List Integer)
     gl = genIntegerList
-
-    smoosh a (b, c) = (a, b, c)
-
-    zip3 a b = P.zipWith smoosh a . P.zip b
   in
     GenAB gl genTwoLists smoosh $ \(a, b, c) ->
       zip3 (shrink gl a) (shrink gl b) (shrink gl c)
@@ -95,8 +91,16 @@ genListOfLists ::
 genListOfLists =
   genList $ GenList genIntegerList
 
--- forAllLists :: (List Integer -> prop) -> Property t
--- forAllLists = forAllShrink genIntegerList shrinkList
+genIntegerAndTwoLists ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (Integer, List Integer, List Integer)
+genIntegerAndTwoLists =
+  let
+    sl = shrink (genIntegerList :: Gen t (List Integer))
+    si = shrink (genInteger :: Gen t Integer)
+  in
+    GenAB genInteger genTwoLists smoosh $ \(i, is, is') -> zip3 (si i) (sl is) (sl is')
 
 -- -- (List Integer) and a Bool
 -- genListAndBool :: gen (List Integer, Bool)
@@ -111,24 +115,35 @@ genListOfLists =
 -- forAllListsAndBool =
 --   forAllShrink genListAndBool shrinkListAndBool
 
--- -- ListZipper Integer
--- genListZipper :: gen (ListZipper Integer)
--- genListZipper =
---   zipper P.<$> arbitrary P.<*> arbitrary P.<*> arbitrary
+-- ListZipper Integer
+genListZipper ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (ListZipper Integer)
+genListZipper =
+  let
+    g :: Gen t (Integer, List Integer, List Integer)
+    g = genIntegerAndTwoLists
 
--- shrinkListZipper :: ListZipper Integer -> [ListZipper Integer]
--- shrinkListZipper (ListZipper l x r) =
---   ListZipper P.<$> (shrinkList l) P.<*> (shrink (undefined :: t) x) P.<*> (shrinkList r)
+    zippedToZipper (i, is, is') = ListZipper is i is'
+    shrinkZipper (ListZipper is i is') = zippedToZipper P.<$> shrink g (i, is, is')
+  in
+    GenA g zippedToZipper shrinkZipper
 
--- forAllListZipper ::
---   (ListZipper Integer -> prop)
---   -> Property t
--- forAllListZipper =
---   forAllShrink genListZipper shrinkListZipper
+genListZipperWithInt ::
+  forall t g.
+  Arbitrary t g
+  => Gen t (ListZipper Integer, Int)
+genListZipperWithInt =
+  let
+    glz :: Gen t (ListZipper Integer)
+    glz = genListZipper
 
--- genListZipperWithInt :: gen (ListZipper Integer, Int)
--- genListZipperWithInt =
---   (,) P.<$> genListZipper P.<*> arbitrary
+    gi :: Gen t Int
+    gi = GenInt
+  in
+    GenAB glz gi (,) $
+      \(z, i) -> P.zip (shrink glz z) (shrink gi i)
 
 -- shrinkListZipperWithInt :: (ListZipper Integer, Int) -> [(ListZipper Integer, Int)]
 -- shrinkListZipperWithInt (z, i) =
@@ -139,3 +154,18 @@ genListOfLists =
 --   -> Property t
 -- forAllListZipperWithInt =
 --   forAllShrink genListZipperWithInt shrinkListZipperWithInt
+
+zip3 ::
+  [a]
+  -> [b]
+  -> [c]
+  -> [(a,b,c)]
+zip3 as bs =
+  P.zipWith smoosh as . P.zip bs
+
+smoosh ::
+  a
+  -> (b, c)
+  -> (a, b, c)
+smoosh a (b, c) =
+  (a, b, c)
