@@ -4,6 +4,7 @@ import Course.ComonadTest (test_Comonad)
 import Course.ExtendTest (test_Extend)
 import Course.FunctorTest (test_Functor)
 import Course.JsonParserTest (test_JsonParser)
+import Course.ChequeTest (test_Cheque)
 import Course.ListTest (test_List)
 import Course.ListZipperTest (test_ListZipper)
 import Course.MonadTest (test_Monad)
@@ -30,5 +31,6 @@ tests =
   , test_Comonad
   , test_ListZipper
   , test_JsonParser
+  , test_Cheque
   ]
 
