@@ -118,7 +118,7 @@ string ::
 string =
   error "todo: Course.MoreParser#is"
 
--- | Write a function that parsers the given string, followed by 0 or more spaces.
+-- | Write a function that parses the given string, followed by 0 or more spaces.
 --
 -- /Tip:/ Use `tok` and `string`.
 --
