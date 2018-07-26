@@ -86,6 +86,7 @@ test-suite            tasty
                       TastyLoader.hs
   other-modules:
                       Course.ApplicativeTest
+                      Course.ChequeTest
                       Course.ComonadTest
                       Course.ExtendTest
                       Course.FunctorTest
