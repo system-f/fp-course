@@ -6,9 +6,11 @@ module Course.ListZipperTest where
 
 import qualified Prelude            as P (fromIntegral, (<$>))
 
+import           Course.Gens        (genInteger, genList, genListZipper,
+                                     genListZipperWithInt)
 import           Test.Mini          (Gen (..), MiniTestTree,
                                      PropertyTester (..), Testable (..),
-                                     Tester (..), UnitTester (..))
+                                     Tester (..), UnitTester (..), fn)
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Comonad     (copure)
@@ -29,9 +31,6 @@ import           Course.ListZipper  (ListZipper (ListZipper),
                                      toOptional, withFocus, zipper, (-<<))
 import           Course.Optional    (Optional (Empty, Full))
 import           Course.Traversable (traverse)
-
-import           Course.Gens        (genInteger, genIntegerList, genListZipper,
-                                     genListZipperWithInt)
 
 test_ListZipper :: MiniTestTree
 test_ListZipper =
@@ -102,15 +101,15 @@ fromListTest =
   testGroup "fromList" [
     testCase "non-empty" $ fromList (1 :. 2 :. 3 :. Nil) @?= IsZ (zipper [] 1 [2,3])
   , testCase "empty" $ fromList Nil @?= (IsNotZ :: MaybeListZipper Integer)
-  , testProperty "round trip" . Fn genIntegerList $
-      (\xs -> B $ toListZ (fromList xs) == xs)
+  , testProperty "round trip" .
+      fn (genList genInteger) $ \xs -> toListZ (fromList xs) == xs
   ]
 
 toOptionalTest :: MiniTestTree
 toOptionalTest =
   testGroup "toOptional" [
-    testProperty "empty" . Fn genIntegerList $
-      (\xs -> B $ isEmpty xs == (toOptional (fromList xs) == Empty))
+    testProperty "empty" .
+      fn (genList genInteger) $ \xs -> isEmpty xs == (toOptional (fromList xs) == Empty)
   ]
 
 withFocusTest :: MiniTestTree
@@ -148,8 +147,10 @@ hasRightTest =
 findLeftTest :: MiniTestTree
 findLeftTest =
   testGroup "findLeft" [
-    testProperty "missing element returns IsNotZ" . Fn genIntegerList $
-      \xs -> Fn GenBool $ \p -> B $ findLeft (const p) -<< fromList xs == IsNotZ
+    testProperty "missing element returns IsNotZ" .
+      Fn (genList genInteger) $ \xs ->
+      fn GenBool $ \p ->
+        findLeft (const p) -<< fromList xs == IsNotZ
   , testCase "found in left" $
       findLeft (== 1) (zipper [2,1] 3 [4,5]) @?= IsZ (zipper [] 1 [2,3,4,5])
   , testCase "not found" $
@@ -165,8 +166,8 @@ findLeftTest =
 findRightTest :: MiniTestTree
 findRightTest =
   testGroup "findRight" [
-    testProperty "missing element returns IsNotZ" . Fn genIntegerList $
-      (\xs -> B $ findRight (const False) -<< fromList xs == IsNotZ)
+    testProperty "missing element returns IsNotZ" .
+      fn (genList genInteger) $ \xs -> findRight (const False) -<< fromList xs == IsNotZ
   , testCase "found in right" $
       findRight (== 5) (zipper [2,1] 3 [4,5]) @?= IsZ (zipper [4,3,2,1] 5 [])
   , testCase "not found" $
@@ -238,8 +239,8 @@ dropLeftsTest =
       dropLefts (zipper [3,2,1] 4 [5,6,7]) @?= zipper [] 4 [5,6,7]
   , testCase "empty left" $
       dropLefts (zipper [] 1 [2,3,4]) @?= zipper [] 1 [2,3,4]
-  , testProperty "dropLefts empties left of zipper" . Fn genListZipper $
-      \lz@(ListZipper _ x r) -> B $ dropLefts lz == ListZipper Nil x r
+  , testProperty "dropLefts empties left of zipper" .
+      fn genListZipper $ \lz@(ListZipper _ x r) -> dropLefts lz == ListZipper Nil x r
   ]
 
 dropRightsTest :: MiniTestTree
@@ -249,8 +250,8 @@ dropRightsTest =
       dropRights (zipper [3,2,1] 4 [5,6,7]) @?= zipper [3,2,1] 4 []
   , testCase "empty right" $
       dropRights (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 4 []
-  , testProperty "dropRights empties right of zipper" . Fn genListZipper $
-      \lz@(ListZipper l x _) -> B $ dropRights lz == ListZipper l x Nil
+  , testProperty "dropRights empties right of zipper" .
+      fn genListZipper $ \lz@(ListZipper l x _) -> dropRights lz == ListZipper l x Nil
   ]
 
 moveLeftNTest :: MiniTestTree
@@ -278,8 +279,8 @@ moveLeftN'Test =
       moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveLeftN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [2,1] 3 [4,5,6,7])
-  , testProperty "moving zero is `Right . id`" . Fn genListZipper $
-      \lz -> B $ moveLeftN' 0 lz == (Right . id $ lz)
+  , testProperty "moving zero is `Right . id`" .
+      fn genListZipper $ \lz -> moveLeftN' 0 lz == (Right . id $ lz)
   , testCase "negative in range" $
       moveLeftN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [5,4,3,2,1] 6 [7])
   , testCase "negative out of bounds" $
@@ -297,8 +298,8 @@ moveRightN'Test =
       moveRightN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveRightN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [4,3,2,1] 5 [6,7])
-  , testProperty "moving zero is `Right . id`" . Fn genListZipper $
-      (\lz -> B $ moveRightN' 0 lz == (Right . id $ lz))
+  , testProperty "moving zero is `Right . id`" .
+      fn genListZipper $ (\lz -> moveRightN' 0 lz == (Right . id $ lz))
   , testCase "negative in range" $
       moveRightN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [1] 2 [3,4,5,6,7])
   , testCase "negative - out of bounds both sides" $
@@ -317,28 +318,28 @@ indexTest :: MiniTestTree
 indexTest =
   testGroup "index" [
     testCase "index works" $ index (zipper [3,2,1] 4 [5,6,7]) @?= 3
-  , testProperty "Always returns the index on a valid zipper" . Fn genListZipperWithInt $
-      (\(z,i) -> B $ optional True (\z' -> index z' == i) (toOptional (nth i z)))
+  , testProperty "Always returns the index on a valid zipper" .
+      fn genListZipperWithInt $ \(z,i) -> optional True (\z' -> index z' == i) (toOptional (nth i z))
   ]
 
 endTest :: MiniTestTree
 endTest =
   testGroup "end" [
     testCase "end" $ end (zipper [3,2,1] 4 [5,6,7]) @?= zipper [6,5,4,3,2,1] 7 []
-  , testProperty "end never changes the zipper's contents" . Fn genListZipper $
-      (\z -> B $ toList z == toList (end z))
-  , testProperty "never have rights after calling end" . Fn genListZipper $
-      (\z -> B $ rights (end z) == Nil)
+  , testProperty "end never changes the zipper's contents" .
+      fn genListZipper $ \z -> toList z == toList (end z)
+  , testProperty "never have rights after calling end" .
+      fn genListZipper $ \z -> rights (end z) == Nil
   ]
 
 startTest :: MiniTestTree
 startTest =
   testGroup "start" [
     testCase "start" $ start (zipper [3,2,1] 4 [5,6,7]) @?= zipper [] 1 [2,3,4,5,6,7]
-  , testProperty "start never changes the zipper's contents" . Fn genListZipper $
-      (\z -> B $ toList z == toList (start z))
-  , testProperty "never have lefts after calling start" . Fn genListZipper $
-      (\z -> B $ lefts (start z) == Nil)
+  , testProperty "start never changes the zipper's contents" .
+      fn genListZipper $ \z -> toList z == toList (start z)
+  , testProperty "never have lefts after calling start" .
+      fn genListZipper $ \z -> lefts (start z) == Nil
   ]
 
 deletePullLeftTest :: MiniTestTree
@@ -362,8 +363,10 @@ insertPushLeftTest =
       insertPushLeft 15 (zipper [3,2,1] 4 [5,6,7]) @?= zipper [4,3,2,1] 15 [5,6,7]
   , testCase "empty lefts" $
       insertPushLeft 15 (zipper [] 1 [2,3,4]) @?= zipper [1] 15 [2,3,4]
-  , testProperty "deletePullLeft . insertPushLeft == id" . Fn genListZipper $
-      \z -> Fn GenInt $ \i -> B $ optional False (==z) (toOptional (deletePullLeft (insertPushLeft (P.fromIntegral i) z)))
+  , testProperty "deletePullLeft . insertPushLeft == id" .
+      Fn genListZipper $ \z ->
+      fn GenInt $ \i ->
+        optional False (==z) (toOptional (deletePullLeft (insertPushLeft (P.fromIntegral i) z)))
   ]
 
 insertPushRightTest :: MiniTestTree
@@ -373,17 +376,22 @@ insertPushRightTest =
       insertPushRight 15 (zipper [3,2,1] 4 [5,6,7]) @?= zipper [3,2,1] 15 [4,5,6,7]
   , testCase "empty rights" $
       insertPushRight 15 (zipper [3,2,1] 4 []) @?= zipper [3,2,1] 15 [4]
-  , testProperty "deletePullRight . insertPushRight == id" . Fn genListZipper $
-      \z -> Fn GenInt $ \i -> B $ optional False (==z) (toOptional (deletePullRight (insertPushRight (P.fromIntegral i) z)))
+  , testProperty "deletePullRight . insertPushRight == id" .
+      Fn genListZipper $ \z ->
+      fn GenInt $ \i ->
+        optional False (==z) (toOptional (deletePullRight (insertPushRight (P.fromIntegral i) z)))
   ]
 
 applicativeTest :: MiniTestTree
 applicativeTest =
   testGroup "Applicative" [
-    testProperty "pure produces infinite lefts" . Fn genInteger $
-      \a -> Fn GenInt $ \n -> B $ (all . (==) <*> take n . lefts . pure) a
-  , testProperty "pure produces infinite rights" . Fn genInteger $
-      \a -> Fn GenInt $ \n -> B $ (all . (==) <*> take n . rights . pure) a
+    testProperty "pure produces infinite lefts" .
+      Fn genInteger $ \a ->
+      fn GenInt $ \n ->
+        (all . (==) <*> take n . lefts . pure) a
+  , testProperty "pure produces infinite rights" .
+      Fn genInteger $ \a ->
+      fn GenInt $ \n -> (all . (==) <*> take n . rights . pure) a
   , testCase "<*> applies functions to corresponding elements in zipper" $
       zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)] <*> zipper [3,2,1] 4 [5,6,7] @?= zipper [5,12] 8 [15,24,12]
   ]
@@ -395,16 +403,18 @@ applicativeMaybeTest =
       notZ       = IsNotZ :: MaybeListZipper Integer
   in
     testGroup "Applicative (MaybeListZipper)" [
-      testProperty "pure produces infinite lefts" . Fn genInteger $
-        (\a -> Fn GenInt $ \n -> B $ (all . (==) <*> take n . lefts . is . pure) a)
-    , testProperty "pure produces infinite rights" . Fn genInteger $
-        (\a -> Fn GenInt $ \n -> B $ (all . (==) <*> take n . rights . is . pure) a)
+      testProperty "pure produces infinite lefts" .
+        Fn genInteger $ \a ->
+        fn GenInt $ \n -> (all . (==) <*> take n . lefts . is . pure) a
+    , testProperty "pure produces infinite rights" .
+        Fn genInteger $ \a ->
+        fn GenInt $ \n -> (all . (==) <*> take n . rights . is . pure) a
     , testCase "IsZ <*> IsZ" $
         let z = IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
          in z @?= IsZ (zipper [5,12] 8 [15,24,12])
     , testProperty "IsNotZ <*> IsZ" $
         let fs = (IsNotZ :: MaybeListZipper (Integer -> Integer))
-         in Fn genListZipper (\z -> B $ (fs <*> IsZ z) == IsNotZ)
+         in fn genListZipper $ \z -> (fs <*> IsZ z) == IsNotZ
     -- , testProperty "IsZ <*> IsNotZ"
     --     (\(Fun _ f) -> (IsZ (pure f) <*> notZ) == notZ)
     , testCase "IsNotZ <*> IsNotZ" $
@@ -441,8 +451,8 @@ comonadTest =
 traversableTest :: MiniTestTree
 traversableTest =
   testGroup "Traversable" [
-    testProperty "All Full" . Fn genListZipper $
-      \z -> B $ traverse id (Full <$> z) == Full z
+    testProperty "All Full" .
+      fn genListZipper $ \z -> traverse id (Full <$> z) == Full z
   , testCase "One Empty" $
       traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Empty, Full 6, Full 7]) @?= Empty
   ]
@@ -451,8 +461,8 @@ traversableMaybeTest :: MiniTestTree
 traversableMaybeTest =
   testGroup "Traversable (MaybeListZipper)" [
     testCase "IsNotZ" $ traverse id IsNotZ @?= (Full IsNotZ :: Optional (MaybeListZipper Integer))
-  , testProperty "IsZ Full" . Fn genListZipper $
-      (\z -> B $ traverse id (Full <$> IsZ z) == Full (IsZ z))
+  , testProperty "IsZ Full" .
+      fn genListZipper $ \z -> traverse id (Full <$> IsZ z) == Full (IsZ z)
   ]
 
 optional :: b -> (a -> b) -> Optional a -> b
