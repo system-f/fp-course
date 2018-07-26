@@ -29,6 +29,7 @@ module Course.StateTTest (
 
 import qualified Prelude            as P (String, (++))
 
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (MiniTestTree, PropertyTester (..),
                                      Tester (..), UnitTester (..), fn)
 
