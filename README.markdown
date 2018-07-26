@@ -171,14 +171,14 @@ tests for each function are grouped using the `testGroup` function. Within each
 test group there are test cases (`testCase` function), and properties
 (`testProperty` function).
 
-Tests are able to be run using either an embedded test runner that has no
+Tests are able to be run using either a built-in test runner that has no
 requirement beyond those of the course (a supported version of GHCi), or
 [tasty](https://hackage.haskell.org/package/tasty).
 
 **NOTE**: If running tests using the embedded runner, no property tests will be
 run.
 
-#### Embedded runner
+#### Built-in runner
 
 Each test module exports a function called `courseTest` that may be used to run tests. To run
 tests, load the relevant module, and then run `courseTest <tests>`. For example, in `GHCi`:
