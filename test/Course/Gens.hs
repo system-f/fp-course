@@ -1,18 +1,19 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
-{-# LANGUAGE ConstraintKinds #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE RankNTypes #-}
-{-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE ConstraintKinds       #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE NoImplicitPrelude     #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeFamilies          #-}
 
 module Course.Gens where
 
-import qualified Prelude             as P --(fmap, foldr, (<$>), (<*>))
-import Test.Mini (PropertyTester (..), Arbitrary (..), Gen (..), Testable (..))
+import qualified Prelude           as P
+import           Test.Mini         (Arbitrary (..), Gen (..))
 
 import           Course.Core
-import           Course.List         (List (..), hlist, listh)
-import           Course.ListZipper   (ListZipper (..), zipper)
+import           Course.List       (List (..), hlist, listh)
+import           Course.ListZipper (ListZipper (..))
 
 genList ::
   Arbitrary t g
@@ -91,20 +92,6 @@ genIntegerAndTwoLists =
   in
     GenAB genInteger genTwoLists smoosh $ \(i, is, is') -> zip3 (si i) (sl is) (sl is')
 
--- -- (List Integer) and a Bool
--- genListAndBool :: gen (List Integer, Bool)
--- genListAndBool = (,) P.<$> genIntegerList P.<*> arbitrary
-
--- shrinkListAndBool :: (List Integer, Bool) -> [(List Integer, Bool)]
--- shrinkListAndBool (xs,b) = (,) P.<$> (shrinkList xs) P.<*> (shrink b)
-
--- forAllListsAndBool ::
---   ((List Integer, Bool) -> prop)
---   -> Property t
--- forAllListsAndBool =
---   forAllShrink genListAndBool shrinkListAndBool
-
--- ListZipper Integer
 genListZipper ::
   forall t g.
   Arbitrary t g
@@ -133,16 +120,6 @@ genListZipperWithInt =
   in
     GenAB glz gi (,) $
       \(z, i) -> P.zip (shrink glz z) (shrink gi i)
-
--- shrinkListZipperWithInt :: (ListZipper Integer, Int) -> [(ListZipper Integer, Int)]
--- shrinkListZipperWithInt (z, i) =
---   (,) P.<$> (shrinkListZipper z) P.<*> (shrink i)
-
--- forAllListZipperWithInt ::
---   ((ListZipper Integer, Int) -> prop)
---   -> Property t
--- forAllListZipperWithInt =
---   forAllShrink genListZipperWithInt shrinkListZipperWithInt
 
 zip3 ::
   [a]
