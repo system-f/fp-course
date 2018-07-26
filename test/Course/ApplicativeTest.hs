@@ -1,12 +1,14 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 module Course.ApplicativeTest where
 
 import           Course.Gens        (genInteger)
 import           Test.Mini          (MiniTestTree, PropertyTester (..),
-                                     Tester (..), UnitTester (..), fn, Testable (Fn))
+                                     Testable (Fn), Tester (..),
+                                     UnitTester (..), fn)
 
 import           Course.Applicative (filtering, lift1, lift2, lift3, lift4,
                                      pure, replicateA, sequence, (*>), (<*),

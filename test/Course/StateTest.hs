@@ -9,8 +9,7 @@ import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
 import           Course.Gens        (genInteger, genList)
-import           Test.Mini          (Arbitrary (..), Gen (..), MiniTestTree,
-                                     PropertyTester (..), Testable (..),
+import           Test.Mini          (MiniTestTree, PropertyTester (..),
                                      Tester (..), UnitTester (..), fn)
 
 import           Course.Applicative (pure, (<*>))

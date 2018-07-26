@@ -1,26 +1,24 @@
-{-# LANGUAGE FlexibleInstances          #-}
-{-# LANGUAGE GADTs #-}
-{-# LANGUAGE ImplicitPrelude            #-}
-{-# LANGUAGE InstanceSigs               #-}
-{-# LANGUAGE LambdaCase                 #-}
-{-# LANGUAGE MultiParamTypeClasses      #-}
-{-# LANGUAGE RankNTypes                 #-}
-{-# LANGUAGE TypeFamilies               #-}
-{-# LANGUAGE TypeSynonymInstances       #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE ImplicitPrelude       #-}
+{-# LANGUAGE InstanceSigs          #-}
+{-# LANGUAGE LambdaCase            #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeSynonymInstances  #-}
 
 module Test.Tasty.Mini where
 
-import           Course.Validation
-
-import Data.Monoid ((<>))
 import qualified Test.QuickCheck       as Q
 import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
 import qualified Test.Tasty.QuickCheck as T
 
-import           Test.Mini             (Gen (..), PropertyTester (..),
-                                        Testable (..), Tester (..),
-                                        UnitTester (..), Arbitrary (..))
+import           Test.Mini             (Arbitrary (..), Gen (..),
+                                        PropertyTester (..), Testable (..),
+                                        Tester (..), UnitTester (..))
 
 
 newtype TastyAssertion =
@@ -43,12 +41,13 @@ instance UnitTester TastyTree T.TestName TastyAssertion where
 
 data QGen a =
   QGen
-  { qGen :: Q.Gen a
+  { qGen    :: Q.Gen a
   , qShrink :: a -> [a]
   }
 
 instance Arbitrary TastyTree QGen where
   gen = \case
+    GenBool -> QGen Q.arbitrary Q.shrink
     GenInt -> QGen Q.arbitrary Q.shrink
     GenString -> QGen Q.arbitrary Q.shrink
     GenA (foo :: Gen TastyTree a) (f :: a -> b) (s :: b -> [b]) ->
@@ -74,13 +73,14 @@ instance Arbitrary TastyTree QGen where
       in
         QGen (f <$> qga <*> qgb) s
   shrink = \case
+    GenBool -> Q.shrink
     GenInt -> Q.shrink
     GenString -> Q.shrink
     GenA _ _ s -> s
     GenAB _ _ _ s -> s
     GenMaybe (g :: Gen TastyTree a) ->
       let
-        QGen qg s = gen g
+        QGen _ s = gen g
       in
         \case
           -- Matches QuickCheck 2.11.3's implementation. See `Arbitrary1` instance for `Maybe`
@@ -99,7 +99,7 @@ instance T.Testable (Testable TastyTree QGen) where
     Fn foo f ->
       let
         shrink' = shrink foo
-        (QGen gen' s) = gen foo
+        (QGen gen' _) = gen foo
       in
         Q.forAllShrink gen' shrink' f
 

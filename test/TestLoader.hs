@@ -1,6 +1,23 @@
-{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module TestLoader where
+module TestLoader
+  ( test_Applicative
+  , test_Comonad
+  , test_Extend
+  , test_Functor
+  , test_JsonParser
+  , test_List
+  , test_ListZipper
+  , test_Monad
+  , test_Optional
+  , test_State
+  , test_StateT
+  , test_Validation
+  , tests
+  , courseTest
+  )
+  where
 
 import           Course.ApplicativeTest (test_Applicative)
 import           Course.ComonadTest     (test_Comonad)
@@ -13,13 +30,12 @@ import           Course.MonadTest       (test_Monad)
 import           Course.OptionalTest    (test_Optional)
 import           Course.StateTest       (test_State)
 import           Course.StateTTest      (test_StateT)
-import           Course.ValidationTest (test_Validation)
+import           Course.ValidationTest  (test_Validation)
 
-import           Data.String           (fromString)
+import           Data.String            (fromString)
 
-import           Test.Course.Mini      (courseTest)
-import           Test.Mini             (MiniTestTree, Tester (..),
-                                        UnitTester (..))
+import           Test.Course.Mini       (courseTest)
+import           Test.Mini              (MiniTestTree, Tester (..))
 
 tests :: MiniTestTree
 tests =
