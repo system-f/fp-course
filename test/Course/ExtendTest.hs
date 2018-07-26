@@ -2,7 +2,17 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ExtendTest where
+module Course.ExtendTest (
+  -- * Tests
+    test_Extend
+  , exactlyOneTest
+  , listTest
+  , optionalTest
+  , cojoinTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))
@@ -45,7 +55,7 @@ optionalTest :: MiniTestTree
 optionalTest =
   testGroup "Optional" [
     testCase "id Full" $
-      (id <<= (Full 7)) @?= Full (Full 7)
+      (id <<= Full 7) @?= Full (Full 7)
   , testCase "id Empty" $
       (id <<= Empty) @?= (Empty :: Optional (Optional Integer))
   ]

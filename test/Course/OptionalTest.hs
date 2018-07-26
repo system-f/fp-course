@@ -2,13 +2,24 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.OptionalTest where
+module Course.OptionalTest (
+  -- * Tests
+    test_Optional
+  , mapOptionalTest
+  , bindOptionalTest
+  , valueOrTest
+  , firstFullTest
 
-import           Test.Mini       (MiniTestTree, Tester (..), UnitTester (..))
+  -- * Course test runner
+  , courseTest
+  ) where
+
+import           Test.Course.Mini (courseTest)
+import           Test.Mini        (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
-import           Course.Optional (Optional (..), bindOptional, mapOptional,
-                                  (<+>), (??))
+import           Course.Optional  (Optional (..), bindOptional, mapOptional,
+                                   (<+>), (??))
 
 test_Optional :: MiniTestTree
 test_Optional =

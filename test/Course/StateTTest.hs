@@ -2,7 +2,30 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.StateTTest where
+module Course.StateTTest (
+  -- * Tests
+    test_StateT
+  , functorTest
+  , applicativeTest
+  , monadTest
+  , state'Test
+  , runState'Test
+  , getTTest
+  , putTTest
+  , distinct'Test
+  , distinctFTest
+  , optionalTFunctorTest
+  , optionalTApplicativeTest
+  , optionalTMonadTest
+  , loggerFunctorTest
+  , loggerApplicativeTest
+  , loggerMonadTest
+  , log1Test
+  , distinctGTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import qualified Prelude            as P (String, (++))
 

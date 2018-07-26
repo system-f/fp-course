@@ -3,9 +3,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Course.ComonadTest
-  ( test_Comonad
+  (
+  -- * Tests
+    test_Comonad
   , exactlyOneTest
   , fmapTest
+
+  -- * Course test runner
   , courseTest
   )
   where

@@ -2,9 +2,23 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.JsonParserTest where
+module Course.JsonParserTest (
+  -- * Tests
+    test_JsonParser
+  , jsonStringTest
+  , jsonNumberTest
+  , jsonTrueTest
+  , jsonFalseTest
+  , jsonNullTest
+  , jsonArrayTest
+  , jsonObjectTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Data.Ratio        ((%))
+import           Test.Course.Mini  (courseTest)
 import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core

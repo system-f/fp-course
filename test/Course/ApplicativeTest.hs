@@ -3,9 +3,29 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.ApplicativeTest where
+module Course.ApplicativeTest (
+  -- * Tests
+    test_Applicative
+  , exactlyOneTest
+  , listTest
+  , haveFmapTest
+  , optionalTest
+  , functionTest
+  , lift2Test
+  , lift3Test
+  , lift4Test
+  , rightApplyTest
+  , leftApplyTest
+  , sequenceTest
+  , replicateATest
+  , filteringTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Course.Gens        (genInteger)
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (MiniTestTree, PropertyTester (..),
                                      Testable (Fn), Tester (..),
                                      UnitTester (..), fn)

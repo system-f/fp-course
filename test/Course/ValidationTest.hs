@@ -9,10 +9,23 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module Course.ValidationTest where
+module Course.ValidationTest (
+  -- * Tests
+    test_Validation
+  , isErrorTest
+  , isValueTest
+  , mapValidationTest
+  , bindValidationTest
+  , valueOrTest
+  , errorOrTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Data.Maybe        (maybe)
 import qualified Prelude           as P
+import           Test.Course.Mini  (courseTest)
 import           Test.Mini         (Arbitrary (..), Gen (..), MiniTestTree,
                                     PropertyTester (..), Testable (..),
                                     Tester (..), UnitTester (..))

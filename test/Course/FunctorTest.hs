@@ -3,9 +3,22 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.FunctorTest where
+module Course.FunctorTest (
+  -- * Tests
+    test_Functor
+  , idTest
+  , listTest
+  , optionalTest
+  , functionTest
+  , anonMapTest
+  , voidTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Course.Gens       (genInteger)
+import Test.Course.Mini (courseTest)
 import           Test.Mini         (MiniTestTree, PropertyTester (..),
                                     Testable (Fn), Tester (..), UnitTester (..),
                                     fn)

@@ -2,13 +2,58 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ListZipperTest where
+module Course.ListZipperTest (
+  -- * Tests
+    test_ListZipper
+  , functorTest
+  , functorMaybeTest
+  , toListTest
+  , fromListTest
+  , toOptionalTest
+  , withFocusTest
+  , setFocusTest
+  , hasLeftTest
+  , hasRightTest
+  , findLeftTest
+  , findRightTest
+  , moveLeftLoopTest
+  , moveRightLoopTest
+  , moveLeftTest
+  , moveRightTest
+  , swapLeftTest
+  , swapRightTest
+  , dropLeftsTest
+  , dropRightsTest
+  , moveLeftNTest
+  , moveRightNTest
+  , moveLeftN'Test
+  , moveRightN'Test
+  , nthTest
+  , indexTest
+  , endTest
+  , startTest
+  , deletePullLeftTest
+  , deletePullRightTest
+  , insertPushLeftTest
+  , insertPushRightTest
+  , applicativeTest
+  , applicativeMaybeTest
+  , extendTest
+  , extendMaybeTest
+  , comonadTest
+  , traversableTest
+  , traversableMaybeTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 
 import qualified Prelude            as P (fromIntegral, (<$>))
 
 import           Course.Gens        (genInteger, genList, genListZipper,
                                      genListZipperWithInt)
+import Test.Course.Mini (courseTest)
 import           Test.Mini          (Gen (..), MiniTestTree,
                                      PropertyTester (..), Testable (..),
                                      Tester (..), UnitTester (..), fn)

@@ -2,7 +2,28 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ListTest where
+module Course.ListTest (
+  -- * Tests
+    test_List
+  , headOrTest
+  , productTest
+  , sumTest
+  , lengthTest
+  , mapTest
+  , filterTest
+  , appendTest
+  , flattenTest
+  , flatMapTest
+  , flattenAgainTest
+  , seqOptionalTest
+  , findTest
+  , lengthGT4Test
+  , reverseTest
+  , produceTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import qualified Prelude          as P (length)
 

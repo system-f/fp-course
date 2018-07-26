@@ -3,12 +3,30 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.StateTest where
+module Course.StateTest (
+  -- * Tests
+    test_State
+  , getTest
+  , putTest
+  , functorTest
+  , applicativeTest
+  , monadTest
+  , findMTest
+  , firstRepeatTest
+  , distinctTest
+  , isHappyTest
+  --   execTest
+  -- , evalTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
 import           Course.Gens        (genInteger, genList)
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (MiniTestTree, PropertyTester (..),
                                      Tester (..), UnitTester (..), fn)
 

@@ -2,8 +2,23 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.MonadTest where
+module Course.MonadTest (
+  -- * Tests
+    test_Monad
+  , bindExactlyOneTest
+  , bindListTest
+  , bindOptionalTest
+  , bindReaderTest
+  , appTest
+  , joinTest
+  , bindFlippedTest
+  , kleisliCompositionTest
 
+  -- * Course test runner
+  , courseTest
+  ) where
+
+import           Test.Course.Mini  (courseTest)
 import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
 
 import           Course.Core
