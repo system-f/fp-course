@@ -98,6 +98,7 @@ test-suite            tasty
                       Course.StateTest
                       Course.StateTTest
                       Course.ValidationTest
+                      TestLoader
                       Test.Course.Mini
                       Test.Mini
                       Test.Tasty.Mini
