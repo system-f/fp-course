@@ -6,14 +6,13 @@ module Course.StateTTest where
 import qualified Prelude            as P (String, (++))
 
 import           Test.Mini          (MiniTestTree, PropertyTester (..),
-                                     Testable (..), Tester (..),
-                                     UnitTester (..))
+                                     Tester (..), UnitTester (..), fn)
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
 import           Course.ExactlyOne  (ExactlyOne (..))
 import           Course.Functor     ((<$>))
-import           Course.Gens        (genIntegerList)
+import           Course.Gens        (genInteger, genList)
 import           Course.List        (List (..), flatMap, listh)
 import           Course.Monad       ((=<<), (>>=))
 import           Course.Optional    (Optional (..))
@@ -79,12 +78,12 @@ monadTest =
 state'Test :: MiniTestTree
 state'Test =
   testCase "state'" $
-    runStateT (state' $ runState $ put 1) 0 @?= ExactlyOne ((), 1)
+    runStateT (state' . runState $ put 1) 0 @?= ExactlyOne ((), 1)
 
 runState'Test :: MiniTestTree
 runState'Test =
   testCase "runState'" $
-    runState' (state' $ runState $ put 1) 0 @?= ((),1)
+    runState' (state' . runState $ put 1) 0 @?= ((),1)
 
 getTTest :: MiniTestTree
 getTTest =
@@ -98,8 +97,8 @@ putTTest =
 
 distinct'Test :: MiniTestTree
 distinct'Test =
-  testProperty "distinct'" . Fn genIntegerList $
-    (\xs -> B $ distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs))
+  testProperty "distinct'" . fn (genList genInteger) $ \xs ->
+    distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs)
 
 distinctFTest :: MiniTestTree
 distinctFTest =

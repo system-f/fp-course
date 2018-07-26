@@ -8,10 +8,10 @@ module Course.StateTest where
 import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
-import           Course.Gens        (genInteger, genIntegerList)
+import           Course.Gens        (genInteger, genList)
 import           Test.Mini          (Arbitrary (..), Gen (..), MiniTestTree,
                                      PropertyTester (..), Testable (..),
-                                     Tester (..), UnitTester (..))
+                                     Tester (..), UnitTester (..), fn)
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
@@ -96,31 +96,31 @@ findMTest =
 firstRepeatTest :: MiniTestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" . Fn genIntegerList $ (\xs -> B $
+    testProperty "finds repeats" . fn (genList genInteger) $ \xs ->
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
-           in nub xs' == xs'
+          in nub xs' == xs'
         Full x -> length (filter (== x) xs) > 1
-    )
-  , testProperty "" . Fn genIntegerList $ (\xs -> B $
+  , testProperty "removing repeats matches nub" . fn (genList genInteger) $ \xs ->
       case firstRepeat xs of
         Empty -> True
         Full x ->
-          let (l, rx :. rs) = span (/= x) xs
-           in let (l2, _) = span (/= x) rs
-               in let l3 = hlist (l ++ (rx :. Nil) ++ l2)
-                   in nub l3 == l3
-    )
+          let
+            (l, rx :. rs) = span (/= x) xs
+            (l2, _) = span (/= x) rs
+            l3 = hlist (l ++ rx :. l2)
+          in
+            nub l3 == l3
   ]
 
 distinctTest :: MiniTestTree
 distinctTest =
   testGroup "distinct" [
-    testProperty "No repeats after distinct" . Fn genIntegerList $
-      (\xs -> B $ firstRepeat (distinct xs) == Empty)
-  , testProperty "Every element repeated" . Fn genIntegerList $
-      (\xs -> B $ distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs))
+    testProperty "No repeats after distinct" .
+      fn (genList genInteger) $ \xs -> firstRepeat (distinct xs) == Empty
+  , testProperty "Every element repeated" . fn (genList genInteger) $ \xs ->
+      distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
   ]
 
 isHappyTest :: MiniTestTree
