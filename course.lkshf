@@ -1,0 +1,17 @@
+{
+    "configFlags": [
+        "--enable-tests"
+    ],
+    "benchmarkFlags": [],
+    "sdistFlags": [],
+    "registerFlags": [],
+    "installFlags": [],
+    "exeFlags": [],
+    "unregisterFlags": [],
+    "haddockFlags": [],
+    "testFlags": [
+        "--doctest-options=-package=QuickCheck",
+        "--doctest-options=-package=template-haskell"
+    ],
+    "buildFlags": []
+}

@@ -13,6 +13,11 @@ bug-reports:        https://github.com/data61/fp-course/issues
 cabal-version:      >= 1.10
 build-type:         Custom
 
+custom-setup
+  setup-depends:    Cabal >= 1.24 && < 2
+                    , base >= 4.8 && < 5
+                    , filepath >= 1.4 && < 1.5
+
 source-repository   head
   type:             git
   location:         git@github.com:data61/fp-course.git

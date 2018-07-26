@@ -7,13 +7,20 @@ let
                        then pkgs.haskellPackages
                        else pkgs.haskell.packages.${compiler};
 
+  sources = {
+    tasty = pkgs.fetchFromGitHub {
+      owner = "feuerbach";
+      repo = "tasty";
+      rev = "core-1.1.0.1";
+      sha256 = "03fcc75l5mrn5dwh6xix5ggn0qkp8kj7gzamb6n2m42ir6j7x60l";
+    };
+  };
+
   modifiedHaskellPackages = haskellPackages.override {
     overrides = self: super: {
-      # work-around for some older versions of nixpkgs
-      tasty-discover = 
-         if super ? tasty-discover_3_0_2
-         then pkgs.haskell.lib.dontCheck super.tasty-discover_3_0_2
-         else  super.tasty-discover;
+      tasty = super.callCabal2nix "tasty" "${sources.tasty}/core" {};
+      tasty-hunit = super.callCabal2nix "tasty" "${sources.tasty}/hunit" {};
+      tasty-quickcheck = super.callCabal2nix "tasty" "${sources.tasty}/quickcheck" {};
     };
   };
 
