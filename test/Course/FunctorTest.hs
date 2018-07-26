@@ -4,8 +4,10 @@
 
 module Course.FunctorTest where
 
+import           Course.Gens       (genInteger)
 import           Test.Mini         (MiniTestTree, PropertyTester (..),
-                                    Tester (..), UnitTester (..))
+                                    Testable (Fn), Tester (..), UnitTester (..),
+                                    fn)
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
@@ -53,10 +55,15 @@ anonMapTest :: MiniTestTree
 anonMapTest =
   testGroup "(<$)" [
     testCase "Map 7" $ 7 <$ (1 :. 2 :. 3 :. Nil) @?= (7 :. 7 :. 7 :. Nil)
-  , testProperty "Always maps a constant value over List" $
-      \x a b c -> (x :: Integer) <$ ((a :. b :. c :. Nil) :: List Integer) == (x :. x :. x :. Nil)
-  , testProperty "Always maps a constant value over Full (Optional)" $
-      \(x :: Integer) (q :: Integer) -> x <$ Full q == Full x
+  , testProperty "Always maps a constant value over List" . Fn genInteger $
+      \x -> Fn genInteger $
+      \a -> Fn genInteger $
+      \b -> fn genInteger $
+      \c ->
+        x <$ ((a :. b :. c :. Nil) :: List Integer) == (x :. x :. x :. Nil)
+  , testProperty "Always maps a constant value over Full (Optional)" . Fn genInteger $
+      \x -> fn genInteger $
+      \q -> x <$ Full q == Full x
   ]
 
 voidTest :: MiniTestTree
