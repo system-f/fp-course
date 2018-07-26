@@ -17,7 +17,6 @@ import           Data.String       (fromString)
 import           Test.Mini         (Arbitrary (..), PropertyTester (..),
                                     Tester (..), UnitTester (..))
 
--- | The test tree structure used by our embedded instance
 data CourseTestTree =
   Single String Result
   | Tree String [CourseTestTree]
@@ -27,7 +26,6 @@ data Result =
   | Success
   deriving (Eq)
 
--- | Run our embedded test tree, printing failures.
 testCourseTree' ::
   CourseTestTree -> IO ()
 testCourseTree' t =
@@ -60,7 +58,6 @@ indent ::
 indent n =
   unlines . fmap (replicate n ' ' <>) . lines
 
--- | Instance for the embedded test implementation
 instance Tester CourseTestTree String where
   testGroup s =
     Tree s . foldr (:) []

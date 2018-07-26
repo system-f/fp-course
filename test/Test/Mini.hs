@@ -35,7 +35,7 @@ class IsString name => UnitTester t name assertion | t -> name, t -> assertion, 
   (@?=) :: (Eq a, Show a) => a -> a -> assertion
   infix 1 @?=
 
--- | Adding property tests
+-- | Embed a property in a test tree
 class IsString name => PropertyTester t g name | t -> name, t -> g where
   testProperty :: name -> Testable t g -> t
 
