@@ -103,7 +103,6 @@ instance T.Testable (Testable TastyTree QGen) where
       in
         Q.forAllShrink gen' shrink' f
 
-
 tastyTest ::
   TastyTree
   -> IO ()
