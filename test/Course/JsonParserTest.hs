@@ -12,6 +12,7 @@ module Course.JsonParserTest (
   , jsonNullTest
   , jsonArrayTest
   , jsonObjectTest
+  , jsonValueTest
 
   -- * Course test runner
   , courseTest
@@ -38,6 +39,7 @@ test_JsonParser =
   , jsonNullTest
   , jsonArrayTest
   , jsonObjectTest
+  , jsonValueTest
   ]
 
 jsonStringTest :: MiniTestTree
