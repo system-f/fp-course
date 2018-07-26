@@ -4,21 +4,22 @@
 
 module Course.ListTest where
 
-import qualified Prelude         as P (length)
+import qualified Prelude          as P (length)
 
-import           Test.Mini       (Gen (..), MiniTestTree, PropertyTester (..),
-                                  Testable (..), Tester (..), UnitTester (..),
-                                  fn)
+import           Test.Course.Mini (courseTest)
+import           Test.Mini        (Gen (..), MiniTestTree, PropertyTester (..),
+                                   Testable (..), Tester (..), UnitTester (..),
+                                   fn)
 
 import           Course.Core
-import           Course.Gens     (genInteger, genIntegerAndList, genList,
-                                  genThreeLists, genTwoLists)
-import           Course.List     (List (..), filter, find, flatMap, flatten,
-                                  flattenAgain, foldLeft, headOr, hlist,
-                                  infinity, largeList, length, lengthGT4, listh,
-                                  map, produce, product, reverse, seqOptional,
-                                  sum, take, (++))
-import           Course.Optional (Optional (..))
+import           Course.Gens      (genInteger, genIntegerAndList, genList,
+                                   genThreeLists, genTwoLists)
+import           Course.List      (List (..), filter, find, flatMap, flatten,
+                                   flattenAgain, foldLeft, headOr, hlist,
+                                   infinity, largeList, length, lengthGT4,
+                                   listh, map, produce, product, reverse,
+                                   seqOptional, sum, take, (++))
+import           Course.Optional  (Optional (..))
 
 test_List :: MiniTestTree
 test_List =
