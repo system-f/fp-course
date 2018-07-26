@@ -183,9 +183,9 @@ run.
 Each test module exports a function called `courseTest` that may be used to run tests. To run
 tests, load the relevant module, and then run `courseTest <tests>`. For example, in `GHCi`:
 
-    > λ> :l test/Course/ListTest.hs
-    > λ> courseTest test_List
-    > λ> courseTest productTest
+    λ> :l test/Course/ListTest.hs
+    λ> courseTest test_List
+    λ> courseTest productTest
 
 Alternatively, the full test suite may be run by loading `test/TestLoader.hs` and running
 `courseTest tests`.
@@ -216,13 +216,13 @@ In addition, GHCi may be used to run tests using tasty. Assuming you have run `g
 from the root of the project, you may do the following. Remember that GHCi has
 tab completion, so you can save yourself some typing.
 
-    > -- Load the tasty test runner and tests
-    > :l test/TastyLoader.hs
-    >
-    > -- Tests may be referenced by module
-    > tastyTest ListTest.headOrTest
-    > tastyTest OptionalTest.valueOrTest
-    > tastyTest tests
+    λ> -- Load the tasty test runner and tests
+    λ> :l test/TastyLoader.hs
+    λ>
+    λ> -- Tests may be referenced by module
+    λ> tastyTest ListTest.headOrTest
+    λ> tastyTest OptionalTest.valueOrTest
+    λ> tastyTest tests
 
 #### doctest
 
