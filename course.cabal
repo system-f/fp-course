@@ -105,6 +105,7 @@ test-suite            tasty
 
   build-depends:
                       base < 5 && >= 3
+                      , containers >= 0.4.0.0
                       , course
                       , HUnit >= 1.5
                       , QuickCheck >= 2.9
