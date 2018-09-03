@@ -237,8 +237,8 @@ hasRight ::
 hasRight =
   error "todo: Course.ListZipper#hasRight"
 
--- | Seek to the left for a location matching a predicate, starting from the
--- current one.
+-- | Seek to the left for a location matching a predicate, excluding the
+-- focus.
 --
 -- /Tip:/ Use `break`
 --
@@ -265,8 +265,8 @@ findLeft ::
 findLeft =
   error "todo: Course.ListZipper#findLeft"
     
--- | Seek to the right for a location matching a predicate, starting from the
--- current one.
+-- | Seek to the right for a location matching a predicate, excluding the
+-- focus.
 --
 -- /Tip:/ Use `break`
 --
