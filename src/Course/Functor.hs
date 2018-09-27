@@ -41,8 +41,8 @@ instance Functor ExactlyOne where
     (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance ExactlyOne"
+  (<$>) f (ExactlyOne x) = ExactlyOne (f x)
+
 
 -- | Maps a function on the List functor.
 --
@@ -56,8 +56,14 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) _ Nil = Nil
+  (<$>) f (x :. xs) = f x :. (f <$> xs)
+
+--   JDL :
+-- (<$>) f (headItem :. tailItems) =
+--      let headMappedItem = f x
+--          tailMappedItems = f <$> xs
+--      in headMappedItem :. tailMappedItems
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +77,8 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) _ Empty = Empty
+  (<$>) f (Full x) = Full (f x)
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -83,8 +89,37 @@ instance Functor ((->) t) where
     (a -> b)
     -> ((->) t a)
     -> ((->) t b)
-  (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+  (<$>) f g = f . g
+
+
+-- JDL : alternate version: (<$>) f g x = f (g x)
+-- or `(<$>) f g x = f $ g x`
+-- or `(<$>) = (.)`
+-- where does the `x` come from, you might wonder? If we look at the type signature:
+-- (a -> b) -> ((->) t a) -> ((->) t b)
+-- we can rewrite it as (a -> b) -> (t -> a) -> (t -> b)
+-- and as `(->)` is right-associative, we can rewrite it like this:
+-- (a -> b) -> (t -> a) -> t -> b
+-- so, it could be viewed as a function of two arguments, both of whom are functions, that returns
+-- a function (of type (t -> b)), but..., given functions are curried, that could also be
+-- viewed as a function of three arguments that returns a **value** (of type b):
+-- the first of which is a function, the second of which is a function, and the third of which is a value
+-- of type `a`.
+-- So, that `x` above is actually the first argument to the "return function". These are the two ways of
+-- looking at curried functions. That is, `f :: a -> b` can be viewed as both a function value whose type is
+-- `a -> b`, and also as a function that produces a `b` from an `a`, because functions are "built in" to Haskell,
+-- this can be tricky to think about and understand.
+
+-- JDL : alternate version for greater understandability:
+-- note: probably need to motivate what reader is... in that it's an environment, etc. a function is a mapping of a value out of another value.
+-- note: you have to understand what composition is to understand this one (that is, composition **is** function application)
+-- might be worth explaining what point-free means, too
+-- (<$>) functionFromValuesOfTypeAToValuesOfTypeB functionFromValuesOfTypeTToValuesOfTypeA =
+--    \valueOfTypeT -> let valueOfTypeA = functionFromValuesOfTypeTToValuesOfTypeA valueOfTypeT in functionFromValuesOfTypeAToValuesOfTypeB valueOfTypeA
+
+-- This is particularly fascinating because it "LIFTs" the `a -> b` function "across the context" of a function (t -> a)
+-- that is, it takes an `a -> b` and returns an `f a -> f b` where `f` is a function that can do something.
+-- the lifting is applying a function to the return value of the function... (ie inside the `f` context) (is another way to see it).
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -99,8 +134,8 @@ instance Functor ((->) t) where
   a
   -> f b
   -> f a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+(<$) x fb =
+  const x <$> fb
 
 -- | Anonymous map producing unit value.
 --
@@ -119,8 +154,22 @@ void ::
   Functor f =>
   f a
   -> f ()
-void =
-  error "todo: Course.Functor#void"
+void = (<$) ()
+
+-- JDL... alternates:
+-- void fa = const () <$> fa
+--
+-- void = (<$>) (const ())
+--
+-- void fa = (\_ -> ()) <$> fa
+--
+-- void = (() <$)
+--
+-- void fb = () <$ fb
+
+-- JDL alternate:
+-- void f _ = ()
+-- void = const ()
 
 -----------------------
 -- SUPPORT LIBRARIES --
