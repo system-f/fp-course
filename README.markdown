@@ -176,10 +176,13 @@ module, tests for each function are grouped using the `testGroup` function.
 Within each test group there are test cases (`testCase` function), and
 properties (`testProperty` function).
 
+Before running the tests, ensure that you have an up-to-date installation
+of GHC and cabal-install from your system package manager or use the minimal
+installers found at [haskell.org](https://www.haskell.org/downloads#minimal).
+
 To run the full test suite, build the project as follows:
 
     > cabal update
-    > cabal install cabal-install
     > cabal install --only-dependencies --enable-tests
     > cabal configure --enable-tests
     > cabal build
