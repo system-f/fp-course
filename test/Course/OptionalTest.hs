@@ -8,7 +8,7 @@ import           Test.Tasty.HUnit (testCase, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
-                                   (<+>), (??))
+                                   (<+>), (??), optional)
 
 test_Optional :: TestTree
 test_Optional =
@@ -17,6 +17,7 @@ test_Optional =
   , bindOptionalTest
   , valueOrTest
   , firstFullTest
+  , optionalTest
   ]
 
 mapOptionalTest :: TestTree
@@ -60,4 +61,13 @@ firstFullTest =
       Empty <+> Full 9 @?= Full 9
   , testCase "both empty" $
       Empty <+> Empty @?= (Empty :: Optional Integer)
+  ]
+
+optionalTest :: TestTree
+optionalTest =
+  testGroup "optional" [
+    testCase "replaces full data constructor" $
+      optional (+1) 0 (Full 8) @?= 9
+  , testCase "replaces empty data constructor" $
+      optional (+1) 0 Empty @?= 0
   ]
