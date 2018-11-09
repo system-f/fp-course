@@ -28,12 +28,8 @@ import qualified Prelude as P(fmap, return, (>>=))
 --   `∀u v w. pure (.) <*> u <*> v <*> w ≅ u <*> (v <*> w)`
 
 class Functor f => Applicative f where
-  pure ::
-    a -> f a
-  (<*>) ::
-    f (a -> b)
-    -> f a
-    -> f b
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
 
 infixl 4 <*>
 
@@ -44,17 +40,10 @@ infixl 4 <*>
 -- >>> ExactlyOne (+10) <*> ExactlyOne 8
 -- ExactlyOne 18
 instance Applicative ExactlyOne where
-  pure ::
-    a
-    -> ExactlyOne a
-  pure =
-    error "todo: Course.Applicative pure#instance ExactlyOne"
-  (<*>) :: 
-    ExactlyOne (a -> b)
-    -> ExactlyOne a
-    -> ExactlyOne b
-  (<*>) =
-    error "todo: Course.Applicative (<*>)#instance ExactlyOne"
+  pure :: a -> ExactlyOne a
+  pure a = ExactlyOne a
+  (<*>) :: ExactlyOne (a -> b) -> ExactlyOne a -> ExactlyOne b
+  ExactlyOne f <*> ExactlyOne a = ExactlyOne (f a)
 
 -- | Insert into a List.
 --
@@ -63,17 +52,11 @@ instance Applicative ExactlyOne where
 -- >>> (+1) :. (*2) :. Nil <*> 1 :. 2 :. 3 :. Nil
 -- [2,3,4,2,4,6]
 instance Applicative List where
-  pure ::
-    a
-    -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
-  (<*>) ::
-    List (a -> b)
-    -> List a
-    -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  pure :: a -> List a
+  pure a = a :. Nil
+  (<*>) :: List (a -> b) -> List a -> List b
+  Nil <*> _ = Nil
+  (f :. t) <*> x = (f <$> x) ++ (t <*> x)
 
 -- | Insert into an Optional.
 --
@@ -88,17 +71,12 @@ instance Applicative List where
 -- >>> Full (+8) <*> Empty
 -- Empty
 instance Applicative Optional where
-  pure ::
-    a
-    -> Optional a
-  pure =
-    error "todo: Course.Applicative pure#instance Optional"
-  (<*>) ::
-    Optional (a -> b)
-    -> Optional a
-    -> Optional b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance Optional"
+  pure :: a -> Optional a
+  pure a = Full a
+  (<*>) :: Optional (a -> b) -> Optional a -> Optional b
+  Empty <*> _ = Empty
+  _ <*> Empty = Empty
+  Full f <*> Full x = Full (f x)
 
 -- | Insert into a constant function.
 --
@@ -119,18 +97,10 @@ instance Applicative Optional where
 --
 -- prop> \x y -> pure x y == x
 instance Applicative ((->) t) where
-  pure ::
-    a
-    -> ((->) t a)
-  pure =
-    error "todo: Course.Applicative pure#((->) t)"
-  (<*>) ::
-    ((->) t (a -> b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance ((->) t)"
-
+  pure :: a -> ((->) t a)
+  pure a = \_ -> a
+  (<*>) :: ((->) t (a -> b)) -> ((->) t a) -> ((->) t b)
+  (<*>) f g = \x -> (f x) (g x)
 
 -- | Apply a binary function in the environment.
 --
@@ -153,12 +123,8 @@ instance Applicative ((->) t) where
 -- 18
 lift2 ::
   Applicative f =>
-  (a -> b -> c)
-  -> f a
-  -> f b
-  -> f c
-lift2 =
-  error "todo: Course.Applicative#lift2"
+  (a -> b -> c) -> f a -> f b -> f c
+lift2 g x y = g <$> x <*> y
 
 -- | Apply a ternary function in the environment.
 -- /can be written using `lift2` and `(<*>)`./
@@ -190,8 +156,7 @@ lift3 ::
   -> f b
   -> f c
   -> f d
-lift3 =
-  error "todo: Course.Applicative#lift3"
+lift3 g x y z = g <$> x <*> y <*> z
 
 -- | Apply a quaternary function in the environment.
 -- /can be written using `lift3` and `(<*>)`./
@@ -224,16 +189,13 @@ lift4 ::
   -> f c
   -> f d
   -> f e
-lift4 =
-  error "todo: Course.Applicative#lift4"
+lift4 g x1 x2 x3 x4 = g <$> x1 <*> x2 <*> x3 <*> x4
 
 -- | Apply a nullary function in the environment.
 lift0 ::
   Applicative f =>
-  a
-  -> f a
-lift0 =
-  error "todo: Course.Applicative#lift0"
+  a -> f a
+lift0 = pure
 
 -- | Apply a unary function in the environment.
 -- /can be written using `lift0` and `(<*>)`./
@@ -248,11 +210,8 @@ lift0 =
 -- [2,3,4]
 lift1 ::
   Applicative f =>
-  (a -> b)
-  -> f a
-  -> f b
-lift1 =
-  error "todo: Course.Applicative#lift1"
+  (a -> b) -> f a -> f b
+lift1 g b = g <$> b
 
 -- | Apply, discarding the value of the first argument.
 -- Pronounced, right apply.
@@ -274,11 +233,8 @@ lift1 =
 -- prop> \x y -> Full x *> Full y == Full y
 (*>) ::
   Applicative f =>
-  f a
-  -> f b
-  -> f b
-(*>) =
-  error "todo: Course.Applicative#(*>)"
+  f a -> f b -> f b
+(*>) x y = ((\_ -> id) <$> x) <*> y
 
 -- | Apply, discarding the value of the second argument.
 -- Pronounced, left apply.
@@ -300,11 +256,8 @@ lift1 =
 -- prop> \x y -> Full x <* Full y == Full x
 (<*) ::
   Applicative f =>
-  f b
-  -> f a
-  -> f b
-(<*) =
-  error "todo: Course.Applicative#(<*)"
+  f b -> f a -> f b
+(<*) x y = ((\i -> (\_ -> i)) <$> x) <*> y
 
 -- | Sequences a list of structures to a structure of list.
 --
@@ -324,10 +277,9 @@ lift1 =
 -- [60,8]
 sequence ::
   Applicative f =>
-  List (f a)
-  -> f (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+  List (f a) -> f (List a)
+sequence Nil = pure Nil
+sequence (x :. xs) = (lift2 (:.)) x (sequence xs)
 
 -- | Replicate an effect a given number of times.
 --
@@ -347,11 +299,9 @@ sequence =
 -- ["aaa","aab","aac","aba","abb","abc","aca","acb","acc","baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc","caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"]
 replicateA ::
   Applicative f =>
-  Int
-  -> f a
-  -> f (List a)
-replicateA =
-  error "todo: Course.Applicative#replicateA"
+  Int -> f a -> f (List a)
+replicateA 0 x = pure Nil
+replicateA n x = (lift2 (:.)) x (replicateA (n - 1) x)
 
 -- | Filter a list with a predicate that produces an effect.
 --
@@ -375,11 +325,14 @@ replicateA =
 --
 filtering ::
   Applicative f =>
-  (a -> f Bool)
-  -> List a
-  -> f (List a)
-filtering =
-  error "todo: Course.Applicative#filtering"
+  (a -> f Bool) -> List a -> f (List a)
+filtering _ Nil = pure Nil
+filtering p (x :. xs) =
+  (lift2 (++)) (lift2 elemIf (p x) (pure x)) (filtering p xs)
+
+elemIf :: Bool -> a -> List a
+elemIf True x = x :. Nil
+elemIf False x = Nil
 
 -----------------------
 -- SUPPORT LIBRARIES --
