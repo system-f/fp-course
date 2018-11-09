@@ -303,7 +303,7 @@ sequence xs = foldRight (lift2 (:.)) (pure Nil) xs
 replicateA ::
   Applicative f =>
   Int -> f a -> f (List a)
-replicateA 0 x = pure Nil
+replicateA 0 _ = pure Nil
 replicateA n x = (lift2 (:.)) x (replicateA (n - 1) x)
 
 -- | Filter a list with a predicate that produces an effect.
@@ -343,7 +343,7 @@ filtering p xs = foldRight folder (pure Nil) xs
     -- either [x] or []
     elemIf :: a -> Bool -> List a
     elemIf x True = x :. Nil
-    elemIf x False = Nil
+    elemIf _ False = Nil
 
 -- Old version
 -- filtering _ Nil = pure Nil
