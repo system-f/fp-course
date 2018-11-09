@@ -278,8 +278,11 @@ lift1 g b = g <$> b
 sequence ::
   Applicative f =>
   List (f a) -> f (List a)
-sequence Nil = pure Nil
-sequence (x :. xs) = (lift2 (:.)) x (sequence xs)
+sequence xs = foldRight (lift2 (:.)) (pure Nil) xs
+
+-- Old version:
+-- sequence Nil = pure Nil
+-- sequence (x :. xs) = (lift2 (:.)) x (sequence xs)
 
 -- | Replicate an effect a given number of times.
 --
