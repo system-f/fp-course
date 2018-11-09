@@ -329,13 +329,30 @@ replicateA n x = (lift2 (:.)) x (replicateA (n - 1) x)
 filtering ::
   Applicative f =>
   (a -> f Bool) -> List a -> f (List a)
-filtering _ Nil = pure Nil
-filtering p (x :. xs) =
-  (lift2 (++)) (lift2 elemIf (p x) (pure x)) (filtering p xs)
+filtering p xs = foldRight folder (pure Nil) xs
   where
-    elemIf :: Bool -> a -> List a
-    elemIf True x = x :. Nil
-    elemIf False x = Nil
+    -- folder :: Applicative f => a -> f (List a) -> f (List a) -- not working?
+    folder x fxs = felemIf (pure x) (p x) `fconcat` fxs
+
+    felemIf :: Applicative f => f a -> f Bool -> f (List a)
+    felemIf = lift2 elemIf
+
+    fconcat :: Applicative f => f (List a) -> f (List a) -> f (List a)
+    fconcat = lift2 (++)
+
+    -- either [x] or []
+    elemIf :: a -> Bool -> List a
+    elemIf x True = x :. Nil
+    elemIf x False = Nil
+
+-- Old version
+-- filtering _ Nil = pure Nil
+-- filtering p (x :. xs) =
+--   (lift2 (++)) (lift2 elemIf (p x) (pure x)) (filtering p xs)
+--   where
+--     elemIf :: Bool -> a -> List a
+--     elemIf True x = x :. Nil
+--     elemIf False x = Nil
 
 -----------------------
 -- SUPPORT LIBRARIES --
