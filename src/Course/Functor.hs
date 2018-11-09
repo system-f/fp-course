@@ -37,12 +37,8 @@ infixl 4 <$>
 -- >>> (+1) <$> ExactlyOne 2
 -- ExactlyOne 3
 instance Functor ExactlyOne where
-  (<$>) ::
-    (a -> b)
-    -> ExactlyOne a
-    -> ExactlyOne b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance ExactlyOne"
+  (<$>) :: (a -> b) -> ExactlyOne a -> ExactlyOne b
+  (<$>) f (ExactlyOne a) = ExactlyOne (f a)
 
 -- | Maps a function on the List functor.
 --
@@ -52,12 +48,9 @@ instance Functor ExactlyOne where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
-  (<$>) ::
-    (a -> b)
-    -> List a
-    -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) :: (a -> b) -> List a -> List b
+  (<$>) _ Nil = Nil
+  (<$>) f (h :. t) = (f h) :. ((<$>) f t)
 
 -- | Maps a function on the Optional functor.
 --
@@ -67,24 +60,17 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
-  (<$>) ::
-    (a -> b)
-    -> Optional a
-    -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) :: (a -> b) -> Optional a -> Optional b
+  (<$>) _ Empty = Empty
+  (<$>) f (Full a) = Full (f a)
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
 instance Functor ((->) t) where
-  (<$>) ::
-    (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
-  (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+  (<$>) :: (a -> b) -> ((->) t a) -> ((->) t b)
+  (<$>) f g = \x -> f (g x)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -94,13 +80,8 @@ instance Functor ((->) t) where
 -- prop> \x a b c -> x <$ (a :. b :. c :. Nil) == (x :. x :. x :. Nil)
 --
 -- prop> \x q -> x <$ Full q == Full x
-(<$) ::
-  Functor f =>
-  a
-  -> f b
-  -> f a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+(<$) :: Functor f => a -> f b -> f a
+(<$) a = (<$>) (const a)
 
 -- | Anonymous map producing unit value.
 --
@@ -115,12 +96,20 @@ instance Functor ((->) t) where
 --
 -- >>> void (+10) 5
 -- ()
-void ::
-  Functor f =>
-  f a
-  -> f ()
-void =
-  error "todo: Course.Functor#void"
+void :: Functor f => f a -> f ()
+void = (<$) ()
+
+-- Questions
+--   `∀f g x. (f . g <$> x) ≅ (f <$> (g <$> x))`
+--
+-- How do I read this?
+-- "Applying first g and then f, I get the same result as applying f . g" but
+-- this course hasn't explained what . is yet so am I meant to already know or
+-- not?
+--
+-- Why is it <$> why not <$#$#%%> - are they arrows pointing at either side? Why
+-- dollar? <$> It says it's pronounced eff-map so could I define (effmap)
+-- so I could write (g effmap x)?
 
 -----------------------
 -- SUPPORT LIBRARIES --
