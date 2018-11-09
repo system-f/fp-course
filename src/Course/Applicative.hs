@@ -332,10 +332,10 @@ filtering ::
 filtering _ Nil = pure Nil
 filtering p (x :. xs) =
   (lift2 (++)) (lift2 elemIf (p x) (pure x)) (filtering p xs)
-
-elemIf :: Bool -> a -> List a
-elemIf True x = x :. Nil
-elemIf False x = Nil
+  where
+    elemIf :: Bool -> a -> List a
+    elemIf True x = x :. Nil
+    elemIf False x = Nil
 
 -----------------------
 -- SUPPORT LIBRARIES --
