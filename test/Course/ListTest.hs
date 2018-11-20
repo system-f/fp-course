@@ -183,6 +183,8 @@ lengthGT4Test =
   testGroup "lengthGT4" [
     testCase "list of length 3" $
       lengthGT4 (1 :. 3 :. 5 :. Nil) @?= False
+  , testCase "list of length 4" $
+      lengthGT4 (1 :. 2 :. 3 :. 4 :. Nil) @?= False
   , testCase "empty list" $
       lengthGT4 Nil @?= False
   , testCase "list of length 5" $
