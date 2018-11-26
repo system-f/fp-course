@@ -23,12 +23,11 @@ data Optional a =
 --
 -- >>> mapOptional (+1) (Full 8)
 -- Full 9
-mapOptional ::
-  (a -> b)
-  -> Optional a
-  -> Optional b
+mapOptional :: (a -> b) -> Optional a -> Optional b
 mapOptional =
-  error "todo: Course.Optional#mapOptional"
+  \f -> \a -> case a of
+    Empty -> Empty
+    Full x -> Full (f x)
 
 -- | Bind the given function on the possible value.
 --
@@ -45,7 +44,10 @@ bindOptional ::
   -> Optional a
   -> Optional b
 bindOptional =
-  error "todo: Course.Optional#bindOptional"
+  \f -> \opt_a ->
+    case opt_a of
+      Empty -> Empty
+      Full a -> f a
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
@@ -55,11 +57,15 @@ bindOptional =
 -- >>> Empty ?? 99
 -- 99
 (??) ::
-  Optional a
-  -> a
-  -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+     Optional a -> a -> a
+(??) Empty         x =  x
+(??) (Full a)      _ =  a
+
+{-
+(???) = \o x -> case o of
+  Empty -> x
+  Full a -> a
+-}
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -76,11 +82,19 @@ bindOptional =
 -- >>> Empty <+> Empty
 -- Empty
 (<+>) ::
-  Optional a
-  -> Optional a
-  -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"
+      Optional a -> Optional a -> Optional a
+(<+>) Empty         o           = o
+(<+>) r@(Full _)      _           = r
+
+{-
+
+if(x == null) {
+  return y
+else
+  return x
+
+-}
+
 
 -- | Replaces the Full and Empty constructors in an optional.
 --
@@ -90,12 +104,30 @@ bindOptional =
 -- >>> optional (+1) 0 Empty
 -- 0
 optional ::
-  (a -> b)
-  -> b
-  -> Optional a
-  -> b
+  (a -> b) -> b -> Optional a -> b
 optional =
-  error "todo: Course.Optional#optional"
+  \f ->      \b -> \opt       ->
+    case opt of
+      Empty -> 
+        b
+      Full a ->
+        f a
+
+bindOptionalAgain ::
+  (a -> Optional b) -> Optional a -> Optional b
+bindOptionalAgain =
+  \f opt ->
+    optional f Empty opt
+
+{-
+bindOptional ::
+  (a -> Optional b) -> Optional a -> Optional b
+bindOptional =
+  \f -> \opt_a ->
+    case opt_a of
+      Empty -> Empty
+      Full a -> f a
+-}
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional f' a) f

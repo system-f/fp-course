@@ -72,12 +72,17 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -> List a -> a
+headOr a Nil = a
+headOr _ (h:._) = h
 
+  {-
+headOr =
+  \a -> \thelist ->
+    case thelist of
+      Nil -> a
+      h:._ -> h
+-}
 -- | The product of the elements of a list.
 --
 -- >>> product Nil
@@ -92,7 +97,23 @@ product ::
   List Int
   -> Int
 product =
-  error "todo: Course.List#product"
+  foldLeft (*) 1
+
+{-
+product Nil =
+  1
+product (h:.t) =
+  h * product t
+-}
+{-
+product (1:.(2:.(3:.(4:.(5:.Nil)))))
+1 * product (2:.(3:.(4:.(5:.Nil))))
+1 * 2 * product (3:.(4:.(5:.Nil)))
+1 * 2 * 3 * product (4:.(5:.Nil))
+1 * 2 * 3 * 4 * product (5:.Nil)
+1 * 2 * 3 * 4 * 5 * product Nil
+1 * 2 * 3 * 4 * 5 * 1
+-}
 
 -- | Sum the elements of the list.
 --
@@ -107,7 +128,15 @@ sum ::
   List Int
   -> Int
 sum =
-  error "todo: Course.List#sum"
+  -- \list -> foldLeft (+) 0 list
+  foldLeft (\r el -> r + el) 0
+
+{-
+sum Nil =
+  0
+sum (h:.t) =
+  h + sum t
+-}
 
 -- | Return the length of the list.
 --
@@ -119,7 +148,19 @@ length ::
   List a
   -> Int
 length =
-  error "todo: Course.List#length"
+  -- foldLeft (\r _ -> r + 1) 0
+  -- foldLeft (\r -> \_ -> r + 1) 0
+  -- foldLeft (\r -> const (r + 1)) 0
+  -- foldLeft (\r -> (comp const ((+) 1)) r) 0
+  -- foldLeft ((.) const ((+) 1)) 0
+  foldLeft (const . (+) 1) 0
+
+  {-
+length Nil =
+  0
+length (_:.t) =
+  1 + length t
+-}
 
 -- | Map the given function on each element of the list.
 --
@@ -130,11 +171,42 @@ length =
 --
 -- prop> \x -> map id x == x
 map ::
-  (a -> b)
-  -> List a
-  -> List b
-map =
-  error "todo: Course.List#map"
+  (a -> b) -> (List a -> List b)
+{-
+map _ Nil =
+  Nil
+map f (h:.t) =
+  f h :. map f t
+-}
+map f =
+  -- foldRight (\h t -> f h :. t) Nil
+  -- foldRight (\h t -> (:.) (f h) t) Nil
+  -- foldRight (\h -> \t -> (:.) (f h) t) Nil
+  -- foldRight (\h -> (:.) (f h)) Nil
+  foldRight ((:.) . f) Nil
+
+-- \x -> q (r x)
+-- q . r
+
+
+{-
+map ((+) 10) (1:.(2:.(3:.(4:.Nil))))
+11 :. map ((+) 10) (2:.(3:.(4:.Nil)))
+11 :. 12 :. map ((+) 10) (3:.(4:.Nil))
+11 :. 12 :. 13 :. map f (4:.Nil)
+11 :. 12 :. 13 :. 14 :. map ((+) 10) Nil
+11 :. 12 :. 13 :. 14 :. Nil
+
+-}
+
+
+-- f :: a -> b
+-- h :: a
+-- f h :: b
+        -- t :: List a
+-- map f t :: List b
+-- f h :. map f t :: List b
+-- ? :: List b
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +222,23 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter p (h:.t) =
+  -- DRY principle
+  -- FP = DRY taken seriously
+  -- (if p h then (h :.) else id) (filter p t)
+  -- (bool id (h :.) (p h)) (filter p t)
+  (case p h of
+    True ->
+      (h :.)
+    False ->
+      id) (filter p t)
+
+
+
+
+  -- (if p h then (h:.) else id) (filter p t)
+  -- bool id (h:.) (p h) (filter p t)
 
 -- | Append two lists to a new list.
 --
@@ -170,8 +257,14 @@ filter =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+    -- (foldRight (:.)) y x
+    -- flip (foldRight (:.)) x y
+    flip (foldRight (:.))
 
+  {-
+(++) Nil z = z
+(++) (h:.t) z = h :. (t ++ z)
+-}
 infixr 5 ++
 
 -- | Flatten a list of lists to a list.
@@ -188,7 +281,14 @@ flatten ::
   List (List a)
   -> List a
 flatten =
-  error "todo: Course.List#flatten"
+  foldRight (++) Nil
+
+{-
+flatten Nil =
+  Nil
+flatten (h:.t) =
+  h ++ flatten t
+-}
 
 -- | Map a function then flatten to a list.
 --
@@ -201,11 +301,27 @@ flatten =
 --
 -- prop> \x -> flatMap id (x :: List (List Int)) == flatten x
 flatMap ::
-  (a -> List b)
-  -> List a
-  -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+  (a -> List b) -> List a -> List b
+--(List b -> List b) -> (List (List b) -> List b)
+flatMap f =
+-- foldRight (\h t -> f h ++ t) Nil
+  foldRight ((++) . f) Nil
+
+urlEncoder url =
+  flatMap (\c -> case c of
+    ' ' -> '%':.'2':.'0':.Nil
+    _ -> c :. Nil
+  ) url
+
+{-
+flatMap f list =
+  flatten (map f list)
+-}
+
+{-
+flatMap _ Nil = Nil
+flatMap f (h:.t) = f h ++ flatMap f t
+-}
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -215,7 +331,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -301,8 +417,24 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
+{-
+reverse Nil =
+  Nil
+reverse (h:.t) =
+  (++) (reverse t) (h :. Nil)
+-}
 reverse =
-  error "todo: Course.List#reverse"
+--foldLeft (\r el -> el :. r) Nil
+--foldLeft (\r el -> (:.) el r) Nil
+--foldLeft (\r el -> flip (:.) r el) Nil
+--foldLeft (\r -> flip (:.) r) Nil
+  foldLeft (flip (:.)) Nil
+
+-- reverse = reverse0 Nil
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
