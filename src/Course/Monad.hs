@@ -5,6 +5,8 @@
 
 module Course.Monad where
 
+import Data.Char
+import Data.String
 import Course.Applicative
 import Course.Core
 import Course.ExactlyOne
@@ -49,7 +51,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -61,7 +63,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -69,11 +71,17 @@ instance Monad Optional where
 -- 119
 instance Monad ((->) t) where
   (=<<) ::
+  {-
     (a -> ((->) t b))
     -> ((->) t a)
     -> ((->) t b)
+  -}
+    (a -> t -> b)
+    -> (t -> a)
+    -> t
+    -> b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+    \a2t2b -> \t2a -> \t -> a2t2b (t2a t) t
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -112,7 +120,25 @@ instance Monad ((->) t) where
   -> f a
   -> f b
 (<**>) =
-  error "todo: Course.Monad#(<**>)"
+  \fab -> \fa ->  fab >>= \f ->
+                  fa  >>= \a ->
+                  pure (f a)
+                  
+
+enc :: Char -> List Int
+enc ' ' = ord <$> ('%':.'2':.'0':.Nil)
+enc c   = ord c :. Nil
+
+
+-- (=<<) :: (x -> f y) -> f x -> f y
+-- (>>=) :: f x -> (x -> f y) -> f y
+-- (>>=) :: f a -> (a -> f b) -> f b
+
+
+
+
+-- (>>=) :: f (a -> b) -> ((a -> b) -> f b) -> f b
+
 
 infixl 4 <**>
 
@@ -134,7 +160,11 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
+
+(==<<) :: Monad f => (a -> f b) -> f a -> f b
+(==<<) = \f fa -> join (f <$> fa)
+
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +178,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -175,3 +205,58 @@ infixr 1 <=<
 instance Monad IO where
   (=<<) =
     (P.=<<)
+
+----
+
+xx :: Optional Int
+xx = Full 88
+yy :: Optional Int
+yy = Full 99
+
+gg xx yy = do x <- xx
+              y <- yy
+              return (x + y)
+
+{-
+gg(xx, yy) =
+  from x in xx
+  from y in yy
+  select (x + y);
+
+-}
+
+ggg = gg xx yy
+
+data Configuration =
+  Configuration String Int
+  deriving (Eq, Show)
+
+port :: Configuration -> Int
+port (Configuration _ p) = p
+
+hostname :: Configuration -> String
+hostname (Configuration h _) = h
+
+{-
+
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+-}
+fff :: Configuration -> a
+fff =
+  do  p <- port
+      h <- hostname
+      runApp p h
+{-
+f :: Configuration -> a
+f =
+  port >>= \p ->
+  hostname >>= \h ->
+  runApp p h
+-}
+
+runApp p h =
+  error "the app"
