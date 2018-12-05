@@ -12,7 +12,7 @@ import Course.ExactlyOne
 import Course.Optional
 import Course.Compose
 
--- | All instances of the `Traversable` type-class must satisfy two laws. These
+-- | All instances of the `Traversable` type-class must satisfy three laws. These
 -- laws are not checked by the compiler. These laws are given as:
 --
 -- * The law of naturality
