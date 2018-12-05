@@ -71,12 +71,16 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- prop> \x -> x `headOr` infinity == 0
 --
 -- prop> \x -> x `headOr` Nil == x
-headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr :: a -> List a -> a
+-- headOr = \x -> \list -> 
+{-
+headOr = \x -> \list -> 
+  case list of
+    Nil -> x
+    h:._ -> h
+-}
+headOr    _    (h :. _) = h 
+headOr    x    Nil = x
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +95,7 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = foldLeft (*) 1
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +109,20 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum list = foldLeft (+) 0 list
+
+{-
+sum (4 :. 5 :. 6 :. Nil)
+4 + sum (5 :. 6 :. Nil)
+4 + 5 + sum (6 :. Nil)
+4 + 5 + 6 + sum Nil
+4 + 5 + 6 + 0
+
+
+
+
+-}
+
 
 -- | Return the length of the list.
 --
@@ -118,8 +133,35 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+length list =
+  -- foldLeft (\r _ -> r + 1) 0 list
+  -- foldLeft (\r -> kanst (r + 1)) 0 list
+  -- foldLeft (\r -> (.) const ((+) 1) r) 0 list
+  -- foldLeft (\r -> (const . ((+) 1)) r) 0 list
+  -- foldLeft (const . ((+) 1)) 0 list
+  foldLeft (const . (+) 1) 0 list
+
+-- \v -> f v
+-- f
+
+-- (x ~ the argument to g) (a)
+-- (the return of g ~ the argument to f) (b)
+-- (the return of f ~ the return of compoze) (c)
+kompoze :: (b -> c) -> (a -> b) -> a -> c
+kompoze =  \f ->       \g ->      \x -> f (g x)
+-- f :: b -> c
+-- g :: a -> b
+-- x :: a
+-- ? :: c
+
+-- kompoze = \f g -> \x -> f (g x)
+-- kompoze f g = \x -> f (g x)
+
+-- \x -> f (g x)
+-- kompoze f g
+
+-- kompoze = \f -> \g -> \x -> f (g x)
+
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +175,16 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+
+-- f :: a -> b
+-- h :: a
+-- f h :: b
+-- t :: List a
+-- map f t :: List b
+-- ? :: List b
+
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +200,24 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter f (h:.t) =
+--if f h then h :. filter f t else filter f t
+--bool (filter f t) (h :. filter f t) (f h)
+--bool (id (filter f t)) (h :. filter f t) (f h)
+--bool (id (filter f t)) ((h :.) filter f t) (f h)
+  bool id (h :.) (f h) (filter f t)
+
+ -- bool id (h :.) (f h) (filter f t)
+
+-- bool (f x) (g x) b
+-- =
+-- bool f g b x
+
+-- if b then g x else f x
+-- =
+-- (if b then g else f) x
+
 
 -- | Append two lists to a new list.
 --
