@@ -31,9 +31,7 @@ import qualified Numeric as N
 -- BEGIN Helper functions and data types
 
 -- The custom list type
-data List t =
-  Nil
-  | t :. List t
+data List t = Nil | t :. List t
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -175,8 +173,7 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map _ Nil = Nil
-map f (h:.t) = f h :. map f t
+map f = flatMap (\a -> f a :. Nil)
 
 -- f :: a -> b
 -- h :: a
@@ -236,8 +233,22 @@ filter f (h:.t) =
   -> List a
   -> List a
 (++) =
-  error "todo: Course.List#(++)"
+-- \list1 list2 -> (foldRight (:.)) list2 list1
+-- \list1 -> \list2 -> flip (foldRight (:.)) list1 list2
+-- \list1 -> flip (foldRight (:.)) list1
+-- flip (foldRight (:.))
+  flip (foldRight (:.))
 
+-- \x -> f x
+-- f
+
+{-
+f a =
+  expr a
+
+f = 
+  \a -> expr a
+  -}
 infixr 5 ++
 
 -- | Flatten a list of lists to a list.
@@ -253,8 +264,12 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten list = foldRight (++) Nil list
+
+-- h :: List a
+-- t :: List (List a)
+-- flatten t :: List a
+-- h ++ flatten t :: List a
 
 -- | Map a function then flatten to a list.
 --
@@ -270,8 +285,12 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap f = foldRight ((++) . f) Nil
+
+-- \x -> f (g x)
+-- f . g
+
+
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -281,7 +300,8 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+-- \list -> flatMap id list
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -367,8 +387,44 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+--reverse = foldLeft (\r el -> el :. r) Nil
+-- reverse = foldLeft (\r el -> (:.) el r) Nil
+-- reverse = foldLeft (\r el -> flip (:.) r el) Nil
+--reverse = foldLeft (\r -> flip (:.) r) Nil
+reverse = foldLeft (flip (:.)) Nil
+
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+-- map ::         (x -> y) -> List x -> List y
+-- mapOptional :: (x -> y) -> Optional x -> Optional y
+flipList :: List (a -> b) -> a -> List b
+flipList list a =    map (\f -> f a) list
+
+flipOptional :: Optional (a -> b) -> a -> Optional b
+flipOptional opt a = mapOptional (\f -> f a) opt
+-- 1 million more
+
+flipAnything anything a = mapThing (\f -> f a) anything
+
+class Comparator a where
+  compareit :: a -> a -> Int
+
+class ThingsThatMap k where
+  mapThing :: (a -> b) -> k a -> k b
+
+instance ThingsThatMap List where
+  -- (a -> b) -> List a -> List b
+  mapThing = map
+
+instance ThingsThatMap Optional where
+  mapThing = mapOptional
+
+
+-- flipSomething :: Something (a -> b) -> a -> Something b
+-- flipSomething s a = mapSomething (\f -> f a) s
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

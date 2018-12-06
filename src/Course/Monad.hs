@@ -21,9 +21,7 @@ import qualified Prelude as P((=<<))
 class Applicative f => Monad f where
   -- Pronounced, bind.
   (=<<) ::
-    (a -> f b)
-    -> f a
-    -> f b
+    (a -> f b) -> f a -> f b
 
 infixr 1 =<<
 
@@ -49,7 +47,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -61,7 +59,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -73,7 +71,7 @@ instance Monad ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+    \a2t2b t2a t -> a2t2b (t2a t) t
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -112,7 +110,8 @@ instance Monad ((->) t) where
   -> f a
   -> f b
 (<**>) =
-  error "todo: Course.Monad#(<**>)"
+  \fab fa ->
+    (\ab -> ab <$> fa) =<< fab 
 
 infixl 4 <**>
 
@@ -134,7 +133,7 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +147,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -163,8 +162,8 @@ infixl 1 >>=
   -> (a -> f b)
   -> a
   -> f c
-(<=<) =
-  error "todo: Course.Monad#(<=<)"
+(<=<) b2fc a2fb a =
+  a2fb a >>= b2fc
 
 infixr 1 <=<
 
