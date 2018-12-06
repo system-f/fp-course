@@ -98,6 +98,7 @@ test-suite            tasty
                       Course.OptionalTest
                       Course.StateTest
                       Course.StateTTest
+                      Course.TraversableTest
                       Course.ValidationTest
 
   default-language:
