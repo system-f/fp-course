@@ -28,6 +28,8 @@ mapOptional ::
   -> Optional a
   -> Optional b
 mapOptional f opt = bindOptional (Full . f) opt
+-- mapOptional _ Empty = Empty
+-- mapOptional f (Full a) = Full (f a)
 
 -- | Bind the given function on the possible value.
 --
