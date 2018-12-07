@@ -77,7 +77,7 @@ instance Monad ((->) t) where
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
--- >>> ExactlyOne (+10) <**> ExactlyOne 8
+-- >>> ExactlyOne (+10) <*> ExactlyOne 8
 -- ExactlyOne 18
 --
 -- >>> (+1) :. (*2) :. Nil <**> 1 :. 2 :. 3 :. Nil
