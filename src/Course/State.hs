@@ -102,7 +102,7 @@ instance Applicative (State s) where
   (<*>) ::
     State s (a -> b)
     -> State s a
-    -> State s b 
+    -> State s b
   (<*>) =
     error "todo: Course.State (<*>)#instance (State s)"
 

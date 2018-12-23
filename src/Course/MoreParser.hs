@@ -64,7 +64,7 @@ tok =
 --
 -- >>> isErrorResult (parse (charTok 'a') "dabc")
 -- True
--- 
+--
 -- /Tip:/ Use `tok` and `is`.
 charTok ::
   Char
@@ -79,7 +79,7 @@ charTok =
 --
 -- >>> isErrorResult( parse commaTok "1,23")
 -- True
--- 
+--
 -- /Tip:/ Use `charTok`.
 commaTok ::
   Parser Char

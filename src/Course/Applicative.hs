@@ -49,7 +49,7 @@ instance Applicative ExactlyOne where
     -> ExactlyOne a
   pure =
     error "todo: Course.Applicative pure#instance ExactlyOne"
-  (<*>) :: 
+  (<*>) ::
     ExactlyOne (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b

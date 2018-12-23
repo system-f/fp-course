@@ -264,7 +264,7 @@ findLeft ::
   -> MaybeListZipper a
 findLeft =
   error "todo: Course.ListZipper#findLeft"
-    
+
 -- | Seek to the right for a location matching a predicate, excluding the
 -- focus.
 --
