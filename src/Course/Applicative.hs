@@ -12,7 +12,7 @@ import Course.List
 import Course.Optional
 import qualified Prelude as P(fmap, return, (>>=))
 
--- | All instances of the `Applicative` type-class must satisfy three laws.
+-- | All instances of the `Applicative` type-class must satisfy four laws.
 -- These laws are not checked by the compiler. These laws are given as:
 --
 -- * The law of associative composition
