@@ -40,7 +40,7 @@ instance Show a => Show (ParseResult a) where
     stringconcat ["Unexpected string: ", show s]
   show (Result i a) =
     stringconcat ["Result >", hlist i, "< ", show a]
-  
+
 instance Functor ParseResult where
   _ <$> UnexpectedEof =
     UnexpectedEof
@@ -73,15 +73,15 @@ onResult ::
   ParseResult a
   -> (Input -> a -> ParseResult b)
   -> ParseResult b
-onResult UnexpectedEof _ = 
+onResult UnexpectedEof _ =
   UnexpectedEof
-onResult (ExpectedEof i) _ = 
+onResult (ExpectedEof i) _ =
   ExpectedEof i
-onResult (UnexpectedChar c) _ = 
+onResult (UnexpectedChar c) _ =
   UnexpectedChar c
-onResult (UnexpectedString s)  _ = 
+onResult (UnexpectedString s)  _ =
   UnexpectedString s
-onResult (Result i a) k = 
+onResult (Result i a) k =
   k i a
 
 data Parser a = P (Input -> ParseResult a)
@@ -216,52 +216,6 @@ instance Applicative Parser where
   (<*>) =
     error "todo: Course.Parser (<*>)#instance Parser"
 
--- | Return a parser that continues producing a list of values from the given parser.
---
--- /Tip:/ Use @list1@, @pure@ and @(|||)@.
---
--- >>> parse (list character) ""
--- Result >< ""
---
--- >>> parse (list digit) "123abc"
--- Result >abc< "123"
---
--- >>> parse (list digit) "abc"
--- Result >abc< ""
---
--- >>> parse (list character) "abc"
--- Result >< "abc"
---
--- >>> parse (list (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> parse (list (character *> valueParser 'v')) ""
--- Result >< ""
-list ::
-  Parser a
-  -> Parser (List a)
-list =
-  error "todo: Course.Parser#list"
-
--- | Return a parser that produces at least one value from the given parser then
--- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
---
--- /Tip:/ Use @(=<<)@, @list@ and @pure@.
---
--- >>> parse (list1 (character)) "abc"
--- Result >< "abc"
---
--- >>> parse (list1 (character *> valueParser 'v')) "abc"
--- Result >< "vvv"
---
--- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
--- True
-list1 ::
-  Parser a
-  -> Parser (List a)
-list1 =
-  error "todo: Course.Parser#list1"
-
 -- | Return a parser that produces a character but fails if
 --
 --   * The input is empty.
@@ -317,6 +271,52 @@ space ::
   Parser Char
 space =
   error "todo: Course.Parser#space"
+
+-- | Return a parser that continues producing a list of values from the given parser.
+--
+-- /Tip:/ Use @list1@, @pure@ and @(|||)@.
+--
+-- >>> parse (list character) ""
+-- Result >< ""
+--
+-- >>> parse (list digit) "123abc"
+-- Result >abc< "123"
+--
+-- >>> parse (list digit) "abc"
+-- Result >abc< ""
+--
+-- >>> parse (list character) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> parse (list (character *> valueParser 'v')) ""
+-- Result >< ""
+list ::
+  Parser a
+  -> Parser (List a)
+list =
+  error "todo: Course.Parser#list"
+
+-- | Return a parser that produces at least one value from the given parser then
+-- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
+--
+-- /Tip:/ Use @(=<<)@, @list@ and @pure@.
+--
+-- >>> parse (list1 (character)) "abc"
+-- Result >< "abc"
+--
+-- >>> parse (list1 (character *> valueParser 'v')) "abc"
+-- Result >< "vvv"
+--
+-- >>> isErrorResult (parse (list1 (character *> valueParser 'v')) "")
+-- True
+list1 ::
+  Parser a
+  -> Parser (List a)
+list1 =
+  error "todo: Course.Parser#list1"
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if

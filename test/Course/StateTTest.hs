@@ -45,7 +45,7 @@ import           Course.State       (put, runState)
 import           Course.StateT      (Logger (..), OptionalT (..), StateT (..),
                                      distinct', distinctF, distinctG, getT,
                                      log1, putT, runOptionalT, runState',
-                                     state')
+                                     state', execT, exec', evalT, eval')
 
 test_StateT :: MiniTestTree
 test_StateT =
@@ -55,6 +55,10 @@ test_StateT =
   , monadTest
   , state'Test
   , runState'Test
+  , execTTest
+  , exec'Test
+  , evalTTest
+  , eval'Test
   , getTTest
   , putTTest
   , distinct'Test
@@ -109,6 +113,26 @@ runState'Test :: MiniTestTree
 runState'Test =
   testCase "runState'" $
     runState' (state' . runState $ put 1) 0 @?= ((),1)
+
+execTTest :: TestTree
+execTTest =
+  testCase "execTTest" $
+    execT (StateT $ \s -> Full ((), s + 1)) 2 @?= Full 3
+
+exec'Test :: TestTree
+exec'Test =
+  testCase "exec'Test" $
+    exec' (state' $ \s -> ((), s + 1)) 2 @?= 3
+
+evalTTest :: TestTree
+evalTTest =
+  testCase "evalTTest" $
+    evalT (StateT $ \s -> Full (even s, s + 1)) 2 @?= Full True
+
+eval'Test :: TestTree
+eval'Test =
+  testCase "eval'Test" $
+    eval' (state' $ \s -> (even s, s + 1)) 5 @?= False
 
 getTTest :: MiniTestTree
 getTTest =

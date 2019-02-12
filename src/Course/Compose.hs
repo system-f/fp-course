@@ -11,7 +11,7 @@ import Course.Monad
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
 
 newtype Compose f g a =
-  Compose (f (g a))
+  Compose (f (g a)) deriving (Show, Eq)
 
 -- Implement a Functor instance for Compose
 instance (Functor f, Functor g) =>

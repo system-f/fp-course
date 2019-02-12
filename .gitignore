@@ -8,6 +8,7 @@ cabal-dev
 .cabal-sandbox
 cabal.sandbox.config
 cabal.project.local
+.ghc.environment.*
 
 # Haskell Program Coverage
 /.hpc

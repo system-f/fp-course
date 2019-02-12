@@ -89,7 +89,7 @@ GHC is telling us a few helpful things here for each of our holes:
       ns :: List Int (bound at src/Course/List.hs:94:9)
       product :: List Int -> Int (bound at src/Course/List.hs:94:1)
     ```
-    
+
 Armed with this information we now have two smaller sub-problems to solve: choosing a function of
 type `Int -> Int -> Int`, and choosing a value of type `Int`.
 
@@ -213,7 +213,7 @@ You can also nest pattern matches as needed.
 data Thingo =
     X Int
   | Y (Optional Int)
-    
+
 f :: Thingo -> List Int
 f t =
   case t of

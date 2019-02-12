@@ -12,7 +12,7 @@ import Course.ExactlyOne
 import Course.Optional
 import Course.Compose
 
--- | All instances of the `Traversable` type-class must satisfy two laws. These
+-- | All instances of the `Traversable` type-class must satisfy three laws. These
 -- laws are not checked by the compiler. These laws are given as:
 --
 -- * The law of naturality
@@ -82,7 +82,7 @@ instance (Traversable f, Traversable g) =>
 
 -- | The `Product` data type contains one value from each of the two type constructors.
 data Product f g a =
-  Product (f a) (g a)
+  Product (f a) (g a) deriving (Show, Eq)
 
 instance (Functor f, Functor g) =>
   Functor (Product f g) where
@@ -99,7 +99,7 @@ instance (Traversable f, Traversable g) =>
 -- | The `Coproduct` data type contains one value from either of the two type constructors.
 data Coproduct f g a =
   InL (f a)
-  | InR (g a)
+  | InR (g a) deriving (Show, Eq)
 
 instance (Functor f, Functor g) =>
   Functor (Coproduct f g) where

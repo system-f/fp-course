@@ -237,8 +237,8 @@ hasRight ::
 hasRight =
   error "todo: Course.ListZipper#hasRight"
 
--- | Seek to the left for a location matching a predicate, starting from the
--- current one.
+-- | Seek to the left for a location matching a predicate, excluding the
+-- focus.
 --
 -- /Tip:/ Use `break`
 --
@@ -264,9 +264,9 @@ findLeft ::
   -> MaybeListZipper a
 findLeft =
   error "todo: Course.ListZipper#findLeft"
-    
--- | Seek to the right for a location matching a predicate, starting from the
--- current one.
+
+-- | Seek to the right for a location matching a predicate, excluding the
+-- focus.
 --
 -- /Tip:/ Use `break`
 --
@@ -502,7 +502,7 @@ nth =
 -- >>> index (zipper [3,2,1] 4 [5,6,7])
 -- 3
 --
--- prop> \i z z' -> optional True (\z' -> index z' == i) (toOptional (nth i z))
+-- prop> \i z -> optional True (\z' -> index z' == i) (toOptional (nth i z))
 index ::
   ListZipper a
   -> Int
