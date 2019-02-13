@@ -12,6 +12,7 @@ import Course.ListTest (test_List)
 import Course.ListZipperTest (test_ListZipper)
 import Course.MonadTest (test_Monad)
 import Course.OptionalTest (test_Optional)
+import Course.ParserTest (test_Parser)
 import Course.StateTest (test_State)
 import Course.StateTTest (test_StateT)
 import Course.TraversableTest (test_Traversable)
@@ -28,6 +29,7 @@ tests =
   , test_Functor
   , test_Applicative
   , test_Monad
+  , test_Parser
   , test_State
   , test_StateT
   , test_Validation
