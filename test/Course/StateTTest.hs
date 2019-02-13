@@ -114,22 +114,22 @@ runState'Test =
   testCase "runState'" $
     runState' (state' . runState $ put 1) 0 @?= ((),1)
 
-execTTest :: TestTree
+execTTest :: MiniTestTree
 execTTest =
   testCase "execTTest" $
     execT (StateT $ \s -> Full ((), s + 1)) 2 @?= Full 3
 
-exec'Test :: TestTree
+exec'Test :: MiniTestTree
 exec'Test =
   testCase "exec'Test" $
     exec' (state' $ \s -> ((), s + 1)) 2 @?= 3
 
-evalTTest :: TestTree
+evalTTest :: MiniTestTree
 evalTTest =
   testCase "evalTTest" $
     evalT (StateT $ \s -> Full (even s, s + 1)) 2 @?= Full True
 
-eval'Test :: TestTree
+eval'Test :: MiniTestTree
 eval'Test =
   testCase "eval'Test" $
     eval' (state' $ \s -> (even s, s + 1)) 5 @?= False

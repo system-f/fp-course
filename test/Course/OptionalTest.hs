@@ -74,7 +74,7 @@ firstFullTest =
       Empty <+> Empty @?= (Empty :: Optional Integer)
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "optional" [
     testCase "replaces full data constructor" $
