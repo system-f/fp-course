@@ -15,17 +15,17 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- | All instances of the `Applicative` type-class must satisfy four laws.
 -- These laws are not checked by the compiler. These laws are given as:
 --
--- * The law of associative composition
---   `∀a b c. ((.) <$> a <*> b <*> c) ≅ (a <*> (b <*> c))`
---
 -- * The law of identity
---   `∀x. pure id <*> x ≅ x`
---
--- * The law of homomorphism
---   `∀f x. pure f <*> pure x ≅ pure (f x)`
+--   `∀x. pure id <*> x = x`
 --
 -- * The law of composition
---   `∀u v w. pure (.) <*> u <*> v <*> w ≅ u <*> (v <*> w)`
+--   `∀u v w. pure (.) <*> u <*> v <*> w = u <*> (v <*> w)`
+--
+-- * The law of homomorphism
+--   `∀f x. pure f <*> pure x = pure (f x)`
+--
+-- * The law of interchange
+--   `∀u y. u <*> pure y = pure ($ y) <*> u`
 
 class Functor f => Applicative f where
   pure ::
