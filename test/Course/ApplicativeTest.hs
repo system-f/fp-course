@@ -14,6 +14,7 @@ module Course.ApplicativeTest (
   , lift2Test
   , lift3Test
   , lift4Test
+  , lift1Test
   , rightApplyTest
   , leftApplyTest
   , sequenceTest
@@ -51,6 +52,7 @@ test_Applicative =
   , lift2Test
   , lift3Test
   , lift4Test
+  , lift1Test
   , rightApplyTest
   , leftApplyTest
   , sequenceTest
@@ -172,6 +174,17 @@ lift4Test =
       lift4 (\a b c d -> a + b + c + d) Empty Empty (Full 9) (Full 10) @?= Empty
   , testCase "+ over functions" $
       lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6]) @?= 148
+  ]
+
+lift1Test :: MiniTestTree
+lift1Test =
+  testGroup "lift1" [
+    testCase "+ over ExactlyOne" $
+      lift1 (+1) (ExactlyOne 2) @?= ExactlyOne 3
+  , testCase "+ over empty List" $
+      lift1 (+1) Nil @?= Nil
+  , testCase "+ over List" $
+      lift1 (+1) (1 :. 2 :. 3 :. Nil) @?= 2 :. 3 :. 4 :. Nil
   ]
 
 rightApplyTest :: MiniTestTree
