@@ -442,13 +442,13 @@ What about these two programs?
 
     def writeFile(filename, contents):
         with open(filename, "w") as f:
-        f.write(contents)
+            f.write(contents)
 
     def readFile(filename):
         contents = ""
         with open(filename, "r") as f:
-        contents = f.read()
-        return contents
+            contents = f.read()
+            return contents
 
     def p1():
         file = "/tmp/file"
