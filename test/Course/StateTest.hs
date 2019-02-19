@@ -113,7 +113,13 @@ findMTest =
 firstRepeatTest :: MiniTestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
-    testProperty "finds repeats" . fn (genList genInteger) $ \xs ->
+    testCase "'x' is the only repeat" $
+      firstRepeat (listh "abxdexghi") @?= Full 'x'
+  , testCase "'x' is the first repeat" $
+      firstRepeat (listh "abxdexgg") @?= Full 'x'
+  , testCase "no repeats" $
+      firstRepeat (listh ['a'..'z']) @?= Empty
+  , testProperty "finds repeats" . fn (genList genInteger) $ \xs ->
       case firstRepeat xs of
         Empty ->
           let xs' = hlist xs
@@ -134,7 +140,11 @@ firstRepeatTest =
 distinctTest :: MiniTestTree
 distinctTest =
   testGroup "distinct" [
-    testProperty "No repeats after distinct" .
+    testCase "No repeats" $
+      let cs = listh ['a'..'z'] in distinct cs @?= cs
+  , testCase "Every element repeated" $
+      let cs = listh ['a'..'z'] in distinct (flatMap (\x -> x :. x :. Nil) cs) @?= cs
+  , testProperty "No repeats after distinct" .
       fn (genList genInteger) $ \xs -> firstRepeat (distinct xs) == Empty
   , testProperty "Every element repeated" . fn (genList genInteger) $ \xs ->
       distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
