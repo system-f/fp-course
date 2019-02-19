@@ -10,6 +10,10 @@ module Course.StateTTest (
   , monadTest
   , state'Test
   , runState'Test
+  , execTTest
+  , exec'Test
+  , evalTTest
+  , eval'Test
   , getTTest
   , putTTest
   , distinct'Test
