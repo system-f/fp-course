@@ -1,7 +1,6 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 import           Data.String            (fromString)
-
 import           Test.Tasty.Mini        (tastyTest)
 import           TestLoader             (tests)
 
