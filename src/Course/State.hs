@@ -106,7 +106,7 @@ instance Applicative (State s) where
   (<*>) =
     error "todo: Course.State (<*>)#instance (State s)"
 
--- | Implement the `Bind` instance for `State s`.
+-- | Implement the `Monad` instance for `State s`.
 --
 -- >>> runState ((const $ put 2) =<< put 1) 0
 -- ((),2)
