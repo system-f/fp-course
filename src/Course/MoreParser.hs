@@ -1,6 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Course.MoreParser where
 
@@ -12,6 +13,7 @@ import Course.Applicative
 import Course.Monad
 import Course.Functor
 import Course.Traversable
+import Numeric hiding (readHex)
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -395,6 +397,15 @@ satisfyAny =
 --
 -- >>> parse (betweenSepbyComma '[' ']' lower) "[]"
 -- Result >< ""
+--
+-- >>> parse (betweenSepbyComma '[' ']' lower) "[a,b,c]"
+-- Result >< "abc"
+--
+-- >>> parse (betweenSepbyComma '[' ']' lower) "[a,  b, c]"
+-- Result >< "abc"
+--
+-- >>> parse (betweenSepbyComma '[' ']' digits1) "[123,456]"
+-- Result >< ["123","456"]
 --
 -- >>> isErrorResult (parse (betweenSepbyComma '[' ']' lower) "[A]")
 -- True
