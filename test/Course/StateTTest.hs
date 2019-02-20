@@ -150,8 +150,12 @@ putTTest =
 
 distinct'Test :: MiniTestTree
 distinct'Test =
-  testProperty "distinct'" . fn (genList genInteger) $ \xs ->
-    distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs)
+  testGroup "distinct'" [
+    testCase "removes duplicate 'c's" $
+      distinct' (listh "abcdcefcghi") @?= listh ['a'..'i']
+  , testProperty "distinct'" . fn (genList genInteger) $ \xs ->
+      distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs)
+  ]
 
 distinctFTest :: MiniTestTree
 distinctFTest =
