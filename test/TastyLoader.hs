@@ -15,6 +15,7 @@ import qualified Course.MonadTest       as Monad
 import qualified Course.OptionalTest    as Optional
 import qualified Course.StateTest       as State
 import qualified Course.StateTTest      as StateT
+import qualified Course.TraversableTest as Traversable
 import qualified Course.ValidationTest  as Validation
 
 import           Prelude                (IO)

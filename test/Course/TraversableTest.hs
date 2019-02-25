@@ -3,8 +3,7 @@
 
 module Course.TraversableTest where
 
-import           Test.Tasty            (TestTree, testGroup)
-import           Test.Tasty.HUnit      (testCase, (@?=))
+import Test.Mini (MiniTestTree, testGroup, testCase, (@?=))
 
 import           Course.Compose        (Compose (..))
 import           Course.Core
@@ -14,7 +13,7 @@ import           Course.List           (List (..), listh)
 import           Course.Optional       (Optional (..))
 import           Course.Traversable
 
-test_Traversable :: TestTree
+test_Traversable :: MiniTestTree
 test_Traversable =
   testGroup "Traversable" [
     listTest
@@ -28,7 +27,7 @@ test_Traversable =
   , coProductTraversableTest
   ]
 
-listTest :: TestTree
+listTest :: MiniTestTree
 listTest =
   testGroup "listTest" [
     testCase "traverse on empty list" $
@@ -37,14 +36,14 @@ listTest =
       traverse (\a -> Full (a * 2)) (listh [1, 2, 3]) @?= Full (listh [2, 4, 6])
   ]
 
-exactlyOneTest :: TestTree
+exactlyOneTest :: MiniTestTree
 exactlyOneTest =
   testGroup "exactlyOneTest" [
     testCase "traverse on ExactlyOne" $
       traverse (\a -> Full (a * 2)) (ExactlyOne 3) @?= Full (ExactlyOne 6)
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "optionalTest" [
     testCase "traverse on Empty" $
@@ -53,7 +52,7 @@ optionalTest =
       traverse (\a -> ExactlyOne (a * 2)) (Full 5) @?= ExactlyOne (Full 10)
   ]
 
-sequenceATest :: TestTree
+sequenceATest :: MiniTestTree
 sequenceATest =
   testGroup "sequenceATest" [
     testCase "on List over ExactlyOne" $
@@ -64,7 +63,7 @@ sequenceATest =
       sequenceA (Full (*10)) 6 @?= Full 60
   ]
 
-composeTest :: TestTree
+composeTest :: MiniTestTree
 composeTest =
   testGroup "composeTest" [
     testCase "traverse on Compose Optional List Int" $
@@ -81,7 +80,7 @@ composeTest =
     listOfExactlyOnes = listh [ExactlyOne 1, ExactlyOne 2, ExactlyOne 3]
     fmap2 f = ((f <$>) <$>)
 
-productFunctorTest :: TestTree
+productFunctorTest :: MiniTestTree
 productFunctorTest =
   testGroup "productFunctorTest" [
     testCase "fmap on Product Optional List Int" $
@@ -92,7 +91,7 @@ productFunctorTest =
   where
     listOfInts = listh [1, 2, 3]
 
-productTraversableTest :: TestTree
+productTraversableTest :: MiniTestTree
 productTraversableTest =
   testGroup "productTraversableTest" [
     testCase "traverse on Product Optional List Int" $
@@ -103,7 +102,7 @@ productTraversableTest =
     product = Product (Full 4) listOfInts
     productTimesTwo = Product (Full 8) ((*2) <$> listOfInts)
 
-coProductFunctorTest :: TestTree
+coProductFunctorTest :: MiniTestTree
 coProductFunctorTest =
   testGroup "coProductFunctorTest" [
     testCase "fmap on InL Optional Int" $
@@ -120,7 +119,7 @@ coProductFunctorTest =
     inRTimesTwo = InR ((*2) <$> listOfInts)
     listOfInts = listh [1, 2, 3]
 
-coProductTraversableTest :: TestTree
+coProductTraversableTest :: MiniTestTree
 coProductTraversableTest =
   testGroup "coProductTraversableTest" [
     testCase "traverse on InL Optional Int" $

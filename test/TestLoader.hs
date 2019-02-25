@@ -12,6 +12,7 @@ module TestLoader
   , Validation.test_Validation
   , Extend.test_Extend
   , Comonad.test_Comonad
+  , Traversable.test_Traversable
   , ListZipper.test_ListZipper
   , JsonParser.test_JsonParser
 
@@ -31,6 +32,7 @@ import qualified Course.MonadTest       as Monad
 import qualified Course.OptionalTest    as Optional
 import qualified Course.StateTest       as State
 import qualified Course.StateTTest      as StateT
+import qualified Course.TraversableTest as Traversable
 import qualified Course.ValidationTest  as Validation
 
 import           Data.String            (fromString)
@@ -51,6 +53,7 @@ tests =
   , Validation.test_Validation
   , Extend.test_Extend
   , Comonad.test_Comonad
+  , Traversable.test_Traversable
   , ListZipper.test_ListZipper
   , JsonParser.test_JsonParser
   ]
