@@ -2,8 +2,39 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ParserTest where
+module Course.ParserTest (
+  -- * Tests
+    test_Parser
+  , constantParserTest
+  , characterTest
+  , valueParserTest
+  , alternativeParserTest
+  , parserMonadInstanceTest
+  , parserApplicativeInstanceTest
+  , satisfyTest
+  , digitTest
+  , spaceTest
+  , listTest
+  , list1Test
+  , spaces1Test
+  , lowerTest
+  , upperTest
+  , alphaTest
+  , sequenceParserTest
+  , thisManyTest
+  , ageParserTest
+  , firstNameParserTest
+  , surnameParserTest
+  , smokerParserTest
+  , phoneBodyParserTest
+  , phoneParserTest
+  , personParserTest
 
+  -- * Course test runner
+  , courseTest
+  ) where
+
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (MiniTestTree, assertBool, testCase,
                                      testGroup, (@?=))
 
