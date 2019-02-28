@@ -32,8 +32,12 @@ class IsString name => Tester t name | t -> name where
 -- | Adding test cases.
 class IsString name => UnitTester t name assertion | t -> name, t -> assertion, assertion -> t where
   testCase :: name -> assertion -> t
+
   (@?=) :: (Eq a, Show a) => a -> a -> assertion
   infix 1 @?=
+
+  assertBool :: name -> Bool -> t
+  assertBool name b = testCase name $ b @?= True
 
 -- | Embed a property in a test tree
 class IsString name => PropertyTester t g name | t -> name, t -> g where
