@@ -14,6 +14,7 @@ module TestLoader
   , Comonad.test_Comonad
   , Traversable.test_Traversable
   , ListZipper.test_ListZipper
+  , Parser.test_Parser
   , JsonParser.test_JsonParser
 
   , tests
@@ -30,6 +31,7 @@ import qualified Course.ListTest        as List
 import qualified Course.ListZipperTest  as ListZipper
 import qualified Course.MonadTest       as Monad
 import qualified Course.OptionalTest    as Optional
+import qualified Course.ParserTest      as Parser
 import qualified Course.StateTest       as State
 import qualified Course.StateTTest      as StateT
 import qualified Course.TraversableTest as Traversable
