@@ -1,16 +1,17 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Course.TraversableTest where
 
-import Test.Mini (MiniTestTree, testGroup, testCase, (@?=))
+import           Test.Mini          (MiniTestTree, testCase, testGroup, (@?=))
 
-import           Course.Compose        (Compose (..))
+import           Course.Compose     (Compose (..))
 import           Course.Core
-import           Course.ExactlyOne     (ExactlyOne (..))
+import           Course.ExactlyOne  (ExactlyOne (..))
 import           Course.Functor
-import           Course.List           (List (..), listh)
-import           Course.Optional       (Optional (..))
+import           Course.List        (List (..), listh)
+import           Course.Optional    (Optional (..))
 import           Course.Traversable
 
 test_Traversable :: MiniTestTree
