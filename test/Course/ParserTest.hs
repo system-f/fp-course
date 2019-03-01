@@ -10,8 +10,8 @@ module Course.ParserTest (
   , functorTest
   , valueParserTest
   , alternativeParserTest
-  , parserMonadInstanceTest
-  , parserApplicativeInstanceTest
+  , monadTest
+  , applicativeTest
   , satisfyTest
   , digitTest
   , spaceTest
@@ -56,8 +56,8 @@ test_Parser =
     , functorTest
     , valueParserTest
     , alternativeParserTest
-    , parserMonadInstanceTest
-    , parserApplicativeInstanceTest
+    , monadTest
+    , applicativeTest
     , satisfyTest
     , digitTest
     , spaceTest
@@ -123,8 +123,8 @@ alternativeParserTest =
         parse (character ||| valueParser 'v') "abc" @?= Result "bc" 'a'
   ]
 
-parserMonadInstanceTest :: MiniTestTree
-parserMonadInstanceTest =
+monadTest :: MiniTestTree
+monadTest =
   testGroup "parserMonadInstanceTest" [
       assertBool "first parse fails" $
         isErrorResult (parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "")
@@ -138,8 +138,8 @@ parserMonadInstanceTest =
         parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "xabc" @?= Result "bc" 'a'
   ]
 
-parserApplicativeInstanceTest :: MiniTestTree
-parserApplicativeInstanceTest =
+applicativeTest :: MiniTestTree
+applicativeTest =
   testGroup "parserApplicativeInstanceTest" [
       testCase "pure" $
         parse (pure 'a' :: Parser Char) "xyz" @?= Result "xyz" 'a'
