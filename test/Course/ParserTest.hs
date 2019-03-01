@@ -7,6 +7,7 @@ module Course.ParserTest (
     test_Parser
   , constantParserTest
   , characterTest
+  , functorTest
   , valueParserTest
   , alternativeParserTest
   , parserMonadInstanceTest
@@ -40,6 +41,7 @@ import           Test.Mini          (MiniTestTree, assertBool, testCase,
 
 import           Course.Applicative (pure, (*>), (<*>))
 import           Course.Core
+import           Course.Functor     ((<$>))
 import           Course.List        (List (..))
 import           Course.Monad       ((=<<))
 import           Course.Optional    (Optional (..))
@@ -51,6 +53,7 @@ test_Parser =
   testGroup "Parser" [
       constantParserTest
     , characterTest
+    , functorTest
     , valueParserTest
     , alternativeParserTest
     , parserMonadInstanceTest
@@ -91,6 +94,13 @@ characterTest =
         parse character "abc" @?= Result "bc" 'a'
     , assertBool "parsing empty string is an error" $
         isErrorResult (parse character "")
+  ]
+
+functorTest :: MiniTestTree
+functorTest =
+  testGroup "functorTest" [
+    testCase "toUpper <$>" $
+      parse (toUpper <$> character) "amz" @?= Result "mz" 'A'
   ]
 
 valueParserTest :: MiniTestTree
