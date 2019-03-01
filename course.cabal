@@ -95,6 +95,7 @@ test-suite            tasty
                       Course.ListTest
                       Course.ListZipperTest
                       Course.MonadTest
+                      Course.MoreParserTest
                       Course.OptionalTest
                       Course.ParserTest
                       Course.StateTest

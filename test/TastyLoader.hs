@@ -23,4 +23,3 @@ import           Prelude                (IO)
 
 main :: IO ()
 main = tastyTest tests
-

@@ -189,7 +189,7 @@ putT =
 --
 -- prop> \xs -> distinct' xs == distinct' (flatMap (\x -> x :. x :. Nil) xs)
 distinct' ::
-  (Ord a, Num a) =>
+  Ord a =>
   List a
   -> List a
 distinct' =
@@ -207,7 +207,7 @@ distinct' =
 -- >>> distinctF $ listh [1,2,3,2,1,101]
 -- Empty
 distinctF ::
-  (Ord a, Num a) =>
+  Ord a =>
   List a
   -> Optional (List a)
 distinctF =
