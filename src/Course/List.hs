@@ -40,7 +40,7 @@ data List t =
 infixr 5 :.
 
 instance Show t => Show (List t) where
-  show = show . foldRight (:) []
+  show = show . hlist
 
 -- The list of integers from zero to infinity.
 infinity ::
