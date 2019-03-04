@@ -15,6 +15,7 @@ module TestLoader
   , Traversable.test_Traversable
   , ListZipper.test_ListZipper
   , Parser.test_Parser
+  , MoreParser.test_MoreParser
   , JsonParser.test_JsonParser
 
   , tests
@@ -30,6 +31,7 @@ import qualified Course.JsonParserTest  as JsonParser
 import qualified Course.ListTest        as List
 import qualified Course.ListZipperTest  as ListZipper
 import qualified Course.MonadTest       as Monad
+import qualified Course.MoreParserTest  as MoreParser
 import qualified Course.OptionalTest    as Optional
 import qualified Course.ParserTest      as Parser
 import qualified Course.StateTest       as State
