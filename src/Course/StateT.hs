@@ -207,7 +207,7 @@ distinct' =
 -- >>> distinctF $ listh [1,2,3,2,1,101]
 -- Empty
 distinctF ::
-  Ord a =>
+  (Ord a, Num a) =>
   List a
   -> Optional (List a)
 distinctF =
