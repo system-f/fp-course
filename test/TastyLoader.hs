@@ -5,6 +5,7 @@ import           Test.Tasty.Mini        (tastyTest)
 import           TestLoader             (tests)
 
 import qualified Course.ApplicativeTest as Applicative
+import qualified Course.ChequeTest      as ChequeTest
 import qualified Course.ComonadTest     as Comonad
 import qualified Course.ExtendTest      as Extend
 import qualified Course.FunctorTest     as Functor

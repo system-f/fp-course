@@ -4,20 +4,19 @@
 
 module Course.ChequeTest where
 
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+import           Test.Mini  (testCase, (@?=), MiniTestTree, testGroup)
 
 import           Course.Core
 import           Course.Cheque (dollars)
 import           Course.List       (List (..))
 
-test_Cheque :: TestTree
+test_Cheque :: MiniTestTree
 test_Cheque =
   testGroup "Cheque" [
     chequeDollarsTest
   ]
 
-chequeDollarsTest :: TestTree
+chequeDollarsTest :: MiniTestTree
 chequeDollarsTest =
   testGroup "jsonObject" [
   testCase "empty" $

@@ -17,6 +17,7 @@ module TestLoader
   , Parser.test_Parser
   , MoreParser.test_MoreParser
   , JsonParser.test_JsonParser
+  , ChequeTest.test_Cheque
 
   , tests
   , courseTest
@@ -24,6 +25,7 @@ module TestLoader
   where
 
 import qualified Course.ApplicativeTest as Applicative
+import qualified Course.ChequeTest      as ChequeTest
 import qualified Course.ComonadTest     as Comonad
 import qualified Course.ExtendTest      as Extend
 import qualified Course.FunctorTest     as Functor
@@ -59,6 +61,9 @@ tests =
   , Comonad.test_Comonad
   , Traversable.test_Traversable
   , ListZipper.test_ListZipper
+  , Parser.test_Parser
+  , MoreParser.test_MoreParser
   , JsonParser.test_JsonParser
+  , ChequeTest.test_Cheque
   ]
 
