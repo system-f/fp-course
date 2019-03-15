@@ -2,24 +2,30 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ChequeTest where
+module Course.ChequeTest (
+    test_Cheque
+  , dollarsTest
 
-import           Test.Mini  (testCase, (@?=), MiniTestTree, testGroup)
+  , courseTest
+  ) where
 
+import           Test.Course.Mini (courseTest)
+import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
+
+import           Course.Cheque    (dollars)
 import           Course.Core
-import           Course.Cheque (dollars)
-import           Course.List       (List (..))
+import           Course.List      (List (..))
 
 test_Cheque :: MiniTestTree
 test_Cheque =
   testGroup "Cheque" [
-    chequeDollarsTest
+    dollarsTest
   ]
 
-chequeDollarsTest :: MiniTestTree
-chequeDollarsTest =
-  testGroup "jsonObject" [
-  testCase "empty" $
+dollarsTest :: MiniTestTree
+dollarsTest =
+  testGroup "dollars" [
+    testCase "empty" $
       dollars "0" @?= "zero dollars and zero cents"
   , testCase "dollars '1'" $
       dollars "1" @?=  "one dollar and zero cents"
