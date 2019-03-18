@@ -53,7 +53,7 @@ import qualified Prelude            as P (fromIntegral, (<$>))
 
 import           Course.Gens        (genInteger, genList, genListZipper,
                                      genListZipperWithInt)
-import Test.Course.Mini (courseTest)
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (Gen (..), MiniTestTree,
                                      PropertyTester (..), Testable (..),
                                      Tester (..), UnitTester (..), fn)
