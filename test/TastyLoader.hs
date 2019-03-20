@@ -1,45 +1,27 @@
-{-# LANGUAGE ImplicitPrelude #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
-import Data.String (fromString)
-import Test.Tasty
-import Course.ApplicativeTest (test_Applicative)
-import Course.ComonadTest (test_Comonad)
-import Course.ExtendTest (test_Extend)
-import Course.FunctorTest (test_Functor)
-import Course.JsonParserTest (test_JsonParser)
-import Course.ChequeTest (test_Cheque)
-import Course.ListTest (test_List)
-import Course.ListZipperTest (test_ListZipper)
-import Course.MonadTest (test_Monad)
-import Course.MoreParserTest (test_MoreParser)
-import Course.OptionalTest (test_Optional)
-import Course.ParserTest (test_Parser)
-import Course.StateTest (test_State)
-import Course.StateTTest (test_StateT)
-import Course.TraversableTest (test_Traversable)
-import Course.ValidationTest (test_Validation)
+import           Data.String            (fromString)
+import           Test.Tasty.Mini        (tastyTest)
+import           TestLoader             (tests)
+
+import qualified Course.ApplicativeTest as Applicative
+import qualified Course.ChequeTest      as ChequeTest
+import qualified Course.ComonadTest     as Comonad
+import qualified Course.ExtendTest      as Extend
+import qualified Course.FunctorTest     as Functor
+import qualified Course.JsonParserTest  as JsonParser
+import qualified Course.ListTest        as List
+import qualified Course.ListZipperTest  as ListZipper
+import qualified Course.MonadTest       as Monad
+import qualified Course.MoreParserTest  as MoreParser
+import qualified Course.OptionalTest    as Optional
+import qualified Course.ParserTest      as Parser
+import qualified Course.StateTest       as State
+import qualified Course.StateTTest      as StateT
+import qualified Course.TraversableTest as Traversable
+import qualified Course.ValidationTest  as Validation
+
+import           Prelude                (IO)
 
 main :: IO ()
-main = defaultMain tests
-
-tests :: TestTree
-tests =
-  testGroup "Tests" [
-    test_Optional
-  , test_List
-  , test_Functor
-  , test_Applicative
-  , test_Monad
-  , test_MoreParser
-  , test_Parser
-  , test_State
-  , test_StateT
-  , test_Validation
-  , test_Extend
-  , test_Comonad
-  , test_Traversable
-  , test_ListZipper
-  , test_JsonParser
-  , test_Cheque
-  ]
-
+main = tastyTest tests

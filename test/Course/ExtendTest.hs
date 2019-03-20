@@ -1,21 +1,31 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Course.ExtendTest where
+module Course.ExtendTest (
+  -- * Tests
+    test_Extend
+  , exactlyOneTest
+  , listTest
+  , optionalTest
+  , cojoinTest
 
-
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))
 import           Course.Functor    ((<$>))
-import           Course.List       (List (..), length, listh, reverse)
-import           Course.Optional   (Optional (..))
+import           Course.List       (List ((:.), Nil), length, listh, reverse)
+import           Course.Optional   (Optional (Empty, Full))
 
 import           Course.Extend     (cojoin, (<<=))
 
-test_Extend :: TestTree
+import           Test.Course.Mini  (courseTest)
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
+
+test_Extend :: MiniTestTree
 test_Extend =
   testGroup "Extend" [
     exactlyOneTest
@@ -24,12 +34,12 @@ test_Extend =
   , cojoinTest
   ]
 
-exactlyOneTest :: TestTree
+exactlyOneTest :: MiniTestTree
 exactlyOneTest =
   testCase "ExactlyOne instance" $
     (id <<= ExactlyOne 7) @?= ExactlyOne (ExactlyOne 7)
 
-listTest :: TestTree
+listTest :: MiniTestTree
 listTest =
   testGroup "List" [
     testCase "length" $
@@ -41,16 +51,16 @@ listTest =
         nestedListh3 [[[4,5,6],[1,2,3]],[[4,5,6]]]
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "Optional" [
     testCase "id Full" $
-      (id <<= (Full 7)) @?= Full (Full 7)
+      (id <<= Full 7) @?= Full (Full 7)
   , testCase "id Empty" $
       (id <<= Empty) @?= (Empty :: Optional (Optional Integer))
   ]
 
-cojoinTest :: TestTree
+cojoinTest :: MiniTestTree
 cojoinTest =
   testGroup "cojoin" [
     testCase "ExactlyOne" $

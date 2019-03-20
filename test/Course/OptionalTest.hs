@@ -1,16 +1,27 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Course.OptionalTest where
+module Course.OptionalTest (
+  -- * Tests
+    test_Optional
+  , mapOptionalTest
+  , bindOptionalTest
+  , valueOrTest
+  , firstFullTest
 
-import           Test.Tasty       (TestTree, testGroup)
-import           Test.Tasty.HUnit (testCase, (@?=))
+  -- * Course test runner
+  , courseTest
+  ) where
+
+import           Test.Course.Mini (courseTest)
+import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
-                                   (<+>), (??), optional)
+                                   optional, (<+>), (??))
 
-test_Optional :: TestTree
+test_Optional :: MiniTestTree
 test_Optional =
   testGroup "Optional" [
     mapOptionalTest
@@ -20,7 +31,7 @@ test_Optional =
   , optionalTest
   ]
 
-mapOptionalTest :: TestTree
+mapOptionalTest :: MiniTestTree
 mapOptionalTest =
   testGroup "mapOptional" [
     testCase "Empty" $
@@ -29,7 +40,7 @@ mapOptionalTest =
       mapOptional (+1) (Full 8) @?= Full 9
   ]
 
-bindOptionalTest :: TestTree
+bindOptionalTest :: MiniTestTree
 bindOptionalTest =
   let evenDecOddInc n = if even n then Full (n - 1) else Full (n + 1)
    in testGroup "bindOptional" [
@@ -41,7 +52,7 @@ bindOptionalTest =
           bindOptional evenDecOddInc (Full 9) @?= Full 10
   ]
 
-valueOrTest :: TestTree
+valueOrTest :: MiniTestTree
 valueOrTest =
   testGroup "??" [
     testCase "Full" $
@@ -50,7 +61,7 @@ valueOrTest =
       Empty ?? 99 @?= 99
   ]
 
-firstFullTest :: TestTree
+firstFullTest :: MiniTestTree
 firstFullTest =
   testGroup "<+>" [
     testCase "first Full" $
@@ -63,7 +74,7 @@ firstFullTest =
       Empty <+> Empty @?= (Empty :: Optional Integer)
   ]
 
-optionalTest :: TestTree
+optionalTest :: MiniTestTree
 optionalTest =
   testGroup "optional" [
     testCase "replaces full data constructor" $

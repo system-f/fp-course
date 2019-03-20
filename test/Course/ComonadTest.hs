@@ -1,28 +1,40 @@
 {-# OPTIONS_GHC -fno-warn-type-defaults #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 
-module Course.ComonadTest where
+module Course.ComonadTest
+  (
+  -- * Tests
+    test_Comonad
+  , exactlyOneTest
+  , fmapTest
 
+  -- * Course test runner
+  , courseTest
+  )
+  where
 
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+import           Data.String       (fromString)
+
+import           Test.Course.Mini  (courseTest)
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
 
-test_Comonad :: TestTree
+test_Comonad :: MiniTestTree
 test_Comonad =
   testGroup "Comonad" [
     exactlyOneTest
   , fmapTest
   ]
 
-exactlyOneTest :: TestTree
+exactlyOneTest :: MiniTestTree
 exactlyOneTest =
   testCase "ExactlyOne" $ copure (ExactlyOne 7) @?= 7
 
-fmapTest :: TestTree
+fmapTest :: MiniTestTree
 fmapTest =
   testCase "<$$>" $
     ((+10) <$$> ExactlyOne 7) @?= ExactlyOne 17

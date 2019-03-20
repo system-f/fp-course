@@ -165,16 +165,32 @@ available in this repository for your convenience.
 
 ### Running the tests
 
-Tests are available as a [tasty](https://hackage.haskell.org/package/tasty)
-test suite.
+Tests are stored under the `test/` directory. Each module from the course that
+has tests has a corresponding `<MODULE>Test.hs` file. Within each test module,
+tests for each function are grouped using the `testGroup` function. Within each
+test group there are test cases (`testCase` function), and properties
+(`testProperty` function).
+
+Tests are able to be run using either a built-in test runner that has no
+requirement beyond those of the course (a supported version of GHCi), or
+[tasty](https://hackage.haskell.org/package/tasty).
+
+**NOTE**: If running tests using the embedded runner, no property tests will be
+run.
+
+#### Built-in runner
+
+Each test module exports a function called `courseTest` that may be used to run tests. To run
+tests, load the relevant module, and then run `courseTest <tests>`. For example, in `GHCi`:
+
+    λ> :l test/Course/ListTest.hs
+    λ> courseTest test_List
+    λ> courseTest productTest
+
+Alternatively, the full test suite may be run by loading `test/TestLoader.hs` and running
+`courseTest tests`.
 
 #### tasty
-
-Tasty tests are stored under the `test/` directory. Each module from the course
-that has tests has a corresponding `<MODULE>Test.hs` file. Within each test
-module, tests for each function are grouped using the `testGroup` function.
-Within each test group there are test cases (`testCase` function), and
-properties (`testProperty` function).
 
 Before running the tests, ensure that you have an up-to-date installation
 of GHC and cabal-install from your system package manager or use the minimal
@@ -199,23 +215,17 @@ Likewise, to run only the tests for the `headOr` function in the `List` module, 
 
     > cabal test tasty --show-detail=direct --test-option=--pattern="List.headOr"
 
-In addition, GHCi may be used to run tasty tests. Assuming you have run `ghci`
+In addition, GHCi may be used to run tests using tasty. Assuming you have run `ghci`
 from the root of the project, you may do the following. Remember that GHCi has
 tab completion, so you can save yourself some typing.
 
-    > -- import the defaultMain function from Tasty - runs something of type TestTree
-    > import Test.Tasty (defaultMain)
-    >
-    > -- Load the test module you'd like to run tests for
-    > :l test/Course/ListTest.hs
-    >
-    > -- Browse the contents of the loaded module - anything of type TestTree
-    > -- may be run
-    > :browse Course.ListTest
-    >
-    > -- Run test for a particular function
-    > defaultMain headOrTest
-
+    λ> -- Load the tasty test runner and tests
+    λ> :l test/TastyLoader.hs
+    λ>
+    λ> -- Tests may be referenced by module
+    λ> tastyTest ListTest.headOrTest
+    λ> tastyTest OptionalTest.valueOrTest
+    λ> tastyTest tests
 
 #### doctest
 

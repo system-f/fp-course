@@ -2,20 +2,34 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.JsonParserTest where
+module Course.JsonParserTest (
+  -- * Tests
+    test_JsonParser
+  , jsonStringTest
+  , jsonNumberTest
+  , jsonTrueTest
+  , jsonFalseTest
+  , jsonNullTest
+  , jsonArrayTest
+  , jsonObjectTest
+  , jsonValueTest
+
+  -- * Course test runner
+  , courseTest
+  ) where
 
 import           Data.Ratio        ((%))
-import           Test.Tasty        (TestTree, testGroup)
-import           Test.Tasty.HUnit  (testCase, (@?=))
+import           Test.Course.Mini  (courseTest)
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.JsonParser (jsonArray, jsonFalse, jsonNull, jsonNumber,
                                     jsonObject, jsonString, jsonTrue, jsonValue)
-import           Course.JsonValue  (JsonValue (..))
-import           Course.List       (List (..))
-import           Course.Parser     (ParseResult (..), isErrorResult, parse)
+import           Course.JsonValue  (JsonValue (JsonArray, JsonFalse, JsonNull, JsonObject, JsonRational, JsonString, JsonTrue))
+import           Course.List       (List ((:.), Nil))
+import           Course.Parser     (ParseResult (Result), isErrorResult, parse)
 
-test_JsonParser :: TestTree
+test_JsonParser :: MiniTestTree
 test_JsonParser =
   testGroup "JsonParser" [
     jsonStringTest
@@ -25,9 +39,10 @@ test_JsonParser =
   , jsonNullTest
   , jsonArrayTest
   , jsonObjectTest
+  , jsonValueTest
   ]
 
-jsonStringTest :: TestTree
+jsonStringTest :: MiniTestTree
 jsonStringTest =
   testGroup "jsonString" [
     testCase "parse whole ASCII input" $
@@ -48,7 +63,7 @@ jsonStringTest =
       isErrorResult (parse jsonString "\"\\abc\"def") @?= True
   ]
 
-jsonNumberTest :: TestTree
+jsonNumberTest :: MiniTestTree
 jsonNumberTest =
   testGroup "jsonNumber" [
     testCase "positive whole" $ parse jsonNumber "234" @?= Result "" (234 % 1)
@@ -60,28 +75,28 @@ jsonNumberTest =
   , testCase "alphabetic characters is error" $ isErrorResult (parse jsonNumber "abc") @?= True
   ]
 
-jsonTrueTest :: TestTree
+jsonTrueTest :: MiniTestTree
 jsonTrueTest =
   testGroup "jsonTrue" [
     testCase "parses true" $ parse jsonTrue "true" @?= Result "" "true"
   , testCase "TRUE (caps) is an error" $ isErrorResult (parse jsonTrue "TRUE") @?= True
   ]
 
-jsonFalseTest :: TestTree
+jsonFalseTest :: MiniTestTree
 jsonFalseTest =
   testGroup "jsonFalse" [
     testCase "parses false" $ parse jsonFalse "false" @?= Result "" "false"
   , testCase "FALSE (caps) is an error" $ isErrorResult (parse jsonFalse "FALSE") @?= True
   ]
 
-jsonNullTest :: TestTree
+jsonNullTest :: MiniTestTree
 jsonNullTest =
   testGroup "jsonNull" [
     testCase "parses null" $ parse jsonNull "null" @?= Result "" "null"
   , testCase "NULL (caps) is an error" $ isErrorResult (parse jsonNull "NULL") @?= True
   ]
 
-jsonArrayTest :: TestTree
+jsonArrayTest :: MiniTestTree
 jsonArrayTest =
   testGroup "jsonArray" [
     testCase "[]" $
@@ -97,7 +112,7 @@ jsonArrayTest =
        in parse jsonArray "[true, \"abc\", [false]]" @?= result
     ]
 
-jsonObjectTest :: TestTree
+jsonObjectTest :: MiniTestTree
 jsonObjectTest =
   testGroup "jsonObject" [
     testCase "empty" $
@@ -111,7 +126,7 @@ jsonObjectTest =
        in parse jsonObject "{ \"key1\" : true , \"key2\" : false } xyz" @?= result
   ]
 
-jsonValueTest :: TestTree
+jsonValueTest :: MiniTestTree
 jsonValueTest =
   testGroup "jsonValue" [
     testCase "true" $
