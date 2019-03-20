@@ -14,7 +14,6 @@ import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Cheque    (dollars)
 import           Course.Core
-import           Course.List      (List (..))
 
 test_Cheque :: MiniTestTree
 test_Cheque =

@@ -9,7 +9,7 @@
 module Course.Gens where
 
 import qualified Prelude           as P
-import           Test.Mini         (Arbitrary (..), Gen (..))
+import           Test.Mini         (Arbitrary (shrink), Gen (GenList, GenA, GenInt, GenAB))
 
 import           Course.Core
 import           Course.List       (List (..), hlist, listh)

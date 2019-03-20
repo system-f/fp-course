@@ -44,7 +44,7 @@ import qualified Course.ValidationTest  as Validation
 import           Data.String            (fromString)
 
 import           Test.Course.Mini       (courseTest)
-import           Test.Mini              (MiniTestTree, Tester (..))
+import           Test.Mini              (MiniTestTree, testGroup)
 
 tests :: MiniTestTree
 tests =

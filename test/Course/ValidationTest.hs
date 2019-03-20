@@ -26,9 +26,10 @@ module Course.ValidationTest (
 import           Data.Maybe        (maybe)
 import qualified Prelude           as P
 import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (Arbitrary (..), Gen (..), MiniTestTree,
-                                    PropertyTester (..), Testable (..),
-                                    Tester (..), UnitTester (..))
+import           Test.Mini         (Arbitrary (shrink),
+                                    Gen (GenA, GenInt, GenMaybe, GenString),
+                                    MiniTestTree, Testable (B, Fn), testCase,
+                                    testGroup, testProperty, (@?=))
 
 import           Course.Core
 import           Course.Validation

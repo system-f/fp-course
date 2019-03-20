@@ -20,14 +20,14 @@ module Course.JsonParserTest (
 
 import           Data.Ratio        ((%))
 import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.JsonParser (jsonArray, jsonFalse, jsonNull, jsonNumber,
                                     jsonObject, jsonString, jsonTrue, jsonValue)
-import           Course.JsonValue  (JsonValue (..))
-import           Course.List       (List (..))
-import           Course.Parser     (ParseResult (..), isErrorResult, parse)
+import           Course.JsonValue  (JsonValue (JsonArray, JsonFalse, JsonNull, JsonObject, JsonRational, JsonString, JsonTrue))
+import           Course.List       (List ((:.), Nil))
+import           Course.Parser     (ParseResult (Result), isErrorResult, parse)
 
 test_JsonParser :: MiniTestTree
 test_JsonParser =

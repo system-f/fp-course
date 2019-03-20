@@ -36,9 +36,14 @@ import           Test.Mini         (MiniTestTree, assertBool, testCase,
                                     testGroup, (@?=))
 
 import           Course.Core
-import           Course.List       (List (..))
-import           Course.MoreParser
-import           Course.Parser
+import           Course.List       (List ((:.), Nil))
+import           Course.MoreParser (between, betweenCharTok, betweenSepbyComma,
+                                    charTok, commaTok, digits1, eof, hex, hexu,
+                                    noneof, oneof, option, quote, satisfyAll,
+                                    satisfyAny, sepby, sepby1, spaces, string,
+                                    stringTok, tok)
+import           Course.Parser     (ParseResult (Result), character, is,
+                                    isErrorResult, lower, parse)
 
 test_MoreParser :: MiniTestTree
 test_MoreParser =

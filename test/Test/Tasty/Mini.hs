@@ -12,9 +12,11 @@ import qualified Test.Tasty            as T
 import qualified Test.Tasty.HUnit      as T
 import qualified Test.Tasty.QuickCheck as T
 
-import           Test.Mini             (Arbitrary (..), Gen (..),
-                                        PropertyTester (..), Testable (..),
-                                        Tester (..), UnitTester (..))
+import           Test.Mini             (Arbitrary (gen, shrink), Gen (GenA, GenAB, GenBool, GenInt, GenList, GenMaybe, GenString),
+                                        PropertyTester (testProperty),
+                                        Testable (B, Fn),
+                                        Tester (test, testGroup),
+                                        UnitTester (testCase, (@?=)))
 
 
 newtype TastyAssertion =

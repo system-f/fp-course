@@ -19,7 +19,7 @@ module Course.MonadTest (
   ) where
 
 import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))

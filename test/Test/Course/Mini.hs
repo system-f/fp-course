@@ -14,8 +14,10 @@ import           Data.List         (intercalate)
 import           Data.Monoid       ((<>))
 import           Data.String       (fromString)
 
-import           Test.Mini         (Arbitrary (..), PropertyTester (..),
-                                    Tester (..), UnitTester (..))
+import           Test.Mini         (Arbitrary (gen, shrink),
+                                    PropertyTester (testProperty),
+                                    Tester (test, testGroup),
+                                    UnitTester (testCase, (@?=)))
 
 data CourseTestTree =
   Single String Result

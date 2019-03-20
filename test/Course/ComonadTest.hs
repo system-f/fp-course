@@ -14,10 +14,10 @@ module Course.ComonadTest
   )
   where
 
-import Data.String (fromString)
+import           Data.String       (fromString)
 
 import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, Tester (..), UnitTester (..))
+import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core

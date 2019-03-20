@@ -42,11 +42,11 @@ import           Test.Mini          (MiniTestTree, assertBool, testCase,
 import           Course.Applicative (pure, (*>), (<*>))
 import           Course.Core
 import           Course.Functor     ((<$>))
-import           Course.List        (List (..))
+import           Course.List        (List ((:.), Nil))
 import           Course.Monad       ((=<<))
-import           Course.Optional    (Optional (..))
+import           Course.Optional    (Optional (Empty, Full))
 import           Course.Parser
-import           Course.Person      (Person (..))
+import           Course.Person      (Person (Person))
 
 test_Parser :: MiniTestTree
 test_Parser =

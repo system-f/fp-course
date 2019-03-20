@@ -28,19 +28,18 @@ module Course.ListTest (
 import qualified Prelude          as P (length)
 
 import           Test.Course.Mini (courseTest)
-import           Test.Mini        (Gen (..), MiniTestTree, PropertyTester (..),
-                                   Testable (..), Tester (..), UnitTester (..),
-                                   fn)
+import           Test.Mini        (Gen (GenInt), MiniTestTree, Testable (B, Fn),
+                                   fn, testCase, testGroup, testProperty, (@?=))
 
 import           Course.Core
 import           Course.Gens      (genInteger, genIntegerAndList, genList,
                                    genThreeLists, genTwoLists)
-import           Course.List      (List (..), filter, find, flatMap, flatten,
-                                   flattenAgain, foldLeft, headOr, hlist,
-                                   infinity, largeList, length, lengthGT4,
-                                   listh, map, produce, product, reverse,
-                                   seqOptional, sum, take, (++))
-import           Course.Optional  (Optional (..))
+import           Course.List      (List ((:.), Nil), filter, find, flatMap,
+                                   flatten, flattenAgain, foldLeft, headOr,
+                                   hlist, infinity, largeList, length,
+                                   lengthGT4, listh, map, produce, product,
+                                   reverse, seqOptional, sum, take, (++))
+import           Course.Optional  (Optional (Empty, Full))
 
 test_List :: MiniTestTree
 test_List =

@@ -27,19 +27,18 @@ module Course.ApplicativeTest (
 
 import           Course.Gens        (genInteger)
 import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, PropertyTester (..),
-                                     Testable (Fn), Tester (..),
-                                     UnitTester (..), fn)
+import           Test.Mini          (MiniTestTree, Testable (Fn), fn, testCase,
+                                     testGroup, testProperty, (@?=))
 
 import           Course.Applicative (filtering, lift1, lift2, lift3, lift4,
                                      pure, replicateA, sequence, (*>), (<*),
                                      (<*>))
 import           Course.Core
-import           Course.ExactlyOne  (ExactlyOne (..))
+import           Course.ExactlyOne  (ExactlyOne (ExactlyOne))
 import           Course.Functor     ((<$>))
-import           Course.List        (List (..), filter, length, listh, product,
-                                     sum)
-import           Course.Optional    (Optional (..))
+import           Course.List        (List ((:.), Nil), filter, length, listh,
+                                     product, sum)
+import           Course.Optional    (Optional (Empty, Full))
 
 test_Applicative :: MiniTestTree
 test_Applicative =

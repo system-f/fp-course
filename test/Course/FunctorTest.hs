@@ -18,16 +18,15 @@ module Course.FunctorTest (
   ) where
 
 import           Course.Gens       (genInteger)
-import Test.Course.Mini (courseTest)
-import           Test.Mini         (MiniTestTree, PropertyTester (..),
-                                    Testable (Fn), Tester (..), UnitTester (..),
-                                    fn)
+import           Test.Course.Mini  (courseTest)
+import           Test.Mini         (MiniTestTree, Testable (Fn), fn, testCase,
+                                    testGroup, testProperty, (@?=))
 
 import           Course.Core
-import           Course.ExactlyOne (ExactlyOne (..))
+import           Course.ExactlyOne (ExactlyOne (ExactlyOne))
 import           Course.Functor    (void, (<$), (<$>))
-import           Course.List       (List (..))
-import           Course.Optional   (Optional (..))
+import           Course.List       (List ((:.), Nil))
+import           Course.Optional   (Optional (Empty, Full))
 
 test_Functor :: MiniTestTree
 test_Functor =

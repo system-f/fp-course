@@ -54,16 +54,16 @@ import qualified Prelude            as P (fromIntegral, (<$>))
 import           Course.Gens        (genInteger, genList, genListZipper,
                                      genListZipperWithInt)
 import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (Gen (..), MiniTestTree,
-                                     PropertyTester (..), Testable (..),
-                                     Tester (..), UnitTester (..), fn)
+import           Test.Mini          (Gen (GenBool, GenInt), MiniTestTree,
+                                     Testable (Fn), fn, testCase, testGroup,
+                                     testProperty, (@?=))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Comonad     (copure)
 import           Course.Core
 import           Course.Extend      ((<<=))
 import           Course.Functor     ((<$>))
-import           Course.List        (List (..), all, isEmpty, take)
+import           Course.List        (List ((:.), Nil), all, isEmpty, take)
 import           Course.ListZipper  (ListZipper (ListZipper),
                                      MaybeListZipper (..), deletePullLeft,
                                      deletePullRight, dropLefts, dropRights,

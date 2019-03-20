@@ -15,11 +15,11 @@ module Course.OptionalTest (
   ) where
 
 import           Test.Course.Mini (courseTest)
-import           Test.Mini        (MiniTestTree, Tester (..), UnitTester (..))
+import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
-                                   (<+>), (??), optional)
+                                   optional, (<+>), (??))
 
 test_Optional :: MiniTestTree
 test_Optional =

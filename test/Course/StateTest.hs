@@ -27,8 +27,8 @@ import qualified Prelude            as P ((++))
 
 import           Course.Gens        (genInteger, genList)
 import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, PropertyTester (..),
-                                     Tester (..), UnitTester (..), fn)
+import           Test.Mini          (MiniTestTree, fn, testCase, testGroup,
+                                     testProperty, (@?=))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
@@ -36,8 +36,8 @@ import           Course.Functor     ((<$>))
 import           Course.List        (List (..), filter, flatMap, hlist, length,
                                      listh, span, (++))
 import           Course.Monad
-import           Course.Optional    (Optional (..))
-import           Course.State       (State (..), distinct, eval, exec, findM,
+import           Course.Optional    (Optional (Empty, Full))
+import           Course.State       (State (State), distinct, eval, exec, findM,
                                      firstRepeat, get, isHappy, put, runState)
 
 test_State :: MiniTestTree

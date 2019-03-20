@@ -34,22 +34,23 @@ module Course.StateTTest (
 import qualified Prelude            as P (String, (++))
 
 import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, PropertyTester (..),
-                                     Tester (..), UnitTester (..), fn)
+import           Test.Mini          (MiniTestTree, fn, testCase, testGroup,
+                                     testProperty, (@?=))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
-import           Course.ExactlyOne  (ExactlyOne (..))
+import           Course.ExactlyOne  (ExactlyOne (ExactlyOne))
 import           Course.Functor     ((<$>))
 import           Course.Gens        (genInteger, genList)
-import           Course.List        (List (..), flatMap, listh)
+import           Course.List        (List ((:.), Nil), flatMap, listh)
 import           Course.Monad       ((=<<), (>>=))
-import           Course.Optional    (Optional (..))
+import           Course.Optional    (Optional (Empty, Full))
 import           Course.State       (put, runState)
-import           Course.StateT      (Logger (..), OptionalT (..), StateT (..),
-                                     distinct', distinctF, distinctG, getT,
-                                     log1, putT, runOptionalT, runState',
-                                     state', execT, exec', evalT, eval')
+import           Course.StateT      (Logger (Logger), OptionalT (OptionalT),
+                                     StateT (StateT, runStateT), distinct',
+                                     distinctF, distinctG, eval', evalT, exec',
+                                     execT, getT, log1, putT, runOptionalT,
+                                     runState', state')
 
 test_StateT :: MiniTestTree
 test_StateT =
