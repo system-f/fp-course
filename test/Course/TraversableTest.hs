@@ -10,7 +10,7 @@ import           Course.Compose     (Compose (Compose))
 import           Course.Core
 import           Course.ExactlyOne  (ExactlyOne (ExactlyOne))
 import           Course.Functor
-import           Course.List        (List ((:.), Nil), listh)
+import           Course.List        (List (Nil), listh)
 import           Course.Optional    (Optional (Empty, Full))
 import           Course.Traversable
 

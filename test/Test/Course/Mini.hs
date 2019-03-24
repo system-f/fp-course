@@ -4,6 +4,7 @@
 {-# LANGUAGE ImplicitPrelude       #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 module Test.Course.Mini where
 

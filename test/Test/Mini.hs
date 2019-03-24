@@ -11,7 +11,7 @@
 -- module with a type and instance for running the test suite with Tasty.
 module Test.Mini where
 
-import           Data.String (IsString, fromString)
+import           Data.String (IsString)
 
 type MiniTestTree =
   forall name assertion t g.

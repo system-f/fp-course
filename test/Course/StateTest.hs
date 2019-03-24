@@ -37,7 +37,7 @@ import           Course.List        (List (..), filter, flatMap, hlist, length,
                                      listh, span, (++))
 import           Course.Monad
 import           Course.Optional    (Optional (Empty, Full))
-import           Course.State       (State (State), distinct, eval, exec, findM,
+import           Course.State       (State (State), distinct, findM,
                                      firstRepeat, get, isHappy, put, runState)
 
 test_State :: MiniTestTree
