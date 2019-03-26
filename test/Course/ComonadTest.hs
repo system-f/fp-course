@@ -14,8 +14,6 @@ module Course.ComonadTest
   )
   where
 
-import           Data.String       (fromString)
-
 import           Test.Course.Mini  (courseTest)
 import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
 

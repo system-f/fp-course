@@ -44,7 +44,7 @@ import           Course.Core
 import           Course.Functor     ((<$>))
 import           Course.List        (List ((:.), Nil))
 import           Course.Monad       ((=<<))
-import           Course.Optional    (Optional (Empty, Full))
+import           Course.Optional    (Optional (Full))
 import           Course.Parser
 import           Course.Person      (Person (Person))
 
