@@ -227,6 +227,15 @@ tab completion, so you can save yourself some typing.
     λ> tastyTest OptionalTest.valueOrTest
     λ> tastyTest tests
 
+#### `:reload` and run tests
+
+In addition there are custom `:courseTest` and `:tastyTest` commands defined
+in `.ghci` that will invoke `:reload` and then `courseTest` or `tastyTest`.
+
+For example:
+
+    λ> :tastyTest List.test_List
+
 #### doctest
 
 The doctest tests are a mirror of the tasty tests that reside in comments
