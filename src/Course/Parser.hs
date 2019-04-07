@@ -521,15 +521,19 @@ phoneParser =
 
 -- | Write a parser for Person.
 --
--- /Tip:/ Use @(=<<)@,
+-- /Tip:/ Use @(>>=)@,
 --            @pure@,
---            @(>>>)@,
+--            @(*>)@,
 --            @spaces1@,
 --            @ageParser@,
 --            @firstNameParser@,
 --            @surnameParser@,
 --            @smokerParser@,
 --            @phoneParser@.
+--
+-- /Tip:/ Follow-on exercise: Use *(<*>)* instead of @(>>=)@.
+--
+-- /Tip:/ Follow-on exercise: Use *(<*>~)* instead of @(<*>)@ and @(*>)@.
 --
 -- >>> isErrorResult (parse personParser "")
 -- True
