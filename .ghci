@@ -11,3 +11,5 @@
 :set -XScopedTypeVariables
 :set -XOverloadedStrings
 :set -XRebindableSyntax
+:def courseTest (\arg -> Prelude.return Prelude.$ Prelude.unlines [":reload", "courseTest " Prelude.++ arg])
+:def tastyTest (\arg -> Prelude.return Prelude.$ Prelude.unlines [":reload", "tastyTest " Prelude.++ arg])
