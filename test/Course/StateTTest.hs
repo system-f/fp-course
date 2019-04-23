@@ -19,7 +19,8 @@ module Course.StateTTest (
   , distinct'Test
   , distinctFTest
   , optionalTFunctorTest
-  , optionalTApplicativeTest
+  , optionalTApplicativePureTest
+  , optionalTApplicativeApplyTest
   , optionalTMonadTest
   , loggerFunctorTest
   , loggerApplicativeTest
@@ -69,7 +70,8 @@ test_StateT =
   , distinct'Test
   , distinctFTest
   , optionalTFunctorTest
-  , optionalTApplicativeTest
+  , optionalTApplicativePureTest
+  , optionalTApplicativeApplyTest
   , optionalTMonadTest
   , loggerFunctorTest
   , loggerApplicativeTest
@@ -170,8 +172,14 @@ optionalTFunctorTest =
   testCase "(<$>) for OptionalT" $
     runOptionalT ((+1) <$> OptionalT (Full 1 :. Empty :. Nil)) @?= (Full 2 :. Empty :. Nil)
 
-optionalTApplicativeTest :: MiniTestTree
-optionalTApplicativeTest =
+optionalTApplicativePureTest :: MiniTestTree
+optionalTApplicativePureTest =
+  testCase "pure for OptionalT" $
+    let ot = pure 0 :: OptionalT List Int
+     in runOptionalT ot @?= (Full 0 :. Nil :: List (Optional Int))
+
+optionalTApplicativeApplyTest :: MiniTestTree
+optionalTApplicativeApplyTest =
   testGroup "(<*>) for OptionalT" [
     testCase "one" $
       let ot = (OptionalT Nil <*> OptionalT (Full 1 :. Full 2 :. Nil))
