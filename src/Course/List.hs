@@ -33,7 +33,7 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
-  | t :. List t
+  | (:.) t (List t)
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -72,12 +72,22 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -> List a -> a
+{-
+headOr x Nil = x
+headOr _ (h:._) = h
+-}
+headOr x list =
+  case list of
+    Nil -> x
+    h:._ -> h
 
+{-
+headOr = \x -> \yooz -> 
+  case yooz of
+    Nil -> x
+    h:._ -> h
+-}
 -- | The product of the elements of a list.
 --
 -- >>> product Nil
@@ -91,8 +101,10 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product = foldLeft (*) 1
+
+-- \a -> f a
+-- f
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +118,7 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum list = foldLeft (+) 0 list
 
 -- | Return the length of the list.
 --
@@ -119,7 +130,18 @@ length ::
   List a
   -> Int
 length =
-  error "todo: Course.List#length"
+-- foldLeft (\r -> \_ -> r + 1) 0
+-- foldLeft (\r -> kanst ((1 +) r)) 0
+-- foldLeft (\r -> campase kanst (1 +) r) 0
+-- foldLeft (campase kanst (1 +)) 0
+-- foldLeft ((.) const (1 +)) 0
+  foldLeft (const . (1 +)) 0
+
+campase :: (b -> c) -> (a -> b) -> a -> c
+campase = \f -> \g -> \a -> f (g a)
+
+kanst :: a -> b -> a
+kanst = \a _ -> a
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +155,9 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+map f (h:.t) = f h :. map f t
+
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +173,26 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil =
+  Nil
+filter p (h:.t) =
+--if p h then h :. filter p t else filter p t
+--bool (filter p t) (h :. filter p t) (p h)
+{-
+  (case p h of
+    True -> (h :.) 
+    False -> id) (filter p t)
+-}
+  bool id (h:.) (p h) (filter p t)
+
+-- if s then p x else q x
+-- (if s then p else q) x
+
+-- p :: a -> Bool
+-- h :: a
+-- p h :: Bool
+-- t :: List a
+
 
 -- | Append two lists to a new list.
 --
@@ -169,8 +210,20 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+-- (++) = \x y -> foldRight (:.) y x
+-- (++) = \x -> \y -> flip (foldRight (:.)) x y
+-- (++) = \x -> flip (foldRight (:.)) x
+(++) = flip (foldRight (:.))
+
+-- \x -> f x
+-- f
+
+-- h :: a
+-- t :: List a
+-- y :: List a
+-- t ++ y :: List a
+-- h :. (t ++ y) :: List a
+-- ? :: List a
 
 infixr 5 ++
 
@@ -187,8 +240,10 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten Nil = Nil
+-- flatten (h:.t) = h ++ flatten t
+flatten = foldRight (++) Nil
+
 
 -- | Map a function then flatten to a list.
 --
@@ -204,8 +259,34 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+-- flatMap _ Nil = Nil
+-- flatMap f (h:.t) = f h ++ flatMap f t
+-- flatMap f x = flatten (map f x)
+-- flatMap f = flatten . map f
+-- flatMap = (flatten .) . map
+-- flatMap f = foldRight (\h t -> f h ++ t) Nil
+flatMap f = foldRight ((++) . f) Nil
+
+
+-- a :. b :. c :. Nil
+-- f a ++ f b ++ f c ++ Nil
+
+
+-- f :: a -> List b
+-- h :: a
+-- t :: List a
+-- ? :: List b
+-- f h :: List b
+-- flatMap f t :: List b
+
+url = 'h' :. '.' :. 'g' :. ' ' :. '=' :. Nil
+
+urlEncoder :: List Char -> List Char
+urlEncoder = flatMap (\c ->
+  case c of
+    ' ' -> '%' :. '2' :. '0' :. Nil
+    '=' -> '%' :. 'e' :. 'q' :. Nil
+    _ -> c :. Nil)    
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
