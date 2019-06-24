@@ -77,10 +77,7 @@ headOr ::
 headOr x Nil = x
 headOr _ (h:._) = h
 -}
-headOr x list =
-  case list of
-    Nil -> x
-    h:._ -> h
+headOr = foldRight const
 
 {-
 headOr = \x -> \yooz -> 
@@ -296,7 +293,7 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -382,8 +379,18 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+-- reverse = foldLeft (\r el -> el :. r) Nil
+-- reverse = foldLeft (\r el -> (:.) el r) Nil
+-- reverse = foldLeft (\r el -> flip (:.) r el) Nil
+-- reverse = foldLeft (\r -> flip (:.) r) Nil
+reverse = foldLeft (flip (:.)) Nil
+
+-- reverse Nil = Nil
+-- reverse (h:.t) = (++) (reverse t) (h :. Nil)
+
+-- reverse0 :: List a -> List a -> List a
+-- reverse0 acc Nil = acc
+-- reverse0 acc (h:.t) = reverse0 (h :. acc) t
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
