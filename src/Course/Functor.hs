@@ -21,10 +21,18 @@ import qualified Prelude as P(fmap)
 class Functor f where
   -- Pronounced, eff-map.
   (<$>) ::
-    (a -> b)
-    -> f a
-    -> f b
+    (a -> b) -> f a -> f b
+{-
+data WhichWay = Equal | LT | GT
 
+data Fruit = Apple | Orange | Pear
+
+class Ordering a where
+  ordering :: a -> a -> WhichWay
+
+instance Ordering Fruit where
+  ordering Apple Apple = Equal
+-}
 infixl 4 <$>
 
 -- $setup
@@ -56,8 +64,9 @@ instance Functor List where
     (a -> b)
     -> List a
     -> List b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+  (<$>) _ Nil = Nil
+  (<$>) f (h:.t) = f h :. ((<$>) f t)
+    
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +80,11 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) = mapOptional
+  {-
+  (<$>) _ Empty = Empty
+  (<$>) f (Full a) = Full (f a)
+  -}
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -80,11 +92,11 @@ instance Functor Optional where
 -- 17
 instance Functor ((->) t) where
   (<$>) ::
-    (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
+    -- (a -> b) -> ((->) t a) -> ((->) t b)
+    -- (a -> b) -> (t -> a) -> t -> b
+    (a -> b) -> (t -> a) -> (t -> b)
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    (.)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -100,7 +112,7 @@ instance Functor ((->) t) where
   -> f b
   -> f a
 (<$) =
-  error "todo: Course.Functor#(<$)"
+  \a -> \fb -> (<$>) (\_ -> a) fb
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +132,7 @@ void ::
   f a
   -> f ()
 void =
-  error "todo: Course.Functor#void"
+  (<$) ()
 
 -----------------------
 -- SUPPORT LIBRARIES --

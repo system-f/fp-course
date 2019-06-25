@@ -48,8 +48,13 @@ instance Monad List where
     (a -> List b)
     -> List a
     -> List b
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    {-
+  (=<<) _ Nil =
+    Nil
+  (=<<) f (h:.t) =
+    f h ++ (=<<) f t
+    -}
+  (=<<) = flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -61,7 +66,7 @@ instance Monad Optional where
     -> Optional a
     -> Optional b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+    bindOptional
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -69,11 +74,10 @@ instance Monad Optional where
 -- 119
 instance Monad ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+    -- a -> ((->) t b)) -> ((->) t a) -> ((->) t b)
+    --(a -> (t -> b)) -> (t -> a) -> (t -> b)
+    (a -> t -> b) -> (t -> a) -> t -> b
+  (=<<) = \a2t2b t2a t -> a2t2b (t2a t) t
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -112,8 +116,20 @@ instance Monad ((->) t) where
   -> f a
   -> f b
 (<**>) =
-  error "todo: Course.Monad#(<**>)"
+  -- f x -> (x -> f y) -> f y
+  -- f a -> (a -> f b) -> f b
+  -- f (a -> b) -> ((a -> b) -> f b) -> f b
+  \f_a2b f_a ->
+    f_a2b >>= \a2b ->
+    f_a >>= \a ->
+    pure (a2b a)
 
+  {-
+  \k a ->
+    k >>= (\a2b ->
+    a >>= (\aa ->
+    pure (a2b aa)))
+-}
 infixl 4 <**>
 
 -- | Flattens a combined structure to a single structure.
@@ -134,7 +150,15 @@ join ::
   f (f a)
   -> f a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
+
+bynd :: Monad f => (a -> f b) -> f a -> f b
+bynd f f_a =
+  join (f <$> f_a)
+
+--f x -> (x -> f y) -> f y
+--f (f a) -> (f a -> f a) -> f a
+
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +172,7 @@ join =
   -> (a -> f b)
   -> f b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -164,7 +188,8 @@ infixl 1 >>=
   -> a
   -> f c
 (<=<) =
-  error "todo: Course.Monad#(<=<)"
+  -- f x -> (x -> f y) -> f y
+  \b2f_c -> \a2fb -> \a -> (>>=) (a2fb a) b2f_c
 
 infixr 1 <=<
 
