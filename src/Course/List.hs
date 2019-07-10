@@ -72,11 +72,14 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -> List a -> a
+headOr = \v -> \list -> case list of
+                          Nil -> v
+                          h:._ -> h
+{-
+headOr v Nil = v
+headOr _ (h:._) = h
+-}
 
 -- | The product of the elements of a list.
 --
