@@ -57,7 +57,7 @@ instance Functor List where
     -> List a
     -> List b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -72,7 +72,8 @@ instance Functor Optional where
     -> Optional a
     -> Optional b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+    mapOptional
+
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -80,11 +81,9 @@ instance Functor Optional where
 -- 17
 instance Functor ((->) t) where
   (<$>) ::
-    (a -> b)
-    -> ((->) t a)
-    -> ((->) t b)
+    (a -> b) -> (t -> a) -> t -> b
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    \rxtjrn -> \fxgn -> \dshdb -> rxtjrn (fxgn dshdb)
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -100,7 +99,7 @@ instance Functor ((->) t) where
   -> f b
   -> f a
 (<$) =
-  error "todo: Course.Functor#(<$)"
+  \thisisana -> \thisis_f_b -> (\_ -> thisisana) <$> thisis_f_b
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +119,11 @@ void ::
   f a
   -> f ()
 void =
-  error "todo: Course.Functor#void"
+  \dfdsg -> (\_ -> ()) <$> dfdsg
+
+flop :: Functor f => f (a -> b) -> a -> f b
+flop asf a = (\k -> k a) <$> asf
+
 
 -----------------------
 -- SUPPORT LIBRARIES --

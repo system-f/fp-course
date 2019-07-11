@@ -79,9 +79,15 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
   a -> List a -> a
+headOr x = foldRight const x
+
+
+{-
 headOr = \v -> \list -> case list of
                           Nil -> v
                           (:.) h _ -> h
+-}
+
 {-
 headOr v Nil = v
 headOr _ (h:._) = h
@@ -102,6 +108,19 @@ product ::
   -> Int
 product Nil = 1
 product (h:.t) = h * product t
+-- product = foldLeft (*) 1
+
+{-
+foldLeft f z list ~
+{
+  var r = z
+  for(el in list) {
+    r = f(r, el)
+  }
+  return r
+-}
+
+-- product = foldRight (*) 1
 
 -- | Sum the elements of the list.
 --
@@ -425,6 +444,8 @@ notReverse ::
   -> List a
 notReverse =
   error "todo: Is it even possible?"
+
+-- forall x. map f (notReverse x) == notReverse (map f x)
 
 ---- End of list exercises
 
