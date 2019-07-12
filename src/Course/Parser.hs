@@ -120,7 +120,9 @@ constantParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\input -> case input of
+                 Nil -> UnexpectedEof
+                 c:.r -> Result r c)
 
 -- | Parsers can map.
 -- Write a Functor instance for a @Parser@.
@@ -133,7 +135,10 @@ instance Functor Parser where
     -> Parser a
     -> Parser b
   (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
+    -- \f -> \p -> P (\input -> parse p)
+    -- \f -> \(P p) -> P (\input -> (<$>) f (p input))
+    -- \f -> \(P p) -> P ((<$>) f <$> p)
+     \f -> \(P p) -> P ((f <$>) <$> p)
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -143,7 +148,12 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  error "todo: Course.Parser#valueParser"
+  \a -> P (\input -> Result input a)
+
+-- (>>=) :: Parser a -> (a -> Parser b) -> Parser b
+twoChars :: Parser (Char, Char)
+twoChars = (>>=) character (\c1 -> character >>= \c2 -> valueParser (c1, c2))
+-- character :: Parser Char
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -166,8 +176,18 @@ valueParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) =
-  error "todo: Course.Parser#(|||)"
+(|||) (P p) (P q) =
+  P (\input -> 
+    let r = p input
+    -- in  bool (id r) (q input) (isErrorResult r)
+    in  bool (id r) (const (q input) r) (isErrorResult r)
+--    in lift3 bool id (const . q input) isErrorResult r
+    )
+  {-
+  P (\input -> case p input of
+                 r@(Result _ _) -> r
+                 _ -> q input)
+-}
 
 infixl 3 |||
 
@@ -199,7 +219,29 @@ instance Monad Parser where
     -> Parser a
     -> Parser b
   (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
+    \f -> \(P p) -> P (\input -> case p input of
+                                   UnexpectedEof -> UnexpectedEof
+                                   UnexpectedChar c -> UnexpectedChar c
+                                   UnexpectedString s -> UnexpectedString s
+                                   ExpectedEof j -> ExpectedEof j
+                                   Result input2 a -> parse (f a) input2)
+
+character2 :: Parser (Char, Char)
+-- character :: Parser Char
+-- (>>=) :: Parser a -> (a -> Parser b) -> Parser b
+-- valueParser :: a -> Parser a
+character2 = character >>= \c1 ->
+             character >>= \c2 ->
+             pure (c1, c2)
+-- Char -> Prser (Char, Char)
+
+
+
+-- f :: (a -> Parser b)
+-- p :: Input -> ParseResult a
+-- input :: Input
+-- ? :: ParseResult b
+
 
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
@@ -214,7 +256,11 @@ instance Applicative Parser where
     -> Parser a
     -> Parser b
   (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
+    \f a ->
+      f >>= \ff ->
+      a >>= \aa ->
+      pure (ff aa)
+
 
 -- | Return a parser that produces a character but fails if
 --
@@ -232,8 +278,13 @@ instance Applicative Parser where
 satisfy ::
   (Char -> Bool)
   -> Parser Char
-satisfy =
-  error "todo: Course.Parser#satisfy"
+satisfy pr =
+  character >>=
+    -- if pr c then pure c else unexpectedCharParser c
+    -- bool (unexpectedCharParser c) (pure c) (pr c)
+    lift3 bool unexpectedCharParser pure pr
+
+
 
 -- | Return a parser that produces the given character but fails if
 --
