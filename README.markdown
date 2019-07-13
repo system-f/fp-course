@@ -265,6 +265,7 @@ After this, the following progression of modules is recommended:
 * `Course.StateT`
 * `Course.Extend`
 * `Course.Comonad`
+* `Course.Contravariant`
 * `Course.Compose`
 * `Course.Traversable`
 * `Course.ListZipper`
