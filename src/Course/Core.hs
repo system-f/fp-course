@@ -12,6 +12,7 @@ module Course.Core(
 , Fractional(..)
 , Bool(..)
 , Either(..)
+, Ordering(..)
 , Int
 , Integer
 , IO
@@ -57,6 +58,7 @@ import Prelude(
   , Fractional(..)
   , Bool(..)
   , Either(..)
+  , Ordering(..)
   , Char
   , Int
   , Integer
@@ -118,4 +120,3 @@ bool f _ False =
   f
 bool _ t True =
   t
-

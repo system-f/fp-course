@@ -55,6 +55,7 @@ library
                       Course.Cheque
                       Course.Comonad
                       Course.Compose
+                      Course.Contravariant
                       Course.Core
                       Course.ExactlyOne
                       Course.Extend
