@@ -7,6 +7,7 @@ import Course.Core
 import Course.Functor
 import Course.Applicative
 import Course.Monad
+import Course.Contravariant
 
 -- Exactly one of these exercises will not be possible to achieve. Determine which.
 
@@ -32,4 +33,13 @@ instance (Monad f, Monad g) =>
   Monad (Compose f g) where
 -- Implement the (=<<) function for a Monad instance for Compose
   (=<<) =
-    error "todo: Course.Compose (<<=)#instance (Compose f g)"
+    error "todo: Course.Compose (=<<)#instance (Compose f g)"
+
+-- Note that the inner g is Contravariant but the outer f is
+-- Functor. We would not be able to write an instance if both were
+-- Contravariant; why not?
+instance (Functor f, Contravariant g) =>
+  Contravariant (Compose f g) where
+-- Implement the (>$<) function for a Contravariant instance for Compose
+  (>$<) =
+    error "todo: Course.Compose (>$<)#instance (Compose f g)"
