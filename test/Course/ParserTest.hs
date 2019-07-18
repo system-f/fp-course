@@ -149,6 +149,8 @@ applicativeTest =
         parse (pure toUpper <*> valueParser 'a') "xyz" @?= Result "xyz" 'A'
     , testCase "pure show <*>" $
         parse (pure show <*> valueParser 599) "xyz" @?= Result "xyz" "599"
+    , testCase "append character <*>" $
+        parse (((\a b -> a :. b :. Nil) <$> character) <*> character) "abxyz" @?= Result "xyz" "ab"
   ]
 
 satisfyTest :: MiniTestTree
