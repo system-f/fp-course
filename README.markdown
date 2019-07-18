@@ -69,7 +69,7 @@ however, your first post might be moderated. This is simply to prevent spam.
 instead. [Instructions](ops/README.md) for automatically building a virtual machine are
 available in this repository for your convenience.
 
-1. Install the Glasgow Haskell Compiler (GHC) version 7.10 or higher.
+1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher.
 
 2. Change to the directory containing this document.
 
