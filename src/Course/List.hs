@@ -324,7 +324,7 @@ produce f x = x :. produce f (f x)
 -- >>> notReverse Nil
 -- []
 --
--- prop> \x -> let types = x :: List Int in notReverse x ++ notReverse y == notReverse (y ++ x)
+-- prop> \x y -> let types = x :: List Int in notReverse x ++ notReverse y == notReverse (y ++ x)
 --
 -- prop> \x -> let types = x :: Int in notReverse (x :. Nil) == x :. Nil
 notReverse ::
