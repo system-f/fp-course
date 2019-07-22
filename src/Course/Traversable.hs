@@ -25,35 +25,35 @@ import Course.Compose
 --   `∀f g. traverse ((g <$>) . f) ≅ (traverse g <$>) . traverse f`
 class Functor t => Traversable t where
   traverse ::
-    Applicative f =>
-    (a -> f b)
+    Applicative k =>
+    (a -> k b)
     -> t a
-    -> f (t b)
+    -> k (t b)
 
 instance Traversable List where
   traverse ::
-    Applicative f =>
-    (a -> f b)
+    Applicative k =>
+    (a -> k b)
     -> List a
-    -> f (List b)
+    -> k (List b)
   traverse f =
     foldRight (\a b -> (:.) <$> f a <*> b) (pure Nil)
 
 instance Traversable ExactlyOne where
   traverse ::
-    Applicative f =>
-    (a -> f b)
+    Applicative k =>
+    (a -> k b)
     -> ExactlyOne a
-    -> f (ExactlyOne b)
+    -> k (ExactlyOne b)
   traverse =
     error "todo: Course.Traversable traverse#instance ExactlyOne"
 
 instance Traversable Optional where
   traverse ::
-    Applicative f =>
-    (a -> f b)
+    Applicative k =>
+    (a -> k b)
     -> Optional a
-    -> f (Optional b)
+    -> k (Optional b)
   traverse =
     error "todo: Course.Traversable traverse#instance Optional"
 
@@ -68,9 +68,9 @@ instance Traversable Optional where
 -- >>> sequenceA (Full (*10)) 6
 -- Full 60
 sequenceA ::
-  (Applicative f, Traversable t) =>
-  t (f a)
-  -> f (t a)
+  (Applicative k, Traversable t) =>
+  t (k a)
+  -> k (t a)
 sequenceA =
   error "todo: Course.Traversable#sequenceA"
 

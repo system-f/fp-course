@@ -16,9 +16,9 @@ import Course.Extend
 --
 -- * The law of right identity
 --   `∀f. copure . (f <<=) == f
-class Extend f => Comonad f where
+class Extend k => Comonad k where
   copure ::
-    f a
+    k a
     -> a
 
 -- | Implement the @Comonad@ instance for @ExactlyOne@.
@@ -37,9 +37,9 @@ instance Comonad ExactlyOne where
 -- >>> (+10) <$$> ExactlyOne 7
 -- ExactlyOne 17
 (<$$>) ::
-  Comonad f =>
+  Comonad k =>
   (a -> b)
-  -> f a
-  -> f b
+  -> k a
+  -> k b
 (<$$>) =
   error "todo: Course.Comonad#(<$>)"
