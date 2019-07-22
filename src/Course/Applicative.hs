@@ -27,13 +27,13 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- * The law of interchange
 --   `∀u y. u <*> pure y = pure ($ y) <*> u`
 
-class Functor f => Applicative f where
+class Functor k => Applicative k where
   pure ::
-    a -> f a
+    a -> k a
   (<*>) ::
-    f (a -> b)
-    -> f a
-    -> f b
+    k (a -> b)
+    -> k a
+    -> k b
 
 infixl 4 <*>
 
@@ -152,11 +152,11 @@ instance Applicative ((->) t) where
 -- >>> lift2 (+) length sum (listh [4,5,6])
 -- 18
 lift2 ::
-  Applicative f =>
+  Applicative k =>
   (a -> b -> c)
-  -> f a
-  -> f b
-  -> f c
+  -> k a
+  -> k b
+  -> k c
 lift2 =
   error "todo: Course.Applicative#lift2"
 
@@ -184,12 +184,12 @@ lift2 =
 -- >>> lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6])
 -- 138
 lift3 ::
-  Applicative f =>
+  Applicative k =>
   (a -> b -> c -> d)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
+  -> k a
+  -> k b
+  -> k c
+  -> k d
 lift3 =
   error "todo: Course.Applicative#lift3"
 
@@ -217,21 +217,21 @@ lift3 =
 -- >>> lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6])
 -- 148
 lift4 ::
-  Applicative f =>
+  Applicative k =>
   (a -> b -> c -> d -> e)
-  -> f a
-  -> f b
-  -> f c
-  -> f d
-  -> f e
+  -> k a
+  -> k b
+  -> k c
+  -> k d
+  -> k e
 lift4 =
   error "todo: Course.Applicative#lift4"
 
 -- | Apply a nullary function in the environment.
 lift0 ::
-  Applicative f =>
+  Applicative k =>
   a
-  -> f a
+  -> k a
 lift0 =
   error "todo: Course.Applicative#lift0"
 
@@ -247,10 +247,10 @@ lift0 =
 -- >>> lift1 (+1) (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 lift1 ::
-  Applicative f =>
+  Applicative k =>
   (a -> b)
-  -> f a
-  -> f b
+  -> k a
+  -> k b
 lift1 =
   error "todo: Course.Applicative#lift1"
 
@@ -273,10 +273,10 @@ lift1 =
 --
 -- prop> \x y -> Full x *> Full y == Full y
 (*>) ::
-  Applicative f =>
-  f a
-  -> f b
-  -> f b
+  Applicative k =>
+  k a
+  -> k b
+  -> k b
 (*>) =
   error "todo: Course.Applicative#(*>)"
 
@@ -299,10 +299,10 @@ lift1 =
 --
 -- prop> \x y -> Full x <* Full y == Full x
 (<*) ::
-  Applicative f =>
-  f b
-  -> f a
-  -> f b
+  Applicative k =>
+  k b
+  -> k a
+  -> k b
 (<*) =
   error "todo: Course.Applicative#(<*)"
 
@@ -323,9 +323,9 @@ lift1 =
 -- >>> sequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
 sequence ::
-  Applicative f =>
-  List (f a)
-  -> f (List a)
+  Applicative k =>
+  List (k a)
+  -> k (List a)
 sequence =
   error "todo: Course.Applicative#sequence"
 
@@ -348,10 +348,10 @@ sequence =
 -- >>> replicateA 3 ('a' :. 'b' :. 'c' :. Nil)
 -- ["aaa","aab","aac","aba","abb","abc","aca","acb","acc","baa","bab","bac","bba","bbb","bbc","bca","bcb","bcc","caa","cab","cac","cba","cbb","cbc","cca","ccb","ccc"]
 replicateA ::
-  Applicative f =>
+  Applicative k =>
   Int
-  -> f a
-  -> f (List a)
+  -> k a
+  -> k (List a)
 replicateA =
   error "todo: Course.Applicative#replicateA"
 
@@ -376,10 +376,10 @@ replicateA =
 -- [[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3],[1,2,3]]
 --
 filtering ::
-  Applicative f =>
-  (a -> f Bool)
+  Applicative k =>
+  (a -> k Bool)
   -> List a
-  -> f (List a)
+  -> k (List a)
 filtering =
   error "todo: Course.Applicative#filtering"
 
@@ -394,23 +394,23 @@ instance Applicative IO where
     f P.>>= \f' -> P.fmap f' a
 
 return ::
-  Applicative f =>
+  Applicative k =>
   a
-  -> f a
+  -> k a
 return =
   pure
 
 fail ::
-  Applicative f =>
+  Applicative k =>
   Chars
-  -> f a
+  -> k a
 fail =
   error . hlist
 
 (>>) ::
-  Applicative f =>
-  f a
-  -> f b
-  -> f b
+  Applicative k =>
+  k a
+  -> k b
+  -> k b
 (>>) =
   (*>)
