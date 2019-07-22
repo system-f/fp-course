@@ -272,6 +272,25 @@ space ::
 space =
   error "todo: Course.Parser#space"
 
+-- | Return a parser that conses the result of the first parser onto the result of
+-- the second. Pronounced "cons parser".
+--
+-- /Tip:/ Use @lift2@
+--
+-- >>> parse (character .:. valueParser Nil) "abc"
+-- Result >bc< "a"
+--
+-- >>> parse (digit .:. valueParser "hello") "321"
+-- Result >21< "3hello"
+(.:.) ::
+  Parser a
+  -> Parser (List a)
+  -> Parser (List a)
+(.:.) =
+  error "todo: Course.Parser#(:..)"
+
+infixr 5 .:.
+
 -- | Return a parser that continues producing a list of values from the given parser.
 --
 -- /Tip:/ Use @list1@, @pure@ and @(|||)@.
