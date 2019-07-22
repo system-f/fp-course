@@ -6,11 +6,6 @@ module Course.Validation where
 import qualified Prelude as P(String)
 import Course.Core
 
---  class Validation<A> {
---    Validation(String error) {} // Error
---    Validation(A value) {} // Value
---  }
-
 -- $setup
 -- >>> import Test.QuickCheck
 -- >>> import qualified Prelude as P(fmap, either)
