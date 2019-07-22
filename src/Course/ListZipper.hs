@@ -51,9 +51,6 @@ rights (ListZipper _ _ r) =
 
 -- A `MaybeListZipper` is a data structure that allows us to "fail" zipper operations.
 -- e.g. Moving left when there are no values to the left.
---
--- We then overload operations polymorphically to operate on both `ListZipper` and `MaybeListZipper`
--- using the `ListZipper'` type-class below.
 data MaybeListZipper a =
   IsZ (ListZipper a)
   | IsNotZ
