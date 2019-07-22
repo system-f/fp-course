@@ -7,9 +7,9 @@ It is strongly advised that functional programming techniques are used to achiev
 
 The following API functions should exist. By removing the need for some of these functions, the challenge becomes significantly easier. Removing some or all optional API functions is an advised path for someone who is looking to make the challenge easier.
 
-* `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is empty or in-play. Calling `move` on a game board that is finished is a *compile-time type error*.
+* `move`: takes a tic-tac-toe board and position and moves to that position (if not occupied) returning a new board. This function can only be called on a board that is empty or in-play. Calling `move` on a game board that is finished is a *compile-time type error*, as does calling `move` with the same player twice.
 
-*(optional)*  If fewer than 5 moves have been played, then this guarantees that the game is still in play, and so calling `move` will never produce a type-error in this case.
+*(optional)*  If fewer than 5 moves have been played, then this guarantees that the game is still in play, and so calling `move` will only ever produce a type-error if `move` is called with the same player twice.
 
 * `whoWon`: takes a tic-tac-toe board and returns the player that won the game (or a draw if neither). This function can only be called on a board that is finished. Calling `whoWon` on a game board that is empty or in-play is a *compile-time type error*. As an optional consideration, `whoWon` should never be a draw if fewer than nine moves have been played. In the case that the game is completed, but fewer than nine moves have been played, return a value that can only be one of two possibilities (the winner) and never a draw.
 
