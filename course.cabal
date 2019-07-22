@@ -68,7 +68,6 @@ library
                       Course.List
                       Course.ListZipper
                       Course.Monad
-                      Course.MonadTutorial
                       Course.MoreParser
                       Course.Optional
                       Course.Parser
