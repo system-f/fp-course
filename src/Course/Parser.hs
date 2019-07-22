@@ -53,7 +53,7 @@ instance Functor ParseResult where
   f <$> Result i a =
     Result i (f a)
 
--- Function to determine is a parse result is an error.
+-- Function to determine whether this @ParseResult@ is an error.
 isErrorResult ::
   ParseResult a
   -> Bool
