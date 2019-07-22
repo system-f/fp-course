@@ -113,7 +113,7 @@ getFiles =
   error "todo: Course.FileIO#getFiles"
 
 -- Given a file name, read it and for each line in that file, read and print contents of each.
--- Use @getFiles@ and @printFiles@.
+-- Use @getFiles@, @lines@, and @printFiles@.
 run ::
   FilePath
   -> IO ()
