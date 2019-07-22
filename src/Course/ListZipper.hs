@@ -51,10 +51,18 @@ rights (ListZipper _ _ r) =
 
 -- A `MaybeListZipper` is a data structure that allows us to "fail" zipper operations.
 -- e.g. Moving left when there are no values to the left.
-data MaybeListZipper a =
-  IsZ (ListZipper a)
-  | IsNotZ
+newtype MaybeListZipper a =
+  MLZ (Optional (ListZipper a))
   deriving Eq
+
+isZ ::
+  ListZipper a
+  -> MaybeListZipper a
+isZ = MLZ . Full
+
+isNotZ ::
+  MaybeListZipper a
+isNotZ = MLZ Empty
 
 -- | Implement the `Functor` instance for `ListZipper`.
 --
@@ -66,7 +74,7 @@ instance Functor ListZipper where
 
 -- | Implement the `Functor` instance for `MaybeListZipper`.
 --
--- >>> (+1) <$> (IsZ (zipper [3,2,1] 4 [5,6,7]))
+-- >>> (+1) <$> (MLZ (Full (zipper [3,2,1] 4 [5,6,7])))
 -- [4,3,2] >5< [6,7,8]
 instance Functor MaybeListZipper where
   (<$>) =
@@ -92,9 +100,9 @@ toList =
 toListZ ::
   MaybeListZipper a
   -> List a
-toListZ IsNotZ =
+toListZ (MLZ Empty) =
   Nil
-toListZ (IsZ z) =
+toListZ (MLZ (Full z)) =
   toList z
 
 -- | Create a `MaybeListZipper` positioning the focus at the head.
@@ -134,17 +142,15 @@ zipper l x r =
 fromOptional ::
   Optional (ListZipper a)
   -> MaybeListZipper a
-fromOptional Empty =
-  IsNotZ
-fromOptional (Full z) =
-  IsZ z
+fromOptional =
+  MLZ
 
 asZipper ::
   (ListZipper a -> ListZipper a)
   -> MaybeListZipper a
   -> MaybeListZipper a
 asZipper f =
-  asMaybeZipper (IsZ . f)
+  asMaybeZipper (isZ . f)
 
 (>$>)::
   (ListZipper a -> ListZipper a)
@@ -157,9 +163,9 @@ asMaybeZipper ::
   (ListZipper a -> MaybeListZipper a)
   -> MaybeListZipper a
   -> MaybeListZipper a
-asMaybeZipper _ IsNotZ =
-  IsNotZ
-asMaybeZipper f (IsZ z) =
+asMaybeZipper _ (MLZ Empty) =
+  isNotZ
+asMaybeZipper f (MLZ (Full z)) =
   f z
 
 (-<<) ::
@@ -239,7 +245,7 @@ hasRight =
 --
 -- /Tip:/ Use `break`
 --
--- prop> \xs p -> findLeft (const p) -<< fromList xs == IsNotZ
+-- prop> \xs p -> findLeft (const p) -<< fromList xs == isNotZ
 --
 -- >>> findLeft (== 1) (zipper [2, 1] 3 [4, 5])
 -- [] >1< [2,3,4,5]
@@ -267,7 +273,7 @@ findLeft =
 --
 -- /Tip:/ Use `break`
 --
--- prop> \xs -> findRight (const False) -<< fromList xs == IsNotZ
+-- prop> \xs -> findRight (const False) -<< fromList xs == isNotZ
 --
 -- >>> findRight (== 5) (zipper [2, 1] 3 [4, 5])
 -- [4,3,2,1] >5< []
@@ -619,20 +625,20 @@ instance Applicative ListZipper where
 -- /Tip:/ Use @pure@ for `ListZipper`.
 -- /Tip:/ Use `<*>` for `ListZipper`.
 --
--- prop> \z n -> let is (IsZ z) = z in all . (==) <*> take n . lefts . is . pure
+-- prop> \z n -> let is (MLZ (Full z)) = z in all . (==) <*> take n . lefts . is . pure
 --
--- prop> \z n -> let is (IsZ z) = z in all . (==) <*> take n . rights . is . pure
+-- prop> \z n -> let is (MLZ (Full z)) = z in all . (==) <*> take n . rights . is . pure
 --
--- >>> IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsZ (zipper [3,2,1] 4 [5,6,7])
+-- >>> isZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> isZ (zipper [3,2,1] 4 [5,6,7])
 -- [5,12] >8< [15,24,12]
 --
--- >>> IsNotZ <*> IsZ (zipper [3,2,1] 4 [5,6,7])
+-- >>> isNotZ <*> isZ (zipper [3,2,1] 4 [5,6,7])
 -- ><
 --
--- >>> IsZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> IsNotZ
+-- >>> isZ (zipper [(+2), (+10)] (*2) [(*3), (4*), (5+)]) <*> isNotZ
 -- ><
 --
--- >>> IsNotZ <*> IsNotZ
+-- >>> isNotZ <*> isNotZ
 -- ><
 instance Applicative MaybeListZipper where
   pure =
@@ -655,10 +661,10 @@ instance Extend ListZipper where
 -- This instance will use the `Extend` instance for `ListZipper`.
 --
 --
--- id <<= IsNotZ
+-- id <<= isNotZ
 -- ><
 --
--- >>> id <<= (IsZ (zipper [2,1] 3 [4,5]))
+-- >>> id <<= (isZ (zipper [2,1] 3 [4,5]))
 -- [[1] >2< [3,4,5],[] >1< [2,3,4,5]] >[2,1] >3< [4,5]< [[3,2,1] >4< [5],[4,3,2,1] >5< []]
 instance Extend MaybeListZipper where
   (<<=) =
@@ -694,10 +700,10 @@ instance Traversable ListZipper where
 --
 -- /Tip:/ Use `traverse` for `ListZipper`.
 --
--- >>> traverse id IsNotZ
+-- >>> traverse id isNotZ
 -- ><
 --
--- >>> traverse id (IsZ (zipper [Full 1, Full 2, Full 3] (Full 4) [Full 5, Full 6, Full 7]))
+-- >>> traverse id (isZ (zipper [Full 1, Full 2, Full 3] (Full 4) [Full 5, Full 6, Full 7]))
 -- Full [1,2,3] >4< [5,6,7]
 instance Traversable MaybeListZipper where
   traverse =
@@ -712,5 +718,5 @@ instance Show a => Show (ListZipper a) where
     stringconcat [show l, " >", show x, "< ", show r]
 
 instance Show a => Show (MaybeListZipper a) where
-  show (IsZ z) = show z
-  show IsNotZ = "><"
+  show (MLZ (Full z)) = show z
+  show (MLZ Empty) = "><"
