@@ -15,12 +15,12 @@ import Course.Functor
 --
 -- * The law of associativity
 --   `∀f g. (f <<=) . (g <<=) ≅ (<<=) (f . (g <<=))`
-class Functor f => Extend f where
+class Functor k => Extend k where
   -- Pronounced, extend.
   (<<=) ::
-    (f a -> b)
-    -> f a
-    -> f b
+    (k a -> b)
+    -> k a
+    -> k b
 
 infixr 1 <<=
 
@@ -83,8 +83,8 @@ instance Extend Optional where
 -- >>> cojoin Empty
 -- Empty
 cojoin ::
-  Extend f =>
-  f a
-  -> f (f a)
+  Extend k =>
+  k a
+  -> k (k a)
 cojoin =
   error "todo: Course.Extend#cojoin"

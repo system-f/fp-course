@@ -56,12 +56,12 @@ runSwappedArrow (SwappedArrow f) = f
 -- you can think of a 'Contravariant' as "accepting" an @a@. So if you
 -- can turn @b@ into @a@ (i.e., with the first argument to (>$<)')
 -- then you can make your 'Contravariant' accept @b@ instead.
-class Contravariant f where
+class Contravariant k where
   -- Pronounced, contramap.
   (>$<) ::
     (b -> a)
-    -> f a
-    -> f b
+    -> k a
+    -> k b
 
 infixl 4 >$<
 
@@ -115,9 +115,9 @@ instance Contravariant (SwappedArrow t) where
 --
 -- prop> \x -> runPredicate (3 >$ Predicate odd) x == True
 (>$) ::
-  Contravariant f =>
+  Contravariant k =>
   a
-  -> f a
-  -> f b
+  -> k a
+  -> k b
 (>$) =
   error "todo: Course.Contravariant#(>$)"
