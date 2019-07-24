@@ -254,6 +254,18 @@ is =
 --   * The produced character is not a digit.
 --
 -- /Tip:/ Use the @satisfy@ and @Data.Char#isDigit@ functions.
+--
+-- >>> parse digit "9"
+-- Result >< '9'
+--
+-- >>> parse digit "123"
+-- Result >23< '1'
+--
+-- >>> isErrorResult (parse digit "")
+-- True
+--
+-- >>> isErrorResult (parse digit "hello")
+-- True
 digit ::
   Parser Char
 digit =
