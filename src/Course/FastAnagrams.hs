@@ -10,6 +10,8 @@ import qualified Data.Set as S
 
 -- Return all anagrams of the given string
 -- that appear in the given dictionary file.
+-- on a Mac - run this with:
+-- > fastAnagrams "Tony" "/usr/share/dict/words"
 fastAnagrams ::
   Chars
   -> FilePath
