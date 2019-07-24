@@ -267,6 +267,18 @@ digit =
 --   * The produced character is not a space.
 --
 -- /Tip:/ Use the @satisfy@ and @Data.Char#isSpace@ functions.
+--
+-- >>> parse space " "
+-- Result >< ' '
+--
+-- >>> parse space "\n z"
+-- Result > z< '\n'
+--
+-- >>> isErrorResult (parse space "")
+-- True
+--
+-- >>> isErrorResult (parse space "a")
+-- True
 space ::
   Parser Char
 space =
