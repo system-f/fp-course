@@ -152,8 +152,9 @@ available in this repository for your convenience.
    on following the types, you will develop more trust in the potential paths
    that they can take you, including identification of false paths.
 
-   Your instructor must guide you where types fall short, but you should also
-   take the first step. Do it.
+   Where types fall short, use the tests written in comments above each exercise.
+   They can be copied and pasted into GHCi. You should also take the first step
+   of following the types. Do it.
 
 5. Do not use tab characters
 
