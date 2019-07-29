@@ -50,6 +50,7 @@ library
   hs-source-dirs:     src
 
   exposed-modules:    Course
+                      Course.Alternative
                       Course.Anagrams
                       Course.Applicative
                       Course.Cheque
