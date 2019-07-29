@@ -25,7 +25,12 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- * The law of associativity
 --   `∀u v w. u <|> (v <|> w) = (u <|> v) <|> w`
 --
--- You may notice that these are the same laws as Monoid.
+-- You may notice that these are the same laws as Monoid. An alternative
+-- can be considered a "monoid on applicative functors". The key difference
+-- between the two classes is that Alternative is higher-kinded, meaning that
+-- the type variable @k@ itself takes a type parameter.
+-- It is common for a type to have different instances for Monoid and
+-- Alternative.
 class Applicative k => Alternative k where
   zero ::
     k a
@@ -160,6 +165,8 @@ some =
 
 -- >>> aconcat (Empty :. Empty :. Full 7 :. Empty :. Full 8 :. Empty :. Nil)
 -- Full 7
+--
+-- /Note:/ In the standard library, this function is called @asum@
 aconcat :: Alternative k => List (k a) -> k a
 aconcat =
   error "todo: Course.Alternative aconcat"
