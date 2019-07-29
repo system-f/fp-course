@@ -24,7 +24,8 @@ import qualified Prelude as P(fmap, return, (>>=))
 --
 -- * The law of associativity
 --   `∀u v w. u <|> (v <|> w) = (u <|> v) <|> w`
-
+--
+-- You may notice that these are the same laws as Monoid.
 class Applicative k => Alternative k where
   zero ::
     k a
@@ -83,16 +84,16 @@ instance Alternative List where
 --
 -- /Tip:/ Check Parser.hs
 --
--- >>> parse (character ||| valueParser 'v') ""
+-- >>> parse (character <|> valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (constantParser UnexpectedEof ||| valueParser 'v') ""
+-- >>> parse (constantParser UnexpectedEof <|> valueParser 'v') ""
 -- Result >< 'v'
 --
--- >>> parse (character ||| valueParser 'v') "abc"
+-- >>> parse (character <|> valueParser 'v') "abc"
 -- Result >bc< 'a'
 --
--- >>> parse (constantParser UnexpectedEof ||| valueParser 'v') "abc"
+-- >>> parse (constantParser UnexpectedEof <|> valueParser 'v') "abc"
 -- Result >abc< 'v'
 instance Alternative Parser where
   zero ::
