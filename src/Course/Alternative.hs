@@ -32,7 +32,7 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- The Alternative instance for @k@ is often distinct from any Monoid instance
 -- for @k a@.
 -- An Alternative instance should relate to the Applicative instance in some
--- way, although this is not a firmly resolved question in the community.
+-- way, although the exact relation required is an open question in the community.
 -- Informally, it should be some kind of choice or alternation. Attempts to give
 -- laws relating the Applicative and Alternative are discussed here:
 -- https://wiki.haskell.org/Typeclassopedia#Laws_6
@@ -46,7 +46,7 @@ class Applicative k => Alternative k where
 
 infixl 3 <|>
 
--- | Return the first full Optional
+-- | Return the first full Optional.
 --
 -- >>> Full 3 <|> zero
 -- Full 3
@@ -68,7 +68,9 @@ instance Alternative Optional where
   (<|>) =
     error "todo: Course.Alternative (<|>)#instance Optional"
 
--- | Append the lists
+-- | Append the lists.
+-- This instance views lists as a non-deterministic choice between elements,
+-- so the way we "alternate" them is to append the lists.
 --
 -- >>> 3 :. 4 :. 5 :. Nil <|> Nil
 -- [3,4,5]
