@@ -29,8 +29,13 @@ import qualified Prelude as P(fmap, return, (>>=))
 -- can be considered a "monoid on applicative functors". The key difference
 -- between the two classes is that Alternative is higher-kinded, meaning that
 -- the type variable @k@ itself takes a type parameter.
--- It is common for a type to have different instances for Monoid and
--- Alternative.
+-- The Alternative instance for @k@ is often distinct from any Monoid instance
+-- for @k a@.
+-- An Alternative instance should relate to the Applicative instance in some
+-- way, although this is not a firmly resolved question in the community.
+-- Informally, it should be some kind of choice or alternation. Attempts to give
+-- laws relating the Applicative and Alternative are discussed here:
+-- https://wiki.haskell.org/Typeclassopedia#Laws_6
 class Applicative k => Alternative k where
   zero ::
     k a
