@@ -3,6 +3,7 @@
 
 module Course (module X) where
 
+import Course.Alternative as X
 import Course.Anagrams as X
 import Course.Applicative as X
 import Course.Cheque as X
