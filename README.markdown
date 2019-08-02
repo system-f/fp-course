@@ -298,8 +298,8 @@ If you choose to use the [Leksah IDE for Haskell](http://leksah.org/), the
 following tips are recommended:
 
 * [Install Leksah from github](https://github.com/leksah/leksah#getting-leksah).
-  If you are using Nix to install Leksah launch it with `./leksah-nix.sh ghc822`
-  as the Nix files for this course use GHC 8.2.2.
+  If you are using Nix to install Leksah launch it with `./leksah-nix.sh ghc864`
+  as the Nix files for this course use GHC 8.6.4.
 * Clone this fp-course git repo use File -> Open Project to open the cabal.project file.
 * Mouse over the toolbar items near the middle of toolbar to see the names of them.
   Set the following items on/off:
