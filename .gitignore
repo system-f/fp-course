@@ -37,3 +37,6 @@ TAGS
 # Vagrant
 .vagrant
 ops/*.retry
+
+# nix
+result
