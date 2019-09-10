@@ -49,7 +49,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -60,8 +60,8 @@ instance Monad Optional where
     (a -> Optional b)
     -> Optional a
     -> Optional b
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance Optional"
+  (=<<) _ Empty = Empty
+  (=<<) f (Full a) = f a
 
 -- | Binds a function on the reader ((->) t).
 --
@@ -72,8 +72,8 @@ instance Monad ((->) t) where
     (a -> ((->) t b))
     -> ((->) t a)
     -> ((->) t b)
-  (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+--    (a -> t -> b) -> (t -> a) -> t -> b
+  (=<<) a2t2b t2a t = a2t2b (t2a t) t
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -111,8 +111,37 @@ instance Monad ((->) t) where
   k (a -> b)
   -> k a
   -> k b
-(<**>) =
-  error "todo: Course.Monad#(<**>)"
+(<**>) ka2b ka =
+  {-
+  ka2b >>= \a2b ->
+  ka >>= \a ->
+  pure (a2b a)
+  -}
+  do 
+      a2b <- ka2b
+      a   <- ka
+      pure (a2b a)
+{-
+  from a2b in ka2b
+  from a   in ka
+  select (a2b(a))
+
+  for {
+    a2b <- ka2b
+    a   <- ka
+  } yield a2b(a)
+-}
+{-
+
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+-}
+
+-- (>>=) :: k x -> (x -> k y) -> k y
+-- (>>=) :: k (a -> b) -> ((a -> b) -> k b) -> k b
 
 infixl 4 <**>
 
@@ -133,8 +162,8 @@ join ::
   Monad k =>
   k (k a)
   -> k a
-join =
-  error "todo: Course.Monad#join"
+join k_of_k_of_a =
+  k_of_k_of_a >>= id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +177,7 @@ join =
   -> (a -> k b)
   -> k b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
 
 infixl 1 >>=
 
@@ -163,8 +192,7 @@ infixl 1 >>=
   -> (a -> k b)
   -> a
   -> k c
-(<=<) =
-  error "todo: Course.Monad#(<=<)"
+(<=<) b2k_of_c a2k_ofb a = a2k_ofb a >>= b2k_of_c
 
 infixr 1 <=<
 
