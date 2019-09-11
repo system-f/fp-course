@@ -138,7 +138,7 @@ instance Applicative ((->) t) where
     -> ((->) t b)
     -}
     (t -> a -> b) -> (t -> a) -> t -> b
-  (<*>) = \t2a2b -> \t2a -> \t -> t2a2b t (t2a t)
+  (<*>) = \t2a2b t2a t -> t2a2b t (t2a t)
 
 
 -- | Apply a binary function in the environment.
