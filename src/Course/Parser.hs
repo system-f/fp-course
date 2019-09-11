@@ -85,6 +85,9 @@ onResult (Result i a) k =
   k i a
 
 data Parser a = P (Input -> ParseResult a)
+-- \a -> f (g a)
+-- f ~ ((->) Input)
+-- g ~ ParseResult
 
 parse ::
   Parser a
@@ -120,7 +123,8 @@ constantParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\input -> case input of Nil -> UnexpectedEof
+                             h:.t -> Result t h)
 
 -- | Parsers can map.
 -- Write a Functor instance for a @Parser@.
@@ -133,7 +137,31 @@ instance Functor Parser where
     -> Parser a
     -> Parser b
   (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
+     mapParser
+
+mapParser :: (a -> b) -> Parser a -> Parser b
+-- mapParser = \a2b -> \(P p) -> P (\input -> a2b <$> p input)
+-- mapParser = \a2b -> \(P p) -> P (\input -> (<$>) a2b (p input))
+-- mapParser = \a2b -> \(P p) -> P ((<$>) a2b . p)
+mapParser = \a2b -> \(P p) -> P ((<$>) a2b <$> p)
+
+-- \x -> f (g x)
+-- f . g
+-- f <$> g
+
+{-
+mapParser = \a2b -> \(P p) -> P (\input ->
+              case p input of UnexpectedEof -> UnexpectedEof
+                              UnexpectedString s -> UnexpectedString s
+                              UnexpectedChar c -> UnexpectedChar c
+                              ExpectedEof i -> ExpectedEof i
+                              Result j a -> Result j (a2b a))
+-}
+
+-- a2b :: a -> b
+-- p :: Input -> ParseResult a
+-- input :: Input
+-- _ :: ParseResult b
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
