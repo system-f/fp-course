@@ -17,17 +17,17 @@ newtype Compose f g a =
 -- Implement a Functor instance for Compose
 instance (Functor f, Functor g) =>
     Functor (Compose f g) where
-  (<$>) =
-    error "todo: Course.Compose (<$>)#instance (Compose f g)"
+  h <$> Compose x =
+    Compose (((<$>) . (<$>)) h x)
 
 instance (Applicative f, Applicative g) =>
   Applicative (Compose f g) where
 -- Implement the pure function for an Applicative instance for Compose
-  pure =
-    error "todo: Course.Compose pure#instance (Compose f g)"
+  pure x =
+    Compose ((pure . pure) x)
 -- Implement the (<*>) function for an Applicative instance for Compose
-  (<*>) =
-    error "todo: Course.Compose (<*>)#instance (Compose f g)"
+  Compose x <*> Compose y =
+    Compose (((<*>) <$> x) <*> y)
 
 instance (Monad f, Monad g) =>
   Monad (Compose f g) where
@@ -41,5 +41,5 @@ instance (Monad f, Monad g) =>
 instance (Functor f, Contravariant g) =>
   Contravariant (Compose f g) where
 -- Implement the (>$<) function for a Contravariant instance for Compose
-  (>$<) =
-    error "todo: Course.Compose (>$<)#instance (Compose f g)"
+  f >$< Compose x =
+    Compose ((f >$<) <$> x)
