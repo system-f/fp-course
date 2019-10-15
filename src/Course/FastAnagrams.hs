@@ -16,8 +16,20 @@ fastAnagrams ::
   Chars
   -> FilePath
   -> IO (List Chars)
-fastAnagrams =
-  error "todo: Course.FastAnagrams#fastAnagrams"
+fastAnagrams s =
+  (<$>) ( map ncString
+        . listh
+        . S.toList
+        . S.intersection (( S.fromList
+                          . hlist
+                          . map NoCaseString
+                          . permutations
+                          ) s)
+        . S.fromList
+        . hlist
+        . map NoCaseString
+        . lines
+        ) . readFile
 
 newtype NoCaseString =
   NoCaseString {
@@ -26,6 +38,9 @@ newtype NoCaseString =
 
 instance Eq NoCaseString where
   (==) = (==) `on` map toLower . ncString
+
+instance Ord NoCaseString where
+  compare = compare `on` ncString
 
 instance Show NoCaseString where
   show = show . ncString
