@@ -25,6 +25,7 @@ import Course.List
 import Course.Functor
 import Course.Applicative
 import Course.Monad
+import Prelude (fromIntegral)
 
 -- $setup
 -- >>> :set -XOverloadedStrings
@@ -320,8 +321,105 @@ fromChar _ =
 --
 -- >>> dollars "456789123456789012345678901234567890123456789012345678901234567890.12"
 -- "four hundred and fifty-six vigintillion seven hundred and eighty-nine novemdecillion one hundred and twenty-three octodecillion four hundred and fifty-six septendecillion seven hundred and eighty-nine sexdecillion twelve quindecillion three hundred and forty-five quattuordecillion six hundred and seventy-eight tredecillion nine hundred and one duodecillion two hundred and thirty-four undecillion five hundred and sixty-seven decillion eight hundred and ninety nonillion one hundred and twenty-three octillion four hundred and fifty-six septillion seven hundred and eighty-nine sextillion twelve quintillion three hundred and forty-five quadrillion six hundred and seventy-eight trillion nine hundred and one billion two hundred and thirty-four million five hundred and sixty-seven thousand eight hundred and ninety dollars and twelve cents"
+
 dollars ::
   Chars
   -> Chars
-dollars =
-  error "todo: Course.Cheque#dollars"
+dollars chars =
+    cardinal dollarCount ++ " " ++ pluralize "dollar" dollarCount ++
+    " and " ++
+    cardinal centCount ++ " " ++ pluralize "cent" centCount
+  where
+    cardinal :: Integer -> Chars
+    cardinal n
+      | n <    0  = "negative " ++ cardinal (negate n)
+      | n ==   0  = "zero"
+      | n ==   1  = "one"
+      | n ==   2  = "two"
+      | n ==   3  = "three"
+      | n ==   4  = "four"
+      | n ==   5  = "five"
+      | n ==   6  = "six"
+      | n ==   7  = "seven"
+      | n ==   8  = "eight"
+      | n ==   9  = "nine"
+      | n ==  10  = "ten"
+      | n ==  11  = "eleven"
+      | n ==  12  = "twelve"
+      | n ==  13  = "thirteen"
+      | n ==  14  = "fourteen"
+      | n ==  15  = "fifteen"
+      | n ==  16  = "sixteen"
+      | n ==  17  = "seventeen"
+      | n ==  18  = "eighteen"
+      | n ==  19  = "nineteen"
+      | n ==  20  = "twenty"
+      | n ==  30  = "thirty"
+      | n ==  40  = "forty"
+      | n ==  50  = "fifty"
+      | n ==  60  = "sixty"
+      | n ==  70  = "seventy"
+      | n ==  80  = "eighty"
+      | n ==  90  = "ninety"
+      | n <  100  = let
+                      (q, r) = n `quotRem` 10
+                    in
+                      cardinal (q * 10) ++ "-"
+                                        ++ cardinal r
+      | n < 1000  = let
+                      (q, r) = n `quotRem` 100
+                    in
+                      cardinal q ++ " hundred"
+                                 ++ if r > 0 then " and " ++ cardinal r else ""
+      | otherwise = let
+                      i = truncLog 1000 n
+                      (q, r) = n `quotRem` (1000 ^ i)
+                    in
+                      cardinal q ++ " "
+                                 ++ headOr (show' i) (drop i illion)
+                                 ++ if r > 0 then " " ++ cardinal r else ""
+
+    truncLog :: Integer -> Integer -> Integer
+    truncLog base n = go 0 n
+      where
+        go z x | x < base  = z
+               | otherwise = go (z + 1) (x `quot` base)
+
+    (^) :: Integer -> Integer -> Integer
+    base ^ exp | exp < 0   = unexpectedNegativeExponent
+               | otherwise = go 1 exp
+      where
+        go z 0 = z
+        go z n | n > 0 = go (z * base) (n - 1)
+               | otherwise = unexpectedNegativeExponent
+
+    unexpectedNegativeExponent = error "Unexpected negative exponent"
+
+    dollarCount :: Integer
+    dollarCount = foldLeft (\z x -> z * 10 + fromIntegral x) 0
+                . mapInts
+                . takeWhile (/= '.')
+                $ chars
+
+    centCount :: Integer
+    centCount = fromIntegral
+              . go 0 10
+              . take 2
+              . mapInts
+              . dropWhile (/= '.')
+              $ chars
+      where
+        go :: Int -> Int -> List Int -> Int
+        go z _ Nil       = z
+        go z k (x :. xs) = if k > 0
+                             then go (z + x * k) (k `div` 10) xs
+                             else z
+
+    mapInts :: List Char -> List Int
+    mapInts = foldRight
+                (\x z -> if isDigit x then digitToInt x :. z else z)
+                Nil
+
+    pluralize :: Integral a => Chars -> a -> Chars
+    pluralize x 1 = x
+    pluralize x _ = x ++ "s"
