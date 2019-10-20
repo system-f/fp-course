@@ -2,8 +2,25 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.TraversableTest where
+module Course.TraversableTest (
+  -- * Tests
+    test_Traversable
+  , listTest
+  , exactlyOneTest
+  , optionalTest
+  , sequenceATest
+  , composeTest
+  , productFunctorTest
+  , productTraversableTest
+  , coProductFunctorTest
+  , coProductTraversableTest
 
+  -- * Course test runner
+  , courseTest
+  ) where
+
+
+import           Test.Course.Mini   (courseTest)
 import           Test.Mini          (MiniTestTree, testCase, testGroup, (@?=))
 
 import           Course.Compose     (Compose (Compose))
