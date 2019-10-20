@@ -1,4 +1,6 @@
-# Functional Programming Course
+# Functional Programming Course Solutions
+
+Solutions to the problems presented in [fp-course](https://github.com/data61/fp-course).
 
 ![Data61](http://i.imgur.com/0h9dFhl.png)
 
