@@ -341,7 +341,7 @@ these points should be covered before attempting the exercises.
   * The `->` in a type signature is *right-associative*
 * functions are values
 * functions take arguments
-  * functions take *only one argument* but we approximate without spoken
+  * functions take *only one argument* but we approximate with spoken
     language
   * functions can be declared inline using *lambda expressions*
   * the `\` symbol in a lambda expression denotes a Greek lambda
