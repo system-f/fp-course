@@ -213,7 +213,7 @@ distinctF =
   error "todo: Course.StateT#distinctF"
 
 -- | An `OptionalT` is a functor of an `Optional` value.
-data OptionalT k a =
+newtype OptionalT k a =
   OptionalT {
     runOptionalT ::
       k (Optional a)

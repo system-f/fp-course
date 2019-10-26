@@ -9,7 +9,7 @@ import Course.Core
 -- | A 'Predicate' is usually some kind of test about a
 -- thing. Example: a 'Predicate Integer' says "give me an 'Integer'"
 -- and I'll answer 'True' or 'False'.
-data Predicate a = Predicate (a -> Bool)
+newtype Predicate a = Predicate (a -> Bool)
 
 runPredicate ::
   Predicate a
@@ -22,7 +22,7 @@ runPredicate (Predicate f) =
 -- smaller, equal to, or larger than the second. 'Ordering' is a
 -- three-valued type used as the result of a comparison, with
 -- constructors 'LT', 'EQ', and 'GT'.
-data Comparison a = Comparison (a -> a -> Ordering)
+newtype Comparison a = Comparison (a -> a -> Ordering)
 
 runComparison ::
   Comparison a
@@ -34,7 +34,7 @@ runComparison (Comparison f) =
 
 -- | All this type does is swap the arguments around. We'll see why we
 -- want it when we look at its 'Contravariant' instance.
-data SwappedArrow a b = SwappedArrow (b -> a)
+newtype SwappedArrow a b = SwappedArrow (b -> a)
 
 runSwappedArrow ::
   SwappedArrow a b
