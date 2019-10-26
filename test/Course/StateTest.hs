@@ -95,7 +95,7 @@ monadTest =
     testCase "(=<<)" $
       runState (const (put 2) =<< put 1) 0 @?= ((),2)
   , testCase "" $
-      runState ((\a -> State (\s -> (a * 3, s * 2))) =<< State (\s -> (s + 2, s + 1))) 2 @?= (12,6)
+      runState ((\a -> State (\s -> (a + s, 10 + s))) =<< State (\s -> (s * 2, 4 + s))) 2 @?= (10, 16)
   , testCase "(>>=)" $
       let modify f = State (\s -> ((), f s))
        in runState (modify (+1) >>= \() -> modify (*2)) 7  @?= ((),16)
