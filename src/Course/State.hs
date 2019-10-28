@@ -112,6 +112,9 @@ instance Applicative (State s) where
 --
 -- >>> let modify f = State (\s -> ((), f s)) in runState (modify (+1) >>= \() -> modify (*2)) 7
 -- ((),16)
+--
+-- >>> runState ((\a -> State (\s -> (a + s, 10 + s))) =<< State (\s -> (s * 2, 4 + s))) 2
+-- (10,16)
 instance Monad (State s) where
   (=<<) ::
     (a -> State s b)
