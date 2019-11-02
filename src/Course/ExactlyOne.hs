@@ -12,6 +12,7 @@ data ExactlyOne a = ExactlyOne a deriving (Eq, Show)
 
 runExactlyOne :: ExactlyOne a -> a
 runExactlyOne (ExactlyOne a) = a
+-- runExactlyOne = \(ExactlyOne a) -> a
 
 mapExactlyOne :: (a -> b) -> ExactlyOne a -> ExactlyOne b
 mapExactlyOne f (ExactlyOne a)    = ExactlyOne (f a)

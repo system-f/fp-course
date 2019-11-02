@@ -27,6 +27,10 @@ type Err = P.String
 isError :: Validation a -> Bool
 isError (Error _) = True
 isError (Value _) = False
+-- can be written as
+-- isError v = case v of
+--   Error _ -> True
+--   Value _ -> False
 
 -- | Returns whether or not the given validation is a value.
 --
