@@ -513,7 +513,7 @@ thisMany ::
   -> Parser a
   -> Parser (List a)
 thisMany =
-  error "todo: Course.Parser#thisMany"
+  \n p -> sequenceParser (replicate n p)
 
 -- | This one is done for you.
 --
@@ -546,8 +546,36 @@ ageParser =
 firstNameParser ::
   Parser Chars
 firstNameParser =
-  error "todo: Course.Parser#firstNameParser"
+  -- is anything on the left of <- used on the right of <- ?
+  -- if no, then we can use Applicative else we cannot
+-- (:.) <$> upper <*> (list lower)
+-- lift2 (:.) upper (list lower)
+-- (.:.) upper (list lower)
+  upper .:. list lower
+  {-
+  do
+      c <- upper
+      d <- list lower
+      pure (c :. d)
+-}
+{-
 
+##### do-notation
+
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+-}
+
+{-
+thisManyOrMore :: Int -> Parser a -> Parser (List a)
+thisManyOrMore n p =
+  thisMany n p, and then, call it x
+  (0 or many) p, and then, call it y
+  always (x ++ y)
+  -}
 -- | Write a parser for Person.surname.
 --
 -- /Surname: string that starts with a capital letter and is followed by 5 or more lower-case letters./
@@ -568,7 +596,22 @@ firstNameParser =
 surnameParser ::
   Parser Chars
 surnameParser =
-  error "todo: Course.Parser#surnameParser"
+  upper >>= \u ->
+  thisMany 5 lower >>= \v ->
+  list lower >>= \w ->
+  pure (u :. v ++ w)
+
+mysillymanager :: Parser Chars
+mysillymanager =
+  do  u <- character
+      c <- if isUpper u
+            then  
+              lower
+            else
+              upper
+      r <- list lower
+      pure (u :. c :. r)
+
 
 -- | Write a parser for Person.smoker.
 --
@@ -587,7 +630,7 @@ surnameParser =
 smokerParser ::
   Parser Bool
 smokerParser =
-  error "todo: Course.Parser#smokerParser"
+  (True <$ is 'y') ||| (False <$ is 'n')
 
 -- | Write part of a parser for Person#phoneBody.
 -- This parser will only produce a string of digits, dots or hyphens.
@@ -609,7 +652,7 @@ smokerParser =
 phoneBodyParser ::
   Parser Chars
 phoneBodyParser =
-  error "todo: Course.Parser#phoneBodyParser"
+  list (digit ||| is '.' ||| is '-')
 
 -- | Write a parser for Person.phone.
 --
@@ -631,8 +674,39 @@ phoneBodyParser =
 phoneParser ::
   Parser Chars
 phoneParser =
-  error "todo: Course.Parser#phoneParser"
+  (:.) <$>
+  digit <*>
+  phoneBodyParser <*
+  is '#'
 
+spaceshipWithMissingRightWing ::
+  Applicative f =>
+     f a
+  -> f b
+  -> f a
+spaceshipWithMissingRightWing =
+  lift2 const
+
+spaceshipWithMissingLeftWing ::
+  Applicative f =>
+     f b
+  -> f a
+  -> f a
+spaceshipWithMissingLeftWing =
+  lift2 (flip const)
+
+{-
+  do  d <- digit
+      b <- phoneBodyParser
+      _ <- is '#'
+      pure (d :. b)
+      -}
+  {-
+  digit >>= \d ->
+  phoneBodyParser >>= \b ->
+  is '#' >>= \_ ->
+  pure (d :. b)
+  -}
 -- | Write a parser for Person.
 --
 -- /Tip:/ Use @(>>=)@,
@@ -683,13 +757,33 @@ phoneParser =
 -- >>> parse personParser "123 Fred Clarkson y 123-456.789# rest"
 -- Result > rest< Person 123 "Fred" "Clarkson" True "123-456.789"
 
+spaces2 :: Parser Chars
+spaces2 = "" <$ (space .:. spaces1)
+
 --
 -- >>> parse personParser "123  Fred   Clarkson    y     123-456.789#"
 -- Result >< Person 123 "Fred" "Clarkson" True "123-456.789"
 personParser ::
   Parser Person
 personParser =
-  error "todo: Course.Parser#personParser"
+  Person <$>
+    ageParser <*>~
+    firstNameParser <*>~
+    surnameParser <*>~
+    smokerParser <*>~
+    phoneParser
+{-
+  do  a <- ageParser
+      _ <- spaces2
+      f <- firstNameParser
+      _ <- spaces2
+      s <- surnameParser
+      _ <- spaces2
+      k <- smokerParser
+      _ <- spaces2
+      p <- phoneParser
+      pure (Person a f s k p)
+-}
 
 -- Make sure all the tests pass!
 
