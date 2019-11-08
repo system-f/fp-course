@@ -120,7 +120,12 @@ constantParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\i -> case i of
+              Nil -> UnexpectedEof
+              h:.t -> Result t h)
+
+-- h :: Char
+-- t :: List Char
 
 -- | Parsers can map.
 -- Write a Functor instance for a @Parser@.
@@ -132,8 +137,17 @@ instance Functor Parser where
     (a -> b)
     -> Parser a
     -> Parser b
-  (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
+  (<$>) f (P p) =
+     -- \f -> \(P p) -> _
+     -- P (\i -> f <$> p i)
+     -- P (\i -> (<$>) f (p i))
+     P ((<$>) f <$> p)
+
+-- f :: a -> b
+-- p :: Input -> ParseResult a
+-- i :: Input
+-- _ :: ParseResult b
+
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -143,7 +157,7 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  error "todo: Course.Parser#valueParser"
+  \a -> P (\i -> Result i a)
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -166,8 +180,10 @@ valueParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) =
-  error "todo: Course.Parser#(|||)"
+(|||) (P p) (P q) =
+  P (\i -> let p' = p i
+           in  bool p' (q i) (isErrorResult p')
+    )
 
 infixl 3 |||
 
@@ -199,7 +215,22 @@ instance Monad Parser where
     -> Parser a
     -> Parser b
   (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
+    \f (P p) ->
+      P (\i -> case p i of
+                 UnexpectedEof -> UnexpectedEof
+                 UnexpectedChar c -> UnexpectedChar c
+                 UnexpectedString s -> UnexpectedString s
+                 ExpectedEof z -> ExpectedEof z
+                 Result j a -> parse (f a) j
+                 )
+
+           -- p :: Input -> ParseResult a
+-- f :: a -> Parser b
+           -- i :: Input
+-- j :: Input
+-- a :: a
+-- _ :: ParseResult b
+
 
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
@@ -214,7 +245,10 @@ instance Applicative Parser where
     -> Parser a
     -> Parser b
   (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
+    \f x ->
+      f >>= \ff ->
+      x >>= \xx ->
+      pure (ff xx)
 
 -- | Return a parser that produces a character but fails if
 --
@@ -233,7 +267,11 @@ satisfy ::
   (Char -> Bool)
   -> Parser Char
 satisfy =
-  error "todo: Course.Parser#satisfy"
+  \p -> character >>=
+          --bool (unexpectedCharParser c) (pure c) (p c)
+          lift3 bool unexpectedCharParser pure p
+        -- if p c then pure c else unexpectedCharParser c
+        -- if p c then pure c else unexpectedCharParser c
 
 -- | Return a parser that produces the given character but fails if
 --
@@ -245,7 +283,11 @@ satisfy =
 is ::
   Char -> Parser Char
 is =
-  error "todo: Course.Parser#is"
+  -- \c -> satisfy (\d -> c == d)
+  -- \c -> satisfy ((==) c)
+  satisfy . (==)
+-- \x -> f (g x)
+-- f . g
 
 -- | Return a parser that produces a character between '0' and '9' but fails if
 --
@@ -269,7 +311,7 @@ is =
 digit ::
   Parser Char
 digit =
-  error "todo: Course.Parser#digit"
+  satisfy isDigit
 
 --
 -- | Return a parser that produces a space character but fails if
@@ -294,7 +336,7 @@ digit =
 space ::
   Parser Char
 space =
-  error "todo: Course.Parser#space"
+  satisfy isSpace
 
 -- | Return a parser that conses the result of the first parser onto the result of
 -- the second. Pronounced "cons parser".
@@ -311,7 +353,7 @@ space =
   -> Parser (List a)
   -> Parser (List a)
 (.:.) =
-  error "todo: Course.Parser#(.:.)"
+  lift2 (:.)
 
 infixr 5 .:.
 
@@ -339,8 +381,8 @@ infixr 5 .:.
 list ::
   Parser a
   -> Parser (List a)
-list =
-  error "todo: Course.Parser#list"
+list things =
+  list1 things ||| pure Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -359,7 +401,21 @@ list1 ::
   Parser a
   -> Parser (List a)
 list1 =
-  error "todo: Course.Parser#list1"
+-- \things -> things .:. list things
+-- \things -> (.:.) things (list things)
+  (.:.) <*> list
+  
+{-
+\x -> f x (g x)
+f <*> g
+-}
+
+  {-
+  things >>= \x ->
+  list things >>= \ y ->
+  pure (x :. y)
+  -}
+
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if
@@ -372,7 +428,7 @@ list1 =
 spaces1 ::
   Parser Chars
 spaces1 =
-  error "todo: Course.Parser#spaces1"
+  list1 space
 
 -- | Return a parser that produces a lower-case character but fails if
 --
@@ -384,7 +440,7 @@ spaces1 =
 lower ::
   Parser Char
 lower =
-  error "todo: Course.Parser#lower"
+  satisfy isLower
 
 -- | Return a parser that produces an upper-case character but fails if
 --
@@ -396,7 +452,7 @@ lower =
 upper ::
   Parser Char
 upper =
-  error "todo: Course.Parser#upper"
+  satisfy isUpper
 
 -- | Return a parser that produces an alpha character but fails if
 --
@@ -408,7 +464,7 @@ upper =
 alpha ::
   Parser Char
 alpha =
-  error "todo: Course.Parser#alpha"
+  satisfy isAlpha
 
 -- | Return a parser that sequences the given list of parsers by producing all their results
 -- but fails on the first failing parser of the list.
@@ -425,7 +481,22 @@ sequenceParser ::
   List (Parser a)
   -> Parser (List a)
 sequenceParser =
-  error "todo: Course.Parser#sequenceParser"
+  blah
+
+blah ::
+  Applicative f =>
+  List (f a)
+  -> f (List a)
+blah Nil =
+  pure Nil
+blah (h:.t) =
+  lift2 (:.) h (blah t)
+
+-- h      :: f a
+                      -- t :: List (f a)
+-- blah t :: f (List a)
+-- _      :: f (List a)
+
 
 -- | Return a parser that produces the given number of values off the given parser.
 -- This parser fails if the given parser fails in the attempt to produce the given number of values.

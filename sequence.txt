@@ -1,0 +1,7 @@
+
+List (f     a)  -> Maybe  (f    a)
+List (Maybe a)  -> Maybe  (List a)
+List (t ->  a)  -> t ->    List a
+List (List  a)  -> List   (List a)
+List (Parser a) -> Parser (List a)
+
