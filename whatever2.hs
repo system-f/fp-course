@@ -32,6 +32,10 @@ flipOptionalTwo opttwo a = mapOptional (mapTwo (\f -> f a)) opttwo
 class AllThingsThatMap k where
   mapAnything :: (a -> b) -> k a -> k b
 
+-- law1, law of identity, mapAnything id x = x
+-- law2, law of composition, mapAnything f (mapAnything g x) = 
+--   mapAnything (f . g) x
+
 instance AllThingsThatMap Two where
   mapAnything = mapTwo
 
@@ -100,6 +104,66 @@ sequenceListAnd =
 class AllThingsThatHaveBindAndPure k where
   bind :: k a -> (a -> k b) -> k b
   puure :: a -> k a
+
+-- aka Applicative
+class AllThingsThatHaveApplyAndPure k where
+  apply :: k (a -> b) -> k a -> k b
+  lift0 :: a -> k a
+
+instance AllThingsThatHaveApplyAndPure Optional where
+  apply Empty _ = Empty
+  apply _ Empty = Empty
+  apply (Full f) (Full a) = Full (f a)
+  lift0 a = Full a
+
+instance AllThingsThatHaveApplyAndPure Inter where
+  apply (Inter f) (Inter x) =
+    Inter (\a -> (f a) (x a))
+  lift0 a = Inter (\_ -> a)
+
+instance AllThingsThatHaveApplyAndPure [] where
+  lift0 a = [a]
+  [] `apply` _ = []
+  _ `apply` [] = []
+  (h1:t1) `apply` r =
+    map h1 r ++ (t1 `apply` r)
+
+  -- apply :: Optional (a -> b) -> Optional a -> Optional b
+  -- lift0 :: a -> Optional a
+
+-- all things that have apply and lift0, have map
+-- all applicative, are functor
+lift1 :: AllThingsThatHaveApplyAndPure k => (a -> b) -> (k a -> k b)
+-- lift1 = \a2b -> \x -> apply (lift0 a2b) x
+-- lift1 = \a2b -> apply (lift0 a2b)
+lift1 = apply . lift0
+
+sequenceAgain :: AllThingsThatHaveApplyAndPure k => [k a] -> k [a]
+sequenceAgain = foldr (lift2 (:)) (lift0 [])
+
+lift2 :: AllThingsThatHaveApplyAndPure k => (a -> b -> c) -> (k a -> k b -> k c)
+lift2 a2b2c ka kb = apply (lift1 a2b2c ka) kb
+-- k (b -> c)
+-- a2b2c :: a -> b -> c
+-- ka :: k a
+-- kb :: k b
+-- _  :: k c
+
+
+-- you can write liftN using lift[N-1] and apply
+
+-- a2b :: a -> b
+-- _ :: k (a -> b)
+
+
+-- comonad
+class AllThingsThatHaveCobindAndCopure k where
+  cobind :: (k a -> b) -> k a -> k b
+  copure :: k a -> a
+
+-- (a -> b) -> k a -> k b
+mapIt :: AllThingsThatHaveBindAndPure k => (a -> b) -> k a -> k b
+mapIt f k = bind k (puure . f)
 
 instance AllThingsThatHaveBindAndPure IO where
   bind = (>>=)
