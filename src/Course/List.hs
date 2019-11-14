@@ -123,6 +123,23 @@ return r;
 -- 3
 --
 -- prop> \x -> sum (map (const 1) x) == length x
+
+data Natural = Zeero | Successor Natural
+
+lengthProperly :: List a -> Natural
+lengthProperly Nil = Zeero
+lengthProperly (_:.t) = Successor (lengthProperly t)
+
+one = Successor Zeero
+two = Successor one
+three = Successor two
+four = Successor three
+
+gt :: Natural -> Natural -> Bool
+gt Zeero _ = False
+gt (Successor _) Zeero = True
+gt (Successor x) (Successor y) = x `gt` y
+
 length ::
   List a
   -> Int
@@ -142,8 +159,13 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+-- map f list = foldRight (\h -> \t -> f h :. t) Nil list
+-- map f list = foldRight (\h -> \t -> (:.) (f h) t) Nil list
+-- map f list = foldRight (\h -> (:.) (f h)) Nil list
+map f = foldRight ((:.) . f) Nil
+
+-- \x -> f (g x)
+-- f . g
 
 -- | Return elements satisfying the given predicate.
 --
@@ -178,8 +200,10 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+(++) list1 list2 = foldRight (:.) list2 list1
+
+single :: t -> List t
+single t = t :. Nil
 
 infixr 5 ++
 
@@ -196,8 +220,13 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten Nil = Nil
+flatten (h:.t) = h ++ flatten t
+-- h :: List a
+                    -- t :: List (List a)
+-- flatten t :: List a
+-- _ :: List a
+
 
 -- | Map a function then flatten to a list.
 --
@@ -310,8 +339,25 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+-- reverse list = foldLeft (\r el -> el :. r) Nil list
+-- reverse list = foldLeft (\r el -> (:.) el r) Nil list
+-- reverse list = foldLeft (\r el -> flip (:.) r el) Nil list
+-- reverse list = foldLeft (\r -> flip (:.) r) Nil list
+-- reverse list = foldLeft (flip (:.)) Nil list
+reverse = foldLeft (flip (:.)) Nil
+
+
+
+
+
+
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+--reverse Nil = Nil
+-- reverse (h:.t) = reverse t ++ h :. Nil
+
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
