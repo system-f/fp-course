@@ -72,11 +72,11 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -- ^ the default
+  -> List a -- ^ the list
+  -> a -- ^ the head
+headOr def Nil = def
+headOr _ (h :. _) = h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +91,8 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product (h:.t) = h * product t
+product Nil = 1
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +106,16 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (+) 0
+
+
+{-
+var r = 0;
+for(int i = 0; i < list.length; i++) {
+  r = r + list[i];
+}
+return r;
+-}
 
 -- | Return the length of the list.
 --
@@ -118,8 +126,9 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (\r el -> r + 1) 0
+-- length = foldLeft (\r -> const (1 + r)) 0
+length = foldLeft (const . (1 +)) 0
 
 -- | Map the given function on each element of the list.
 --
