@@ -292,45 +292,6 @@ Answers for the exercises can be found here:
 
 After these are completed, complete the exercises in the `projects` directory.
 
-### Leksah
-
-If you choose to use the [Leksah IDE for Haskell](http://leksah.org/), the
-following tips are recommended:
-
-* [Install Leksah from github](https://github.com/leksah/leksah#getting-leksah).
-  If you are using Nix to install Leksah launch it with `./leksah-nix.sh ghc864`
-  as the Nix files for this course use GHC 8.6.4.
-* Clone this fp-course git repo use File -> Open Project to open the cabal.project file.
-* Mouse over the toolbar items near the middle of toolbar to see the names of them.
-  Set the following items on/off:
-  * `Build in the background and report errors` ON - unless you prefer to triger builds
-     manualy with Ctrl + B to build (Command + B on OS X)
-  * `Use GHC to compile` ON
-  * `Use GHCJS to compile` OFF
-  * `Use GHCi debugger to build and run` ON
-  * `Make documentation while building` OFF
-  * `Run unit tests when building` ON
-  * `Run benchmakrs when building` OFF
-  * `Make dependent packages` ON
-* If you are using Nix, click on the nix button on the toolbar (tool tip is "Refresh
-  Leksah's cached nix environment variables for the active project").  This will use
-  `nix-shell` to build an environment for running the builds in.  If `nix-shell` has
-  not been run before for the `fp-course` repo it may take some time to complete.
-  When it is finished a line of green '-' characters should be printed in the Panes -> Log.
-* Restart Leksah as there is a bug in the metadata collection that
-  will prevent it from indexing the new project without a restart.
-* Ctrl + B to build (Command + B on OS X).
-* The test failures should show up in Panes -> Errors.
-* Pane -> Log often has useful error messages.
-* Ctrl + J (Command + J on OS X) selects the next item in
-  Errors pane and goes to it in the source (hold down Shift
-  to go to previous item).
-* Ctrl + Enter on a line starting "-- >>>" will run the
-  selected expression in GHCi (Ctrl + Enter on OS X too).
-  The output goes to Panes -> Log (on Linux it will also show up in Panes -> Output).
-* The last GHCi expression is reevaluated after each :reload
-  triggered by changes in the code.
-
 ### Introducing Haskell
 
 This section is a guide for the instructor to introduce Haskell syntax. Each of
