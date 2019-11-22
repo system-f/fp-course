@@ -81,11 +81,11 @@ haveFmapTest :: MiniTestTree
 haveFmapTest =
   testGroup "lift1" [
     testCase "ExactlyOne" $
-      (lift1 (+ 1) (ExactlyOne 2)) @?= ExactlyOne (3 :: Integer)
+      lift1 (+ 1) (ExactlyOne 2) @?= ExactlyOne (3 :: Integer)
   , testCase "empty List" $
-      (lift1 (+ 1) Nil) @?= Nil
+      lift1 (+ 1) Nil @?= Nil
   , testCase "List" $
-      (lift1 (+ 1) (listh [1,2,3])) @?= listh [2,3,4]
+      lift1 (+ 1) (listh [1,2,3]) @?= listh [2,3,4]
   ]
 
 optionalTest :: MiniTestTree
@@ -162,7 +162,7 @@ lift4Test =
       lift4 (\a b c d -> a + b + c + d) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) (ExactlyOne 10) @?= ExactlyOne 34
   , testCase "+ over List" $
       lift4 (\a b c d -> a + b + c + d) (listh [1, 2, 3]) (listh [4, 5]) (listh [6, 7, 8]) (listh [9, 10]) @?=
-        (listh [20,21,21,22,22,23,21,22,22,23,23,24,21,22,22,23,23,24,22,23,23,24,24,25,22,23,23,24,24,25,23,24,24,25,25,26])
+        listh [20,21,21,22,22,23,21,22,22,23,23,24,21,22,22,23,23,24,22,23,23,24,24,25,22,23,23,24,24,25,23,24,24,25,25,26]
   , testCase "+ over Optional" $
       lift4 (\a b c d -> a + b + c + d) (Full 7) (Full 8) (Full 9) (Full 10) @?= Full 34
   , testCase "+ over Optional - third Empty" $

@@ -67,4 +67,3 @@ tests =
   , JsonParser.test_JsonParser
   , ChequeTest.test_Cheque
   ]
-

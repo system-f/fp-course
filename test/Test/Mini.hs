@@ -2,7 +2,6 @@
 {-# LANGUAGE GADTs                  #-}
 {-# LANGUAGE ImplicitPrelude        #-}
 {-# LANGUAGE KindSignatures         #-}
-{-# LANGUAGE MultiParamTypeClasses  #-}
 {-# LANGUAGE RankNTypes             #-}
 {-# LANGUAGE ScopedTypeVariables    #-}
 
