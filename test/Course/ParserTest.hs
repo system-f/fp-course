@@ -30,13 +30,9 @@ module Course.ParserTest (
   , phoneBodyParserTest
   , phoneParserTest
   , personParserTest
-
-  -- * Course test runner
-  , courseTest
   ) where
 
-import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, assertBool, testCase,
+import           Test.Course.Mini   (TestTree, assertBool, testCase,
                                      testGroup, (@?=))
 
 import           Course.Applicative (pure, (*>), (<*>))
@@ -48,7 +44,7 @@ import           Course.Optional    (Optional (Full))
 import           Course.Parser
 import           Course.Person      (Person (Person))
 
-test_Parser :: MiniTestTree
+test_Parser :: TestTree
 test_Parser =
   testGroup "Parser" [
       constantParserTest
@@ -78,7 +74,7 @@ test_Parser =
     , personParserTest
   ]
 
-constantParserTest :: MiniTestTree
+constantParserTest :: TestTree
 constantParserTest =
   testGroup "constantParserTest" [
       testCase "can return error result" $
@@ -87,7 +83,7 @@ constantParserTest =
         parse (constantParser (Result "xyz" 4)) "abc" @?= Result "xyz" 4
   ]
 
-characterTest :: MiniTestTree
+characterTest :: TestTree
 characterTest =
   testGroup "characterTest" [
       testCase "parses single character from non-empty string" $
@@ -96,21 +92,21 @@ characterTest =
         isErrorResult (parse character "")
   ]
 
-functorTest :: MiniTestTree
+functorTest :: TestTree
 functorTest =
   testGroup "functorTest" [
     testCase "toUpper <$>" $
       parse (toUpper <$> character) "amz" @?= Result "mz" 'A'
   ]
 
-valueParserTest :: MiniTestTree
+valueParserTest :: TestTree
 valueParserTest =
   testGroup "valueParserTest" [
       testCase "succeeds with given value" $
         parse (valueParser 3) "abc" @?= Result "abc" 3
   ]
 
-alternativeParserTest :: MiniTestTree
+alternativeParserTest :: TestTree
 alternativeParserTest =
   testGroup "alternativeParserTest" [
       testCase "first fails, second succeeds with no input" $
@@ -123,7 +119,7 @@ alternativeParserTest =
         parse (character ||| valueParser 'v') "abc" @?= Result "bc" 'a'
   ]
 
-monadTest :: MiniTestTree
+monadTest :: TestTree
 monadTest =
   testGroup "parserMonadInstanceTest" [
       assertBool "first parse fails" $
@@ -138,7 +134,7 @@ monadTest =
         parse ((\c -> if c == 'x' then character else valueParser 'v') =<< character) "xabc" @?= Result "bc" 'a'
   ]
 
-applicativeTest :: MiniTestTree
+applicativeTest :: TestTree
 applicativeTest =
   testGroup "parserApplicativeInstanceTest" [
       testCase "pure" $
@@ -153,7 +149,7 @@ applicativeTest =
         parse (((\a b -> a :. b :. Nil) <$> character) <*> character) "abxyz" @?= Result "xyz" "ab"
   ]
 
-satisfyTest :: MiniTestTree
+satisfyTest :: TestTree
 satisfyTest =
   testGroup "satisfyTest" [
       testCase "when character satisfies predicate" $
@@ -162,7 +158,7 @@ satisfyTest =
         isErrorResult (parse (satisfy isUpper) "abc")
   ]
 
-digitTest :: MiniTestTree
+digitTest :: TestTree
 digitTest =
   testGroup "digitTest" [
       assertBool "is error when input empty" $
@@ -173,7 +169,7 @@ digitTest =
         parse digit "1BC" @?= Result "BC" '1'
   ]
 
-spaceTest :: MiniTestTree
+spaceTest :: TestTree
 spaceTest =
   testGroup "spaceTest" [
       assertBool "fails when input empty" $
@@ -184,7 +180,7 @@ spaceTest =
         parse space " abc" @?= Result "abc" ' '
   ]
 
-listTest :: MiniTestTree
+listTest :: TestTree
 listTest =
   testGroup "listTest" [
       testCase "succeeds on empty input" $
@@ -201,7 +197,7 @@ listTest =
         parse (list (character *> valueParser 'v')) "" @?= Result "" ""
   ]
 
-list1Test :: MiniTestTree
+list1Test :: TestTree
 list1Test =
   testGroup "list1Test" [
       testCase "succeeds when at least one character matches" $
@@ -212,7 +208,7 @@ list1Test =
         isErrorResult (parse (list1 (character *> valueParser 'v')) "")
   ]
 
-spaces1Test :: MiniTestTree
+spaces1Test :: TestTree
 spaces1Test =
   testGroup "spaces1Test" [
       assertBool "fails on empty string" $
@@ -223,7 +219,7 @@ spaces1Test =
         parse spaces1 "    abc" @?= Result "abc" "    "
   ]
 
-lowerTest :: MiniTestTree
+lowerTest :: TestTree
 lowerTest =
   testGroup "lowerTest" [
       assertBool "fails on empty string" $
@@ -234,7 +230,7 @@ lowerTest =
         parse lower "aBC" @?= Result "BC" 'a'
   ]
 
-upperTest :: MiniTestTree
+upperTest :: TestTree
 upperTest =
   testGroup "upperTest" [
       assertBool "fails on empty string" $
@@ -245,7 +241,7 @@ upperTest =
         parse upper "Abc" @?= Result "bc" 'A'
   ]
 
-alphaTest :: MiniTestTree
+alphaTest :: TestTree
 alphaTest =
   testGroup "alphaTest" [
       assertBool "fails on empty string" $
@@ -256,7 +252,7 @@ alphaTest =
         parse upper "A45" @?= Result "45" 'A'
   ]
 
-sequenceParserTest :: MiniTestTree
+sequenceParserTest :: TestTree
 sequenceParserTest =
   testGroup "sequenceParserTest" [
       assertBool "fails on first failing parser" $
@@ -265,7 +261,7 @@ sequenceParserTest =
         parse (sequenceParser (character :. is 'x' :. upper :. Nil)) "axCdef" @?= Result "def" "axC"
   ]
 
-thisManyTest :: MiniTestTree
+thisManyTest :: TestTree
 thisManyTest =
   testGroup "thisManyTest" [
       assertBool "fails when not enough matches" $
@@ -274,7 +270,7 @@ thisManyTest =
         parse (thisMany 4 upper) "ABCDef" @?= Result "ef" "ABCD"
   ]
 
-ageParserTest :: MiniTestTree
+ageParserTest :: TestTree
 ageParserTest =
   testGroup "ageParserTest (done for you)" [
       assertBool "fails on invalid age (all letters)" $
@@ -285,7 +281,7 @@ ageParserTest =
         parse ageParser "120" @?= Result "" 120
   ]
 
-firstNameParserTest :: MiniTestTree
+firstNameParserTest :: TestTree
 firstNameParserTest =
   testGroup "firstNameParserTest" [
       assertBool "fails on first name that doesn't start with a capital" $
@@ -294,7 +290,7 @@ firstNameParserTest =
         parse firstNameParser "Abc" @?= Result "" "Abc"
   ]
 
-surnameParserTest :: MiniTestTree
+surnameParserTest :: TestTree
 surnameParserTest =
   testGroup "surnameParserTest" [
       assertBool "fails on short surname" $
@@ -307,7 +303,7 @@ surnameParserTest =
         parse surnameParser "Abcdefghijklmnopqrstuvwxyz" @?= Result "" "Abcdefghijklmnopqrstuvwxyz"
   ]
 
-smokerParserTest :: MiniTestTree
+smokerParserTest :: TestTree
 smokerParserTest =
   testGroup "smokerParserTest" [
       assertBool "fails on non y/n value" $
@@ -318,7 +314,7 @@ smokerParserTest =
         parse smokerParser "nabc" @?= Result "abc" False
   ]
 
-phoneBodyParserTest :: MiniTestTree
+phoneBodyParserTest :: TestTree
 phoneBodyParserTest =
   testGroup "phoneBodyParserTest" [
       testCase "produces empty list when no characters match" $
@@ -329,7 +325,7 @@ phoneBodyParserTest =
         parse phoneBodyParser "123-a456" @?= Result "a456" "123-"
   ]
 
-phoneParserTest :: MiniTestTree
+phoneParserTest :: TestTree
 phoneParserTest =
   testGroup "phoneParserTest" [
       assertBool "fails without trailing '#'" $
@@ -342,7 +338,7 @@ phoneParserTest =
         parse phoneParser "123-456#abc" @?= Result "abc" "123-456"
   ]
 
-personParserTest :: MiniTestTree
+personParserTest :: TestTree
 personParserTest =
   testGroup "personParserTest" [
       assertBool "fails on empty string" $

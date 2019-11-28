@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveFunctor         #-}
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE ImplicitPrelude       #-}
@@ -9,33 +8,32 @@
 module Test.Course.Mini where
 
 import           Control.Exception (SomeException, catch)
-import           Data.Bool         (bool)
-import           Data.Foldable     (traverse_)
-import           Data.List         (intercalate)
-import           Data.Monoid       ((<>))
-import           Data.String       (fromString)
+import           Data.Bool (bool)
+import           Data.Foldable (traverse_)
+import           Data.List (intercalate)
+import           Data.Monoid ((<>))
+import           Data.String (fromString)
+import           System.Random (StdGen, mkStdGen, split)
+import qualified Test.Property as P
 
-import           Test.Mini         (Arbitrary (gen, shrink),
-                                    PropertyTester (testProperty),
-                                    Tester (test, testGroup),
-                                    UnitTester (testCase, (@?=)))
+data TestTree
+  = Single String Result
+  | Tree String [TestTree]
 
-data CourseTestTree =
-  Single String Result
-  | Tree String [CourseTestTree]
-
-data Result =
-  Failure String
+data Result
+  = Failure String
   | Success
   deriving (Eq)
 
-testCourseTree' ::
-  CourseTestTree -> IO ()
-testCourseTree' t =
-  go "" t >> putStrLn "WARNING: No properties tested"
+test :: TestTree -> IO ()
+test = go ""
   where
     qualifiedName s s' =
       bool (intercalate "." [s,s']) s' (null s)
+
+    indent n =
+      unlines . fmap (replicate n ' ' <>) . lines
+
     go s (Single s' a) =
       let
         quote x = "'" <> x <> "'"
@@ -54,42 +52,38 @@ testCourseTree' t =
           \(e :: SomeException) -> printFailure e
     go s (Tree s' ts) = traverse_ (go (qualifiedName s s')) ts
 
-indent ::
-  Int
-  -> String
-  -> String
-indent n =
-  unlines . fmap (replicate n ' ' <>) . lines
+testGroup :: String -> [TestTree] -> TestTree
+testGroup = Tree
 
-instance Tester CourseTestTree String where
-  testGroup s =
-    Tree s . foldr (:) []
-  test =
-    testCourseTree'
+testCase :: String -> Result -> TestTree
+testCase = Single
 
-instance UnitTester CourseTestTree String Result where
-  testCase =
-    Single
+testProperty :: P.Testable a => String -> a -> TestTree
+testProperty label a = Single label $ go P.quick (P.evaluate a) (mkStdGen 0) 0 0
+  where
+    go :: P.Config -> P.Gen P.Result -> StdGen -> Int -> Int -> Result
+    go config gen rnd0 ntest nfail
+      | ntest == P.maxTest config = Success
+      | ntest == P.maxFail config = Success -- XXX
+      | otherwise = case P.ok res of
+          Nothing -> go config gen rnd1 ntest (nfail + 1)
+          Just True -> go config gen rnd1 (ntest + 1) nfail
+          Just False -> Failure $ concat
+            [ "Falsifiable after " ++ show ntest ++ " tests:"
+            , unlines $ P.arguments res
+            ]
+      where
+        res = P.generate (P.resize config ntest) rnd2 gen
+        (rnd1, rnd2) = split rnd0
 
-  a @?= b =
-    let
-      msg = "Expected " <> show b <> " but got " <> show a
-    in
-      bool (Failure msg) Success (a == b)
+assertBool :: String -> Bool -> TestTree
+assertBool name b = testCase name $ b @?= True
 
-newtype CourseGen a =
-  CourseGen a
-  deriving (Functor)
+(@?=) :: (Eq a, Show a) => a -> a -> Result
+a @?= b =
+  let
+    msg = "Expected " <> show b <> " but got " <> show a
+  in
+    bool (Failure msg) Success (a == b)
 
-instance Arbitrary CourseTestTree CourseGen where
-  gen = error "`gen` should never be called for CourseGen"
-  shrink = error "`shrink` should never be called for CourseGen"
-
-instance PropertyTester CourseTestTree CourseGen String where
-  testProperty n = const (Tree n [])
-
-courseTest ::
-  CourseTestTree
-  -> IO ()
-courseTest =
-  test
+infix 1 @?=

@@ -20,15 +20,12 @@ module Course.ApplicativeTest (
   , sequenceTest
   , replicateATest
   , filteringTest
-
-  -- * Course test runner
-  , courseTest
   ) where
 
 import           Course.Gens        (genInteger)
-import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, Testable (Fn), fn, testCase,
-                                     testGroup, testProperty, (@?=))
+import           Test.Course.Mini   (TestTree, testCase, testGroup,
+                                     testProperty, (@?=))
+import           Test.Property
 
 import           Course.Applicative (filtering, lift1, lift2, lift3, lift4,
                                      pure, replicateA, sequence, (*>), (<*),
@@ -40,7 +37,7 @@ import           Course.List        (List ((:.), Nil), filter, length, listh,
                                      product, sum)
 import           Course.Optional    (Optional (Empty, Full))
 
-test_Applicative :: MiniTestTree
+test_Applicative :: TestTree
 test_Applicative =
   testGroup "Applicative" [
    exactlyOneTest
@@ -59,25 +56,23 @@ test_Applicative =
   , filteringTest
   ]
 
-exactlyOneTest :: MiniTestTree
+exactlyOneTest :: TestTree
 exactlyOneTest =
   testGroup "ExactlyOne instance" [
-    testProperty "pure == ExactlyOne" . fn genInteger $
-      \x -> pure x == ExactlyOne x
+    testProperty "pure == ExactlyOne" $ \x -> pure x == ExactlyOne (x :: Integer)
   , testCase "Applying within ExactlyOne" $
       ExactlyOne (+ 10) <*> ExactlyOne 8 @?= ExactlyOne 18
   ]
 
-listTest :: MiniTestTree
+listTest :: TestTree
 listTest =
   testGroup "List instance" [
-    testProperty "pure" . fn genInteger $
-      \x -> pure x == x :. Nil
+    testProperty "pure" $ \x -> pure x == (x :: Integer) :. Nil
   , testCase "<*>" $
       (+1) :. (*2) :. Nil <*> listh [1,2,3] @?= listh [2,3,4,2,4,6]
   ]
 
-haveFmapTest :: MiniTestTree
+haveFmapTest :: TestTree
 haveFmapTest =
   testGroup "lift1" [
     testCase "ExactlyOne" $
@@ -88,11 +83,10 @@ haveFmapTest =
       lift1 (+ 1) (listh [1,2,3]) @?= listh [2,3,4]
   ]
 
-optionalTest :: MiniTestTree
+optionalTest :: TestTree
 optionalTest =
   testGroup "Optional instance" [
-    testProperty "pure" . fn genInteger $
-      \x -> pure x == Full x
+    testProperty "pure" $ \x -> pure x == Full (x :: Integer)
   , testCase "Full <*> Full" $
       Full (+8) <*> Full 7 @?= Full 15
   , testCase "Empty <*> Full" $
@@ -101,7 +95,7 @@ optionalTest =
       Full (+8) <*> Empty @?= Empty
   ]
 
-functionTest :: MiniTestTree
+functionTest :: TestTree
 functionTest =
   testGroup "Function instance" [
     testCase "addition" $
@@ -114,11 +108,10 @@ functionTest =
       ((*) <*> (+10)) 3 @?= 39
   , testCase "more addition and multiplcation" $
       ((*) <*> (+2)) 3 @?= 15
-  , testProperty "pure" . Fn genInteger $
-      \x -> fn genInteger $ \y -> pure x y == x
+  , testProperty "pure" $ \x y -> pure x (y :: Integer) == (x :: Integer)
   ]
 
-lift2Test :: MiniTestTree
+lift2Test :: TestTree
 lift2Test =
   testGroup "lift2" [
     testCase "+ over ExactlyOne" $
@@ -135,7 +128,7 @@ lift2Test =
       lift2 (+) length sum (listh [4,5,6]) @?= 18
   ]
 
-lift3Test :: MiniTestTree
+lift3Test :: TestTree
 lift3Test =
   testGroup "lift3" [
     testCase "+ over ExactlyOne" $
@@ -155,7 +148,7 @@ lift3Test =
       lift3 (\a b c -> a + b + c) length sum product (listh [4,5,6]) @?= 138
   ]
 
-lift4Test :: MiniTestTree
+lift4Test :: TestTree
 lift4Test =
   testGroup "lift4" [
     testCase "+ over ExactlyOne" $
@@ -175,7 +168,7 @@ lift4Test =
       lift4 (\a b c d -> a + b + c + d) length sum product (sum . filter even) (listh [4,5,6]) @?= 148
   ]
 
-lift1Test :: MiniTestTree
+lift1Test :: TestTree
 lift1Test =
   testGroup "lift1" [
     testCase "+ over ExactlyOne" $
@@ -186,7 +179,7 @@ lift1Test =
       lift1 (+1) (1 :. 2 :. 3 :. Nil) @?= 2 :. 3 :. 4 :. Nil
   ]
 
-rightApplyTest :: MiniTestTree
+rightApplyTest :: TestTree
 rightApplyTest =
   testGroup "rightApply" [
     testCase "*> over List" $
@@ -197,21 +190,15 @@ rightApplyTest =
       listh [1,  2,  3] *> listh [4,  5] @?= listh [4,5,4,5,4,5]
   , testCase "*> over Optional" $
       Full 7 *> Full 8 @?= Full 8
-  , testProperty "*> over List property" . Fn genInteger $
-      \a -> Fn genInteger $
-      \b -> Fn genInteger $
-      \c -> Fn genInteger $
-      \x -> Fn genInteger $
-      \y -> fn genInteger $
-      \z ->
-        let l1 = (listh [a,  b,  c] :: List Integer)
-            l2 = (listh [x,  y,  z] :: List Integer)
-         in l1 *> l2 == listh [x,  y,  z,  x,  y,  z,  x,  y,  z]
-  , testProperty "*> over Optional property" . Fn genInteger $
-      \x -> fn genInteger $ \y -> (Full x :: Optional Integer) *> (Full y :: Optional Integer) == Full y
+  , testProperty "*> over List property" $ \a b c x y z ->
+      let l1 = (listh [a,  b,  c] :: List Integer)
+          l2 = (listh [x,  y,  z] :: List Integer)
+      in l1 *> l2 == listh [x,  y,  z,  x,  y,  z,  x,  y,  z]
+  , testProperty "*> over Optional property" $ \x y ->
+      (Full x :: Optional Integer) *> (Full y :: Optional Integer) == Full y
   ]
 
-leftApplyTest :: MiniTestTree
+leftApplyTest :: TestTree
 leftApplyTest =
   testGroup "leftApply" [
     testCase "<* over List" $
@@ -222,21 +209,15 @@ leftApplyTest =
       (1 :. 2 :. 3 :. Nil) <* (4 :. 5 :. Nil) @?= listh [1,1,2,2,3,3]
   , testCase "<* over Optional" $
       Full 7 <* Full 8 @?= Full 7
-  , testProperty "<* over List property" . Fn genInteger$
-      \x -> Fn genInteger $
-      \y -> Fn genInteger $
-      \z -> Fn genInteger $
-      \a -> Fn genInteger $
-      \b -> fn genInteger $
-      \c ->
-        let l1 = (x :. y :. z :. Nil) :: List Integer
-            l2 = (a :. b :. c :. Nil) :: List Integer
-         in l1 <* l2 == listh [x,  x,  x,  y,  y,  y,  z,  z,  z]
-  , testProperty "<* over Optional property" . Fn genInteger $
-      \x -> fn genInteger $ \y -> Full (x :: Integer) <* Full (y :: Integer) == Full x
+  , testProperty "<* over List property" $ \a b c x y z ->
+      let l1 = (x :. y :. z :. Nil) :: List Integer
+          l2 = (a :. b :. c :. Nil) :: List Integer
+      in l1 <* l2 == listh [x,  x,  x,  y,  y,  y,  z,  z,  z]
+  , testProperty "<* over Optional property" $ \x y ->
+      Full (x :: Integer) <* Full (y :: Integer) == Full x
   ]
 
-sequenceTest :: MiniTestTree
+sequenceTest :: TestTree
 sequenceTest =
   testGroup "sequence" [
     testCase "ExactlyOne" $
@@ -251,7 +232,7 @@ sequenceTest =
       sequence ((*10) :. (+2) :. Nil) 6 @?= listh [60,8]
   ]
 
-replicateATest :: MiniTestTree
+replicateATest :: TestTree
 replicateATest =
   testGroup "replicateA" [
     testCase "ExactlyOne" $
@@ -270,7 +251,7 @@ replicateATest =
        in replicateA 3 ('a' :. 'b' :. 'c' :. Nil) @?= expected
   ]
 
-filteringTest :: MiniTestTree
+filteringTest :: TestTree
 filteringTest =
   testGroup "filtering" [
     testCase "ExactlyOne" $

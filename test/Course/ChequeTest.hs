@@ -5,23 +5,20 @@
 module Course.ChequeTest (
     test_Cheque
   , dollarsTest
-
-  , courseTest
   ) where
 
-import           Test.Course.Mini (courseTest)
-import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
+import           Test.Course.Mini (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Cheque    (dollars)
 import           Course.Core
 
-test_Cheque :: MiniTestTree
+test_Cheque :: TestTree
 test_Cheque =
   testGroup "Cheque" [
     dollarsTest
   ]
 
-dollarsTest :: MiniTestTree
+dollarsTest :: TestTree
 dollarsTest =
   testGroup "dollars" [
     testCase "empty" $

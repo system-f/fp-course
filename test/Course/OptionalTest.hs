@@ -9,19 +9,15 @@ module Course.OptionalTest (
   , bindOptionalTest
   , valueOrTest
   , firstFullTest
-
-  -- * Course test runner
-  , courseTest
   ) where
 
-import           Test.Course.Mini (courseTest)
-import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
+import           Test.Course.Mini (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
                                    optional, (<+>), (??))
 
-test_Optional :: MiniTestTree
+test_Optional :: TestTree
 test_Optional =
   testGroup "Optional" [
     mapOptionalTest
@@ -31,7 +27,7 @@ test_Optional =
   , optionalTest
   ]
 
-mapOptionalTest :: MiniTestTree
+mapOptionalTest :: TestTree
 mapOptionalTest =
   testGroup "mapOptional" [
     testCase "Empty" $
@@ -40,7 +36,7 @@ mapOptionalTest =
       mapOptional (+1) (Full 8) @?= Full 9
   ]
 
-bindOptionalTest :: MiniTestTree
+bindOptionalTest :: TestTree
 bindOptionalTest =
   let evenDecOddInc n = if even n then Full (n - 1) else Full (n + 1)
    in testGroup "bindOptional" [
@@ -52,7 +48,7 @@ bindOptionalTest =
           bindOptional evenDecOddInc (Full 9) @?= Full 10
   ]
 
-valueOrTest :: MiniTestTree
+valueOrTest :: TestTree
 valueOrTest =
   testGroup "??" [
     testCase "Full" $
@@ -61,7 +57,7 @@ valueOrTest =
       Empty ?? 99 @?= 99
   ]
 
-firstFullTest :: MiniTestTree
+firstFullTest :: TestTree
 firstFullTest =
   testGroup "<+>" [
     testCase "first Full" $
@@ -74,7 +70,7 @@ firstFullTest =
       Empty <+> Empty @?= (Empty :: Optional Integer)
   ]
 
-optionalTest :: MiniTestTree
+optionalTest :: TestTree
 optionalTest =
   testGroup "optional" [
     testCase "replaces full data constructor" $

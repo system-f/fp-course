@@ -21,7 +21,6 @@ module TestLoader
   , ChequeTest.test_Cheque
 
   , tests
-  , courseTest
   )
   where
 
@@ -44,10 +43,9 @@ import qualified Course.ValidationTest  as Validation
 
 import           Data.String            (fromString)
 
-import           Test.Course.Mini       (courseTest)
-import           Test.Mini              (MiniTestTree, testGroup)
+import           Test.Course.Mini       (TestTree, testGroup)
 
-tests :: MiniTestTree
+tests :: TestTree
 tests =
   testGroup "Tests" [
     Optional.test_Optional
