@@ -20,12 +20,15 @@ module Test.ListTest (
   , lengthGT4Test
   , reverseTest
   , produceTest
+
+  -- * Runner
+  , test
   ) where
 
 import qualified Prelude          as P (length)
 
-import           Test.Framework (TestTree, testCase, testGroup,
-                                   testProperty, (@?=))
+import           Test.Framework   (TestTree, testCase, testGroup,
+                                   testProperty, test, (@?=))
 
 import           Course.Core
 import           Course.List      (List ((:.), Nil), filter, find, flatMap,

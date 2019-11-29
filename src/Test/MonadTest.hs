@@ -13,9 +13,12 @@ module Test.MonadTest (
   , joinTest
   , bindFlippedTest
   , kleisliCompositionTest
+
+  -- * Runner
+  , test
   ) where
 
-import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework    (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))

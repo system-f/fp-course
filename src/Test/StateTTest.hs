@@ -27,12 +27,15 @@ module Test.StateTTest (
   , loggerMonadTest
   , log1Test
   , distinctGTest
+
+  -- * Runner
+  , test
   ) where
 
 import qualified Prelude            as P (String, (++))
 
 import           Test.Framework     (TestTree, testCase, testGroup,
-                                     testProperty, (@?=))
+                                     testProperty, test, (@?=))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core

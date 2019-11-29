@@ -5,9 +5,12 @@
 module Test.ChequeTest (
     test_Cheque
   , dollarsTest
+
+  -- * Runner
+  , test
   ) where
 
-import           Test.Framework (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Cheque    (dollars)
 import           Course.Core

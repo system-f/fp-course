@@ -43,13 +43,16 @@ module Test.ListZipperTest (
   , comonadTest
   , traversableTest
   , traversableMaybeTest
+
+  -- * Runner
+  , test
   ) where
 
 
 import qualified Prelude            as P (fromIntegral, (<$>))
 
 import           Test.Framework     (TestTree, testCase, testGroup,
-                                     testProperty, (@?=))
+                                     testProperty, test, (@?=))
 import           Test.Framework.Property (getPositive, getUnshowable)
 
 import           Course.Applicative (pure, (<*>))

@@ -20,10 +20,13 @@ module Test.ApplicativeTest (
   , sequenceTest
   , replicateATest
   , filteringTest
+
+  -- * Runner
+  , test
   ) where
 
-import           Test.Framework   (TestTree, testCase, testGroup,
-                                     testProperty, (@?=))
+import           Test.Framework     (TestTree, (@?=), testCase, testGroup,
+                                     testProperty, test)
 import           Test.Framework.Property
 
 import           Course.Applicative (filtering, lift1, lift2, lift3, lift4,

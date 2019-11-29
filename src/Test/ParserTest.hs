@@ -30,10 +30,13 @@ module Test.ParserTest (
   , phoneBodyParserTest
   , phoneParserTest
   , personParserTest
+
+  -- * Runner
+  , test
   ) where
 
-import           Test.Framework   (TestTree, assertBool, testCase,
-                                     testGroup, (@?=))
+import           Test.Framework     (TestTree, assertBool, testCase,
+                                     testGroup, test, (@?=))
 
 import           Course.Applicative (pure, (*>), (<*>))
 import           Course.Core

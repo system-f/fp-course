@@ -9,6 +9,9 @@ module Test.ExtendTest (
   , listTest
   , optionalTest
   , cojoinTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Course.Core
@@ -19,7 +22,7 @@ import           Course.Optional   (Optional (Empty, Full))
 
 import           Course.Extend     (cojoin, (<<=))
 
-import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, test, (@?=))
 
 test_Extend :: TestTree
 test_Extend =

@@ -17,12 +17,15 @@ module Test.ValidationTest (
   , bindValidationTest
   , valueOrTest
   , errorOrTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Data.Maybe        (maybe)
 import qualified Prelude           as P
-import           Test.Framework  (TestTree, (@?=), testCase, testGroup,
-                                    testProperty)
+import           Test.Framework    (TestTree, (@?=), testCase, testGroup,
+                                    testProperty, test)
 
 import           Course.Core
 import           Course.Validation

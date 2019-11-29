@@ -13,10 +13,13 @@ module Test.JsonParserTest (
   , jsonArrayTest
   , jsonObjectTest
   , jsonValueTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Data.Ratio        ((%))
-import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework    (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.JsonParser (jsonArray, jsonFalse, jsonNull, jsonNumber,

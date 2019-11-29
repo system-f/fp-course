@@ -9,9 +9,12 @@ module Test.OptionalTest (
   , bindOptionalTest
   , valueOrTest
   , firstFullTest
+
+  -- * Runner
+  , test
   ) where
 
-import           Test.Framework (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework   (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,

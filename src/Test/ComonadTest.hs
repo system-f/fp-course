@@ -8,10 +8,13 @@ module Test.ComonadTest
     test_Comonad
   , exactlyOneTest
   , fmapTest
+
+  -- * Runner
+  , test
   )
   where
 
-import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core

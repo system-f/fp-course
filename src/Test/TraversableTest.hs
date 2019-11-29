@@ -14,10 +14,13 @@ module Test.TraversableTest (
   , productTraversableTest
   , coProductFunctorTest
   , coProductTraversableTest
+
+  -- * Runner
+  , test
   ) where
 
 
-import           Test.Framework   (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework     (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Compose     (Compose (Compose))
 import           Course.Core

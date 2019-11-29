@@ -17,13 +17,16 @@ module Test.StateTest (
   , isHappyTest
   , execTest
   , evalTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
 import           Test.Framework     (TestTree, testCase, testGroup,
-                                     testProperty, (@?=))
+                                     testProperty, test, (@?=))
 import           Test.Framework.Property (Unshowable(..))
 
 import           Course.Applicative (pure, (<*>))

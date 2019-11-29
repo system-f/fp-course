@@ -12,10 +12,13 @@ module Test.FunctorTest (
   , functionTest
   , anonMapTest
   , voidTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Test.Framework    (TestTree, testCase, testGroup,
-                                    testProperty , (@?=))
+                                    testProperty, test, (@?=))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))

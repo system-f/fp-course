@@ -26,10 +26,13 @@ module Test.MoreParserTest (
   , satisfyAllTest
   , satisfyAnyTest
   , betweenSepbyCommaTest
+
+  -- * Runner
+  , test
   ) where
 
 import           Test.Framework    (TestTree, assertBool, testCase,
-                                    testGroup, (@?=))
+                                    testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.List       (List ((:.), Nil))
