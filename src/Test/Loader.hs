@@ -3,65 +3,66 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
 module Test.Loader
-  ( Optional.test_Optional
-  , List.test_List
-  , Functor.test_Functor
-  , Applicative.test_Applicative
-  , Monad.test_Monad
-  , State.test_State
-  , StateT.test_StateT
-  , Validation.test_Validation
-  , Extend.test_Extend
-  , Comonad.test_Comonad
-  , Traversable.test_Traversable
-  , ListZipper.test_ListZipper
-  , Parser.test_Parser
-  , MoreParser.test_MoreParser
-  , JsonParser.test_JsonParser
-  , ChequeTest.test_Cheque
+  ( test_Optional
+  , test_List
+  , test_Functor
+  , test_Applicative
+  , test_Monad
+  , test_State
+  , test_StateT
+  , test_Validation
+  , test_Extend
+  , test_Comonad
+  , test_Traversable
+  , test_ListZipper
+  , test_Parser
+  , test_MoreParser
+  , test_JsonParser
+  , test_Cheque
 
+  , test
   , tests
   )
   where
 
-import qualified Test.ApplicativeTest as Applicative
-import qualified Test.ChequeTest      as ChequeTest
-import qualified Test.ComonadTest     as Comonad
-import qualified Test.ExtendTest      as Extend
-import qualified Test.FunctorTest     as Functor
-import qualified Test.JsonParserTest  as JsonParser
-import qualified Test.ListTest        as List
-import qualified Test.ListZipperTest  as ListZipper
-import qualified Test.MonadTest       as Monad
-import qualified Test.MoreParserTest  as MoreParser
-import qualified Test.OptionalTest    as Optional
-import qualified Test.ParserTest      as Parser
-import qualified Test.StateTest       as State
-import qualified Test.StateTTest      as StateT
-import qualified Test.TraversableTest as Traversable
-import qualified Test.ValidationTest  as Validation
+import Test.ApplicativeTest (test_Applicative)
+import Test.ChequeTest (test_Cheque)
+import Test.ComonadTest (test_Comonad)
+import Test.ExtendTest (test_Extend)
+import Test.FunctorTest (test_Functor)
+import Test.JsonParserTest (test_JsonParser)
+import Test.ListTest (test_List)
+import Test.ListZipperTest (test_ListZipper)
+import Test.MonadTest (test_Monad)
+import Test.MoreParserTest (test_MoreParser)
+import Test.OptionalTest (test_Optional)
+import Test.ParserTest (test_Parser)
+import Test.StateTTest (test_StateT)
+import Test.StateTest (test_State)
+import Test.TraversableTest (test_Traversable)
+import Test.ValidationTest (test_Validation)
 
-import           Data.String            (fromString)
+import Data.String (fromString)
 
-import           Test.Framework         (TestTree, testGroup)
+import Test.Framework (TestTree, test, testGroup)
 
 tests :: TestTree
 tests =
   testGroup "Tests" [
-    Optional.test_Optional
-  , List.test_List
-  , Functor.test_Functor
-  , Applicative.test_Applicative
-  , Monad.test_Monad
-  , State.test_State
-  , StateT.test_StateT
-  , Validation.test_Validation
-  , Extend.test_Extend
-  , Comonad.test_Comonad
-  , Traversable.test_Traversable
-  , ListZipper.test_ListZipper
-  , Parser.test_Parser
-  , MoreParser.test_MoreParser
-  , JsonParser.test_JsonParser
-  , ChequeTest.test_Cheque
+    test_Optional
+  , test_List
+  , test_Functor
+  , test_Applicative
+  , test_Monad
+  , test_State
+  , test_StateT
+  , test_Validation
+  , test_Extend
+  , test_Comonad
+  , test_Traversable
+  , test_ListZipper
+  , test_Parser
+  , test_MoreParser
+  , test_JsonParser
+  , test_Cheque
   ]
