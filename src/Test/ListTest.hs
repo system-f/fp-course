@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ListTest (
+module Test.ListTest (
   -- * Tests
     test_List
   , headOrTest
@@ -21,19 +21,16 @@ module Course.ListTest (
   , reverseTest
   , produceTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
 import qualified Prelude          as P (length)
 
-import           Test.Course.Mini (courseTest)
-import           Test.Mini        (Gen (GenInt), MiniTestTree, Testable (B, Fn),
-                                   fn, testCase, testGroup, testProperty, (@?=))
+import           Test.Framework   (TestTree, testCase, testGroup,
+                                   testProperty, test, (@?=))
 
 import           Course.Core
-import           Course.Gens      (genInteger, genIntegerAndList, genList,
-                                   genThreeLists, genTwoLists)
 import           Course.List      (List ((:.), Nil), filter, find, flatMap,
                                    flatten, flattenAgain, foldLeft, headOr,
                                    hlist, infinity, largeList, length,
@@ -41,7 +38,7 @@ import           Course.List      (List ((:.), Nil), filter, find, flatMap,
                                    reverse, seqOptional, sum, take, (++))
 import           Course.Optional  (Optional (Empty, Full))
 
-test_List :: MiniTestTree
+test_List :: TestTree
 test_List =
   testGroup "List" [
     headOrTest
@@ -61,16 +58,17 @@ test_List =
   , produceTest
   ]
 
-headOrTest :: MiniTestTree
+headOrTest :: TestTree
 headOrTest =
   testGroup "headOr" [
     testCase "headOr on non-empty list" $ headOr 3 (1 :. 2 :. Nil) @?= 1
   , testCase "headOr on empty list" $ headOr 3 Nil @?= 3
-  , testProperty "headOr on infinity always 0" . Fn genInteger $ \x -> B $ x `headOr` infinity == 0
-  , testProperty "headOr on empty list always the default" . fn genInteger $ \x -> x `headOr` Nil == x
+  , testProperty "headOr on infinity always 0" $ \x -> x `headOr` infinity == 0
+  , testProperty "headOr on empty list always the default" $ \x ->
+      (x :: Integer) `headOr` Nil == x
   ]
 
-productTest :: MiniTestTree
+productTest :: TestTree
 productTest =
   testGroup "productTest" [
     testCase "product of empty list" $ product Nil @?= 1
@@ -78,97 +76,97 @@ productTest =
   , testCase "product of 1..4" $ product (1 :. 2 :. 3 :. 4 :. Nil) @?= 24
   ]
 
-sumTest :: MiniTestTree
+sumTest :: TestTree
 sumTest =
   testGroup "sum" [
     testCase "sum 1..3" $ sum (1 :. 2 :. 3 :. Nil) @?= 6
   , testCase "sum 1..4" $ sum (1 :. 2 :. 3 :. 4 :. Nil) @?= 10
-  , testProperty "subtracting each element in a list from its sum is always 0" . fn (genList GenInt) $
-      \x -> foldLeft (-) (sum x) x == 0
+  , testProperty "subtracting each element in a list from its sum is always 0" $ \x ->
+      foldLeft (-) (sum x) x == 0
   ]
 
-lengthTest :: MiniTestTree
+lengthTest :: TestTree
 lengthTest =
   testGroup "length" [
     testCase "length 1..3" $ length (1 :. 2 :. 3 :. Nil) @?= 3
-  , testProperty "summing a list of 1s is equal to its length" . fn (genList GenInt) $
-      \x -> P.length (hlist x) == length x
+  , testProperty "summing a list of 1s is equal to its length" $ \x ->
+      P.length (hlist x) == length (x :: List Integer)
   ]
 
-mapTest :: MiniTestTree
+mapTest :: TestTree
 mapTest =
   testGroup "map" [
     testCase "add 10 on list" $
       map (+10) (1 :. 2 :. 3 :. Nil) @?= (11 :. 12 :. 13 :. Nil)
-  , testProperty "headOr after map" . fn genInteger $
-      \x -> headOr (x :: Integer) (map (+1) infinity) == 1
-  , testProperty "map id is id" . fn (genList genInteger) $
-      \x -> map id x == x
+  , testProperty "headOr after map" $ \x ->
+      headOr (x :: Integer) (map (+1) infinity) == 1
+  , testProperty "map id is id" $ \x ->
+      map id x == (x :: List Integer)
   ]
 
-filterTest :: MiniTestTree
+filterTest :: TestTree
 filterTest =
   testGroup "filter" [
     testCase "filter even" $
       filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil) @?= (2 :. 4 :. Nil)
-  , testProperty "filter (const True) is identity (headOr)" . fn genInteger $
-      \x -> headOr x (filter (const True) infinity) == 0
-  , testProperty "filter (const True) is identity" . fn (genList genInteger) $
-      (\x -> filter (const True) x == x)
-  , testProperty "filter (const False) is the empty list" . fn (genList genInteger) $
-      \x -> filter (const False) x == Nil
+  , testProperty "filter (const True) is identity (headOr)" $ \x ->
+      headOr x (filter (const True) infinity) == 0
+  , testProperty "filter (const True) is identity" $ \x ->
+      filter (const True) x == (x :: List Integer)
+  , testProperty "filter (const False) is the empty list" $ \x ->
+      filter (const False) x == (Nil :: List Integer)
   ]
 
-appendTest :: MiniTestTree
+appendTest :: TestTree
 appendTest =
   testGroup "(++)" [
     testCase "(1..6)" $
       (1 :. 2 :. 3 :. Nil) ++ (4 :. 5 :. 6 :. Nil) @?= listh [1,2,3,4,5,6]
-  , testProperty "append empty to infinite" . fn genInteger $
+  , testProperty "append empty to infinite" $
       \x -> headOr x (Nil ++ infinity) == 0
-  , testProperty "append anything to infinity" . fn genIntegerAndList $
-       \(x, y) -> headOr x (y ++ infinity) == headOr 0 y
-  , testProperty "associativity" . fn genThreeLists $
-      \(x,y,z) -> (x ++ y) ++ z == x ++ (y ++ z)
-  , testProperty "append to empty list" . fn (genList genInteger) $
-      \x -> x ++ Nil == x
+  , testProperty "append anything to infinity" $
+      \x y -> headOr x (y ++ infinity) == headOr 0 y
+  , testProperty "associativity" $
+      \x y z -> (x ++ y) ++ z == (x ++ (y ++ z) :: List Integer)
+  , testProperty "append to empty list" $
+      \x -> x ++ Nil == (x :: List Integer)
   ]
 
-flattenTest :: MiniTestTree
+flattenTest :: TestTree
 flattenTest =
   testGroup "flatten" [
     testCase "(1..9)" $
       flatten ((1 :. 2 :. 3 :. Nil) :. (4 :. 5 :. 6 :. Nil) :. (7 :. 8 :. 9 :. Nil) :. Nil) @?= listh [1,2,3,4,5,6,7,8,9]
-  , testProperty "flatten (infinity :. y)" . fn genIntegerAndList $
-      \(x, y) -> headOr x (flatten (infinity :. y :. Nil)) == 0
-  , testProperty "flatten (y :. infinity)" . fn genIntegerAndList $
-      \(x, y) -> headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y
-  , testProperty "sum of lengths == length of flattened" . fn (genList (genList genInteger)) $
-      \x -> sum (map length x) == length (flatten x)
+  , testProperty "flatten (infinity :. y)" $ \(x, y) ->
+      headOr x (flatten (infinity :. y :. Nil)) == 0
+  , testProperty "flatten (y :. infinity)" $ \(x, y) ->
+      headOr x (flatten (y :. infinity :. Nil)) == headOr 0 y
+  , testProperty "sum of lengths == length of flattened" $ \x ->
+      sum (map length x) == length (flatten (x :: List (List Integer)))
   ]
 
-flatMapTest :: MiniTestTree
+flatMapTest :: TestTree
 flatMapTest =
   testGroup "flatMap" [
     testCase "lists of Integer" $
       flatMap (\x -> x :. x + 1 :. x + 2 :. Nil) (1 :. 2 :. 3 :. Nil) @?= listh [1,2,3,2,3,4,3,4,5]
-  , testProperty "flatMap id flattens a list of lists" . fn genIntegerAndList $
-      \(x, y) -> headOr x (flatMap id (infinity :. y :. Nil)) == 0
-  , testProperty "flatMap id on a list of lists take 2" . fn genIntegerAndList $
-      \(x, y) -> headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y
-  , testProperty "flatMap id == flatten" . fn (genList (genList genInteger)) $
-      \x -> flatMap id x == flatten x
+  , testProperty "flatMap id flattens a list of lists" $ \x y ->
+      headOr x (flatMap id (infinity :. y :. Nil)) == 0
+  , testProperty "flatMap id on a list of lists take 2" $ \x y ->
+      headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y
+  , testProperty "flatMap id == flatten" $ \x ->
+      flatMap id x == flatten (x :: List (List Integer))
   ]
 
-flattenAgainTest :: MiniTestTree
+flattenAgainTest :: TestTree
 flattenAgainTest =
   testGroup "flattenAgain" [
-    testProperty "lists of Integer" . fn (genList (genList genInteger)) $
-      \x -> flatten x == flattenAgain x
+    testProperty "lists of Integer" $ \x ->
+      flatten x == flattenAgain (x :: List (List Integer))
   ]
 
 
-seqOptionalTest :: MiniTestTree
+seqOptionalTest :: TestTree
 seqOptionalTest =
   testGroup "seqOptional" [
     testCase "all Full" $
@@ -182,7 +180,7 @@ seqOptionalTest =
       seqOptional (Empty :. map Full infinity) @?= Empty
   ]
 
-findTest :: MiniTestTree
+findTest :: TestTree
 findTest =
   testGroup "find" [
     testCase "find no matches" $
@@ -196,7 +194,7 @@ findTest =
       find (const True) infinity @?= Full 0
   ]
 
-lengthGT4Test :: MiniTestTree
+lengthGT4Test :: TestTree
 lengthGT4Test =
   testGroup "lengthGT4" [
     testCase "list of length 3" $
@@ -211,20 +209,20 @@ lengthGT4Test =
       lengthGT4 infinity @?= True
   ]
 
-reverseTest :: MiniTestTree
+reverseTest :: TestTree
 reverseTest =
   testGroup "reverse" [
     testCase "empty list" $
       reverse Nil @?= (Nil :: List Integer)
   , testCase "reverse . reverse on largeList" $
       take 1 (reverse (reverse largeList)) @?= (1 :. Nil)
-  , testProperty "reverse then append is same as append then reverse" . fn genTwoLists $
-      \(x, y) -> reverse x ++ reverse y == reverse (y ++ x)
-  , testProperty "reverse single element list is the list" . fn genInteger $
-      \x -> reverse (x :. Nil) == x :. Nil
+  , testProperty "reverse then append is same as append then reverse" $ \x y ->
+      reverse x ++ reverse y == (reverse (y ++ x) :: List Integer)
+  , testProperty "reverse single element list is the list" $ \x ->
+      reverse (x :. Nil) == (x :. Nil :: List Integer)
   ]
 
-produceTest :: MiniTestTree
+produceTest :: TestTree
 produceTest =
   testGroup "produce" [
     testCase "increment" $

@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.MonadTest (
+module Test.MonadTest (
   -- * Tests
     test_Monad
   , bindExactlyOneTest
@@ -14,12 +14,11 @@ module Course.MonadTest (
   , bindFlippedTest
   , kleisliCompositionTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
-import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
+import           Test.Framework    (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))
@@ -27,7 +26,7 @@ import           Course.List       (List (..))
 import           Course.Monad      (join, (<**>), (<=<), (=<<), (>>=))
 import           Course.Optional   (Optional (..))
 
-test_Monad :: MiniTestTree
+test_Monad :: TestTree
 test_Monad =
   testGroup "Monad" [
     bindExactlyOneTest
@@ -40,27 +39,27 @@ test_Monad =
   , kleisliCompositionTest
   ]
 
-bindExactlyOneTest :: MiniTestTree
+bindExactlyOneTest :: TestTree
 bindExactlyOneTest =
   testCase "(=<<) for ExactlyOne" $
     ((\x -> ExactlyOne(x+1)) =<< ExactlyOne 2) @?= ExactlyOne 3
 
-bindListTest :: MiniTestTree
+bindListTest :: TestTree
 bindListTest =
   testCase "(=<<) for List" $
     ((\n -> n :. n :. Nil) =<< (1 :. 2 :. 3 :. Nil)) @?= (1:.1:.2:.2:.3:.3:.Nil)
 
-bindOptionalTest :: MiniTestTree
+bindOptionalTest :: TestTree
 bindOptionalTest =
   testCase "(=<<) for Optional" $
     ((\n -> Full (n + n)) =<< Full 7) @?= Full 14
 
-bindReaderTest :: MiniTestTree
+bindReaderTest :: TestTree
 bindReaderTest =
   testCase "(=<<) for (->)" $
     ((*) =<< (+10)) 7 @?= 119
 
-appTest :: MiniTestTree
+appTest :: TestTree
 appTest =
   testGroup "<**>" [
     testCase "ExactlyOne" $
@@ -85,7 +84,7 @@ appTest =
       ((*) <**> (+2)) 3 @?= 15
   ]
 
-joinTest :: MiniTestTree
+joinTest :: TestTree
 joinTest =
   testGroup "join" [
     testCase "List" $
@@ -98,12 +97,12 @@ joinTest =
       join (+) 7 @?= 14
   ]
 
-bindFlippedTest :: MiniTestTree
+bindFlippedTest :: TestTree
 bindFlippedTest =
   testCase "(>>=)" $
     ((+10) >>= (*)) 7 @?= 119
 
-kleisliCompositionTest :: MiniTestTree
+kleisliCompositionTest :: TestTree
 kleisliCompositionTest =
   testCase "kleislyComposition" $
     ((\n -> n :. n :. Nil) <=< (\n -> n+1 :. n+2 :. Nil)) 1 @?= (2:.2:.3:.3:.Nil)

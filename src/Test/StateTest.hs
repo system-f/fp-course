@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.StateTest (
+module Test.StateTest (
   -- * Tests
     test_State
   , getTest
@@ -15,20 +15,19 @@ module Course.StateTest (
   , firstRepeatTest
   , distinctTest
   , isHappyTest
-  --   execTest
-  -- , evalTest
+  , execTest
+  , evalTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
 import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
-import           Course.Gens        (genInteger, genList)
-import           Test.Course.Mini   (courseTest)
-import           Test.Mini          (MiniTestTree, fn, testCase, testGroup,
-                                     testProperty, (@?=))
+import           Test.Framework     (TestTree, testCase, testGroup,
+                                     testProperty, test, (@?=))
+import           Test.Framework.Property (Unshowable(..))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
@@ -37,15 +36,15 @@ import           Course.List        (List (..), filter, flatMap, hlist, length,
                                      listh, span, (++))
 import           Course.Monad
 import           Course.Optional    (Optional (Empty, Full))
-import           Course.State       (State (State), distinct, findM,
+import           Course.State       (State (State), distinct, eval, exec, findM,
                                      firstRepeat, get, isHappy, put, runState)
 
-test_State :: MiniTestTree
+test_State :: TestTree
 test_State =
   testGroup "State" [
-  --   execTest
-  -- , evalTest
-    getTest
+    execTest
+  , evalTest
+  , getTest
   , putTest
   , functorTest
   , applicativeTest
@@ -56,30 +55,28 @@ test_State =
   , isHappyTest
   ]
 
--- execTest :: MiniTestTree
--- execTest =
---   testProperty "exec" $
---     \(Fun _ f :: Fun Integer (Integer, Integer)) s -> exec (State f) s == snd (runState (State f) s)
+execTest :: TestTree
+execTest = testProperty "exec" $ \(Unshowable f) s ->
+  exec (State f) s == snd (runState (State (f :: Int -> (Int, Int))) (s :: Int))
 
--- evalTest :: MiniTestTree
--- evalTest =
---   testProperty "eval" $
---     \(Fun _ f :: Fun Integer (Integer, Integer)) s -> eval (State f) s == fst (runState (State f) s)
+evalTest :: TestTree
+evalTest = testProperty "eval" $ \(Unshowable f) s ->
+  eval (State f) s == fst (runState (State (f :: Int -> (Int, Int))) (s :: Int))
 
-getTest :: MiniTestTree
+getTest :: TestTree
 getTest =
   testCase "get" $ runState get 0 @?= (0,0)
 
-putTest :: MiniTestTree
+putTest :: TestTree
 putTest =
   testCase "put" $ runState (put 1) 0 @?= ((),1)
 
-functorTest :: MiniTestTree
+functorTest :: TestTree
 functorTest =
   testCase "(<$>)" $
     runState ((+1) <$> State (\s -> (9, s * 2))) 3 @?= (10,6)
 
-applicativeTest :: MiniTestTree
+applicativeTest :: TestTree
 applicativeTest =
   testGroup "Applicative" [
     testCase "pure" $ runState (pure 2) 0 @?= (2,0)
@@ -89,7 +86,7 @@ applicativeTest =
        in runState state [] @?= (10,["apple","banana"])
   ]
 
-monadTest :: MiniTestTree
+monadTest :: TestTree
 monadTest =
   testGroup "Monad" [
     testCase "(=<<)" $
@@ -101,7 +98,7 @@ monadTest =
        in runState (modify (+1) >>= \() -> modify (*2)) 7  @?= ((),16)
   ]
 
-findMTest :: MiniTestTree
+findMTest :: TestTree
 findMTest =
   testGroup "findM" [
     testCase "find 'c' in 'a'..'h'" $
@@ -112,7 +109,7 @@ findMTest =
        in runState (findM p $ listh ['a'..'h']) 0 @?= (Empty,8)
   ]
 
-firstRepeatTest :: MiniTestTree
+firstRepeatTest :: TestTree
 firstRepeatTest =
   testGroup "firstRepeat" [
     testCase "'x' is the only repeat" $
@@ -121,14 +118,14 @@ firstRepeatTest =
       firstRepeat (listh "abxdexgg") @?= Full 'x'
   , testCase "no repeats" $
       firstRepeat (listh ['a'..'z']) @?= Empty
-  , testProperty "finds repeats" . fn (genList genInteger) $ \xs ->
-      case firstRepeat xs of
+  , testProperty "finds repeats" $ \xs ->
+      case firstRepeat (xs :: List Integer) of
         Empty ->
           let xs' = hlist xs
           in nub xs' == xs'
         Full x -> length (filter (== x) xs) > 1
-  , testProperty "removing repeats matches nub" . fn (genList genInteger) $ \xs ->
-      case firstRepeat xs of
+  , testProperty "removing repeats matches nub" $ \xs ->
+      case firstRepeat (xs :: List Integer) of
         Empty -> True
         Full x ->
           let
@@ -139,20 +136,20 @@ firstRepeatTest =
             nub l3 == l3
   ]
 
-distinctTest :: MiniTestTree
+distinctTest :: TestTree
 distinctTest =
   testGroup "distinct" [
     testCase "No repeats" $
       let cs = listh ['a'..'z'] in distinct cs @?= cs
   , testCase "Every element repeated" $
       let cs = listh ['a'..'z'] in distinct (flatMap (\x -> x :. x :. Nil) cs) @?= cs
-  , testProperty "No repeats after distinct" .
-      fn (genList genInteger) $ \xs -> firstRepeat (distinct xs) == Empty
-  , testProperty "Every element repeated" . fn (genList genInteger) $ \xs ->
-      distinct xs == distinct (flatMap (\x -> x :. x :. Nil) xs)
+  , testProperty "No repeats after distinct" $ \xs ->
+      firstRepeat (distinct (xs :: List Integer)) == Empty
+  , testProperty "Every element repeated" $ \xs ->
+      distinct (xs :: List Integer) == distinct (flatMap (\x -> x :. x :. Nil) xs)
   ]
 
-isHappyTest :: MiniTestTree
+isHappyTest :: TestTree
 isHappyTest =
   testGroup "isHappy" [
     testCase "4" $ isHappy 4 @?= False

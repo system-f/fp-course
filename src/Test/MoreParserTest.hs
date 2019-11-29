@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.MoreParserTest (
+module Test.MoreParserTest (
   -- * Tests
     test_MoreParser
   , spacesTest
@@ -27,13 +27,12 @@ module Course.MoreParserTest (
   , satisfyAnyTest
   , betweenSepbyCommaTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
-import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, assertBool, testCase,
-                                    testGroup, (@?=))
+import           Test.Framework    (TestTree, assertBool, testCase,
+                                    testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.List       (List ((:.), Nil))
@@ -45,7 +44,7 @@ import           Course.MoreParser (between, betweenCharTok, betweenSepbyComma,
 import           Course.Parser     (ParseResult (Result), character, is,
                                     isErrorResult, lower, parse)
 
-test_MoreParser :: MiniTestTree
+test_MoreParser :: TestTree
 test_MoreParser =
   testGroup "MoreParser" [
       spacesTest
@@ -71,7 +70,7 @@ test_MoreParser =
     , betweenSepbyCommaTest
   ]
 
-spacesTest :: MiniTestTree
+spacesTest :: TestTree
 spacesTest =
   testGroup "spacesTest" [
       testCase "can parse zero spaces" $
@@ -82,7 +81,7 @@ spacesTest =
         parse spaces "   abc" @?= Result "abc" "   "
   ]
 
-tokTest :: MiniTestTree
+tokTest :: TestTree
 tokTest =
   testGroup "tokTest" [
       testCase "can parse input without spaces" $
@@ -93,7 +92,7 @@ tokTest =
         parse (tok (is 'a')) "a   bc" @?= Result "bc" 'a'
   ]
 
-charTokTest :: MiniTestTree
+charTokTest :: TestTree
 charTokTest =
   testGroup "charTokTest" [
       assertBool "fails when character does not match" $
@@ -106,7 +105,7 @@ charTokTest =
         parse (charTok 'a') "a   bc" @?= Result "bc" 'a'
   ]
 
-commaTokTest :: MiniTestTree
+commaTokTest :: TestTree
 commaTokTest =
   testGroup "commaTokTest" [
       assertBool "fails when character is not a comma" $
@@ -119,7 +118,7 @@ commaTokTest =
         parse commaTok ",   123" @?= Result "123" ','
   ]
 
-quoteTest :: MiniTestTree
+quoteTest :: TestTree
 quoteTest =
   testGroup "quoteTest" [
       assertBool "fails when character is not a single or double quote" $
@@ -130,7 +129,7 @@ quoteTest =
         parse quote "\"abc" @?= Result "abc" '"'
   ]
 
-stringTest :: MiniTestTree
+stringTest :: TestTree
 stringTest =
   testGroup "stringTest" [
       assertBool "fails when string is not matched" $
@@ -141,7 +140,7 @@ stringTest =
         parse (string "abc") "abc" @?= Result "" "abc"
   ]
 
-stringTokTest :: MiniTestTree
+stringTokTest :: TestTree
 stringTokTest =
   testGroup "stringTokTest" [
       assertBool "fails when string is not matched" $
@@ -152,7 +151,7 @@ stringTokTest =
         parse (stringTok "abc") "abc  " @?= Result "" "abc"
   ]
 
-optionTest :: MiniTestTree
+optionTest :: TestTree
 optionTest =
   testGroup "optionTest" [
       testCase "produces parsed value when parser succeeds" $
@@ -161,7 +160,7 @@ optionTest =
         parse (option 'x' character) "" @?= Result "" 'x'
   ]
 
-digits1Test :: MiniTestTree
+digits1Test :: TestTree
 digits1Test =
   testGroup "digits1Test" [
       assertBool "fails when no digits at start of input" $
@@ -172,7 +171,7 @@ digits1Test =
         parse digits1 "123abc" @?= Result "abc" "123"
   ]
 
-oneofTest :: MiniTestTree
+oneofTest :: TestTree
 oneofTest =
   testGroup "oneofTest" [
       assertBool "fails when given character not in string" $
@@ -181,7 +180,7 @@ oneofTest =
         parse (oneof "abc") "bcdef" @?= Result "cdef" 'b'
   ]
 
-noneofTest :: MiniTestTree
+noneofTest :: TestTree
 noneofTest =
   testGroup "noneofTest" [
       assertBool "fails when one of given characters prefixes input" $
@@ -192,7 +191,7 @@ noneofTest =
         parse (noneof "bcd") "abc" @?= Result "bc" 'a'
   ]
 
-betweenTest :: MiniTestTree
+betweenTest :: TestTree
 betweenTest =
   testGroup "betweenTest" [
       assertBool "fails when opening parse fails" $
@@ -207,7 +206,7 @@ betweenTest =
         parse (between (is '[') (is ']') digits1) "[123]" @?= Result "" "123"
   ]
 
-betweenCharTokTest :: MiniTestTree
+betweenCharTokTest :: TestTree
 betweenCharTokTest =
   testGroup "betweenCharTokTest" [
       assertBool "fails when opening character not present" $
@@ -222,7 +221,7 @@ betweenCharTokTest =
         parse (betweenCharTok '[' ']' digits1) "[123]" @?= Result "" "123"
   ]
 
-hexTest :: MiniTestTree
+hexTest :: TestTree
 hexTest =
   testGroup "hexTest" [
       assertBool "fails on invalid hex string --- too short" $
@@ -233,7 +232,7 @@ hexTest =
         parse hex "0010" @?= Result "" '\DLE'
   ]
 
-hexuTest :: MiniTestTree
+hexuTest :: TestTree
 hexuTest =
   testGroup "hexuTest" [
       assertBool "fails when no u at start" $
@@ -248,7 +247,7 @@ hexuTest =
         parse hexu "u0a1f" @?= Result "" '\2591'
   ]
 
-sepby1Test :: MiniTestTree
+sepby1Test :: TestTree
 sepby1Test =
   testGroup "sepby1Test" [
       assertBool "fails when first parser fails" $
@@ -261,7 +260,7 @@ sepby1Test =
         parse (sepby1 character (is ',')) "a,b,c,,def" @?= Result "def" "abc,"
   ]
 
-sepbyTest :: MiniTestTree
+sepbyTest :: TestTree
 sepbyTest =
   testGroup "sepbyTest" [
       testCase "succeeds on empty string" $
@@ -274,7 +273,7 @@ sepbyTest =
         parse (sepby character (is ',')) "a,b,c,,def" @?= Result "def" "abc,"
   ]
 
-eofTest :: MiniTestTree
+eofTest :: TestTree
 eofTest =
   testGroup "eofTest" [
       assertBool "fails when still input left" $
@@ -283,7 +282,7 @@ eofTest =
         parse eof "" @?= Result "" ()
   ]
 
-satisfyAllTest :: MiniTestTree
+satisfyAllTest :: TestTree
 satisfyAllTest =
   testGroup "satisfyAllTest" [
       assertBool "fails when a predicate fails" $
@@ -298,7 +297,7 @@ satisfyAllTest =
         parse (satisfyAll (isUpper :. (/= 'X') :. Nil)) "ABc" @?= Result "Bc" 'A'
   ]
 
-satisfyAnyTest :: MiniTestTree
+satisfyAnyTest :: TestTree
 satisfyAnyTest =
   testGroup "satisfyAnyTest" [
       assertBool "fails when no predicates satisfied" $
@@ -311,7 +310,7 @@ satisfyAnyTest =
         parse (satisfyAny (isLower :. (/= 'X') :. Nil)) "ABc" @?= Result "Bc" 'A'
   ]
 
-betweenSepbyCommaTest :: MiniTestTree
+betweenSepbyCommaTest :: TestTree
 betweenSepbyCommaTest =
   testGroup "betweenSepbyCommaTest" [
       assertBool "fails when opening char missing" $
@@ -333,4 +332,3 @@ betweenSepbyCommaTest =
     , testCase "succeeds --- digits1" $
         parse (betweenSepbyComma '[' ']' digits1) "[123,456]" @?= Result "" ("123":."456":.Nil)
   ]
-

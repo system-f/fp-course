@@ -49,7 +49,7 @@ product ns =
 We can now reload the course code in GHCi and see what it tells us.
 
 ```
-λ> :r
+>> :r
 [ 5 of 26] Compiling Course.List      ( src/Course/List.hs, interpreted )
 
 src/Course/List.hs:95:13: error:
@@ -103,15 +103,15 @@ If you've forgotten the type of an expression, or want to check if part of a sol
 and has the type that you expect, use `:type` or `:t` in GHCi.
 
 ```
-λ> :t (:.)
+>> :t (:.)
 (:.) :: t -> List t -> List t
-λ> :t (:.) 5
+>> :t (:.) 5
 (:.) 5 :: Num t => List t -> List t
-λ> :t Nil
+>> :t Nil
 Nil :: List t
-λ> :t (:.) 5 Nil
+>> :t (:.) 5 Nil
 (:.) 5 Nil :: Num t => List t
-λ> (:.) 5 Nil
+>> (:.) 5 Nil
 [5]
 ```
 
@@ -123,9 +123,9 @@ GHCi. As shown below, it will print the constructors for values of that type, as
 instances for any type classes that are in scope.
 
 ```
-λ> :i List
+>> :i List
 data List t = Nil | t :. (List t)
-  	-- Defined at src/Course/List.hs:34:1
+    -- Defined at src/Course/List.hs:34:1
 instance [safe] Eq t => Eq (List t)
   -- Defined at src/Course/List.hs:37:13
 instance [safe] Ord t => Ord (List t)
@@ -226,6 +226,6 @@ Finally, when you're not sure how to pattern match the argument because you don'
 constructors are, use `:info` as described above to find out.
 
 ```
-λ> :i Baz
+>> :i Baz
 data Baz = C1 Int | C2 Chars Int
 ```

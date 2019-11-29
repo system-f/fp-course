@@ -1,6 +1,7 @@
 :set -isrc
-:set -itest
-:l src/Course.hs
+:set -package time
+:l src/Course.hs src/Test/Loader.hs
+:m + Test.Loader
 :set prompt ">> "
 :set -Wall
 :set -fno-warn-unused-binds
@@ -11,5 +12,4 @@
 :set -XScopedTypeVariables
 :set -XOverloadedStrings
 :set -XRebindableSyntax
-:def courseTest (\arg -> Prelude.return Prelude.$ Prelude.unlines [":reload", "courseTest " Prelude.++ arg])
-:def tastyTest (\arg -> Prelude.return Prelude.$ Prelude.unlines [":reload", "tastyTest " Prelude.++ arg])
+:def test (\arg -> Prelude.return Prelude.$ Prelude.unlines [":reload", "test " Prelude.++ arg])

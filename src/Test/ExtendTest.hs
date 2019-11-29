@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ExtendTest (
+module Test.ExtendTest (
   -- * Tests
     test_Extend
   , exactlyOneTest
@@ -10,8 +10,8 @@ module Course.ExtendTest (
   , optionalTest
   , cojoinTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
 import           Course.Core
@@ -22,10 +22,9 @@ import           Course.Optional   (Optional (Empty, Full))
 
 import           Course.Extend     (cojoin, (<<=))
 
-import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (MiniTestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, test, (@?=))
 
-test_Extend :: MiniTestTree
+test_Extend :: TestTree
 test_Extend =
   testGroup "Extend" [
     exactlyOneTest
@@ -34,12 +33,12 @@ test_Extend =
   , cojoinTest
   ]
 
-exactlyOneTest :: MiniTestTree
+exactlyOneTest :: TestTree
 exactlyOneTest =
   testCase "ExactlyOne instance" $
     (id <<= ExactlyOne 7) @?= ExactlyOne (ExactlyOne 7)
 
-listTest :: MiniTestTree
+listTest :: TestTree
 listTest =
   testGroup "List" [
     testCase "length" $
@@ -51,7 +50,7 @@ listTest =
         nestedListh3 [[[4,5,6],[1,2,3]],[[4,5,6]]]
   ]
 
-optionalTest :: MiniTestTree
+optionalTest :: TestTree
 optionalTest =
   testGroup "Optional" [
     testCase "id Full" $
@@ -60,7 +59,7 @@ optionalTest =
       (id <<= Empty) @?= (Empty :: Optional (Optional Integer))
   ]
 
-cojoinTest :: MiniTestTree
+cojoinTest :: TestTree
 cojoinTest =
   testGroup "cojoin" [
     testCase "ExactlyOne" $

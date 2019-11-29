@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.OptionalTest (
+module Test.OptionalTest (
   -- * Tests
     test_Optional
   , mapOptionalTest
@@ -10,18 +10,17 @@ module Course.OptionalTest (
   , valueOrTest
   , firstFullTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
-import           Test.Course.Mini (courseTest)
-import           Test.Mini        (MiniTestTree, testCase, testGroup, (@?=))
+import           Test.Framework   (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,
                                    optional, (<+>), (??))
 
-test_Optional :: MiniTestTree
+test_Optional :: TestTree
 test_Optional =
   testGroup "Optional" [
     mapOptionalTest
@@ -31,7 +30,7 @@ test_Optional =
   , optionalTest
   ]
 
-mapOptionalTest :: MiniTestTree
+mapOptionalTest :: TestTree
 mapOptionalTest =
   testGroup "mapOptional" [
     testCase "Empty" $
@@ -40,7 +39,7 @@ mapOptionalTest =
       mapOptional (+1) (Full 8) @?= Full 9
   ]
 
-bindOptionalTest :: MiniTestTree
+bindOptionalTest :: TestTree
 bindOptionalTest =
   let evenDecOddInc n = if even n then Full (n - 1) else Full (n + 1)
    in testGroup "bindOptional" [
@@ -52,7 +51,7 @@ bindOptionalTest =
           bindOptional evenDecOddInc (Full 9) @?= Full 10
   ]
 
-valueOrTest :: MiniTestTree
+valueOrTest :: TestTree
 valueOrTest =
   testGroup "??" [
     testCase "Full" $
@@ -61,7 +60,7 @@ valueOrTest =
       Empty ?? 99 @?= 99
   ]
 
-firstFullTest :: MiniTestTree
+firstFullTest :: TestTree
 firstFullTest =
   testGroup "<+>" [
     testCase "first Full" $
@@ -74,7 +73,7 @@ firstFullTest =
       Empty <+> Empty @?= (Empty :: Optional Integer)
   ]
 
-optionalTest :: MiniTestTree
+optionalTest :: TestTree
 optionalTest =
   testGroup "optional" [
     testCase "replaces full data constructor" $

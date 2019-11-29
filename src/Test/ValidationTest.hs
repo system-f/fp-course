@@ -2,14 +2,13 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 {-# LANGUAGE FlexibleContexts      #-}
-{-# LANGUAGE LambdaCase            #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module Course.ValidationTest (
+module Test.ValidationTest (
   -- * Tests
     test_Validation
   , isErrorTest
@@ -19,22 +18,19 @@ module Course.ValidationTest (
   , valueOrTest
   , errorOrTest
 
-  -- * Course test runner
-  , courseTest
+  -- * Runner
+  , test
   ) where
 
 import           Data.Maybe        (maybe)
 import qualified Prelude           as P
-import           Test.Course.Mini  (courseTest)
-import           Test.Mini         (Arbitrary (shrink),
-                                    Gen (GenA, GenInt, GenMaybe, GenString),
-                                    MiniTestTree, Testable (B, Fn), testCase,
-                                    testGroup, testProperty, (@?=))
+import           Test.Framework    (TestTree, (@?=), testCase, testGroup,
+                                    testProperty, test)
 
 import           Course.Core
 import           Course.Validation
 
-test_Validation :: MiniTestTree
+test_Validation :: TestTree
 test_Validation =
   testGroup "Validation" [
     isErrorTest
@@ -45,40 +41,40 @@ test_Validation =
   , errorOrTest
   ]
 
-isErrorTest :: MiniTestTree
+isErrorTest :: TestTree
 isErrorTest =
   testGroup "isError" [
     testCase "true for errors" $
       isError (Error "Message") @?= True
   , testCase "false for values" $
       isError (Value "7") @?= False
-  , testProperty "not the same as isValue" . Fn genValidationInt $
-      \(x :: Validation Int) -> B (isError x /= isValue x)
+  , testProperty "not the same as isValue" $ \x ->
+      isError x /= isValue (x :: Validation Integer)
   ]
 
-isValueTest :: MiniTestTree
+isValueTest :: TestTree
 isValueTest =
   testGroup "isValue" [
     testCase "false for errors" $
       isValue (Error "Message") @?= False
   , testCase "false for values" $
       isValue (Value "7") @?= True
-  , testProperty "not the same as isValue" . Fn genValidationInt $
-      \(x :: Validation Int) -> B (isValue x /= isError x)
+  , testProperty "not the same as isValue" $ \x ->
+      isValue x /= isError (x :: Validation Integer)
   ]
 
-mapValidationTest :: MiniTestTree
+mapValidationTest :: TestTree
 mapValidationTest =
   testGroup "mapValidation" [
     testCase "errors unchanged" $
       mapValidation (+ 10) (Error "message") @?= Error "message"
   , testCase "values changed" $
       mapValidation (+ 10) (Value 7) @?= Value 17
-  , testProperty "map with id causes no change" . Fn genValidationInt $
-      \(x :: Validation Int) -> B (mapValidation id x == x)
+  , testProperty "map with id causes no change" $ \x ->
+      mapValidation id x == (x :: Validation Integer)
   ]
 
-bindValidationTest :: MiniTestTree
+bindValidationTest :: TestTree
 bindValidationTest =
   let
     f n = if even n then Value (n + 10) else Error "odd"
@@ -90,42 +86,28 @@ bindValidationTest =
         bindValidation f (Value 7) @?= Error "odd"
     , testCase "even value" $
         bindValidation f (Value 8) @?= Value 18
-    , testProperty "bind with Value causes no change" . Fn genValidationInt $
-      \(x :: Validation Int) -> B $ bindValidation Value x == x
+    , testProperty "bind with Value causes no change" $ \x ->
+        bindValidation Value x == (x :: Validation Integer)
     ]
 
-valueOrTest :: MiniTestTree
+valueOrTest :: TestTree
 valueOrTest =
   testGroup "valueOr" [
     testCase "falls through for errors" $
       valueOr (Error "message") "foo" @?= "foo"
   , testCase "unwraps values" $
       valueOr (Value "foo") "bar" @?= "foo"
-  , testProperty "isValue or valueOr falls through" . Fn genValidationInt $
-      \(x :: Validation Int) -> Fn GenInt $ \n -> B $ isValue x || valueOr x n == n
+  , testProperty "isValue or valueOr falls through" $ \x n ->
+      isValue x || valueOr x n == (n :: Integer)
   ]
 
-errorOrTest :: MiniTestTree
+errorOrTest :: TestTree
 errorOrTest =
   testGroup "errorOr" [
     testCase "unwraps errors" $
       errorOr (Error "message") "q" @?= "message"
   , testCase "falls through for values" $
       errorOr (Value (7 :: Integer)) "q" @?= "q"
-  , testProperty "isError or errorOr falls through" . Fn genValidationInt $
-      \(x :: Validation Int) -> Fn GenString $ \s -> B (isError x || errorOr x s == s)
+  , testProperty "isError or errorOr falls through" $ \x s ->
+      isError (x :: Validation Integer) || errorOr x s == s
   ]
-
-genValidationInt ::
-  forall t g.
-  Arbitrary t g
-  => Gen t (Validation Int)
-genValidationInt =
-  let
-    gmi = GenMaybe GenInt
-    f = maybe (Error "no value") Value
-    shrink' = \case
-      (Value n) -> Value P.<$> shrink (GenInt :: Gen t Int) n
-      e@(Error _) -> [e]
-  in
-    GenA gmi f shrink'
