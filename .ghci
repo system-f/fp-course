@@ -2,7 +2,7 @@
 :set -package time
 :l src/Course.hs src/Test/Loader.hs
 :m + Test.Loader
-:set prompt "λ> "
+:set prompt ">> "
 :set -Wall
 :set -fno-warn-unused-binds
 :set -fno-warn-unused-do-bind

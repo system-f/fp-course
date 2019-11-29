@@ -178,7 +178,7 @@ requirement beyond those of the course (a supported version of GHCi).
 By default, the full test suite is loaded, and each module's tests are
 exported. You can run the tests in GHCi like this:
 
-    λ> test test_List
+    >> test test_List
 
 #### Specific modules
 
@@ -186,18 +186,18 @@ Each test module also the `test` function. To run tests from a single
 module, load it, and then run `test <tests>`. For example, in
 `GHCi`:
 
-    λ> :l test/Course/ListTest.hs
-    λ> courseTest test_List
+    >> :l test/Course/ListTest.hs
+    >> courseTest test_List
 
     -- This is a single test
-    λ> courseTest productTest
+    >> courseTest productTest
 
 #### `:reload` and run tests
 
 There is also a custom `:test` command defined in `.ghci` that will
 invoke `:reload` and then `test` in a single action:
 
-    λ> :test test_List
+    >> :test test_List
 
 #### doctest
 
