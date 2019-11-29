@@ -13,7 +13,7 @@ import           Data.Foldable (traverse_)
 import           Data.List (intercalate)
 import           Data.Monoid ((<>))
 import           Data.String (fromString)
-import           System.Random (StdGen, mkStdGen, split)
+import           Test.Framework.Random (StdGen, mkStdGen, split)
 import qualified Test.Framework.Property as P
 
 data TestTree
@@ -69,8 +69,10 @@ testProperty label a = Single label $ go P.quick (P.evaluate a) (mkStdGen 0) 0 0
           Nothing -> go config gen rnd1 ntest (nfail + 1)
           Just True -> go config gen rnd1 (ntest + 1) nfail
           Just False -> Failure $ concat
-            [ "Falsifiable after " ++ show ntest ++ " tests:"
-            , unlines $ P.arguments res
+            [ "Falsifiable after "
+            , show ntest
+            , " tests: "
+            , intercalate ", " (P.arguments res)
             ]
       where
         res = P.generate (P.resize config ntest) rnd2 gen

@@ -21,7 +21,7 @@ module Test.Loader
   , test_Cheque
 
   , test
-  , tests
+  , allTests
   )
   where
 
@@ -46,8 +46,8 @@ import Data.String (fromString)
 
 import Test.Framework (TestTree, test, testGroup)
 
-tests :: TestTree
-tests =
+allTests :: TestTree
+allTests =
   testGroup "Tests" [
     test_Optional
   , test_List

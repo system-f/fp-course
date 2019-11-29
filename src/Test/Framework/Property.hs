@@ -16,7 +16,7 @@ import           Data.Bool
 import           Data.Char
 import           Data.String (IsString(..))
 import           Data.Tree
-import           System.Random
+import           Test.Framework.Random
 
 newtype Gen a = Gen { runGen :: Int -> StdGen -> a } deriving Functor
 
