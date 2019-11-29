@@ -1,3 +1,6 @@
+-- Small version of Quickcheck inspired by the original papers and
+-- implementation:
+--
 -- https://users.cs.northwestern.edu/~robby/courses/395-495-2009-fall/quick.pdf
 -- http://www.cse.chalmers.se/~rjmh/QuickCheck/QuickCheck.hs
 
