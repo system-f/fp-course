@@ -181,9 +181,9 @@ exported. You can run the tests in GHCi like this:
 
 #### Specific modules
 
-Each test module also the `test` function. To run tests from a single
-module, load it, and then run `test <tests>`. For example, in
-`GHCi`:
+For convenience, each test module also exports the `test` function. To
+run tests from a single module, load it, and then run `test
+<tests>`. For example, in `GHCi`:
 
     >> :l test/Course/ListTest.hs
     >> courseTest test_List
