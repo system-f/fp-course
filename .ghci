@@ -1,5 +1,5 @@
 :set -isrc
-:l src/Test/Loader.hs
+:l src/Course.hs src/Test/Loader.hs
 :set prompt "λ> "
 :set -Wall
 :set -fno-warn-unused-binds
