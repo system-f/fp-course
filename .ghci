@@ -1,6 +1,6 @@
 :set -isrc
 :l src/Course.hs
-:set prompt ">> "
+:set prompt "λ> "
 :set -Wall
 :set -fno-warn-unused-binds
 :set -fno-warn-unused-do-bind
