@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.JsonParserTest (
+module Test.JsonParserTest (
   -- * Tests
     test_JsonParser
   , jsonStringTest
@@ -16,7 +16,7 @@ module Course.JsonParserTest (
   ) where
 
 import           Data.Ratio        ((%))
-import           Test.Course.Mini  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.JsonParser (jsonArray, jsonFalse, jsonNull, jsonNumber,

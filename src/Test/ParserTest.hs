@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ParserTest (
+module Test.ParserTest (
   -- * Tests
     test_Parser
   , constantParserTest
@@ -32,7 +32,7 @@ module Course.ParserTest (
   , personParserTest
   ) where
 
-import           Test.Course.Mini   (TestTree, assertBool, testCase,
+import           Test.Framework   (TestTree, assertBool, testCase,
                                      testGroup, (@?=))
 
 import           Course.Applicative (pure, (*>), (<*>))

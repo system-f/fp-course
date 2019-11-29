@@ -5,7 +5,7 @@
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
-module Test.Course.Mini where
+module Test.Framework where
 
 import           Control.Exception (SomeException, catch)
 import           Data.Bool (bool)
@@ -14,7 +14,7 @@ import           Data.List (intercalate)
 import           Data.Monoid ((<>))
 import           Data.String (fromString)
 import           System.Random (StdGen, mkStdGen, split)
-import qualified Test.Property as P
+import qualified Test.Framework.Property as P
 
 data TestTree
   = Single String Result

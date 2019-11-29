@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ExtendTest (
+module Test.ExtendTest (
   -- * Tests
     test_Extend
   , exactlyOneTest
@@ -19,7 +19,7 @@ import           Course.Optional   (Optional (Empty, Full))
 
 import           Course.Extend     (cojoin, (<<=))
 
-import           Test.Course.Mini  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
 
 test_Extend :: TestTree
 test_Extend =

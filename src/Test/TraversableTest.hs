@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.TraversableTest (
+module Test.TraversableTest (
   -- * Tests
     test_Traversable
   , listTest
@@ -17,7 +17,7 @@ module Course.TraversableTest (
   ) where
 
 
-import           Test.Course.Mini   (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework   (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Compose     (Compose (Compose))
 import           Course.Core

@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.OptionalTest (
+module Test.OptionalTest (
   -- * Tests
     test_Optional
   , mapOptionalTest
@@ -11,7 +11,7 @@ module Course.OptionalTest (
   , firstFullTest
   ) where
 
-import           Test.Course.Mini (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.Optional  (Optional (..), bindOptional, mapOptional,

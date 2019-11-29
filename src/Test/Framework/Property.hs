@@ -4,7 +4,7 @@
 {-# LANGUAGE DeriveFunctor              #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
-module Test.Property where
+module Test.Framework.Property where
 
 import           Prelude
 

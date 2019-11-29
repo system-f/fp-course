@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.ApplicativeTest (
+module Test.ApplicativeTest (
   -- * Tests
     test_Applicative
   , exactlyOneTest
@@ -22,10 +22,9 @@ module Course.ApplicativeTest (
   , filteringTest
   ) where
 
-import           Course.Gens        (genInteger)
-import           Test.Course.Mini   (TestTree, testCase, testGroup,
+import           Test.Framework   (TestTree, testCase, testGroup,
                                      testProperty, (@?=))
-import           Test.Property
+import           Test.Framework.Property
 
 import           Course.Applicative (filtering, lift1, lift2, lift3, lift4,
                                      pure, replicateA, sequence, (*>), (<*),

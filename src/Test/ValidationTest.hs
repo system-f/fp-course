@@ -8,7 +8,7 @@
 {-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 
-module Course.ValidationTest (
+module Test.ValidationTest (
   -- * Tests
     test_Validation
   , isErrorTest
@@ -21,7 +21,7 @@ module Course.ValidationTest (
 
 import           Data.Maybe        (maybe)
 import qualified Prelude           as P
-import           Test.Course.Mini  (TestTree, (@?=), testCase, testGroup,
+import           Test.Framework  (TestTree, (@?=), testCase, testGroup,
                                     testProperty)
 
 import           Course.Core

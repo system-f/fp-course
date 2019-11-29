@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.MoreParserTest (
+module Test.MoreParserTest (
   -- * Tests
     test_MoreParser
   , spacesTest
@@ -28,7 +28,7 @@ module Course.MoreParserTest (
   , betweenSepbyCommaTest
   ) where
 
-import           Test.Course.Mini  (TestTree, assertBool, testCase,
+import           Test.Framework    (TestTree, assertBool, testCase,
                                     testGroup, (@?=))
 
 import           Course.Core

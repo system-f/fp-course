@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
-module TestLoader
+module Test.Loader
   ( Optional.test_Optional
   , List.test_List
   , Functor.test_Functor
@@ -24,26 +24,26 @@ module TestLoader
   )
   where
 
-import qualified Course.ApplicativeTest as Applicative
-import qualified Course.ChequeTest      as ChequeTest
-import qualified Course.ComonadTest     as Comonad
-import qualified Course.ExtendTest      as Extend
-import qualified Course.FunctorTest     as Functor
-import qualified Course.JsonParserTest  as JsonParser
-import qualified Course.ListTest        as List
-import qualified Course.ListZipperTest  as ListZipper
-import qualified Course.MonadTest       as Monad
-import qualified Course.MoreParserTest  as MoreParser
-import qualified Course.OptionalTest    as Optional
-import qualified Course.ParserTest      as Parser
-import qualified Course.StateTest       as State
-import qualified Course.StateTTest      as StateT
-import qualified Course.TraversableTest as Traversable
-import qualified Course.ValidationTest  as Validation
+import qualified Test.ApplicativeTest as Applicative
+import qualified Test.ChequeTest      as ChequeTest
+import qualified Test.ComonadTest     as Comonad
+import qualified Test.ExtendTest      as Extend
+import qualified Test.FunctorTest     as Functor
+import qualified Test.JsonParserTest  as JsonParser
+import qualified Test.ListTest        as List
+import qualified Test.ListZipperTest  as ListZipper
+import qualified Test.MonadTest       as Monad
+import qualified Test.MoreParserTest  as MoreParser
+import qualified Test.OptionalTest    as Optional
+import qualified Test.ParserTest      as Parser
+import qualified Test.StateTest       as State
+import qualified Test.StateTTest      as StateT
+import qualified Test.TraversableTest as Traversable
+import qualified Test.ValidationTest  as Validation
 
 import           Data.String            (fromString)
 
-import           Test.Course.Mini       (TestTree, testGroup)
+import           Test.Framework         (TestTree, testGroup)
 
 tests :: TestTree
 tests =

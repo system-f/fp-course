@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.StateTTest (
+module Test.StateTTest (
   -- * Tests
     test_StateT
   , functorTest
@@ -31,14 +31,13 @@ module Course.StateTTest (
 
 import qualified Prelude            as P (String, (++))
 
-import           Test.Course.Mini   (TestTree, testCase, testGroup,
+import           Test.Framework     (TestTree, testCase, testGroup,
                                      testProperty, (@?=))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core
 import           Course.ExactlyOne  (ExactlyOne (ExactlyOne))
 import           Course.Functor     ((<$>))
-import           Course.Gens        (genInteger, genList)
 import           Course.List        (List ((:.), Nil), flatMap, listh)
 import           Course.Monad       ((=<<), (>>=))
 import           Course.Optional    (Optional (Empty, Full))

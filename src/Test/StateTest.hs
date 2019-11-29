@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.StateTest (
+module Test.StateTest (
   -- * Tests
     test_State
   , getTest
@@ -22,10 +22,9 @@ module Course.StateTest (
 import           Data.List          (nub)
 import qualified Prelude            as P ((++))
 
-import           Course.Gens        (genInteger, genList)
-import           Test.Course.Mini   (TestTree, testCase, testGroup,
+import           Test.Framework     (TestTree, testCase, testGroup,
                                      testProperty, (@?=))
-import           Test.Property      (Unshowable(..))
+import           Test.Framework.Property (Unshowable(..))
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Core

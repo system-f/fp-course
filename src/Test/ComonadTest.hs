@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ComonadTest
+module Test.ComonadTest
   (
   -- * Tests
     test_Comonad
@@ -11,7 +11,7 @@ module Course.ComonadTest
   )
   where
 
-import           Test.Course.Mini  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Comonad    (copure, (<$$>))
 import           Course.Core

@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.MonadTest (
+module Test.MonadTest (
   -- * Tests
     test_Monad
   , bindExactlyOneTest
@@ -15,7 +15,7 @@ module Course.MonadTest (
   , kleisliCompositionTest
   ) where
 
-import           Test.Course.Mini  (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework  (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (..))

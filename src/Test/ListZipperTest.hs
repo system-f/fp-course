@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude          #-}
 {-# LANGUAGE OverloadedStrings          #-}
 
-module Course.ListZipperTest (
+module Test.ListZipperTest (
   -- * Tests
     test_ListZipper
   , functorTest
@@ -48,11 +48,9 @@ module Course.ListZipperTest (
 
 import qualified Prelude            as P (fromIntegral, (<$>))
 
-import           Course.Gens        (genInteger, genList, genListZipper,
-                                     genListZipperWithInt)
-import           Test.Course.Mini   (TestTree, testCase, testGroup,
+import           Test.Framework     (TestTree, testCase, testGroup,
                                      testProperty, (@?=))
-import           Test.Property      (getPositive, getUnshowable)
+import           Test.Framework.Property (getPositive, getUnshowable)
 
 import           Course.Applicative (pure, (<*>))
 import           Course.Comonad     (copure)

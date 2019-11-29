@@ -2,12 +2,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ChequeTest (
+module Test.ChequeTest (
     test_Cheque
   , dollarsTest
   ) where
 
-import           Test.Course.Mini (TestTree, testCase, testGroup, (@?=))
+import           Test.Framework (TestTree, testCase, testGroup, (@?=))
 
 import           Course.Cheque    (dollars)
 import           Course.Core

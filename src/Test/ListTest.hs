@@ -2,7 +2,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Course.ListTest (
+module Test.ListTest (
   -- * Tests
     test_List
   , headOrTest
@@ -24,12 +24,10 @@ module Course.ListTest (
 
 import qualified Prelude          as P (length)
 
-import           Test.Course.Mini (TestTree, testCase, testGroup,
+import           Test.Framework (TestTree, testCase, testGroup,
                                    testProperty, (@?=))
 
 import           Course.Core
-import           Course.Gens      (genInteger, genIntegerAndList, genList,
-                                   genThreeLists, genTwoLists)
 import           Course.List      (List ((:.), Nil), filter, find, flatMap,
                                    flatten, flattenAgain, foldLeft, headOr,
                                    hlist, infinity, largeList, length,

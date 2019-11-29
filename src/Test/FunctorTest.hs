@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module Course.FunctorTest (
+module Test.FunctorTest (
   -- * Tests
     test_Functor
   , idTest
@@ -14,8 +14,7 @@ module Course.FunctorTest (
   , voidTest
   ) where
 
-import           Course.Gens       (genInteger)
-import           Test.Course.Mini  (TestTree, testCase, testGroup,
+import           Test.Framework    (TestTree, testCase, testGroup,
                                     testProperty , (@?=))
 
 import           Course.Core
