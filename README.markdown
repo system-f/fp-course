@@ -172,10 +172,9 @@ tests for each function are grouped using the `testGroup` function. Within each
 test group there are test cases (`testCase` function), and properties
 (`testProperty` function).
 
-Tests are run using either a built-in test runner that has no
-requirement beyond those of the course (a supported version of GHCi).
-
-By default, the full test suite is loaded, and each module's tests are
+Tests are run using a built-in test runner that has no requirements
+beyond those of the course (a supported version of GHCi). By default,
+the full test suite is loaded, and each module's tests are
 exported. You can run the tests in GHCi like this:
 
     >> test test_List
