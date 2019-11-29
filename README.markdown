@@ -166,76 +166,38 @@ available in this repository for your convenience.
 
 ### Running the tests
 
-Tests are stored under the `test/` directory. Each module from the course that
+Tests are stored under the `src/Test/` directory. Each module from the course that
 has tests has a corresponding `<MODULE>Test.hs` file. Within each test module,
 tests for each function are grouped using the `testGroup` function. Within each
 test group there are test cases (`testCase` function), and properties
 (`testProperty` function).
 
-Tests are able to be run using either a built-in test runner that has no
-requirement beyond those of the course (a supported version of GHCi), or
-[tasty](https://hackage.haskell.org/package/tasty).
+Tests are run using either a built-in test runner that has no
+requirement beyond those of the course (a supported version of GHCi).
 
-**NOTE**: If running tests using the embedded runner, no property tests will be
-run.
+By default, the full test suite is loaded, and each module's tests are
+exported. You can run the tests in GHCi like this:
 
-#### Built-in runner
+    λ> test test_List
 
-Each test module exports a function called `courseTest` that may be used to run tests. To run
-tests, load the relevant module, and then run `courseTest <tests>`. For example, in `GHCi`:
+#### Specific modules
+
+Each test module also the `test` function. To run tests from a single
+module, load it, and then run `test <tests>`. For example, in
+`GHCi`:
 
     λ> :l test/Course/ListTest.hs
     λ> courseTest test_List
+
+    -- This is a single test
     λ> courseTest productTest
-
-Alternatively, the full test suite may be run by loading `test/TestLoader.hs` and running
-`courseTest tests`.
-
-#### tasty
-
-Before running the tests, ensure that you have an up-to-date installation
-of GHC and cabal-install from your system package manager or use the minimal
-installers found at [haskell.org](https://www.haskell.org/downloads#minimal).
-
-To run the full test suite, build the project as follows:
-
-    > cabal update
-    > cabal install --only-dependencies --enable-tests
-    > cabal configure --enable-tests
-    > cabal build
-    > cabal test
-
-Tasty will also allow you to run only those tests whose description match a
-pattern. Tests are organised in nested groups named after the relevant module
-and function, so pattern matching should be intuitive. For example, to run the
-tests for the `List` module you could run:
-
-    > cabal test tasty --show-detail=direct --test-option=--pattern="Tests.List."
-
-Likewise, to run only the tests for the `headOr` function in the `List` module, you could use:
-
-    > cabal test tasty --show-detail=direct --test-option=--pattern="List.headOr"
-
-In addition, GHCi may be used to run tests using tasty. Assuming you have run `ghci`
-from the root of the project, you may do the following. Remember that GHCi has
-tab completion, so you can save yourself some typing.
-
-    λ> -- Load the tasty test runner and tests
-    λ> :l test/TastyLoader.hs
-    λ>
-    λ> -- Tests may be referenced by module
-    λ> tastyTest ListTest.headOrTest
-    λ> tastyTest OptionalTest.valueOrTest
-    λ> tastyTest tests
 
 #### `:reload` and run tests
 
-In addition there are custom `:courseTest` and `:tastyTest` commands defined
-in `.ghci` that will invoke `:reload` and then `courseTest` or `tastyTest`.
+There is also a custom `:test` command defined in `.ghci` that will
+invoke `:reload` and then `test` in a single action:
 
-For example:
-
-    λ> :tastyTest List.test_List
+    λ> :test test_List
 
 #### doctest
 
@@ -245,8 +207,8 @@ GHCI. Examples begin with `>>>` while properties begin with `prop>`.
 
 ### Progression
 
-It is recommended to perform some exercises before others. The first step is to
-inspect the introduction modules.
+We recommend you perform some exercises before others. The first step
+is to inspect the introduction modules.
 
 * `Course.ExactlyOne`
 * `Course.Validation`
@@ -255,7 +217,7 @@ They contain examples of data structures and Haskell syntax. They do not contain
 exercises and exist to provide a cursory examination of Haskell syntax. The next
 step is to complete the exercises in `Course.Optional`.
 
-After this, the following progression of modules is recommended:
+After this, we recommend the following progression of modules:
 
 * `Course.List`
 * `Course.Functor`
