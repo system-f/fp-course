@@ -139,13 +139,6 @@ map f = foldRight (\a acc -> f a :. acc) Nil
 --
 -- prop> \x -> filter (const False) x == Nil
 filter :: forall a. (a -> Bool) -> List a -> List a
--- filter _ Nil = Nil
--- filter f (h :. t) =
---  case f h of
---    True ->
---      h :. filter f t
---    False ->
---      filter f t
 filter p =
   foldRight f Nil
   where f a acc | p a = a :. acc
@@ -166,7 +159,7 @@ filter p =
 (++) :: List a -> List a -> List a
 -- (++) Nil b = b
 -- (++) (h :. t) l = h :. (t ++ l)
-(++) as bs = foldRight (\a acc -> a :. acc) bs as
+(++) as bs = foldRight (:.) bs as
 
 infixr 5 ++
 
@@ -226,7 +219,7 @@ flattenAgain = flatMap id
 --
 -- >>> seqOptional (Empty :. map Full infinity)
 -- Empty
-seqOptional :: forall a . Show a => List (Optional a) -> Optional (List a)
+seqOptional :: forall a . List (Optional a) -> Optional (List a)
 -- seqOptional Nil = Empty
 seqOptional as = foldRight f (Full Nil) as
   where f :: Optional a -> Optional (List a) -> Optional (List a)
@@ -252,7 +245,7 @@ seqOptional as = foldRight f (Full Nil) as
 -- >>> find (const True) infinity
 -- Full 0
 find :: forall a as . (a -> Bool) -> List a -> Optional a
-find p as = headOr Empty (map (Full) (filter p as))
+find p = headOr Empty . map Full . filter p
 
 
 -- | Determine if the length of the given list is greater than 4.
@@ -269,7 +262,7 @@ find p as = headOr Empty (map (Full) (filter p as))
 -- >>> lengthGT4 infinity
 -- True
 lengthGT4 :: List a -> Bool
-lengthGT4 (_ :. (_ :. (_ :. (_ :. (_ :. _))))) = True
+lengthGT4 (_ :. _ :. _ :. _ :. _ :. _) = True
 lengthGT4 _ = False
 
 -- | Reverse a list.
@@ -284,7 +277,7 @@ lengthGT4 _ = False
 --
 -- prop> \x -> let types = x :: Int in reverse (x :. Nil) == x :. Nil
 reverse :: List a -> List a
-reverse = foldLeft (\acc a -> a :. acc) Nil
+reverse = foldLeft (flip (:.)) Nil
 
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
