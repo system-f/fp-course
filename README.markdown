@@ -316,8 +316,6 @@ covered first.
 * type parameters
   * always lower-case 'a'..'z'
   * aka generics, templates C++, parametric polymorphism
-* running the tests
-  * `cabal test`
 
 ### Parser grammar assistance
 
