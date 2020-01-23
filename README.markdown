@@ -1,6 +1,6 @@
 # Functional Programming Course
 
-![Data61](http://i.imgur.com/0h9dFhl.png)
+![Data61](https://i.imgur.com/UqRDRfB.png)
 
 ### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
 
