@@ -1,6 +1,6 @@
 # Functional Programming Course
 
-![Data61](https://i.imgur.com/UqRDRfB.png)
+![CSIRO's Data61](https://raw.githubusercontent.com/qfpl/assets/master/data61-transparent-bg.png)
 
 ### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
 
