@@ -181,15 +181,13 @@ exported. You can run the tests in GHCi like this:
 
 #### Specific modules
 
-For convenience, each test module also exports the `test` function. To
-run tests from a single module, load it, and then run `test
-<tests>`. For example, in `GHCi`:
+For convenience, each test module also exports individual tests. To run tests
+from a single module, load it, and then run `test <tests>`. For example, in
+`GHCi`:
 
-    >> :l test/Course/ListTest.hs
-    >> courseTest test_List
-
-    -- This is a single test
-    >> courseTest productTest
+    >> :l src/Test/ListTest.hs
+    >> test headOrTest
+    >> test productTest
 
 #### `:reload` and run tests
 
@@ -197,12 +195,13 @@ There is also a custom `:test` command defined in `.ghci` that will
 invoke `:reload` and then `test` in a single action:
 
     >> :test test_List
+    >> :test headOrTest
 
 #### doctest
 
-The doctest tests are a mirror of the tasty tests that reside in comments
-alongside the code. They are not executable, but examples can be copied into
-GHCI. Examples begin with `>>>` while properties begin with `prop>`.
+The doctest tests are a mirror of the tests that reside in comments alongside
+the code. They are not executable, but examples can be copied into GHCI.
+Examples begin with `>>>` while properties begin with `prop>`.
 
 ### Progression
 
