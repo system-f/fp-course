@@ -33,8 +33,14 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
-  | t :. List t
+  -- | t :. List t
+  | (:.) t (List t)
   deriving (Eq, Ord)
+
+-- add 10 to the head (if there is one)
+exampleListProblem :: List Integer -> List Integer
+exampleListProblem Nil = Nil
+exampleListProblem (h :. t) = h + 10 :. t
 
 -- Right-associative
 infixr 5 :.
@@ -72,11 +78,15 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -> List a -> a
+headOr a Nil = a
+headOr _ (h:._) = h
+
+  {-
+headOr = \dzfb -> \sfd -> case sfd of
+  Nil -> dzfb
+  h :. _ -> h
+-}
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +101,14 @@ headOr =
 product ::
   List Int
   -> Int
+product Nil = 1
+product (h:.t) = h * product t
+{-
 product =
-  error "todo: Course.List#product"
+  \x -> case x of
+    Nil -> 1
+    h :. t -> h * product t
+-}
 
 -- | Sum the elements of the list.
 --
@@ -106,9 +122,24 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+{-
+sum Nil = 0
+sum (h:.t) = h + sum t
+-}
+{-
+sum list = foldLeft (\a -> \b -> a + b) 0 list
+sum list = foldLeft (\a -> \b -> (+) a b) 0 list
+sum list = foldLeft (\a -> \b -> ((+) a) b) 0 list
+sum list = foldLeft (\a -> ((+) a)) 0 list
+sum list = foldLeft (+) 0 list
+sum = \list -> foldLeft (+) 0 list
+sum = \list -> foldLeft (\a -> \b -> a + b) 0 list
+-}
+sum = foldLeft (+) 0
 
+-- eta-reduction
+-- \x -> f x
+-- f
 -- | Return the length of the list.
 --
 -- >>> length (1 :. 2 :. 3 :. Nil)
@@ -118,8 +149,27 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+  {-
+length Nil = 0
+length (_:.t) = 1 + length t
+-}
+{-
+length = foldLeft (\r el -> 1 + r) 0
+length = foldLeft (\r el -> (+) 1 r) 0
+length = foldLeft (\r _ -> (+) 1 r) 0
+length = foldLeft (\r -> \_ -> (+) 1 r) 0
+length = foldLeft (\r -> const ((+) 1 r)) 0
+-}
+length = foldLeft (const . (+) 1) 0
+
+-- const :: a -> b -> a
+-- const = \a -> \_ -> a
+
+-- function composition
+-- \x -> f (g x)
+-- f . g
+
+
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +183,15 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+-- map f (h:.t) = (\b -> b :. map f t) (f h)
+map f (h:.t) = f h :. map f t
+
+-- t :: List a
+--      h :: a
+-- f :: a -> b
+-- ? :: b -> List b
+
 
 -- | Return elements satisfying the given predicate.
 --
