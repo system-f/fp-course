@@ -183,9 +183,22 @@ map ::
   (a -> b)
   -> List a
   -> List b
+  {-
 map _ Nil = Nil
 -- map f (h:.t) = (\b -> b :. map f t) (f h)
 map f (h:.t) = f h :. map f t
+-}
+map f =
+  -- \list -> foldRight (\h t -> f h :. t) Nil list
+  -- foldRight (\h t -> f h :. t) Nil
+  -- foldRight (\h t -> (:.) (f h) t) Nil
+  -- foldRight (\h -> (:.) (f h)) Nil
+  -- foldRight (comp (:.) f) Nil
+  -- foldRight ((.) (:.) f) Nil
+  foldRight ((:.) . f) Nil
+
+-- ? :type comp
+-- comp f g = \x -> f (g x)
 
 -- t :: List a
 --      h :: a
@@ -207,8 +220,20 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+-- filter p (h:.t) = if p h then h :. filter p t else filter p t
+filter p (h:.t) =
+  let c = filter p t
+  -- in  bool (dfg c) (h :. c) (p h)
+  -- in  bool id (h :.) (p h) c
+  in  (if (p h) then (h :.) else id) c
+
+-- id (identity)
+dfg :: a -> a
+dfg = \a -> a
+
+-- Don't Repeat Yourself (DRY) taken seriously
+-- aka Functional Programming
 
 -- | Append two lists to a new list.
 --
@@ -226,8 +251,18 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+  {-
+(++) x y =
+  case x of
+    Nil -> y
+    h:.t -> h :. (t ++ y)
+-}
+-- (++) = \x y -> foldRight (:.) y x
+-- (++) = \x y -> flip (foldRight (:.)) x y
+(++) = flip (foldRight (:.))
+
+flop :: (a -> b -> c) -> b -> a -> c
+flop a2b2c b a = a2b2c a b
 
 infixr 5 ++
 
@@ -244,8 +279,11 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten = foldRight (++) Nil
+{-
+flatten Nil = Nil
+flatten (h :. t) = h ++ flatten t
+-}
 
 -- | Map a function then flatten to a list.
 --
@@ -261,9 +299,17 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+-- flatMap f = foldRight ((++) . f) Nil
+-- flatMap f = foldRight (\h t -> f h ++ t) Nil
+-- flatMap f x = flatten (map f x)
+-- flatMap f = flatten . map f
+flatMap = (\v -> flatten . v) . map
 
+
+  {-
+flatMap _ Nil = Nil
+flatMap f (h:.t) = f h ++ flatMap f t
+-}
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
 --
@@ -358,9 +404,57 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+  {-
+reverse Nil = Nil
+reverse (h:.t) = reverse t ++ h :. Nil
+-}
+-- reverse list = foldLeft (\r el -> el :. r) Nil list
+-- reverse = foldLeft (\r el -> el :. r) Nil
+-- reverse = foldLeft (\r el -> flip (:.) r el) Nil
+reverse = foldLeft (flip (:.)) Nil
 
+fours = 4 :. fours
+
+data Three = LessThan | EqualTo | GreaterThan
+
+class Order a where
+  comp :: a -> a -> Three
+
+instance Order Bool where
+  comp True True = EqualTo
+  comp False False = EqualTo
+  comp False True = LessThan
+  comp True False = GreaterThan
+
+instance Order Three where
+  comp LessThan LessThan = EqualTo
+  comp LessThan _ = LessThan
+  comp EqualTo LessThan = GreaterThan
+  comp EqualTo EqualTo = EqualTo
+  comp EqualTo GreaterThan = LessThan
+  comp GreaterThan GreaterThan = EqualTo
+  comp GreaterThan _ = GreaterThan
+
+
+sort :: Order a => List a -> List a
+sort = error "todo"
+
+{-
+reverse = reverse0 Nil
+
+reverse0 ::
+  List a
+  -> List a
+  -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h :. acc) t
+-}
+
+blah :: List (a -> b) -> a -> List b
+blah x a = map (\k -> k a) x
+
+-- blah2 :: Anything (a -> b) -> a -> Anything b
+-- blah2 x a = m (\k -> k a) x
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
 --
