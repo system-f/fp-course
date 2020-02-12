@@ -33,14 +33,8 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
-  -- | t :. List t
-  | (:.) t (List t)
+  | t :. List t
   deriving (Eq, Ord)
-
--- add 10 to the head (if there is one)
-exampleListProblem :: List Integer -> List Integer
-exampleListProblem Nil = Nil
-exampleListProblem (h :. t) = h + 10 :. t
 
 -- Right-associative
 infixr 5 :.
@@ -78,15 +72,22 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a -> List a -> a
-headOr a Nil = a
-headOr _ (h:._) = h
+  a
+  -> List a
+  -> a
+headOr =
+  foldRight const
 
-  {-
-headOr = \dzfb -> \sfd -> case sfd of
-  Nil -> dzfb
-  h :. _ -> h
--}
+-- mylist = 1:.2:.3:.4:.Nil
+-- def = 99
+
+-- headOr' = 99
+
+
+
+-- eta-reduce
+-- \x -> f x
+-- f
 
 -- | The product of the elements of a list.
 --
@@ -101,13 +102,19 @@ headOr = \dzfb -> \sfd -> case sfd of
 product ::
   List Int
   -> Int
-product Nil = 1
-product (h:.t) = h * product t
-{-
 product =
-  \x -> case x of
-    Nil -> 1
-    h :. t -> h * product t
+  foldRight (*) 1
+
+{-
+foldLeft f z list
+
+var r = Nil
+for(el in list) {
+  r = flipcons(r, el)
+}
+return r
+
+flipcons(r, el) = el :. r
 -}
 
 -- | Sum the elements of the list.
@@ -122,24 +129,9 @@ product =
 sum ::
   List Int
   -> Int
-{-
-sum Nil = 0
-sum (h:.t) = h + sum t
--}
-{-
-sum list = foldLeft (\a -> \b -> a + b) 0 list
-sum list = foldLeft (\a -> \b -> (+) a b) 0 list
-sum list = foldLeft (\a -> \b -> ((+) a) b) 0 list
-sum list = foldLeft (\a -> ((+) a)) 0 list
-sum list = foldLeft (+) 0 list
-sum = \list -> foldLeft (+) 0 list
-sum = \list -> foldLeft (\a -> \b -> a + b) 0 list
--}
-sum = foldLeft (+) 0
+sum =
+  foldLeft (+) 0
 
--- eta-reduction
--- \x -> f x
--- f
 -- | Return the length of the list.
 --
 -- >>> length (1 :. 2 :. 3 :. Nil)
@@ -149,27 +141,11 @@ sum = foldLeft (+) 0
 length ::
   List a
   -> Int
-  {-
-length Nil = 0
-length (_:.t) = 1 + length t
--}
-{-
-length = foldLeft (\r el -> 1 + r) 0
-length = foldLeft (\r el -> (+) 1 r) 0
-length = foldLeft (\r _ -> (+) 1 r) 0
-length = foldLeft (\r -> \_ -> (+) 1 r) 0
-length = foldLeft (\r -> const ((+) 1 r)) 0
--}
-length = foldLeft (const . (+) 1) 0
+length =
+  foldLeft (\r -> const (r + 1)) 0
 
--- const :: a -> b -> a
--- const = \a -> \_ -> a
-
--- function composition
--- \x -> f (g x)
--- f . g
-
-
+-- \_ -> x
+-- const x
 
 -- | Map the given function on each element of the list.
 --
@@ -183,28 +159,12 @@ map ::
   (a -> b)
   -> List a
   -> List b
-  {-
-map _ Nil = Nil
--- map f (h:.t) = (\b -> b :. map f t) (f h)
-map f (h:.t) = f h :. map f t
--}
-map f =
-  -- \list -> foldRight (\h t -> f h :. t) Nil list
-  -- foldRight (\h t -> f h :. t) Nil
-  -- foldRight (\h t -> (:.) (f h) t) Nil
-  -- foldRight (\h -> (:.) (f h)) Nil
-  -- foldRight (comp (:.) f) Nil
-  -- foldRight ((.) (:.) f) Nil
-  foldRight ((:.) . f) Nil
+map =
+  -- g . f
+  -- (:.) . f
+  \f -> foldRight ((:.) . f) Nil
 
--- ? :type comp
--- comp f g = \x -> f (g x)
-
--- t :: List a
---      h :: a
--- f :: a -> b
--- ? :: b -> List b
-
+-- (...) = flip (.)
 
 -- | Return elements satisfying the given predicate.
 --
@@ -220,20 +180,11 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter _ Nil = Nil
--- filter p (h:.t) = if p h then h :. filter p t else filter p t
-filter p (h:.t) =
-  let c = filter p t
-  -- in  bool (dfg c) (h :. c) (p h)
-  -- in  bool id (h :.) (p h) c
-  in  (if (p h) then (h :.) else id) c
+filter =
+  \p -> foldRight (\h t -> if p h then h :. t else t) Nil
 
--- id (identity)
-dfg :: a -> a
-dfg = \a -> a
-
--- Don't Repeat Yourself (DRY) taken seriously
--- aka Functional Programming
+-- suum Nil = 0
+-- suum (h:.t) = h + sum t
 
 -- | Append two lists to a new list.
 --
@@ -251,18 +202,8 @@ dfg = \a -> a
   List a
   -> List a
   -> List a
-  {-
-(++) x y =
-  case x of
-    Nil -> y
-    h:.t -> h :. (t ++ y)
--}
--- (++) = \x y -> foldRight (:.) y x
--- (++) = \x y -> flip (foldRight (:.)) x y
-(++) = flip (foldRight (:.))
-
-flop :: (a -> b -> c) -> b -> a -> c
-flop a2b2c b a = a2b2c a b
+(++) Nil y = y
+(++) (h:.t) y = h :. ((++) t y)
 
 infixr 5 ++
 
@@ -279,11 +220,8 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten = foldRight (++) Nil
-{-
-flatten Nil = Nil
-flatten (h :. t) = h ++ flatten t
--}
+flatten =
+  foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -299,17 +237,9 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
--- flatMap f = foldRight ((++) . f) Nil
--- flatMap f = foldRight (\h t -> f h ++ t) Nil
--- flatMap f x = flatten (map f x)
--- flatMap f = flatten . map f
-flatMap = (\v -> flatten . v) . map
+flatMap =
+  \f -> foldRight ((++) . f) Nil
 
-
-  {-
-flatMap _ Nil = Nil
-flatMap f (h:.t) = f h ++ flatMap f t
--}
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
 --
@@ -318,7 +248,12 @@ flattenAgain ::
   List (List a)
   -> List a
 flattenAgain =
-  error "todo: Course.List#flattenAgain"
+  flatMap id
+{-
+  (a -> List b)
+  -> List a
+  -> List b
+-}
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -404,57 +339,8 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-  {-
-reverse Nil = Nil
-reverse (h:.t) = reverse t ++ h :. Nil
--}
--- reverse list = foldLeft (\r el -> el :. r) Nil list
--- reverse = foldLeft (\r el -> el :. r) Nil
--- reverse = foldLeft (\r el -> flip (:.) r el) Nil
 reverse = foldLeft (flip (:.)) Nil
 
-fours = 4 :. fours
-
-data Three = LessThan | EqualTo | GreaterThan
-
-class Order a where
-  comp :: a -> a -> Three
-
-instance Order Bool where
-  comp True True = EqualTo
-  comp False False = EqualTo
-  comp False True = LessThan
-  comp True False = GreaterThan
-
-instance Order Three where
-  comp LessThan LessThan = EqualTo
-  comp LessThan _ = LessThan
-  comp EqualTo LessThan = GreaterThan
-  comp EqualTo EqualTo = EqualTo
-  comp EqualTo GreaterThan = LessThan
-  comp GreaterThan GreaterThan = EqualTo
-  comp GreaterThan _ = GreaterThan
-
-
-sort :: Order a => List a -> List a
-sort = error "todo"
-
-{-
-reverse = reverse0 Nil
-
-reverse0 ::
-  List a
-  -> List a
-  -> List a
-reverse0 acc Nil = acc
-reverse0 acc (h:.t) = reverse0 (h :. acc) t
--}
-
-blah :: List (a -> b) -> a -> List b
-blah x a = map (\k -> k a) x
-
--- blah2 :: Anything (a -> b) -> a -> Anything b
--- blah2 x a = m (\k -> k a) x
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
 --
@@ -468,6 +354,36 @@ produce ::
   -> a
   -> List a
 produce f x = x :. produce f (f x)
+
+fl1 :: (t -> a -> b) -> a -> t -> b
+fl1 = \x b -> (.) (\k -> k b) x
+
+fl2 :: List (a -> b) -> a -> List b
+fl2 = \x b -> map (\k -> k b) x
+
+fl3 :: Threee (a -> b) -> a -> Threee b
+fl3 = \x b -> mapThree (\k -> k b) x
+
+-- etc etc
+
+data Threee a = Threee a a a
+  deriving (Eq, Show)
+
+mapThree :: (a -> b) -> Threee a -> Threee b
+mapThree f (Threee a1 a2 a3) = Threee (f a1) (f a2) (f a3)
+
+
+{-
+\list a ->
+var r = List.empty
+
+foreach(el in list) {
+  r += el.apply(a)
+}
+
+return r
+
+-}
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?

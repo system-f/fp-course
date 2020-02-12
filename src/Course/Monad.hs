@@ -49,7 +49,7 @@ instance Monad List where
     -> List a
     -> List b
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance List"
+    flatMap
 
 -- | Binds a function on an Optional.
 --
@@ -73,7 +73,20 @@ instance Monad ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (=<<) =
-    error "todo: Course.Monad (=<<)#instance ((->) t)"
+    \f -> \g -> \x -> f (g x) x
+
+{-
+* Monads are burritos
+* Monads are spacesuits
+* Monads are for side-effects
+* Monads are for wizards
+* Monads are for functional programmers
+* Monads are for ivory towers
+* Monads are a hack for FP languages
+
+
+
+-}
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).
 --
@@ -112,7 +125,13 @@ instance Monad ((->) t) where
   -> k a
   -> k b
 (<**>) =
-  error "todo: Course.Monad#(<**>)"
+  \k_of_a2b -> \k_of_a ->
+    k_of_a2b >>= \a2b ->
+    k_of_a >>= \a ->
+    pure (a2b a)
+
+-- k a -> (a -> k b) -> k b
+
 
 infixl 4 <**>
 
@@ -134,7 +153,7 @@ join ::
   k (k a)
   -> k a
 join =
-  error "todo: Course.Monad#join"
+  (=<<) id
 
 -- | Implement a flipped version of @(=<<)@, however, use only
 -- @join@ and @(<$>)@.
@@ -148,7 +167,25 @@ join =
   -> (a -> k b)
   -> k b
 (>>=) =
-  error "todo: Course.Monad#(>>=)"
+  flip (=<<)
+
+data Predicate a = Predicate (a -> Bool)
+
+class Contravariant' k where
+  contramap :: (b -> a) -> k a -> k b
+
+instance Contravariant' Predicate where
+  -- (b -> a) -> Predicate a -> Predicate b
+  -- p :: a -> Bool
+  -- _ :: b -> Bool
+  contramap b2a (Predicate p) = Predicate (p . b2a)
+{-
+instance Functor Predicate where
+  -- (a -> b) -> Predicate a -> Predicate b
+  -- p :: a -> Bool
+  -- _ :: b -> Bool
+  (<$>) a2b (Predicate p) = Predicate (\b -> 
+-}
 
 infixl 1 >>=
 
@@ -164,7 +201,9 @@ infixl 1 >>=
   -> a
   -> k c
 (<=<) =
-  error "todo: Course.Monad#(<=<)"
+  \f g a -> g a >>= f
+
+-- (>>=) :: k x -> (x -> k y) -> k y
 
 infixr 1 <=<
 

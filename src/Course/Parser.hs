@@ -120,7 +120,9 @@ constantParser =
 character ::
   Parser Char
 character =
-  error "todo: Course.Parser#character"
+  P (\i -> case i of
+      Nil -> UnexpectedEof
+      h:.t -> Result t h)
 
 -- | Parsers can map.
 -- Write a Functor instance for a @Parser@.
@@ -133,7 +135,24 @@ instance Functor Parser where
     -> Parser a
     -> Parser b
   (<$>) =
-     error "todo: Course.Parser (<$>)#instance Parser"
+  -- \a2b -> \p -> P (\i -> a2b <$> parse p i)
+  -- \a2b -> \p -> P (\i -> (<$>) a2b (parse p i))
+    \a2b -> \p -> P ((a2b <$>) <$> parse p)
+
+-- \x -> f (g x)
+-- f . g
+-- f <$> g
+
+-- a2b ::       a -> b
+-- parse p i :: ParseResult a
+-- _ ::         ParseResult b
+
+
+-- p :: Parser a
+-- parse p :: Input -> ParseResult a
+-- a2b :: a -> b
+-- i :: Input
+-- _ :: ParseResult b
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -143,7 +162,8 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  error "todo: Course.Parser#valueParser"
+  -- \a -> P (flip Result a)
+  P . flip Result
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -166,8 +186,20 @@ valueParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) =
-  error "todo: Course.Parser#(|||)"
+(|||) p1 p2 =
+  -- P (\i -> lift3 bool id (const (parse p2 i)) isErrorResult (parse p1 i))
+  -- P (\i -> lift3 bool id ((const . parse p2) i) (const isErrorResult i) (parse p1 i))
+  P (lift3 (lift3 bool id) (const . parse p2) (const isErrorResult) (parse p1))
+
+  {-
+  P (\i ->  let v = parse p1 i
+            in  if isErrorResult v then parse p2 i else v)
+  -}
+  {-
+  P (\i -> case parse p1 i of
+    Result x y -> Result x y
+    _ -> parse p2 i)
+-}
 
 infixl 3 |||
 
@@ -199,7 +231,42 @@ instance Monad Parser where
     -> Parser a
     -> Parser b
   (=<<) =
-    error "todo: Course.Parser (=<<)#instance Parser"
+    \a2pb -> \pa -> P (\input ->
+      onResult (parse pa input) (\j a -> parse (a2pb a) j))
+
+character2 :: Parser (Char, Char)
+character2 =
+  do  c1 <- character
+      c2 <- character
+      return (c1, c2)
+  {-
+  from c1 in character
+  from c2 in character
+  select (c1, c2)
+
+  for {
+    c1 <- character
+    c2 <- character
+  } yield (c1, c2)
+  -}
+{-
+* insert the word `do`
+* turn `>>=` into `<-`
+* delete `->`
+* delete `\`
+* swap each side of `<-`
+-}
+-- k a -> (a -> k b) -> k b
+-- Parser Char -> (Char -> Parser (Char, Char)) -> Parser (Char, Char)
+
+    {-
+      case parse pa input of
+        UnexpectedEof -> UnexpectedEof
+        UnexpectedChar c -> UnexpectedChar c
+        UnexpectedString s -> UnexpectedString s
+        ExpectedEof j -> ExpectedEof j
+        Result j a -> parse (a2pb a) j)
+-}
 
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
