@@ -110,6 +110,7 @@ fl' = \x b -> (<$>) (\k -> k b) x
 (<$) =
   -- \mary -> (<$>) (const mary)
   (<$>) . const
+  -- \a kb -> (\_ -> a) <$> kb
 
 -- \x -> f (g x)
 -- f . g
