@@ -1,6 +1,6 @@
 # Functional Programming Course
 
-![Data61](https://i.imgur.com/UqRDRfB.png)
+![CSIRO's Data61](https://raw.githubusercontent.com/qfpl/assets/master/data61-transparent-bg.png)
 
 ### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
 
@@ -64,10 +64,6 @@ however, your first post might be moderated. This is simply to prevent spam.
    relatively quick assistance with questions.
 
 ### Getting Started
-
-**NOTE** If you do not wish to install these dependencies, you may use a virtual machine
-instead. [Instructions](ops/README.md) for automatically building a virtual machine are
-available in this repository for your convenience.
 
 1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher.
 
