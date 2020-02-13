@@ -84,6 +84,11 @@ onResult (UnexpectedString s)  _ =
 onResult (Result i a) k =
   k i a
 
+{-
+interface Parser<a> {
+  ParseResult<a> parse(Input);
+}
+-}
 data Parser a = P (Input -> ParseResult a)
 
 parse ::
@@ -135,24 +140,12 @@ instance Functor Parser where
     -> Parser a
     -> Parser b
   (<$>) =
-  -- \a2b -> \p -> P (\i -> a2b <$> parse p i)
-  -- \a2b -> \p -> P (\i -> (<$>) a2b (parse p i))
-    \a2b -> \p -> P ((a2b <$>) <$> parse p)
-
--- \x -> f (g x)
--- f . g
--- f <$> g
-
--- a2b ::       a -> b
--- parse p i :: ParseResult a
--- _ ::         ParseResult b
-
-
--- p :: Parser a
--- parse p :: Input -> ParseResult a
--- a2b :: a -> b
--- i :: Input
--- _ :: ParseResult b
+    -- f :: a -> b
+    -- p :: Parser a
+    -- parse p :: Input -> ParseResult a
+    -- (<$>) :: (a -> b) -> k a -> k b
+     \f p ->
+       P (\i -> f <$> parse p i)
 
 -- | Return a parser that always succeeds with the given value and consumes no input.
 --
@@ -162,8 +155,7 @@ valueParser ::
   a
   -> Parser a
 valueParser =
-  -- \a -> P (flip Result a)
-  P . flip Result
+  \a -> P (\i -> Result i a) 
 
 -- | Return a parser that tries the first parser for a successful value.
 --
@@ -186,20 +178,10 @@ valueParser =
   Parser a
   -> Parser a
   -> Parser a
-(|||) p1 p2 =
-  -- P (\i -> lift3 bool id (const (parse p2 i)) isErrorResult (parse p1 i))
-  -- P (\i -> lift3 bool id ((const . parse p2) i) (const isErrorResult i) (parse p1 i))
-  P (lift3 (lift3 bool id) (const . parse p2) (const isErrorResult) (parse p1))
-
-  {-
-  P (\i ->  let v = parse p1 i
-            in  if isErrorResult v then parse p2 i else v)
-  -}
-  {-
-  P (\i -> case parse p1 i of
-    Result x y -> Result x y
-    _ -> parse p2 i)
--}
+(|||) =
+  \p1 p2 ->
+    P (\i -> let g = parse p1 i
+             in  if isErrorResult g then parse p2 i else g)
 
 infixl 3 |||
 
@@ -231,42 +213,22 @@ instance Monad Parser where
     -> Parser a
     -> Parser b
   (=<<) =
-    \a2pb -> \pa -> P (\input ->
-      onResult (parse pa input) (\j a -> parse (a2pb a) j))
-
-character2 :: Parser (Char, Char)
-character2 =
-  do  c1 <- character
-      c2 <- character
-      return (c1, c2)
-  {-
-  from c1 in character
-  from c2 in character
-  select (c1, c2)
-
-  for {
-    c1 <- character
-    c2 <- character
-  } yield (c1, c2)
-  -}
-{-
-* insert the word `do`
-* turn `>>=` into `<-`
-* delete `->`
-* delete `\`
-* swap each side of `<-`
--}
--- k a -> (a -> k b) -> k b
--- Parser Char -> (Char -> Parser (Char, Char)) -> Parser (Char, Char)
-
-    {-
-      case parse pa input of
+    -- f :: a -> Parser b
+    -- p :: Parser a
+    -- parse p :: Input -> ParseResult a
+    -- i :: Input
+    -- j :: Input
+    -- a :: a
+    -- f a :: Parser b
+    -- _ :: ParseResult b
+    \f p ->
+      P (\i -> case parse p i of
         UnexpectedEof -> UnexpectedEof
         UnexpectedChar c -> UnexpectedChar c
         UnexpectedString s -> UnexpectedString s
         ExpectedEof j -> ExpectedEof j
-        Result j a -> parse (a2pb a) j)
--}
+        Result j a -> parse (f a) j
+        )
 
 -- | Write an Applicative functor instance for a @Parser@.
 -- /Tip:/ Use @(=<<)@.
@@ -281,8 +243,15 @@ instance Applicative Parser where
     -> Parser a
     -> Parser b
   (<*>) =
-    error "todo: Course.Parser (<*>)#instance Parser"
-
+    \f a ->
+    f >>= \ff ->
+    a >>= \aa ->
+    pure (ff aa)
+    {-
+      do  ff <- f
+          aa <- a
+          pure (ff aa)
+  -}
 -- | Return a parser that produces a character but fails if
 --
 --   * The input is empty.
@@ -300,7 +269,21 @@ satisfy ::
   (Char -> Bool)
   -> Parser Char
 satisfy =
-  error "todo: Course.Parser#satisfy"
+  -- p :: Char -> Bool
+  -- c :: Char
+  -- _ :: Parser Char
+  -- \p -> character >>= \c -> if p c then pure c else unexpectedCharParser c
+  -- \p -> character >>= \c -> bool (unexpectedCharParser c) (pure c) (p c)
+  -- \p -> character >>= \c -> lift3 bool unexpectedCharParser pure p c
+  -- \p -> character >>= lift3 bool unexpectedCharParser pure p
+  \p -> character >>=
+    (unexpectedCharParser >>= \a ->
+    pure >>= \b ->
+    p >>= \c ->
+    pure (bool a b c))
+
+-- lift3 :: (a -> b -> c -> d) -> k a -> k b -> k c -> k d
+-- lift3 :: (a -> b -> c -> d) -> (t -> a) -> (t -> b) -> (t -> c) -> t -> d
 
 -- | Return a parser that produces the given character but fails if
 --
@@ -312,7 +295,8 @@ satisfy =
 is ::
   Char -> Parser Char
 is =
-  error "todo: Course.Parser#is"
+  -- \x -> satisfy (\c -> c == x)
+  satisfy . (==) 
 
 -- | Return a parser that produces a character between '0' and '9' but fails if
 --
@@ -336,7 +320,7 @@ is =
 digit ::
   Parser Char
 digit =
-  error "todo: Course.Parser#digit"
+  satisfy isDigit
 
 --
 -- | Return a parser that produces a space character but fails if
@@ -361,7 +345,7 @@ digit =
 space ::
   Parser Char
 space =
-  error "todo: Course.Parser#space"
+  satisfy isSpace
 
 -- | Return a parser that conses the result of the first parser onto the result of
 -- the second. Pronounced "cons parser".
@@ -373,12 +357,16 @@ space =
 --
 -- >>> parse (digit .:. valueParser "hello") "321"
 -- Result >21< "3hello"
+-- lift1 :: (a -> b) -> k a -> k b
+-- ?     :: (a -> List a -> List a) -> Parser a -> Parser (List a) -> Parser (List a)
+-- ?     :: (a -> b -> c) -> Parser a -> Parser b -> Parser c
+-- ?     :: (a -> b -> c) -> k a -> k b -> k c
 (.:.) ::
   Parser a
   -> Parser (List a)
   -> Parser (List a)
 (.:.) =
-  error "todo: Course.Parser#(.:.)"
+  lift2 (:.)
 
 infixr 5 .:.
 
@@ -407,7 +395,7 @@ list ::
   Parser a
   -> Parser (List a)
 list =
-  error "todo: Course.Parser#list"
+  \p -> list1 p ||| pure Nil
 
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
@@ -426,7 +414,17 @@ list1 ::
   Parser a
   -> Parser (List a)
 list1 =
-  error "todo: Course.Parser#list1"
+  {-
+  \p ->
+    p >>= \x ->
+    list p >>= \y ->
+    pure (x :. y)
+    -}
+  -- \p -> p .:. list p
+  -- \p -> (.:.) p (list p)
+  (.:.) <*> list
+  -- \x f g -> log ("x = " + x); connection.close(); f x (g x)
+
 
 -- | Return a parser that produces one or more space characters
 -- (consuming until the first non-space) but fails if
