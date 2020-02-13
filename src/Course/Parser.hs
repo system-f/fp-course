@@ -437,7 +437,7 @@ list1 =
 spaces1 ::
   Parser Chars
 spaces1 =
-  error "todo: Course.Parser#spaces1"
+  list1 space
 
 -- | Return a parser that produces a lower-case character but fails if
 --
@@ -449,7 +449,7 @@ spaces1 =
 lower ::
   Parser Char
 lower =
-  error "todo: Course.Parser#lower"
+  satisfy isLower
 
 -- | Return a parser that produces an upper-case character but fails if
 --
@@ -461,7 +461,7 @@ lower =
 upper ::
   Parser Char
 upper =
-  error "todo: Course.Parser#upper"
+  satisfy isUpper
 
 -- | Return a parser that produces an alpha character but fails if
 --
@@ -473,7 +473,7 @@ upper =
 alpha ::
   Parser Char
 alpha =
-  error "todo: Course.Parser#alpha"
+  satisfy isAlpha
 
 -- | Return a parser that sequences the given list of parsers by producing all their results
 -- but fails on the first failing parser of the list.
@@ -490,7 +490,7 @@ sequenceParser ::
   List (Parser a)
   -> Parser (List a)
 sequenceParser =
-  error "todo: Course.Parser#sequenceParser"
+  sequence
 
 -- | Return a parser that produces the given number of values off the given parser.
 -- This parser fails if the given parser fails in the attempt to produce the given number of values.
@@ -507,7 +507,8 @@ thisMany ::
   -> Parser a
   -> Parser (List a)
 thisMany =
-  error "todo: Course.Parser#thisMany"
+  replicateA
+  -- \n p -> sequence (replicate n p)
 
 -- | This one is done for you.
 --
@@ -540,7 +541,22 @@ ageParser =
 firstNameParser ::
   Parser Chars
 firstNameParser =
-  error "todo: Course.Parser#firstNameParser"
+  -- lift2 (\u v -> u :. v) upper (list lower)
+  -- lift2 (:.) upper (list lower)
+  -- (.:.) upper (list lower)
+  upper .:. list lower
+  {-
+  do  {
+        u <- upper;
+        v <- list(lower);
+        pure (u :. v);
+      }
+      -}
+{-
+  upper >>= \u ->
+  list lower >>= \v ->
+  pure (u :. v)
+-}
 
 -- | Write a parser for Person.surname.
 --
@@ -559,10 +575,34 @@ firstNameParser =
 --
 -- >>> isErrorResult (parse surnameParser "abc")
 -- True
+
+-- (.++.) = lift2 (++)
+
+-- infixr 5 .++.
+
 surnameParser ::
   Parser Chars
 surnameParser =
-  error "todo: Course.Parser#surnameParser"
+  (\u v w -> u :. v ++ w) <$>
+  upper <*>
+  replicateA 5 lower <*>
+  list lower
+
+
+  -- upper .:. replicateA 5 lower .++. list lower
+  -- lift3 (\u v w -> u :. v ++ w) upper (replicateA 5 lower) (list lower)
+  {-
+  do  u <- upper
+      v <- replicateA 5 lower
+      w <- list lower
+      pure (u :. v ++ w)
+      -}
+      {-
+  upper >>= \u ->
+  replicateA 5 lower >>= \v ->
+  list lower >>= \w ->
+  pure (u :. v ++ w)
+-}
 
 -- | Write a parser for Person.smoker.
 --
