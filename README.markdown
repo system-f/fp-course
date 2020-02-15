@@ -158,6 +158,8 @@ however, your first post might be moderated. This is simply to prevent spam.
    Using tab characters in Haskell can lead to confusing error messages.
    GHC will give you a warning if your program contains a tab character.
 
+6. Do not use the stack build tool. It does not work.
+
 ### Running the tests
 
 Tests are stored under the `src/Test/` directory. Each module from the course that
