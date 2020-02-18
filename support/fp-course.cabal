@@ -21,8 +21,8 @@ bug-reports:          https://github.com/data61/fp-course/issues
 cabal-version:        >= 1.10
 build-type:           Simple
 tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.4
-extra-source-files:   ../etc/CONTRIBUTORS,
-                      ../changelog
+extra-source-files:   etc/CONTRIBUTORS,
+                      changelog
 
 source-repository     head
   type:               git
@@ -47,7 +47,7 @@ library
                       ScopedTypeVariables
                       InstanceSigs
 
-  hs-source-dirs:     ../src
+  hs-source-dirs:     src
 
   -- Keep Test.Loader at the top so it's the default target in the
   -- cabal repl command.
