@@ -447,9 +447,9 @@ all. We have therefore designed the course around `ghci` as the
 primary tool.
 
 If you are a more experienced developer with tooling set up, and you
-need a cabal file or `stack.yaml` to have working development tools,
-run the `support/make-links.sh` script from the root of the
-repository.
+need a cabal file, `shell.nix` or `stack.yaml` to have working
+development tools, run the `support/make-links.sh` script from the
+root of the repository.
 
 ### References
 
