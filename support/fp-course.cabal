@@ -1,0 +1,101 @@
+name:                 fp-course
+version:              0.1.4
+license:              BSD3
+license-file:         etc/LICENCE
+author:               Tony Morris <tmorris@tmorris.net>
+                      Mark Hibberd <mthibberd@gmail.com>
+                      Ben Sinclair <ben.d.sinclair@gmail.com>
+                      James Earl Douglas <james@earldouglas.com>
+                      Eric Torreborre <etorreborre@yahoo.com>
+maintainer:           Tony Morris
+copyright:            Copyright (C) 2010-2013 Tony Morris
+                      Copyright (C) 2012-2015 National ICT Australia Limited
+                      Copyright (C) 2012      James Earl Douglas
+                      Copyright (C) 2012      Ben Sinclair
+                      Copyright (C) 2016-2017 Data61
+synopsis:             Source code for a functional programming course
+category:             Education
+description:          Source code for a course in functional programming using Haskell
+homepage:             https://github.com/data61/fp-course
+bug-reports:          https://github.com/data61/fp-course/issues
+cabal-version:        >= 1.10
+build-type:           Simple
+tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.4
+extra-source-files:   etc/CONTRIBUTORS,
+                      changelog
+
+source-repository     head
+  type:               git
+  location:           git@github.com:data61/fp-course.git
+
+library
+  default-language:   Haskell2010
+
+  build-depends:      base >= 4 && < 5
+                    , containers >= 0.5 && < 0.7
+                    , time >= 1.8 && < 1.9
+
+  ghc-options:        -Wall
+                      -fwarn-incomplete-uni-patterns
+                      -fno-warn-unused-binds
+                      -fno-warn-unused-do-bind
+                      -fno-warn-unused-imports
+                      -fno-warn-type-defaults
+                      -ferror-spans
+
+  default-extensions: NoImplicitPrelude
+                      ScopedTypeVariables
+                      InstanceSigs
+
+  hs-source-dirs:     src
+
+  -- Keep Test.Loader at the top so it's the default target in the
+  -- cabal repl command.
+  exposed-modules:    Test.Loader
+                      Course
+                      Course.Alternative
+                      Course.Anagrams
+                      Course.Applicative
+                      Course.Cheque
+                      Course.Comonad
+                      Course.Compose
+                      Course.Contravariant
+                      Course.Core
+                      Course.ExactlyOne
+                      Course.Extend
+                      Course.FastAnagrams
+                      Course.FileIO
+                      Course.Functor
+                      Course.Interactive
+                      Course.JsonParser
+                      Course.JsonValue
+                      Course.List
+                      Course.ListZipper
+                      Course.Monad
+                      Course.MoreParser
+                      Course.Optional
+                      Course.Parser
+                      Course.Person
+                      Course.State
+                      Course.StateT
+                      Course.Traversable
+                      Course.Validation
+                      Test.ApplicativeTest
+                      Test.ChequeTest
+                      Test.ComonadTest
+                      Test.ExtendTest
+                      Test.Framework
+                      Test.Framework.Property
+                      Test.Framework.Random
+                      Test.FunctorTest
+                      Test.JsonParserTest
+                      Test.ListTest
+                      Test.ListZipperTest
+                      Test.MonadTest
+                      Test.MoreParserTest
+                      Test.OptionalTest
+                      Test.ParserTest
+                      Test.StateTTest
+                      Test.StateTest
+                      Test.TraversableTest
+                      Test.ValidationTest
