@@ -52,16 +52,12 @@ sized :: Integral i => (i -> Gen a) -> Gen a
 sized f = Gen $ \size gen -> runGen (f $ fromIntegral size) size gen
 
 frequency :: [(Int, Gen a)] -> Gen a
-frequency gens = Gen $ \size gen ->
-  let
-    total = sum $ fst <$> gens
-    (x, gen') = randomR (1, total) gen
-    go [] = error "frequency: fall through"
-    go ((f, g):gs)
-      | x <= f = runGen g size gen'
-      | otherwise = go gs
-  in
-    go gens
+frequency xs = 
+  let tot = sum (fst <$> xs)
+      pick n ((k,x):xs)
+        | n <= k    = x
+        | otherwise = pick (n-k) xs
+  in  choose (1, tot) >>= (`pick` xs)
 
 vector :: Arbitrary a => Int -> Gen [a]
 vector = (`replicateM` arbitrary)
