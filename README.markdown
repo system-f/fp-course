@@ -1,23 +1,22 @@
 # Functional Programming Course
 
-![CSIRO's Data61](https://raw.githubusercontent.com/qfpl/assets/master/data61-transparent-bg.png)
+![System-F](https://system-f.gitlab.io/logo/systemf-450x450.jpg)
 
-### Written by Tony Morris & Mark Hibberd for Data61 (formerly NICTA)
+### Written by Tony Morris & Mark Hibberd
 
-### With contributions from individuals (thanks!)
+### With contributions from individuals and organisations (thanks!)
 
 #### Special note 1
 
-If you have arrived here by https://github.com/data61/fp-course and you are
+If you have arrived here by https://github.com/system-f/fp-course and you are
 looking for the *answers* (not the exercises), please go to https://github.com/tonymorris/fp-course
 
 #### Special note 2
 
 As of February 2017, this repository is taking the place of the repository hosted at
-https://github.com/NICTA/course which is deprecated.
+[https://github.com/NICTA/course](https://github.com/NICTA/course) which is deprecated.
 
-Data61 replaces what was NICTA since July 2016. The new repository is located at
-https://github.com/data61/fp-course.
+The new repository is located at [https://github.com/system-f/fp-course](https://github.com/system-f/fp-course).
 
 #### Introduction
 
@@ -41,24 +40,20 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 1. [[nicta-fp]](https://groups.google.com/forum/#!forum/nicta-fp) is a Google
    Group for any queries related to functional programming. This mailing list is
-   owned by Data61 and is open to the public. Questions relating to this course
+   owned by System F and is open to the public. Questions relating to this course
    are most welcome here.
 
 2. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
-   is a Google Group for queries related specifically to this Data61 functional
-   programming course material. This mailing list is not owned by Data61, but is
+   is a Google Group for queries related specifically to this System F functional
+   programming course material. This mailing list is not owned by System F, but is
    run by others who are keen to share ideas relating to the course.
-
-3. \#nicta-course [on Freenode](irc://irc.freenode.net/#nicta-course) is an IRC channel that
-   is operated by others who are going through this course material on their
-   own time and effort.
 
 4. \#qfpl [on Freenode](irc://irc.freenode.net/#qfpl) is the IRC channel of the
    Queensland Functional Programming Lab - the team that runs the course in Brisbane.
 
 5. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
-   general. Most of the participants of this channel have completed the Data61
+   general. Most of the participants of this channel have completed the System F
    functional programming course to some extent. They are in various timezones
    and share a passion for functional programming, so may be able to provide
    relatively quick assistance with questions.
