@@ -252,7 +252,7 @@ alphaTest =
     , assertBool "fails if character is not alpha" $
         isErrorResult (parse alpha "5BC")
     , testCase "produces alpha character" $
-        parse upper "A45" @?= Result "45" 'A'
+        parse alpha "A45" @?= Result "45" 'A'
   ]
 
 sequenceParserTest :: TestTree
