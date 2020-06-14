@@ -6,6 +6,7 @@ if [ ! -f src/Course.hs ]; then
     exit 1;
 fi
 
+cp -vf support/cabal.project cabal.project
 cp -vf support/Setup.hs Setup.hs
 cp -vf support/fp-course.cabal fp-course.cabal
 cp -vf support/shell.nix shell.nix
