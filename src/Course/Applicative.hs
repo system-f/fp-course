@@ -30,6 +30,7 @@ import qualified Prelude as P(fmap, return, (>>=))
 class Functor k => Applicative k where
   pure ::
     a -> k a
+  -- Pronounced, apply.
   (<*>) ::
     k (a -> b)
     -> k a
