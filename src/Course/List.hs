@@ -33,7 +33,7 @@ import qualified Numeric as N
 -- The custom list type
 data List t =
   Nil
-  | t :. List t
+  | t :. List t -- cons (1950s)
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -75,8 +75,13 @@ headOr ::
   a
   -> List a
   -> a
-headOr =
-  error "todo: Course.List#headOr"
+{-
+headOr = \a list -> case list of
+  Nil -> a
+  h:._ -> h
+-}
+headOr a Nil = a
+headOr _ (h:._) = h
 
 -- | The product of the elements of a list.
 --
@@ -91,8 +96,8 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil = 1
+product (h:.t) = h * product t
 
 -- | Sum the elements of the list.
 --
@@ -106,8 +111,7 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum = foldLeft (+) 0
 
 -- | Return the length of the list.
 --
@@ -118,8 +122,16 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (\r -> const ((+) 1 r)) 0
+length = foldLeft ((\b a -> b) . (+) 1) 0
+
+-- rule of composition
+-- \x -> f (g x)
+-- f . g
+
+konst = \b a -> b
+
+-- b -> a -> b
 
 -- | Map the given function on each element of the list.
 --
@@ -133,8 +145,12 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map = \f list -> case list of
+  Nil -> Nil
+  h:.t -> f h :. map f t
+
+-- 1. Use functions.
+-- the end
 
 -- | Return elements satisfying the given predicate.
 --
@@ -150,8 +166,20 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+-- filter p = foldRight (\h t -> if p h then h :. t else t) Nil
+filter p = foldRight (\h t -> bool t (h :. t) (p h)) Nil
+
+{-
+filter _ Nil = Nil
+filter p (h:.t) = 
+  (if p h then (h :.) else id) (filter p t)
+-}
+-- a -> List a -> List a
+
+
+
+-- Don't Repeat Yourself
+-- aka Functional Programming
 
 -- | Append two lists to a new list.
 --
@@ -169,8 +197,21 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+-- (++) list1 list2 = foldRight (:.) list2 list1
+-- (++) = \list1 list2 -> flop (foldRight (:.)) list1 list2
+(++) = flip (foldRight (:.))
+
+-- eta-reduce
+-- \x -> f x
+-- f
+
+flop :: (a -> b -> c) -> b -> a -> c
+flop a2b2c b a = a2b2c a b
+
+-- h :: a
+-- t :: List a
+-- list2 :: List a
+-- ? :: List a
 
 infixr 5 ++
 
