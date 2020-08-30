@@ -157,7 +157,7 @@ satisfyTest =
   testGroup "satisfyTest" [
       testCase "when character satisfies predicate" $
         parse (satisfy isUpper) "Abc" @?= Result "bc" 'A'
-    , assertBool "is error when preidcate not satisfied" $
+    , assertBool "is error when predicate not satisfied" $
         isErrorResult (parse (satisfy isUpper) "abc")
   ]
 
