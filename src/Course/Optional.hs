@@ -100,7 +100,7 @@ optional =
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional f' a) f
 
-twiceOptional :: (a -> b -> c) -> Optional a -> Optional b -> Optional c
+twiceOptional :: (a -> b -> c) -> (Optional a -> Optional b -> Optional c)
 twiceOptional f = applyOptional . mapOptional f
 
 contains :: Eq a => a -> Optional a -> Bool

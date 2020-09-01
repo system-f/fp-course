@@ -125,6 +125,26 @@ length ::
 -- length = foldLeft (\r -> const ((+) 1 r)) 0
 length = foldLeft ((\b a -> b) . (+) 1) 0
 
+data Natural = Zero' | Succ Natural
+  deriving (Eq, Show)
+
+four = Succ (Succ (Succ (Succ Zero')))
+
+gt :: Natural -> Natural -> Bool
+gt _ Zero' = True
+gt Zero' _  = False
+gt (Succ x) (Succ y) = x `gt` y
+
+length' :: List a -> Natural
+length' Nil = Zero'
+length' (_:.t) = Succ (length' t)
+
+lengthGT4' :: List a -> Bool
+lengthGT4' list = length' list `gt` four
+
+spin = spin
+
+
 -- rule of composition
 -- \x -> f (g x)
 -- f . g
@@ -145,9 +165,31 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map = \f list -> case list of
-  Nil -> Nil
-  h:.t -> f h :. map f t
+-- map f list = foldRight (\h t -> f h :. t) Nil list
+-- map f list = foldRight (\h -> (:.) (f h)) Nil list
+map f list = foldRight ((:.) . f) Nil list
+
+-- eta-reduction
+-- \x -> f x
+-- f
+
+-- composition
+-- \x -> f (g x)
+-- f . g
+
+
+-- code style
+-- use functions
+-- the end
+
+-- list a :. b :. c :. Nil
+-- map f list =
+--   f a :. f b :. f c :. Nil
+
+{-
+map _ Nil = Nil
+map f (h:.t) = (f h) :. (map f t)
+-}
 
 -- 1. Use functions.
 -- the end
@@ -167,7 +209,11 @@ filter ::
   -> List a
   -> List a
 -- filter p = foldRight (\h t -> if p h then h :. t else t) Nil
-filter p = foldRight (\h t -> bool t (h :. t) (p h)) Nil
+filter _ Nil = Nil
+filter p (h:.t) =
+                  let s = filter p t
+                  in  if p h then h :. s else s
+
 
 {-
 filter _ Nil = Nil
@@ -199,7 +245,7 @@ filter p (h:.t) =
   -> List a
 -- (++) list1 list2 = foldRight (:.) list2 list1
 -- (++) = \list1 list2 -> flop (foldRight (:.)) list1 list2
-(++) = flip (foldRight (:.))
+(++) = \list1 list2 -> flop (foldRight (:.)) list1 list2
 
 -- eta-reduce
 -- \x -> f x
@@ -228,6 +274,8 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
+-- flatten listoflist = foldRight (++) Nil listoflist
+-- flatten = \listoflist -> foldRight (++) Nil listoflist
 flatten = foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
@@ -282,8 +330,9 @@ flattenAgain =
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+seqOptional Nil = Full Nil
+seqOptional (h:.t) = twiceOptional (:.) h (seqOptional t)
+  -- foldRight (twiceOptional (:.)) (Full Nil)
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -324,8 +373,8 @@ find =
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 (_:._:._:._:._) = True
+lengthGT4 _ = False
 
 -- | Reverse a list.
 --
@@ -341,8 +390,7 @@ lengthGT4 =
 reverse ::
   List a
   -> List a
-reverse =
-  error "todo: Course.List#reverse"
+reverse = undefined
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

@@ -37,12 +37,18 @@ infixl 4 <$>
 -- >>> (+1) <$> ExactlyOne 2
 -- ExactlyOne 3
 instance Functor ExactlyOne where
+  -- 1
   (<$>) ::
     (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
+  {-
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance ExactlyOne"
+    \f -> \e -> case e of
+      ExactlyOne a -> ExactlyOne (f a)
+  -}
+  f <$> ExactlyOne a = ExactlyOne (f a)
+
 
 -- | Maps a function on the List functor.
 --
@@ -96,6 +102,7 @@ instance Functor ((->) t) where
 -- prop> \x q -> x <$ Full q == Full x
 (<$) ::
   Functor k =>
+  -- 1
   a
   -> k b
   -> k a
