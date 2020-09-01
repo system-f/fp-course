@@ -1,3 +1,4 @@
+{-
 x :: Integer
 x = 99
 
@@ -63,4 +64,4 @@ mapThree = \f -> \x -> case x of
 -- eta-reduction
 -- \x -> f x
 -- f
-
+-}
