@@ -80,8 +80,7 @@ headOr = \a list -> case list of
   Nil -> a
   h:._ -> h
 -}
-headOr a Nil = a
-headOr _ (h:._) = h
+headOr = foldRight const
 
 -- | The product of the elements of a list.
 --
@@ -123,11 +122,12 @@ length ::
   List a
   -> Int
 -- length = foldLeft (\r -> const ((+) 1 r)) 0
-length = foldLeft ((\b a -> b) . (+) 1) 0
+length = foldLeft (const . (+) 1) 0
 
 data Natural = Zero' | Succ Natural
   deriving (Eq, Show)
 
+four :: Natural
 four = Succ (Succ (Succ (Succ Zero')))
 
 gt :: Natural -> Natural -> Bool
@@ -142,14 +142,10 @@ length' (_:.t) = Succ (length' t)
 lengthGT4' :: List a -> Bool
 lengthGT4' list = length' list `gt` four
 
-spin = spin
-
 
 -- rule of composition
 -- \x -> f (g x)
 -- f . g
-
-konst = \b a -> b
 
 -- b -> a -> b
 
@@ -292,8 +288,8 @@ flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+flatMap f =
+  foldRight ((++) . f) Nil
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
