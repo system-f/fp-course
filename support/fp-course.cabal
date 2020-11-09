@@ -20,7 +20,7 @@ homepage:             https://github.com/system-f/fp-course
 bug-reports:          https://github.com/system-f/fp-course/issues
 cabal-version:        >= 1.10
 build-type:           Simple
-tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.4
+tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5, GHC == 8.8.4
 extra-source-files:   etc/CONTRIBUTORS,
                       changelog
 
@@ -33,7 +33,7 @@ library
 
   build-depends:      base >= 4 && < 5
                     , containers >= 0.5 && < 0.7
-                    , time >= 1.8 && < 1.9
+                    , time >= 1.8 && < 1.10
 
   ghc-options:        -Wall
                       -fwarn-incomplete-uni-patterns
