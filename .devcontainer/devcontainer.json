@@ -1,0 +1,11 @@
+{
+    "name": "Functional Programming Course",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+        "alanz.vscode-hie-server"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "postCreateCommand": ". /root/.nix-profile/etc/profile.d/nix.sh && nix-build"
+}
