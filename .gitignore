@@ -40,3 +40,12 @@ ops/*.retry
 
 # nix
 result
+
+# Files in support sub dir
+/cabal.project
+/Setup.hs
+/fp-course.cabal
+/shell.nix
+/stack.yaml
+/stack.yaml.lock
+/hie.yaml
