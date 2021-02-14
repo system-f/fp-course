@@ -1,6 +1,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
+{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 module Course.Optional where
 
 import qualified Control.Applicative as A
@@ -27,8 +28,9 @@ mapOptional ::
   (a -> b)
   -> Optional a
   -> Optional b
-mapOptional =
-  error "todo: Course.Optional#mapOptional"
+mapOptional f (Full a) = Full $ f a
+mapOptional _ Empty = Empty 
+  
 
 -- | Bind the given function on the possible value.
 --
@@ -44,8 +46,8 @@ bindOptional ::
   (a -> Optional b)
   -> Optional a
   -> Optional b
-bindOptional =
-  error "todo: Course.Optional#bindOptional"
+bindOptional fn (Full a) = fn a 
+bindOptional _ Empty = Empty
 
 -- | Return the possible value if it exists; otherwise, the second argument.
 --
@@ -58,8 +60,8 @@ bindOptional =
   Optional a
   -> a
   -> a
-(??) =
-  error "todo: Course.Optional#(??)"
+(??) (Full a) _ = a
+(??) Empty b = b
 
 -- | Try the first optional for a value. If it has a value, use it; otherwise,
 -- use the second value.
@@ -79,8 +81,9 @@ bindOptional =
   Optional a
   -> Optional a
   -> Optional a
-(<+>) =
-  error "todo: Course.Optional#(<+>)"
+(<+>) (Full a) _ = Full a 
+(<+>) _ (Full a) = Full a 
+(<+>) _ _ = Empty 
 
 -- | Replaces the Full and Empty constructors in an optional.
 --
@@ -94,8 +97,8 @@ optional ::
   -> b
   -> Optional a
   -> b
-optional =
-  error "todo: Course.Optional#optional"
+optional f x y = mapOptional f y ?? x
+  
 
 applyOptional :: Optional (a -> b) -> Optional a -> Optional b
 applyOptional f a = bindOptional (\f' -> mapOptional f' a) f
