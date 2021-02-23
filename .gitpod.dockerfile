@@ -25,6 +25,5 @@ COPY nix nix
 COPY support/fp-course.cabal support/cabal.project support/
 
 RUN . /home/gitpod/.nix-profile/etc/profile.d/nix.sh \
-  && nix-env -f nix/shell.nix -iA ghc
-
-RUN echo '. /home/gitpod/.nix-profile/etc/profile.d/nix.sh' >> /home/gitpod/.profile
+  && nix-env -f nix/shell.nix -iA buildInputs \
+  && nix-env -f nix/shell.nix -iA nativeBuildInputs
