@@ -9,7 +9,7 @@ let
     name = "fp-course";
     src = ./..;
   };
-in(pkgs.haskell-nix.cabalProject {
+in pkgs.haskell-nix.cabalProject {
   src = pkgs.haskell-nix.haskellLib.cleanSourceWith {
     name = "fp-course";
     src = ./..;
