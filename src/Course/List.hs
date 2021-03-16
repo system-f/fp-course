@@ -659,7 +659,8 @@ readFloat ::
 readFloat =
   mapOptional fst . readFloats
 
-instance IsString (List Char) where
+instance (a ~ Char) => IsString (List a) where
+  -- Per https://hackage.haskell.org/package/base-4.14.1.0/docs/src/Data.String.html#line-43
   fromString =
     listh
 
