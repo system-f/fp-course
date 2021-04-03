@@ -490,6 +490,8 @@ traversableTest =
       traverse id (Full <$> z) == Full (z :: ListZipper Integer)
   , testCase "One Empty" $
       traverse id (zipper [Full 1, Full 2, Full 3] (Full 4) [Empty, Full 6, Full 7]) @?= Empty
+  , testCase "Correct Order" $
+      traverse id (zipper [error "traversing left values in wrong order", Empty] (error "traversing focus before left values") [Full 5, Full 6, Full 7]) @?= Empty
   ]
 
 traversableMaybeTest :: TestTree
