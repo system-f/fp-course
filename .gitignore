@@ -40,3 +40,5 @@ ops/*.retry
 
 # nix
 result
+
+.vscode/
