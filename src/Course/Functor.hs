@@ -20,10 +20,7 @@ import qualified Prelude as P(fmap)
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
 class Functor k where
   -- Pronounced, eff-map.
-  (<$>) ::
-    (a -> b)
-    -> k a
-    -> k b
+  (<$>) :: (a -> b) -> (k a -> k b)
 
 infixl 4 <$>
 
@@ -31,7 +28,6 @@ infixl 4 <$>
 -- >>> :set -XOverloadedStrings
 -- >>> import Course.Core
 -- >>> import qualified Prelude as P(return, (>>))
-
 -- | Maps a function on the ExactlyOne functor.
 --
 -- >>> (+1) <$> ExactlyOne 2
@@ -41,8 +37,8 @@ instance Functor ExactlyOne where
     (a -> b)
     -> ExactlyOne a
     -> ExactlyOne b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance ExactlyOne"
+  (<$>) a2b (ExactlyOne a) =
+    ExactlyOne (a2b a)
 
 -- | Maps a function on the List functor.
 --
@@ -57,7 +53,7 @@ instance Functor List where
     -> List a
     -> List b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -71,8 +67,8 @@ instance Functor Optional where
     (a -> b)
     -> Optional a
     -> Optional b
-  (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+  (<$>) f Empty = Empty
+  (<$>) f (Full a) = Full (f a)
 
 -- | Maps a function on the reader ((->) t) functor.
 --
@@ -84,7 +80,11 @@ instance Functor ((->) t) where
     -> ((->) t a)
     -> ((->) t b)
   (<$>) =
-    error "todo: Course.Functor (<$>)#((->) t)"
+    \f -> \g -> \t -> f (g t)
+
+-- Functor? things that map
+-- things that map are containers -- incorrect
+-- e.g. List, Option, Array, ...
 
 -- | Anonymous map. Maps a constant value on a functor.
 --
@@ -96,11 +96,36 @@ instance Functor ((->) t) where
 -- prop> \x q -> x <$ Full q == Full x
 (<$) ::
   Functor k =>
-  a
-  -> k b
-  -> k a
+  a -> k b -> k a
 (<$) =
-  error "todo: Course.Functor#(<$)"
+  \a kb -> (\_ -> a) <$> kb
+
+anonMapList ::
+  a -> List b -> List a
+anonMapList =
+  \a kb -> (\_ -> a) <$> kb
+
+anonMapOptional ::
+  a -> Optional b -> Optional a
+anonMapOptional =
+  \a kb -> (\_ -> a) <$> kb
+
+anonMapReader ::
+  a -> (t -> b) -> t -> a
+anonMapReader =
+  \a kb -> (\_ -> a) <$> kb
+
+anonMapExactlyOne ::
+  a -> ExactlyOne b -> ExactlyOne a
+anonMapExactlyOne =
+  \a kb -> (\_ -> a) <$> kb
+
+
+  -- \a kb -> const a <$> kb
+  -- \a kb -> (<$>) (const a) kb
+  -- \a -> (<$>) (const a)
+  -- (<$>) . const
+  -- (<$>) <$> const
 
 -- | Anonymous map producing unit value.
 --
@@ -120,7 +145,7 @@ void ::
   k a
   -> k ()
 void =
-  error "todo: Course.Functor#void"
+  (<$) ()
 
 -----------------------
 -- SUPPORT LIBRARIES --

@@ -73,11 +73,15 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+  a -> List a -> a
+headOr = \x -> \list -> case list of
+  Nil -> x
+  h:._ -> h
+
+headOrAgain ::
+  a -> List a -> a
+headOrAgain x Nil = x
+headOrAgain _ (h:._) = h
 
 -- | The product of the elements of a list.
 --
@@ -93,7 +97,17 @@ product ::
   List Int
   -> Int
 product =
-  error "todo: Course.List#product"
+  \list -> case list of
+    Nil -> 1
+    h:.t -> if h > 100 then 99 else h * product t
+
+productAgain ::
+  List Int
+  -> Int
+productAgain Nil =
+  1
+productAgain (h:.t) =
+  h * productAgain t
 
 -- | Sum the elements of the list.
 --
@@ -107,8 +121,19 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+sum Nil = 0
+sum (h:.t) = h + sum t
+
+sumAgain ::
+  List Int
+  -> Int
+-- sumAgain = foldLeft (+) 0
+-- sumAgain list = foldLeft (+) 0 list
+-- sumAgain = \list -> foldLeft (+) 0 list
+sumAgain = foldLeft (+) 0
+-- eta-reduction
+-- \x -> f x
+-- f
 
 -- | Return the length of the list.
 --
@@ -119,8 +144,22 @@ sum =
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+length Nil = 0
+length (_:.t) = 1 + length t
+
+lengthAgain ::
+  List a
+  -> Int
+lengthAgain =
+  -- foldLeft (\n _ -> n + 1) 0
+  -- foldLeft (\n -> \_ -> n + 1) 0
+  -- foldLeft (\n -> const (n + 1)) 0
+  -- foldLeft (\n -> const ((+) 1 n)) 0
+  foldLeft (const . (+) 1) 0
+
+-- function composition
+-- \x -> f (g x)
+-- f . g
 
 -- | Map the given function on each element of the list.
 --
@@ -134,8 +173,40 @@ map ::
   (a -> b)
   -> List a
   -> List b
-map =
-  error "todo: Course.List#map"
+map _ Nil = Nil
+-- map f (h:.t) = (\b -> (:.) b (map f t)) (f h)
+-- map f (h:.t) = (\b -> b :. map f t) (f h)
+map f (h:.t) = f h :. map f t
+
+mapAgain ::
+  (a -> b)
+  -> List a
+  -> List b
+mapAgain f =
+  -- foldRight (\h t -> f h :. t) Nil
+  -- foldRight (\h t -> (:.) (f h) t) Nil
+  -- foldRight (\h -> (:.) (f h)) Nil
+  foldRight ((:.) . f) Nil
+
+-- function composition
+-- \x -> f (g x)
+-- f . g
+
+-- "replace cons with: f and then cons"
+-- f . g
+-- g and then f
+blah :: Integer
+blah = (\x -> x + 10) 99
+
+blah2 :: Integer
+blah2 = (+10) 99
+
+blah3 :: Integer
+blah3 = 99+10
+
+-- beta-reduction
+-- (\x -> f x) a
+-- f a
 
 -- | Return elements satisfying the given predicate.
 --
@@ -151,8 +222,14 @@ filter ::
   (a -> Bool)
   -> List a
   -> List a
-filter =
-  error "todo: Course.List#filter"
+filter _ Nil = Nil
+filter f (h:.t) =
+  let j = filter f t
+  -- in  if f h then h :. j else j
+  in  bool j (h:.j) (f h)
+
+-- Don't Repeat Yourself (DRY)
+-- Functional Programming
 
 -- | Append two lists to a new list.
 --
@@ -170,10 +247,18 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+-- (++) Nil y = y
+-- (++) (h:.t) y = h :. t ++ y
+-- (++) x y = foldRight (:.) y x
+-- (++) = \x y -> foldRight (:.) y x
+-- (++) = \x y -> flip (foldRight (:.)) x y
+-- (++) = \x -> flip (foldRight (:.)) x
+(++) = flip (foldRight (:.))
 
 infixr 5 ++
+
+fliip :: (a -> b -> c) -> b -> a -> c
+fliip f a b = f b a
 
 -- | Flatten a list of lists to a list.
 --
@@ -188,8 +273,17 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+flatten = \l -> case l of
+  Nil -> Nil
+  -- h:.t -> (\q -> h ++ q) (flatten t)
+  h:.t -> h ++ flatten t
+
+flattenAgainAndAgain ::
+  List (List a)
+  -> List a
+flattenAgainAndAgain =
+  -- replace :. with ++ and Nil with Nil
+  foldRight (++) Nil
 
 -- | Map a function then flatten to a list.
 --
@@ -296,14 +390,39 @@ lengthGT4 =
 -- >>> take 1 (reverse (reverse largeList))
 -- [1]
 --
--- prop> \x -> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
+-- prop> \x y -> let types = x :: List Int in reverse x ++ reverse y == reverse (y ++ x)
 --
 -- prop> \x -> let types = x :: Int in reverse (x :. Nil) == x :. Nil
 reverse ::
-  List a
-  -> List a
+  ((->) (List a)) (List a)
 reverse =
-  error "todo: Course.List#reverse"
+  -- foldLeft (\z el -> el :. z) Nil
+  -- foldLeft (\z el -> (:.) el z) Nil
+  -- foldLeft (\z el -> flip (:.) z el) Nil
+  foldLeft' (:.) Nil
+
+
+foldLeft' :: (a -> b -> b) -> b -> List a -> b
+foldLeft' = foldLeft . flip
+
+-- DList
+data DifferenceList a = DifferenceList (List a -> List a)
+
+{-
+foldLeft(func, theb, list) {
+  var z = theb
+
+  for(el in list)
+    z = func(z, el)
+
+  return z
+}
+-}
+reverse0 :: List a -> List a -> List a
+reverse0 acc Nil = acc
+reverse0 acc (h:.t) = reverse0 (h:.acc) t
+
+-- length (take 100 (reverse (reverse infinity))) == 100
 
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements

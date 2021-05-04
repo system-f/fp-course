@@ -6,7 +6,7 @@ module Course.Traversable where
 
 import Course.Core
 import Course.Functor
-import Course.Applicative
+import Course.Applicative ( Applicative(..) )
 import Course.List
 import Course.ExactlyOne
 import Course.Optional
