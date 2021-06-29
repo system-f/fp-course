@@ -314,7 +314,8 @@ produce ::
   (a -> a)
   -> a
   -> List a
-produce f x = x :. produce f (f x)
+produce f x =
+  error "todo: Course.List#produce"
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?
