@@ -226,14 +226,11 @@ flattenAgain =
 -- * If the list contains one or more `Empty` values,
 -- then return `Empty`.
 --
--- * The only time `Empty` is returned is
--- when the list contains one or more `Empty` values.
---
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
--- Full [1,10]
+-- Full (List 1 :. List 10 :. Nil)
 --
 -- >>> seqOptional Nil
--- Full []
+-- Full Nil
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
 -- Empty
