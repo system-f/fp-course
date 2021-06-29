@@ -227,10 +227,10 @@ flattenAgain =
 -- then return `Empty`.
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
--- Full (List 1 :. List 10 :. Nil)
+-- Full [1, 10]
 --
 -- >>> seqOptional Nil
--- Full Nil
+-- Full []
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
 -- Empty
@@ -315,6 +315,7 @@ produce ::
   -> a
   -> List a
 produce f x = x :. produce f (f x)
+
 
 -- | Do anything other than reverse a list.
 -- Is it even possible?
