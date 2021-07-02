@@ -227,10 +227,10 @@ flattenAgain =
 -- then return `Empty`.
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Nil)
--- Full (List 1 :. List 10 :. Nil)
+-- Full [1, 10]
 --
 -- >>> seqOptional Nil
--- Full Nil
+-- Full []
 --
 -- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
 -- Empty
