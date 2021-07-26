@@ -318,7 +318,6 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 | 1 or many | `list1`                           |
 | is        | `is`                              |
 | exactly n | `thisMany n`                      |
-| fail      | `failed`                          |
 | call it x | `\x ->`                           |
 
 ### Monad comprehension

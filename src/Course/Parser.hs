@@ -345,7 +345,7 @@ list =
 -- | Return a parser that produces at least one value from the given parser then
 -- continues producing a list of values from the given parser (to ultimately produce a non-empty list).
 --
--- /Tip:/ Use @(=<<)@, @list@ and @pure@.
+-- /Tip:/ Use @(.:.)@, @list@ and @pure@.
 --
 -- >>> parse (list1 (character)) "abc"
 -- Result >< "abc"
