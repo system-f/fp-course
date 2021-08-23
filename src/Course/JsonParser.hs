@@ -255,7 +255,7 @@ jsonValue =
 
 -- | Read a file into a JSON value.
 --
--- /Tip:/ Use @System.IO#readFile@ and `jsonValue`.
+-- /Tip:/ Use @readFile@ and `jsonValue`.
 readJsonValue ::
   FilePath
   -> IO (ParseResult JsonValue)
