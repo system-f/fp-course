@@ -32,6 +32,4 @@ instance A.Applicative ExactlyOne where
 instance P.Monad ExactlyOne where
   (>>=) =
     flip bindExactlyOne
-  return =
-    ExactlyOne
 

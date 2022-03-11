@@ -10,7 +10,7 @@ import Course.ExactlyOne
 import Course.Functor
 import Course.List
 import Course.Optional
-import qualified Prelude as P(fmap, return, (>>=))
+import qualified Prelude as P(fmap, pure, (>>=))
 
 -- | All instances of the `Applicative` type-class must satisfy four laws.
 -- These laws are not checked by the compiler. These laws are given as:
@@ -390,16 +390,9 @@ filtering =
 
 instance Applicative IO where
   pure =
-    P.return
+    P.pure
   f <*> a =
     f P.>>= \f' -> P.fmap f' a
-
-return ::
-  Applicative k =>
-  a
-  -> k a
-return =
-  pure
 
 fail ::
   Applicative k =>
