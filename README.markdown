@@ -48,10 +48,10 @@ however, your first post might be moderated. This is simply to prevent spam.
    programming course material. This mailing list is not owned by System F, but is
    run by others who are keen to share ideas relating to the course.
 
-4. \#qfpl [on Freenode](irc://irc.freenode.net/#qfpl) is the IRC channel of the
+4. \#bfpg [on Libera.chat](ircs://irc.libera.chat:6697/#bfpg) is the IRC channel of the
    Queensland Functional Programming Lab - the team that runs the course in Brisbane.
 
-5. \#scalaz [on Freenode](irc://irc.freenode.net/#scalaz) is an IRC channel that is operated
+5. \#scalaz [on Libera.chat](ircs://irc.libera.chat:6697/#scalaz) is an IRC channel that is operated
    by others who are keen to share ideas relating to functional programming in
    general. Most of the participants of this channel have completed the System F
    functional programming course to some extent. They are in various timezones
@@ -60,7 +60,8 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 ### Getting Started
 
-1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher.
+1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher. 
+   [GHCup](https://www.haskell.org/ghcup/) is the recommended way to do that these days
 
 2. Change to the directory containing this document.
 
