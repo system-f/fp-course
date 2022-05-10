@@ -102,6 +102,33 @@ instance Functor ((->) t) where
 (<$) =
   error "todo: Course.Functor#(<$)"
 
+-- | Apply a value to a functor-of-functions.
+--
+-- __NOTE__: The second argument is a bare @a@, not a @k a@. You need
+-- a more powerful typeclass, 'Applicative', if you want both the
+-- functions and the argmuents to be "inside" the Functor:
+--
+-- @
+-- (<*>) :: Applicative k => k (a -> b) -> k a -> k b
+-- @
+--
+-- We will talk about 'Applicative' soon.
+--
+-- >>> (*2) :. (+1) :. const 99 :. Nil ?? 8
+-- [16,9,99]
+--
+-- >>> Empty ?? 2
+-- Empty
+(??) ::
+  Functor k =>
+  k (a -> b)
+  -> a
+  -> k b
+(??) ff a = (\f -> f a) <$> ff
+--  error "todo: Course.Functor#(??)"
+
+infixl 1 ??
+
 -- | Anonymous map producing unit value.
 --
 -- >>> void (1 :. 2 :. 3 :. Nil)
