@@ -78,7 +78,7 @@ functorFunTest =
   testGroup "??" [
     testCase "Map with List" $ (((*2) :. (+1) :. const 99 :. Nil) ?? 8) @?= (16 :. 9 :. 99 :. Nil)
   , testCase "Map with Optional" $ (Full (+1) ?? 8) @?= Full 9
-  , testCase "Map with Optional Empty" $ ((Empty :: Num a => Optional (a -> a)) ?? 8) @?= Empty
+  , testCase "Map with Optional Empty" $ ((Empty :: Optional (Int -> Int)) ?? 8) @?= Empty
   ]
 
 voidTest :: TestTree
