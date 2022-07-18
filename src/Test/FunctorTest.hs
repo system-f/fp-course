@@ -22,7 +22,7 @@ import           Test.Framework    (TestTree, testCase, testGroup,
 
 import           Course.Core
 import           Course.ExactlyOne (ExactlyOne (ExactlyOne))
-import           Course.Functor    (void, (<$), (<$>))
+import           Course.Functor    (void, (<$), (<$>), (??))
 import           Course.List       (List ((:.), Nil))
 import           Course.Optional   (Optional (Empty, Full))
 
@@ -34,6 +34,7 @@ test_Functor =
   , optionalTest
   , functionTest
   , anonMapTest
+  , functorFunTest
   , voidTest
   ]
 
@@ -70,6 +71,14 @@ anonMapTest =
       (x :: Integer) <$ ((a :. b :. c :. Nil) :: List Integer) == (x :. x :. x :. Nil)
   , testProperty "Always maps a constant value over Full (Optional)" $ \x q ->
       x <$ Full (q :: Integer) == Full (x :: Integer)
+  ]
+
+functorFunTest :: TestTree
+functorFunTest =
+  testGroup "??" [
+    testCase "Map with List" $ (((*2) :. (+1) :. const 99 :. Nil) ?? 8) @?= (16 :. 9 :. 99 :. Nil)
+  , testCase "Map with Optional" $ (Full (+1) ?? 8) @?= Full 9
+  , testCase "Map with Optional Empty" $ ((Empty :: Num a => Optional (a -> a)) ?? 8) @?= Empty
   ]
 
 voidTest :: TestTree
