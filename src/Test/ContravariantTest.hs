@@ -63,7 +63,7 @@ swappedArrowTest =
 ignoreTest :: TestTree
 ignoreTest =
   testGroup "Ignore" [
-    testProperty "Ignore input value always odd" $ \x ->
+    testProperty "Ignore input value, always odd" $ \x ->
       runPredicate (3 >$ Predicate odd) (x :: Integer)
   , testProperty "Ignore input value, always even" $ \x ->
       not (runPredicate (4 >$ Predicate odd) (x :: Integer))
