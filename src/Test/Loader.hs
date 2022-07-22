@@ -19,6 +19,7 @@ module Test.Loader
   , test_MoreParser
   , test_JsonParser
   , test_Cheque
+  , test_Contravariant
 
   , test
   , allTests
@@ -28,6 +29,7 @@ module Test.Loader
 import Test.ApplicativeTest (test_Applicative)
 import Test.ChequeTest (test_Cheque)
 import Test.ComonadTest (test_Comonad)
+import Test.ContravariantTest (test_Contravariant)
 import Test.ExtendTest (test_Extend)
 import Test.FunctorTest (test_Functor)
 import Test.JsonParserTest (test_JsonParser)
@@ -65,4 +67,5 @@ allTests =
   , test_MoreParser
   , test_JsonParser
   , test_Cheque
+  , test_Contravariant
   ]
