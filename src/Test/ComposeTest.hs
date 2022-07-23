@@ -12,7 +12,7 @@ module Test.ComposeTest (
   , test
   ) where
 
-import           Test.Framework  (TestTree, testCase, testGroup, test, (@?=), testProperty)
+import           Test.Framework  (TestTree, testCase, testGroup, test, (@?=))
 
 import           Course.Core
 import           Course.List (length, List ((:.), Nil))
