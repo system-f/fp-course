@@ -21,12 +21,14 @@ module Test.Loader
   , test_Cheque
   , test_Contravariant
   , test_Compose
+  , test_Alternative
 
   , test
   , allTests
   )
   where
 
+import Test.AlternativeTest (test_Alternative)
 import Test.ApplicativeTest (test_Applicative)
 import Test.ChequeTest (test_Cheque)
 import Test.ComonadTest (test_Comonad)
@@ -71,4 +73,5 @@ allTests =
   , test_Cheque
   , test_Contravariant
   , test_Compose
+  , test_Alternative
   ]
