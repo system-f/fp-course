@@ -20,9 +20,14 @@ fastAnagrams =
   error "todo: Course.FastAnagrams#fastAnagrams"
 
 newtype NoCaseString =
-  NoCaseString {
-    ncString :: Chars
-  }
+  NoCaseString
+    Chars
+
+ncString ::
+  NoCaseString
+  -> Chars
+ncString (NoCaseString s) =
+  s
 
 instance Eq NoCaseString where
   (==) = (==) `on` map toLower . ncString
