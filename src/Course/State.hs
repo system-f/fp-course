@@ -25,11 +25,17 @@ import qualified Data.Set as S
 
 -- A `State` is a function from a state value `s` to (a produced value `a`, and a resulting state `s`).
 newtype State s a =
-  State {
-    runState ::
-      s
-      -> (a, s)
-  }
+  State (
+    s
+    -> (a, s)
+  )
+
+runState ::
+  State s a
+  -> s
+  -> (a, s)
+runState (State f) =
+  f
 
 -- | Run the `State` seeded with `s` and retrieve the resulting state.
 --

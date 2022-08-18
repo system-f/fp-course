@@ -24,11 +24,17 @@ import qualified Prelude as P
 
 -- | A `StateT` is a function from a state value `s` to a functor k of (a produced value `a`, and a resulting state `s`).
 newtype StateT s k a =
-  StateT {
-    runStateT ::
-      s
-      -> k (a, s)
-  }
+  StateT (
+    s
+    -> k (a, s)
+  )
+
+runStateT ::
+  StateT s k a
+  -> s
+  -> k (a, s)
+runStateT (StateT f) =
+  f
 
 -- | Implement the `Functor` instance for @StateT s k@ given a @Functor k@.
 --
