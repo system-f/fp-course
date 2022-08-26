@@ -1,0 +1,11 @@
+{
+    "name": "Functional Programming Course",
+    "dockerFile": "../.devcontainer.dockerfile",
+    "userEnvProbe": "loginShell",
+    "extensions": [
+        "haskell.haskell"
+    ],
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+}

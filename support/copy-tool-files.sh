@@ -12,3 +12,4 @@ cp -vf support/fp-course.cabal fp-course.cabal
 cp -vf support/shell.nix shell.nix
 cp -vf support/stack.yaml stack.yaml
 cp -vf support/stack.yaml.lock stack.yaml.lock
+cp -vf support/hie.yaml hie.yaml
