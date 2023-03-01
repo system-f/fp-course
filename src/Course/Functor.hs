@@ -19,6 +19,7 @@ import Prelude qualified as P (fmap)
 -- * The law of composition
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
 class Functor k where
+    -- Pronounced, ef-map.
     (<$>) :: (a -> b) -> k a -> k b
 
 infixl 4 <$>
