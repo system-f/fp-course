@@ -6,7 +6,7 @@
 
 ### With contributions from individuals and organisations (thanks!)
 
-### Note to Mercury Engineers
+#### Note to Mercury Engineers
 
 Getting started is easy.
 All you need are `ghc`, `stack`, and `ghcid`.
