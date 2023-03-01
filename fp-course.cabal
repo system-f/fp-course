@@ -1,5 +1,10 @@
+cabal-version:        3.0
+
 name:                 fp-course
 version:              0.1.4
+build-type:           Simple
+extra-source-files:   etc/CONTRIBUTORS
+
 license:              BSD3
 license-file:         etc/LICENCE
 author:               Tony Morris <tmorris@tmorris.net>
@@ -13,20 +18,12 @@ copyright:            Copyright (C) 2010-2013 Tony Morris
                       Copyright (C) 2012      James Earl Douglas
                       Copyright (C) 2012      Ben Sinclair
                       Copyright (C) 2016-2017 Data61
+
 synopsis:             Source code for a functional programming course
 category:             Education
 description:          Source code for a course in functional programming using Haskell
 homepage:             https://github.com/system-f/fp-course
 bug-reports:          https://github.com/system-f/fp-course/issues
-cabal-version:        >= 1.10
-build-type:           Simple
-tested-with:          GHC == 7.10.3, GHC == 8.0.2, GHC == 8.2.2, GHC == 8.4.4, GHC == 8.6.5, GHC == 8.8.4
-extra-source-files:   etc/CONTRIBUTORS,
-                      changelog
-
-source-repository     head
-  type:               git
-  location:           git@github.com:system-f/fp-course.git
 
 library
   default-language:   Haskell2010

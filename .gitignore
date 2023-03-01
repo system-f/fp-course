@@ -24,6 +24,7 @@ cabal.project.local
 
 # ctags
 TAGS
+tags
 
 # sbt
 /project
@@ -40,3 +41,6 @@ ops/*.retry
 
 # nix
 result
+
+# ghcid
+ghcid.txt
