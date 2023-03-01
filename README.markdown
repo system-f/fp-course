@@ -6,6 +6,18 @@
 
 ### With contributions from individuals and organisations (thanks!)
 
+### Note to Mercury Engineers
+
+Getting started is easy.
+All you need are `ghc`, `stack`, and `ghcid`.
+Setup instructions [here](https://github.com/MercuryTechnologies/haskell-curriculum/blob/main/guides/mentees/toolchain-setup.md).
+
+To work on the exercises in a particular file (e.g. to work on _src/Course/Functor.hs_), use this command.
+
+```
+ghcid --output='ghcid.txt' --warnings --test='test test_Functor'
+```
+
 #### Special note 1
 
 If you have arrived here by https://github.com/system-f/fp-course and you are
@@ -60,7 +72,7 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 ### Getting Started
 
-1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher. 
+1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher.
    [GHCup](https://www.haskell.org/ghcup/) is the recommended way to do that these days
 
 2. Change to the directory containing this document.
@@ -310,16 +322,16 @@ covered first.
 
 The exercises in `Parser.hs` can be assisted by stating problems in a specific way, with a conversion to code.
 
-| English   | Parser library                    |
-|-----------|-----------------------------------|
-| and then  | `bindParser` `>>=`                |
-| always    | `valueParser` `pure`              |
-| or        | `\|\|\|`                             |
-| 0 or many | `list`                            |
-| 1 or many | `list1`                           |
-| is        | `is`                              |
-| exactly n | `thisMany n`                      |
-| call it x | `\x ->`                           |
+| English   | Parser library       |
+| --------- | -------------------- |
+| and then  | `bindParser` `>>=`   |
+| always    | `valueParser` `pure` |
+| or        | `\|\|\|`             |
+| 0 or many | `list`               |
+| 1 or many | `list1`              |
+| is        | `is`                 |
+| exactly n | `thisMany n`         |
+| call it x | `\x ->`              |
 
 ### Monad comprehension
 
