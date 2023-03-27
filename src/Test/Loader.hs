@@ -1,32 +1,31 @@
-{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 
-module Test.Loader
-  ( test_Optional
-  , test_List
-  , test_Functor
-  , test_Applicative
-  , test_Monad
-  , test_State
-  , test_StateT
-  , test_Validation
-  , test_Extend
-  , test_Comonad
-  , test_Traversable
-  , test_ListZipper
-  , test_Parser
-  , test_MoreParser
-  , test_JsonParser
-  , test_Cheque
-  , test_Contravariant
-  , test_Compose
-  , test_Alternative
-
-  , test
-  , allTests
-  )
-  where
+module Test.Loader (
+    test_Optional,
+    test_List,
+    test_Functor,
+    test_Applicative,
+    test_Monad,
+    test_State,
+    test_StateT,
+    test_Validation,
+    test_Extend,
+    test_Comonad,
+    test_Traversable,
+    test_ListZipper,
+    test_Parser,
+    test_MoreParser,
+    test_JsonParser,
+    test_Cheque,
+    test_Contravariant,
+    test_Compose,
+    test_Alternative,
+    test,
+    allTests,
+)
+where
 
 import Test.AlternativeTest (test_Alternative)
 import Test.ApplicativeTest (test_Applicative)
@@ -54,24 +53,25 @@ import Test.Framework (TestTree, test, testGroup)
 
 allTests :: TestTree
 allTests =
-  testGroup "Tests" [
-    test_Optional
-  , test_List
-  , test_Functor
-  , test_Applicative
-  , test_Monad
-  , test_State
-  , test_StateT
-  , test_Validation
-  , test_Extend
-  , test_Comonad
-  , test_Traversable
-  , test_ListZipper
-  , test_Parser
-  , test_MoreParser
-  , test_JsonParser
-  , test_Cheque
-  , test_Contravariant
-  , test_Compose
-  , test_Alternative
-  ]
+    testGroup
+        "Tests"
+        [ test_Optional
+        , test_List
+        , test_Functor
+        , test_Applicative
+        , test_Monad
+        , test_State
+        , test_StateT
+        , test_Validation
+        , test_Extend
+        , test_Comonad
+        , test_Traversable
+        , test_ListZipper
+        , test_Parser
+        , test_MoreParser
+        , test_JsonParser
+        , test_Cheque
+        , test_Contravariant
+        , test_Compose
+        , test_Alternative
+        ]

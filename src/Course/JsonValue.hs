@@ -1,5 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.JsonValue where
 
@@ -8,12 +8,12 @@ import Course.List
 
 type Assoc = List (Chars, JsonValue)
 
-data JsonValue =
-     JsonString Chars
-   | JsonRational Rational
-   | JsonObject Assoc
-   | JsonArray  (List JsonValue)
-   | JsonTrue
-   | JsonFalse
-   | JsonNull
-  deriving (Show, Eq)
+data JsonValue
+    = JsonString Chars
+    | JsonRational Rational
+    | JsonObject Assoc
+    | JsonArray (List JsonValue)
+    | JsonTrue
+    | JsonFalse
+    | JsonNull
+    deriving (Show, Eq)

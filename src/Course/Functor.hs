@@ -8,7 +8,7 @@ import Course.Core
 import Course.ExactlyOne
 import Course.List
 import Course.Optional
-import Prelude qualified as P (fmap)
+import qualified Prelude as P (fmap)
 
 -- | All instances of the `Functor` type-class must satisfy two laws. These laws
 -- are not checked by the compiler. These laws are given as:
