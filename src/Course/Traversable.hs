@@ -37,7 +37,7 @@ instance Traversable List where
         foldRight (\a b -> (:.) <$> f a <*> b) (pure Nil)
 
 instance Traversable ExactlyOne where
-    traverse ::Applicative k =>(a -> k b) ->ExactlyOne a ->k (ExactlyOne b)
+    traverse :: Applicative k => (a -> k b) -> ExactlyOne a -> k (ExactlyOne b)
     traverse =
         error "todo: Course.Traversable traverse#instance ExactlyOne"
 
