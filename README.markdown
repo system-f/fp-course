@@ -15,7 +15,7 @@ Setup instructions [here](https://github.com/MercuryTechnologies/haskell-curricu
 To work on the exercises in a particular file (e.g. to work on _src/Course/Functor.hs_), use this command.
 
 ```
-ghcid --output='ghcid.txt' --warnings --test='test test_Functor'
+ghcid --output='ghcid.txt' --warnings --test='test test_Functor' --no-height-limit --reverse-errors --clear
 ```
 
 #### Special note 1
