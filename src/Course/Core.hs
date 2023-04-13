@@ -1,5 +1,4 @@
 {-# LANGUAGE RebindableSyntax #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Core (

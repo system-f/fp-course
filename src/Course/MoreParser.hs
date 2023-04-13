@@ -1,6 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RebindableSyntax #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.MoreParser where
@@ -12,7 +11,6 @@ import Course.List
 import Course.Monad
 import Course.Optional
 import Course.Parser
-import Course.Traversable
 import Numeric hiding (readHex)
 
 {- $setup

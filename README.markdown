@@ -12,23 +12,11 @@ Getting started is easy.
 All you need are `ghc`, `stack`, and `ghcid`.
 Setup instructions [here](https://github.com/MercuryTechnologies/haskell-curriculum/blob/main/guides/mentees/toolchain-setup.md).
 
-To work on the exercises in a particular file (e.g. to work on _src/Course/Functor.hs_), use this command.
+To compile and run tests when a file changes, use this command (from the project root directory):
 
 ```
-ghcid --output='ghcid.txt' --warnings --test='test test_Functor' --no-height-limit --reverse-errors --clear
+ghcid
 ```
-
-#### Special note 1
-
-If you have arrived here by https://github.com/system-f/fp-course and you are
-looking for the *answers* (not the exercises), please go to https://github.com/tonymorris/fp-course
-
-#### Special note 2
-
-As of February 2017, this repository is taking the place of the repository hosted at
-[https://github.com/NICTA/course](https://github.com/NICTA/course) which is deprecated.
-
-The new repository is located at [https://github.com/system-f/fp-course](https://github.com/system-f/fp-course).
 
 #### Introduction
 
@@ -44,31 +32,6 @@ provided for potential guidance, which may be discarded if you prefer a differen
 The exercises are designed in a way that requires personal guidance, so if you
 attempt it on your own and feel a little lost, this is normal. All the
 instructions are not contained herein.
-
-### Getting Help
-
-There are two mailing lists for asking questions. All questions are welcome,
-however, your first post might be moderated. This is simply to prevent spam.
-
-1. [[nicta-fp]](https://groups.google.com/forum/#!forum/nicta-fp) is a Google
-   Group for any queries related to functional programming. This mailing list is
-   owned by System F and is open to the public. Questions relating to this course
-   are most welcome here.
-
-2. [[haskell-exercises]](https://groups.google.com/forum/#!forum/haskell-exercises)
-   is a Google Group for queries related specifically to this System F functional
-   programming course material. This mailing list is not owned by System F, but is
-   run by others who are keen to share ideas relating to the course.
-
-4. \#bfpg [on Libera.chat](ircs://irc.libera.chat:6697/#bfpg) is the IRC channel of the
-   Queensland Functional Programming Lab - the team that runs the course in Brisbane.
-
-5. \#scalaz [on Libera.chat](ircs://irc.libera.chat:6697/#scalaz) is an IRC channel that is operated
-   by others who are keen to share ideas relating to functional programming in
-   general. Most of the participants of this channel have completed the System F
-   functional programming course to some extent. They are in various timezones
-   and share a passion for functional programming, so may be able to provide
-   relatively quick assistance with questions.
 
 ### Getting Started
 
@@ -166,45 +129,6 @@ however, your first post might be moderated. This is simply to prevent spam.
    Using tab characters in Haskell can lead to confusing error messages.
    GHC will give you a warning if your program contains a tab character.
 
-### Running the tests
-
-Tests are stored under the `src/Test/` directory. Each module from the course that
-has tests has a corresponding `<MODULE>Test.hs` file. Within each test module,
-tests for each function are grouped using the `testGroup` function. Within each
-test group there are test cases (`testCase` function), and properties
-(`testProperty` function).
-
-Tests are run using a built-in test runner that has no requirements
-beyond those of the course (a supported version of GHCi). By default,
-the full test suite is loaded, and each module's tests are
-exported. You can run the tests in GHCi like this:
-
-    >> test test_List
-
-#### Specific modules
-
-For convenience, each test module also exports individual tests. To run tests
-from a single module, load it, and then run `test <tests>`. For example, in
-`GHCi`:
-
-    >> :l src/Test/ListTest.hs
-    >> test headOrTest
-    >> test productTest
-
-#### `:reload` and run tests
-
-There is also a custom `:test` command defined in `.ghci` that will
-invoke `:reload` and then `test` in a single action:
-
-    >> :test test_List
-    >> :test headOrTest
-
-#### doctest
-
-The doctest tests are a mirror of the tests that reside in comments alongside
-the code. They are not executable, but examples can be copied into GHCI.
-Examples begin with `>>>` while properties begin with `prop>`.
-
 ### Progression
 
 We recommend you perform some exercises before others. The first step
@@ -225,29 +149,11 @@ After this, we recommend the following progression of modules:
 * `Course.Monad`
 * `Course.FileIO`
 * `Course.State`
-* `Course.StateT`
-* `Course.Extend`
-* `Course.Comonad`
-* `Course.Contravariant`
 * `Course.Compose`
-* `Course.Traversable`
-* `Course.ListZipper`
+* `Course.StateT`
 * `Course.Parser` *(see also `Course.Person` for the parsing rules)*
 * `Course.MoreParser`
 * `Course.JsonParser`
-* `Course.Interactive`
-* `Course.Anagrams`
-* `Course.FastAnagrams`
-* `Course.Cheque`
-
-During this progression, it is often the case that some exercises are abandoned
-due to time constraints and the benefit of completing some exercises over
-others. For example, in the progression, `Course.Functor` to `Course.Monad`, the
-exercises repeat a similar theme. Instead, a participant may wish to do
-different exercises, such as `Course.Parser`. In this case, the remaining
-answers are filled out, so that progress on to `Course.Parser` can begin
-(which depends on correct answers up to `Course.Monad`). It is recommended to
-take this deviation if it is felt that there is more reward in doing so.
 
 Answers for the exercises can be found here:
 [https://github.com/tonymorris/fp-course](https://github.com/tonymorris/fp-course)
@@ -333,131 +239,13 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 | exactly n | `thisMany n`         |
 | call it x | `\x ->`              |
 
-### Monad comprehension
-
-##### do-notation
+### Monad comprehension (a.k.a. do-notation)
 
 * insert the word `do`
 * turn `>>=` into `<-`
 * delete `->`
 * delete `\`
 * swap each side of `<-`
-
-##### LINQ
-
-* write `from` on each line
-* turn `>>=` into in
-* delete `->`
-* delete `\`
-* swap each side of `in`
-* turn value into `select`
-
-### Demonstrate IO maintains referential transparency
-
-Are these two programs, the same program?
-
-    p1 ::
-      IO ()
-    p1 =
-      let file = "/tmp/file"
-      in  do  _ <- writeFile file "abcdef"
-              x <- readFile file
-              _ <- putStrLn x
-              _ <- writeFile file "ghijkl"
-              y <- readFile file
-              putStrLn (show (x, y))
-
-    p2 ::
-      IO ()
-    p2 =
-      let file = "/tmp/file"
-          expr = readFile file
-      in  do  _ <- writeFile file "abcdef"
-              x <- expr
-              _ <- putStrLn x
-              _ <- writeFile file "ghijkl"
-              y <- expr
-              putStrLn (show (x, y))
-
-What about these two programs?
-
-    def writeFile(filename, contents):
-        with open(filename, "w") as f:
-            f.write(contents)
-
-    def readFile(filename):
-        contents = ""
-        with open(filename, "r") as f:
-            contents = f.read()
-            return contents
-
-    def p1():
-        file = "/tmp/file"
-
-        writeFile(file, "abcdef")
-        x = readFile(file)
-        print(x)
-        writeFile(file, "ghijkl")
-        y = readFile(file)
-        print (x + y)
-
-    def p2():
-        file = "/tmp/file"
-        expr = readFile(file)
-
-        writeFile(file, "abcdef")
-        x = expr
-        print(x)
-        writeFile(file, "ghijkl")
-        y = expr
-        print (x + y)
-
-### One-day
-
-Sometimes this course material is condensed into one-day. In these cases, the
-following exercises are recommended:
-
-* `Optional`
-  * `mapOptional`
-  * `bindOptional`
-  * `(??)`
-  * `(<+>)`
-* `List`
-  * `headOr`
-  * `product`
-  * `length`
-  * `map`
-  * `filter`
-  * `(++)`
-  * `flatMap`
-  * `reverse`
-* `Functor`
-  * `instance Functor List`
-  * `instance Functor Optional`
-  * `instance Functor ((->) t)`
-  * `instance Functor void`
-* `Applicative`
-  * `instance Applicative List`
-  * `instance Applicative Optional`
-  * `instance Applicative ((->) t)`
-  * `lift2`
-  * `sequence`
-* `FileIO`
-
-### What about cabal and stack?
-
-This repository's primary purpose is to support in-person instruction
-for people who have potentially not even used development tools at
-all. We have therefore designed the course around `ghci` as the
-primary tool.
-
-If you are a more experienced developer with tooling set up, and you
-need a cabal file, `shell.nix` or `stack.yaml` to have working
-development tools, run the `support/copy-tool-files.sh` script from
-the root of the repository.
-
-(Windows users, try running `support\copy-tool-files.bat` from the
-repository root.)
 
 ### References
 

@@ -6,7 +6,6 @@ module Test.ComposeTest (
     test_Compose,
     functorTest,
     applicativeTest,
-    contravariantTest,
 
     -- * Runner
     test,
@@ -16,7 +15,6 @@ import Test.Framework (TestTree, test, testCase, testGroup, (@?=))
 
 import Course.Applicative (pure, (<*>))
 import Course.Compose (Compose (Compose))
-import Course.Contravariant (Predicate (Predicate), runPredicate, (>$<))
 import Course.Core
 import Course.ExactlyOne (ExactlyOne (ExactlyOne), runExactlyOne)
 import Course.Functor ((<$>))
@@ -32,7 +30,6 @@ test_Compose =
         "Compose"
         [ functorTest
         , applicativeTest
-        , contravariantTest
         ]
 
 functorTest :: TestTree
@@ -54,15 +51,4 @@ applicativeTest =
         , testCase "ExactlyOne Full" $
             (+) <$> Compose (ExactlyOne (Full 1)) <*> Compose (ExactlyOne (Full 2))
                 @?= Compose (ExactlyOne (Full 3))
-        ]
-
-contravariantTest :: TestTree
-contravariantTest =
-    testGroup
-        "Contravariant"
-        [ testCase "length even" $
-            runPredicate
-                (runExactlyOne (runCompose (length >$< Compose (ExactlyOne (Predicate even)))))
-                (1 :. 2 :. 3 :. 4 :. Nil)
-                @?= True
         ]

@@ -1,6 +1,4 @@
-{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE RebindableSyntax #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.Applicative where

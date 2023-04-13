@@ -1,6 +1,4 @@
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
@@ -31,11 +29,16 @@ import qualified Prelude as P
 
 -- BEGIN Helper functions and data types
 
--- The custom list type
-data List t
-    = Nil
-    | t :. List t
-    deriving (Eq, Ord)
+data List t = Nil | t :. List t
+--                       ^^^^^^ type of second argument
+--                  ^ type of first argument
+--                    ^^ second data constructor. is symbolic, so infix.
+--            ^^^ first data constructor, zero arguments
+--        ^ type variable
+--   ^^^^ type name
+  deriving (Eq, Ord)
+  --            ^^^ compiler generates instance 'Ord a => Ord (List a)'
+  --        ^^ compiler generates instance 'Eq a => Eq (List a)'
 
 -- Right-associative
 infixr 5 :.

@@ -1,0 +1,1 @@
+--output="ghcid.txt" --no-height-limit --reverse-errors --clear --allow-eval --warnings

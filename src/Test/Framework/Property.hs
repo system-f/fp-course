@@ -12,7 +12,6 @@ import Prelude
 
 import Control.Monad
 import Course.List (List, listh)
-import Course.ListZipper (ListZipper (..))
 import Course.Validation (Validation (..))
 import Data.Bool
 import Data.Char
@@ -112,9 +111,6 @@ instance Arbitrary a => Arbitrary [a] where
 
 instance Arbitrary a => Arbitrary (List a) where
     arbitrary = listh <$> arbitrary
-
-instance Arbitrary a => Arbitrary (ListZipper a) where
-    arbitrary = ListZipper <$> arbitrary <*> arbitrary <*> arbitrary
 
 instance Arbitrary a => Arbitrary (Validation a) where
     arbitrary =
