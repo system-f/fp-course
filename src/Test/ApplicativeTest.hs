@@ -48,7 +48,7 @@ import Course.Applicative (
     (<*>),
  )
 import Course.Core
-import Course.ExactlyOne (ExactlyOne (ExactlyOne))
+import Course.ExactlyOne (ExactlyOne (MakeExactlyOne))
 import Course.Functor ((<$>))
 import Course.List (
     List (Nil, (:.)),
@@ -84,9 +84,9 @@ exactlyOneTest :: TestTree
 exactlyOneTest =
     testGroup
         "ExactlyOne instance"
-        [ testProperty "pure == ExactlyOne" $ \x -> pure x == ExactlyOne (x :: Integer)
+        [ testProperty "pure == ExactlyOne" $ \x -> pure x == MakeExactlyOne (x :: Integer)
         , testCase "Applying within ExactlyOne" $
-            ExactlyOne (+ 10) <*> ExactlyOne 8 @?= ExactlyOne 18
+            MakeExactlyOne (+ 10) <*> MakeExactlyOne 8 @?= MakeExactlyOne 18
         ]
 
 listTest :: TestTree
@@ -103,7 +103,7 @@ haveFmapTest =
     testGroup
         "lift1"
         [ testCase "ExactlyOne" $
-            lift1 (+ 1) (ExactlyOne 2) @?= ExactlyOne (3 :: Integer)
+            lift1 (+ 1) (MakeExactlyOne 2) @?= MakeExactlyOne (3 :: Integer)
         , testCase "empty List" $
             lift1 (+ 1) Nil @?= Nil
         , testCase "List" $
@@ -145,7 +145,7 @@ lift2Test =
     testGroup
         "lift2"
         [ testCase "+ over ExactlyOne" $
-            lift2 (+) (ExactlyOne 7) (ExactlyOne 8) @?= ExactlyOne 15
+            lift2 (+) (MakeExactlyOne 7) (MakeExactlyOne 8) @?= MakeExactlyOne 15
         , testCase "+ over List" $
             lift2 (+) (listh [1, 2, 3]) (listh [4, 5]) @?= listh [5, 6, 6, 7, 7, 8]
         , testCase "+ over Optional - all full" $
@@ -163,7 +163,7 @@ lift3Test =
     testGroup
         "lift3"
         [ testCase "+ over ExactlyOne" $
-            lift3 (\a b c -> a + b + c) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) @?= ExactlyOne 24
+            lift3 (\a b c -> a + b + c) (MakeExactlyOne 7) (MakeExactlyOne 8) (MakeExactlyOne 9) @?= MakeExactlyOne 24
         , testCase "+ over List" $
             lift3 (\a b c -> a + b + c) (listh [1, 2, 3]) (listh [4, 5]) (listh [6, 7, 8])
                 @?= listh [11, 12, 13, 12, 13, 14, 12, 13, 14, 13, 14, 15, 13, 14, 15, 14, 15, 16]
@@ -184,7 +184,7 @@ lift4Test =
     testGroup
         "lift4"
         [ testCase "+ over ExactlyOne" $
-            lift4 (\a b c d -> a + b + c + d) (ExactlyOne 7) (ExactlyOne 8) (ExactlyOne 9) (ExactlyOne 10) @?= ExactlyOne 34
+            lift4 (\a b c d -> a + b + c + d) (MakeExactlyOne 7) (MakeExactlyOne 8) (MakeExactlyOne 9) (MakeExactlyOne 10) @?= MakeExactlyOne 34
         , testCase "+ over List" $
             lift4 (\a b c d -> a + b + c + d) (listh [1, 2, 3]) (listh [4, 5]) (listh [6, 7, 8]) (listh [9, 10])
                 @?= listh [20, 21, 21, 22, 22, 23, 21, 22, 22, 23, 23, 24, 21, 22, 22, 23, 23, 24, 22, 23, 23, 24, 24, 25, 22, 23, 23, 24, 24, 25, 23, 24, 24, 25, 25, 26]
@@ -205,7 +205,7 @@ lift1Test =
     testGroup
         "lift1"
         [ testCase "+ over ExactlyOne" $
-            lift1 (+ 1) (ExactlyOne 2) @?= ExactlyOne 3
+            lift1 (+ 1) (MakeExactlyOne 2) @?= MakeExactlyOne 3
         , testCase "+ over empty List" $
             lift1 (+ 1) Nil @?= Nil
         , testCase "+ over List" $
@@ -257,7 +257,7 @@ sequenceTest =
     testGroup
         "sequence"
         [ testCase "ExactlyOne" $
-            sequence (listh [ExactlyOne 7, ExactlyOne 8, ExactlyOne 9]) @?= ExactlyOne (listh [7, 8, 9])
+            sequence (listh [MakeExactlyOne 7, MakeExactlyOne 8, MakeExactlyOne 9]) @?= MakeExactlyOne (listh [7, 8, 9])
         , testCase "List" $
             sequence ((1 :. 2 :. 3 :. Nil) :. (1 :. 2 :. Nil) :. Nil) @?= (listh <$> listh [[1, 1], [1, 2], [2, 1], [2, 2], [3, 1], [3, 2]])
         , testCase "Optional with an empty" $
@@ -273,7 +273,7 @@ replicateATest =
     testGroup
         "replicateA"
         [ testCase "ExactlyOne" $
-            replicateA 4 (ExactlyOne "hi") @?= ExactlyOne (listh ["hi", "hi", "hi", "hi"])
+            replicateA 4 (MakeExactlyOne "hi") @?= MakeExactlyOne (listh ["hi", "hi", "hi", "hi"])
         , testCase "Optional - Full" $
             replicateA 4 (Full "hi") @?= Full (listh ["hi", "hi", "hi", "hi"])
         , testCase "Optional - Empty" $
@@ -320,7 +320,7 @@ filteringTest =
     testGroup
         "filtering"
         [ testCase "ExactlyOne" $
-            filtering (ExactlyOne . even) (4 :. 5 :. 6 :. Nil) @?= ExactlyOne (listh [4, 6])
+            filtering (MakeExactlyOne . even) (4 :. 5 :. 6 :. Nil) @?= MakeExactlyOne (listh [4, 6])
         , testCase "Optional - all true" $
             filtering (\a -> if a > 13 then Empty else Full (a <= 7)) (4 :. 5 :. 6 :. Nil) @?= Full (listh [4, 5, 6])
         , testCase "Optional - some false" $

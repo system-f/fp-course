@@ -16,7 +16,7 @@ import Test.Framework (TestTree, test, testCase, testGroup, (@?=))
 import Course.Applicative (pure, (<*>))
 import Course.Compose (Compose (Compose))
 import Course.Core
-import Course.ExactlyOne (ExactlyOne (ExactlyOne), runExactlyOne)
+import Course.ExactlyOne (ExactlyOne (MakeExactlyOne), runExactlyOne)
 import Course.Functor ((<$>))
 import Course.List (List (Nil, (:.)), length)
 import Course.Optional (Optional (Empty, Full))
@@ -37,9 +37,9 @@ functorTest =
     testGroup
         "Functor"
         [ testCase "ExactlyOne Full" $
-            (+ 1) <$> Compose (ExactlyOne (Full 2)) @?= Compose (ExactlyOne (Full 3))
+            (+ 1) <$> Compose (MakeExactlyOne (Full 2)) @?= Compose (MakeExactlyOne (Full 3))
         , testCase "ExactlyOne Empty" $
-            (+ 1) <$> Compose (ExactlyOne Empty) @?= Compose (ExactlyOne Empty)
+            (+ 1) <$> Compose (MakeExactlyOne Empty) @?= Compose (MakeExactlyOne Empty)
         ]
 
 applicativeTest :: TestTree
@@ -47,8 +47,8 @@ applicativeTest =
     testGroup
         "Applicative"
         [ testCase "pure" $
-            pure 2 @?= Compose (ExactlyOne (Full 2))
+            pure 2 @?= Compose (MakeExactlyOne (Full 2))
         , testCase "ExactlyOne Full" $
-            (+) <$> Compose (ExactlyOne (Full 1)) <*> Compose (ExactlyOne (Full 2))
-                @?= Compose (ExactlyOne (Full 3))
+            (+) <$> Compose (MakeExactlyOne (Full 1)) <*> Compose (MakeExactlyOne (Full 2))
+                @?= Compose (MakeExactlyOne (Full 3))
         ]

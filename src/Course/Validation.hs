@@ -9,8 +9,10 @@ import Prelude (String)
 --                      nothing else from `Prelude` will be visible in this module.
 
 type Err = String
---         ^^^^^^ 'Err' is an alias for 'String'. the compiler makes no distinction between the two
+--         ^^^^^^ 'Err' is now an alias for 'String'. the compiler makes no distinction between the two
+--       ^ we know this is a type alias, and not a kind signature, because we use `=` instead of `::`
 --   ^^^ type alias. purely for programmer's convenience
+-- ^ the `type` keyword is used to define a type alias or a kind signature
 
 -- | A value of type @'Validation' a@ is either
 --

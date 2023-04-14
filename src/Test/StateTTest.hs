@@ -45,7 +45,7 @@ import Test.Framework (
 
 import Course.Applicative (pure, (<*>))
 import Course.Core
-import Course.ExactlyOne (ExactlyOne (ExactlyOne))
+import Course.ExactlyOne (ExactlyOne (MakeExactlyOne))
 import Course.Functor ((<$>))
 import Course.List (List (Nil, (:.)), flatMap, listh)
 import Course.Monad ((=<<), (>>=))
@@ -136,7 +136,7 @@ monadTest =
 state'Test :: TestTree
 state'Test =
     testCase "state'" $
-        runStateT (state' . runState $ put 1) 0 @?= ExactlyOne ((), 1)
+        runStateT (state' . runState $ put 1) 0 @?= MakeExactlyOne ((), 1)
 
 runState'Test :: TestTree
 runState'Test =

@@ -43,7 +43,7 @@ test_Monad =
 bindExactlyOneTest :: TestTree
 bindExactlyOneTest =
     testCase "(=<<) for ExactlyOne" $
-        ((\x -> ExactlyOne (x + 1)) =<< ExactlyOne 2) @?= ExactlyOne 3
+        ((\x -> MakeExactlyOne (x + 1)) =<< MakeExactlyOne 2) @?= MakeExactlyOne 3
 
 bindListTest :: TestTree
 bindListTest =
@@ -65,7 +65,7 @@ appTest =
     testGroup
         "<**>"
         [ testCase "ExactlyOne" $
-            ExactlyOne (+ 10) <**> ExactlyOne 8 @?= ExactlyOne 18
+            MakeExactlyOne (+ 10) <**> MakeExactlyOne 8 @?= MakeExactlyOne 18
         , testCase "List" $
             (+ 1) :. (* 2) :. Nil <**> 1 :. 2 :. 3 :. Nil @?= (2 :. 3 :. 4 :. 2 :. 4 :. 6 :. Nil)
         , testCase "Optional" $

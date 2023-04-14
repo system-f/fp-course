@@ -44,8 +44,14 @@ module Course.Core (
     module Data.Char,
     ifThenElse,
     bool,
+    Constraint,
+    Type,
 ) where
 
+import Data.Kind (
+    Constraint,
+    Type,
+ )
 import Data.String (
     IsString (..),
  )

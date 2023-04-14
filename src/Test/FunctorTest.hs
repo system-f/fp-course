@@ -26,7 +26,7 @@ import Test.Framework (
  )
 
 import Course.Core
-import Course.ExactlyOne (ExactlyOne (ExactlyOne))
+import Course.ExactlyOne (ExactlyOne (MakeExactlyOne))
 import Course.Functor (void, (<$), (<$>), (??))
 import Course.List (List (Nil, (:.)))
 import Course.Optional (Optional (Empty, Full))
@@ -46,7 +46,7 @@ test_Functor =
 
 idTest :: TestTree
 idTest =
-    testCase "ExactlyOne" $ (+ 1) <$> ExactlyOne 2 @?= ExactlyOne 3
+    testCase "ExactlyOne" $ (+ 1) <$> MakeExactlyOne 2 @?= MakeExactlyOne 3
 
 listTest :: TestTree
 listTest =
