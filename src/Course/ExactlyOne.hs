@@ -16,21 +16,86 @@ import Prelude qualified as P
 --             ^^^^^^^^^ import types and functions from `Prelude` into an isolated scope/namespace
 --     ^^^^^^^ a std lib module. usually imported by default, but we disabled it on line 2
 
-data ExactlyOne a = ExactlyOne a deriving Eq
---                                        ^^ a type class for types that allow equality comparison
---                               ^^^^^^^^ the compiler can write some boilerplate code for us
---                             ^ type of the first (and only) field/argument to `ExactlyOne`
---                  ^^^^^^^^^^ data constructor name (doesn't have to match type name)
+-- | A value of type @'ExactlyOne' a@ contains exactly 1 value of type @a@.
+--
+-- This /data structure/ is intentionally trivial.
+-- It exists just as an example so we can learn Haskell's syntax.
+data ExactlyOne a = MakeExactlyOne a deriving Show
+--                                            ^^^^ a type class for types that allow equality comparison
+--                                   ^^^^^^^^ the compiler can write some boilerplate code for us
+--                                 ^ type of the first (and only) field/argument to `ExactlyOne`
+--                  ^^^^^^^^^^^^^^ data constructor name (doesn't have to match type name)
 --              ^ type variable/generic type parameter
 --   ^^^^^^^^^^ type name
+-- ^ datatype decleration, we are defining a brand new type.
 
+-- | Question ExactlyOne 1
+--
+-- In a separate terminal, navigate to the project directory and run `ghci`.
+-- This will drop you into an interactive session of GHC (the Haskell compiler).
+-- This GHCi session will already have the project loaded (and it supports tab-completion!).
+-- Ask the compiler what the type of `MakeExactlyOne` is:
+--
+-- > :type MakeExactlyOne
+--
+-- What does it say? Explain.
+question_ExactlyOne_1 :: P.String
+question_ExactlyOne_1 = error "todo"
+
+-- | Create a value of type @'ExactlyOne' a@ from a value of type @a@.
+--
+-- `MakeExactlyOne` is a function. It takes a value of type `a` and returns a value of type `ExactlyOne a`.
+-- What does this functions _do_ with it's argument? It doesn't do anything with it. It just holds onto it.
+-- That way, you can retrieve it later, a process called "pattern matching".
+exactlyOne :: a -> ExactlyOne a
+--                 ^^^^^^^^^^^^ type of return value
+--            ^ type of first (and only) argument
+--         ^^ start of type signature
+-- ^^^^^^^ function declaration
+exactlyOne a0 = MakeExactlyOne a0
+--                             ^^ argument passed to `MakeExactlyOne`
+--                            ^ whitespace indicates function application
+--              ^^^^^^^^^^^^^^^^^ function body
+--         ^^ function argument
+
+-- | Inspect a value of type @'ExactlyOne' a@ and return its contents.
+--
+-- This function demonstrates pattern matching.
 runExactlyOne :: ExactlyOne a -> a
 --                               ^ type of return value
---                          ^ type variable. this function is _polymorphic_
+--                          ^ type variable. this function is _polymorphic_ (as is the previous function, btw)
 --               ^^^^^^^^^^^^ type of first (and only) argument
 --            ^^ start of type signature
 -- ^^^^^^^^^^ function declaration
-runExactlyOne (ExactlyOne a0) = a0
+runExactlyOne (MakeExactlyOne a0) = a0
+--                                  ^^ function body
+--                            ^^ assign a name to the contents of `MakeExactlyOne`s field
+--             ^^^^^^^^^^^^^^ match the argument against the data constructor `MakeExactlyOne`
+--            ^^^^^^^^^^^^^^^^^^^ argument to `runExactlyOne`
+
+runExactlyOne' :: ExactlyOne a -> a
+runExactlyOne' ea =
+  case ea of
+-- ^^^^^^^^^ alternate syntax for pattern matching
+    MakeExactlyOne a0 -> a0
+--                       ^^ what to do if the match succeeds
+--                    ^^ arrow instead of equals
+--                 ^^ assign a name to the contents of `MakeExactlyOne`s field
+--  ^^^^^^^^^^^^^^ same idea, match `ea` against the data constructor `MakeExactlyOne`
+-- ^ must indent. the `case` keyword starts a "layout block".
+
+type ExactlyOne :: Type -> Type
+--                  ^^^^^^^^^^^ kind signature of `ExactlyOne`
+--                              this is effectively the "type" of `ExactlyOne`, only since `ExactlyOne` is a type-level entity, we call it a "kind" instead.
+--                              `ExactlyOne` is a "function" that takes a type and returns a type.
+--                              Ponder this for just a moment: what does `ExactlyOne` return when you pass it `Int`?
+--                              It returns `ExactlyOne Int`.
+--                              `Int` is a type, `ExactlyOne Int` is a type.
+--                              So `ExactlyOne` (by itself, without an argument) is a function that takes a type and returns a type.
+--                              That said, it's not a function that can be executed in our program.
+--                              It only exists in the type system, and the type system only exists during compilation.
+--              ^^ start of kind signature
+
 --                              ^^ function body
 --                        ^^ assign a name to the contents of 'ExactlyOne's field
 --             ^^^^^^^^^^ pattern-match the 'ExactlyOne' data constructor
@@ -43,12 +108,13 @@ mapExactlyOne :: (a -> b) -> ExactlyOne a -> ExactlyOne b
 --                     ^ another type variable
 --                ^ type variable
 --               ^^^^^^^^ type of first argument, a function from 'a' to 'b'
-mapExactlyOne f (ExactlyOne a0) = ExactlyOne (f a0)
---                                            ^^^^ apply function 'f' to 'a0'
---                                           ^^^^^^ value for 'ExactlyOne's field
---                                ^^^^^^^^^^ data constructor
---                                ^^^^^^^^^^^^^^^^^ function body
---              ^^^^^^^^^^^^^^^ second argument
+mapExactlyOne f (MakeExactlyOne a0) = MakeExactlyOne (f a0)
+--                                                   ^    ^ need parentheses to use `f a0` as the argument to `MakeExactlyOne`
+--                                                    ^^^^  apply function 'f' to 'a0'
+--                                    ^^^^^^^^^^^^^^ data constructor
+--                                    ^^^^^^^^^^^^^^^^^^^^^ function body
+--              ^                 ^ need parentheses to pattern match the second argument
+--               ^^^^^^^^^^^^^^^^^  second argument, pattern matched
 --            ^ first argument, a function
 
 bindExactlyOne :: (a -> ExactlyOne b) -> ExactlyOne a -> ExactlyOne b
@@ -57,18 +123,18 @@ bindExactlyOne :: (a -> ExactlyOne b) -> ExactlyOne a -> ExactlyOne b
 --                                                       ^^^^^^^^^^^^ type of return value
 --                                       ^^^^^^^^^^^^ type of second argument
 --                ^^^^^^^^^^^^^^^^^^^ type of first argument, a function that returns an 'ExactlyOne' of 'b'
-bindExactlyOne f (ExactlyOne a0) = f a0
---                                 ^^^^ apply 'f' to 'a0'
---                ^^^^^^^^^^^^^ pattern match second argument
+bindExactlyOne f (MakeExactlyOne a0) = f a0
+--                                     ^^^^ apply 'f' to 'a0'
+--                ^^^^^^^^^^^^^^^^^ pattern match second argument
 --             ^ first argument
 
--- | Question ExactlyOne.1
+-- | Question ExactlyOne 2
 --
 -- I have a function `f :: String -> ExactlyOne Int`. I have a value `x :: ExactlyOne String`.
 --   a) What is the type of `mapExactlyOne f x`?
 --   b) What is the type of `bindExactlyOne f x`?
-question_ExactlyOne_1 :: (P.String, P.String)
-question_ExactlyOne_1 =
+question_ExactlyOne_2 :: (P.String, P.String)
+question_ExactlyOne_2 =
   ( error "todo"
   , error "todo"
   )
@@ -126,12 +192,12 @@ instance HasExactlyOne (ExactlyOne a) a where
   withExactlyOne = id
   --               ^^ again, the identity function
 
--- | Question ExactlyOne.2
+-- | Question ExactlyOne 3
 --
 --     a) How is it okay that `getExactlyOne` and `withExactlyOne` are defined without reference to any arguments?
 --     b) How does your answer to _Part a_ relate to the concept that functions are first-class values in Haskell?
-question_ExactlyOne_2 :: (P.String, P.String)
-question_ExactlyOne_2 =
+question_ExactlyOne_3 :: (P.String, P.String)
+question_ExactlyOne_3 =
   ( error "todo"
   , error "todo"
   )
@@ -141,11 +207,11 @@ instance HasExactlyOne (ExactlyOne a, b) a where
 --                                         This instance gives us facts like `HasExactlyOne (ExactlyOne Double, String) Double` and similar.
   getExactlyOne :: (ExactlyOne a, b) -> ExactlyOne a
   --               ^^^^^^^^^^^^^^^^^ `t` is instantiated to `(ExactlyOne a, b)` in this instance
-  getExactlyOne (ExactlyOne a0, _) = ExactlyOne a0
+  getExactlyOne (MakeExactlyOne a0, _) = MakeExactlyOne a0
 
   withExactlyOne :: (ExactlyOne a -> ExactlyOne a) -> (ExactlyOne a, b) -> (ExactlyOne a, b)
   --                                                  ^^^^^^^^^^^^^^^^^ `t` instantiated to `(ExactlyOne a, b)`
-  withExactlyOne f (ExactlyOne a0, b0) = (f (ExactlyOne a0), b0)
+  withExactlyOne f (MakeExactlyOne a0, b0) = (f (MakeExactlyOne a0), b0)
 
 instance HasExactlyOne t a => HasExactlyOne (b, t) a where
 --                            ^^^^^^^^^^^^^^^^^^^^^^ instance head.
@@ -179,20 +245,24 @@ overwriteExactlyOne ea t = withExactlyOne (\_ -> ea) t
 --                     ^ second argument. we named it after its type, `t`.
 --                  ^^ first argument
 
-instance Show a => Show (ExactlyOne a) where
---                 ^^^^^^^^^^^^^^^^^^^ instance head. `Show (ExactlyOne a)` is true so long as `Show a` is true
---       ^^^^^^ instance context. we're going to need `Show a` to be true in order to implement `Show (ExactlyOne a)`
---       ^^^^ a type class for types that have a string representation
-  show :: ExactlyOne a -> P.String
-  show (ExactlyOne x) = "ExactlyOne(" P.++ show x P.++ ")"
+instance Eq a => Eq (ExactlyOne a) where
+--               ^^ a type class for types where it's possible to compare their values for equality
+--               ^^^^^^^^^^^^^^^^^^^ instance head. `Show (ExactlyOne a)` is true so long as `Show a` is true
+--       ^^^^ instance context. we're going to need `Eq a` in order to implement `Eq (ExactlyOne a)`
+  (==) :: ExactlyOne a -> ExactlyOne a -> P.Bool
+-- ^^^ we need to implement `Eq`s method `(==)` at type `ExactlyOne a -> ExactlyOne a -> Bool`
+  MakeExactlyOne x == MakeExactlyOne y = x == y
+--                                       ^^^^^^ We want our equality comparison to be the clear and obvious thing.
+--                                              Whenever that's the case, the compiler can write it for you.
+--                                              Do this by writing `deriving Eq` in your datatype declaration.
 
--- | Question ExactlyOne.3
+-- | Question ExactlyOne 4
 --
--- Remove the instance context so that it reads `instance Show (ExactlyOne a) where`.
+-- Remove the instance context so that it reads `instance Eq (ExactlyOne a) where`.
 --  a) What does the compiler tell you when you try to compile it?
 --  b) How does the compiler come to its conclusion?
-question_ExactlyOne_3 :: (P.String, P.String)
-question_ExactlyOne_3 =
+question_ExactlyOne_4 :: (P.String, P.String)
+question_ExactlyOne_4 =
   ( error "todo"
   , error "todo"
   )
@@ -217,26 +287,26 @@ showAndTell t0 =
    --      It finds
 -- ^^ keyword that says we're done making definitions
 
--- | Question ExactlyOne.4
+-- | Question ExactlyOne 5
 --
 -- Remove the type signature `ea :: ExactlyOne a` from `showAndTell`.
 --  a) What does the compiler tell you when you try to compile it?
 --  b) Why is the compiler unable to determine the type of `ea`?
-question_ExactlyOne_4 :: (P.String, P.String)
-question_ExactlyOne_4 =
+question_ExactlyOne_5 :: (P.String, P.String)
+question_ExactlyOne_5 =
   ( error "todo"
   , error "todo"
   )
 
 -- $noteToTrainee
--- The rest of the code is only needed for the test suite. Move on to [Course.Validation](../Validation.hs)
+-- The rest of the code in this file is only needed for the test suite. Move on to [Course.Validation](../Validation.hs)
 
 instance P.Functor ExactlyOne where
     fmap = M.liftM
 
 instance A.Applicative ExactlyOne where
     (<*>) = M.ap
-    pure = ExactlyOne
+    pure = MakeExactlyOne
 
 instance P.Monad ExactlyOne where
     (>>=) = flip bindExactlyOne

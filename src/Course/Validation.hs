@@ -50,6 +50,8 @@ data Validation a = Error Err | Value a
   --            ^^^^ compiler generates instance 'Show a => Show (Validation a)'
   --        ^^ compiler generates instance 'Eq a => Eq (Validation a)'
 
+type Validation :: Type -> Type
+
 -- | Returns whether or not the given validation is an error.
 --
 -- >>> isError (Error "message")
