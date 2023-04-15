@@ -2,33 +2,55 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
--- + Complete the 10 exercises below by filling out the function bodies.
+-- | Course.List
+--
+-- + Complete the exercises below by filling out the function bodies.
 --   Replace the function bodies (error "todo: ...") with an appropriate
 --   solution.
+--
 -- + These exercises may be done in any order, however:
 --   Exercises are generally increasing in difficulty, though some people may find later exercise easier.
--- + Bonus for using the provided functions or for using one exercise solution to help solve another.
--- + Approach with your best available intuition; just dive in and do what you can!
-
+--
+-- + Bonus for using the provided functions, `foldRight` and `foldLeft`,
+--   or for using one of your solutions to help solve another.
 module Course.List where
 
-import qualified Control.Applicative as A
-import qualified Control.Monad as M
+import Control.Applicative qualified as A
+import Control.Monad qualified as M
 import Course.Core
-import Course.Optional
-import qualified Numeric as N
-import qualified System.Environment as E
-import qualified Prelude as P
+import Course.Core.Prelude
+import Numeric qualified as N
+import System.Environment qualified as E
+import Prelude (Maybe (..), String)
+import Prelude qualified as P
 
-{- $setup
- >>> import Test.QuickCheck
- >>> import Course.Core(even, id, const)
- >>> import qualified Prelude as P(fmap, foldr)
- >>> instance Arbitrary a => Arbitrary (List a) where arbitrary = P.fmap ((P.foldr (:.) Nil) :: ([a] -> List a)) arbitrary
--}
+type List :: Type -> Type
 
--- BEGIN Helper functions and data types
-
+-- | A list of values that are all the same type.
+--
+-- 'List' has two data constructors:
+--
+-- > Nil  :: forall t.                List t
+-- > (:.) :: forall t. t -> List t -> List t
+--
+-- So a list is either 'Nil', which has no fields,
+-- or it's `(:.) x y`, where `x :: a` is the first element of the list
+-- and `y :: List a` is the rest of the list.
+--
+-- When pattern matching, we can name the fields whatever we like,
+-- so it's tradition to name them `(:.) x xs`,
+-- in order to make it easy to remember that `x` is a list element
+-- and `xs` is the rest of the list.
+-- I suggest you follow this convention, too. Most Haskell code does.
+-- But they're variable names, so they can be whatever makes sense to you.
+--
+-- In the code, we write `(:.)` in infix position,
+-- but we could have written it in prefix position if we'd wanted to.
+--
+-- > data List t = Nil | (:.) t (List t)
+--
+-- The appeal of using infix position is that it requires fewer parentheses.
+-- Haskellers tend to like fewer parentheses.
 data List t = Nil | t :. List t
 --                       ^^^^^^ type of second argument
 --                  ^ type of first argument
@@ -37,14 +59,34 @@ data List t = Nil | t :. List t
 --        ^ type variable
 --   ^^^^ type name
   deriving (Eq, Ord)
-  --            ^^^ compiler generates instance 'Ord a => Ord (List a)'
-  --        ^^ compiler generates instance 'Eq a => Eq (List a)'
+--              ^^^ compiler generates instance 'Ord a => Ord (List a)'
+--          ^^ compiler generates instance 'Eq a => Eq (List a)'
 
--- Right-associative
 infixr 5 :.
+-- ^^^^^^^^ Fixity and precedence declaration for `:.`.
+--          This is optional, the compiler has a default it will you if you don't write one.
+--          But it's usually a good idea to write such a declaration exlicity for operators you define.
+-- ^^^ `infixr` means `x :. y :. zs` is parsed as `x :. (y :. zs)`.
+--     ^ precedence 5 means that this operation binds more tightly than operations with a lower precedence.
+--       For example, when we define `(++)`, we'll give it a precedence of 4.
+--       `x :. xs ++ ys` will be parsed as `(x :. xs) ++ ys`.
 
 instance Show t => Show (List t) where
     show = show . hlist
+
+-- | Question List 1
+--
+-- Our 'List' type is analogous to the '[]' type in Haskell's base library.
+--
+-- > data [a] = [] | a : [a]
+-- > --                ^ "cons" list constructor
+-- > --         ^^ empty list data constructor
+--
+-- Instead of @List a@, we have @[a]@.
+-- Instead of @Nil@, we have @[]@.
+-- Instead of @(:.)@, we have @(:)@.
+question_List_1 :: String
+question_List_1 = error "TODO"
 
 -- The list of integers from zero to infinity.
 infinity :: List Integer
@@ -207,46 +249,46 @@ flattenAgain =
 
 {- | Convert a list of optional values to an optional list of values.
 
- * If the list contains all `Full` values,
- then return `Full` list of values.
+ * If the list contains all `Just` values,
+ then return `Just` list of values.
 
- * If the list contains one or more `Empty` values,
- then return `Empty`.
+ * If the list contains one or more `Nothing` values,
+ then return `Nothing`.
 
- >>> seqOptional (Full 1 :. Full 10 :. Nil)
- Full [1, 10]
+ >>> seqOptional (Just 1 :. Just 10 :. Nil)
+ Just [1, 10]
 
  >>> seqOptional Nil
- Full []
+ Just []
 
- >>> seqOptional (Full 1 :. Full 10 :. Empty :. Nil)
- Empty
+ >>> seqOptional (Just 1 :. Just 10 :. Nothing :. Nil)
+ Nothing
 
- >>> seqOptional (Empty :. map Full infinity)
- Empty
+ >>> seqOptional (Nothing :. map Just infinity)
+ Nothing
 -}
-seqOptional :: List (Optional a) -> Optional (List a)
+seqOptional :: List (Maybe a) -> Maybe (List a)
 seqOptional =
     error "todo: Course.List#seqOptional"
 
 {- | Find the first element in the list matching the predicate.
 
  >>> find even (1 :. 3 :. 5 :. Nil)
- Empty
+ Nothing
 
  >>> find even Nil
- Empty
+ Nothing
 
  >>> find even (1 :. 2 :. 3 :. 5 :. Nil)
- Full 2
+ Just 2
 
  >>> find even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
- Full 2
+ Just 2
 
  >>> find (const True) infinity
- Full 0
+ Just 0
 -}
-find :: (a -> Bool) -> List a -> Optional a
+find :: (a -> Bool) -> List a -> Maybe a
 find =
     error "todo: Course.List#find"
 
@@ -397,11 +439,11 @@ zipWith f (a :. as) (b :. bs) =
 zipWith _ _ _ =
     Nil
 
-unfoldr :: (a -> Optional (b, a)) -> a -> List b
+unfoldr :: (a -> Maybe (b, a)) -> a -> List b
 unfoldr f a =
     case f a of
-        Full (b, a') -> b :. unfoldr f a'
-        Empty -> Nil
+        Just (b, a') -> b :. unfoldr f a'
+        Nothing -> Nil
 
 lines :: Chars -> List Chars
 lines =
@@ -419,14 +461,14 @@ unwords :: List Chars -> Chars
 unwords =
     listh . P.unwords . hlist . map hlist
 
-listOptional :: (a -> Optional b) -> List a -> List b
+listOptional :: (a -> Maybe b) -> List a -> List b
 listOptional _ Nil =
     Nil
 listOptional f (h :. t) =
     let r = listOptional f t
      in case f h of
-            Empty -> r
-            Full q -> q :. r
+            Nothing -> r
+            Just q -> q :. r
 
 any :: (a -> Bool) -> List a -> Bool
 any p =
@@ -495,33 +537,33 @@ replicate :: (Num n, Ord n) => n -> a -> List a
 replicate n x =
     take n (repeat x)
 
-reads :: P.Read a => Chars -> Optional (a, Chars)
+reads :: P.Read a => Chars -> Maybe (a, Chars)
 reads s =
     case P.reads (hlist s) of
-        [] -> Empty
-        ((a, q) : _) -> Full (a, listh q)
+        [] -> Nothing
+        ((a, q) : _) -> Just (a, listh q)
 
-read :: P.Read a => Chars -> Optional a
+read :: P.Read a => Chars -> Maybe a
 read =
     mapOptional fst . reads
 
-readHexs :: (Eq a, Num a) => Chars -> Optional (a, Chars)
+readHexs :: (Eq a, Num a) => Chars -> Maybe (a, Chars)
 readHexs s =
     case N.readHex (hlist s) of
-        [] -> Empty
-        ((a, q) : _) -> Full (a, listh q)
+        [] -> Nothing
+        ((a, q) : _) -> Just (a, listh q)
 
-readHex :: (Eq a, Num a) => Chars -> Optional a
+readHex :: (Eq a, Num a) => Chars -> Maybe a
 readHex =
     mapOptional fst . readHexs
 
-readFloats :: (RealFrac a) => Chars -> Optional (a, Chars)
+readFloats :: (RealFrac a) => Chars -> Maybe (a, Chars)
 readFloats s =
     case N.readSigned N.readFloat (hlist s) of
-        [] -> Empty
-        ((a, q) : _) -> Full (a, listh q)
+        [] -> Nothing
+        ((a, q) : _) -> Just (a, listh q)
 
-readFloat :: (RealFrac a) => Chars -> Optional a
+readFloat :: (RealFrac a) => Chars -> Maybe a
 readFloat =
     mapOptional fst . readFloats
 

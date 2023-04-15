@@ -1,5 +1,19 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 
+-- | Course.Optional
+--
+-- We've stubbed out a bunch of functions for you to implement.
+--
+-- > mapOptional :: (a -> b) -> Optional a -> Optional b
+-- > mapOptional = error "todo: Course.Optional#mapOptional"
+--
+-- This module comes equipped with unit tests!
+-- To run the tests, start the file watcher, `ghcid` from the project root directory.
+--
+-- >  ~/../fp-course $ ghcid
+--
+-- `ghcid` will recompile your files on every save.
+-- If the compilation succeeds, it will run the tests.
 module Course.Optional where
 
 import Control.Applicative qualified  as A
@@ -12,32 +26,36 @@ import Prelude qualified as P
 --                          ^ everything in `Prelude` is now in scope, in the namespace `P`.
 --     ^^^^^^^^^^^^^^^^^ import `Prelude` again, qualified this time
 
+type Optional :: Type -> Type
+--               ^^^^^^^^^^^^ `Optional` is a type constructor.
+--                            If `Foo` is some type, then `Optional Foo` will be a type.
+
 -- | The `Optional` data type contains 0 or 1 value.
 --
 -- It might be thought of as a list, with a maximum length of one.
 data Optional a = Empty | Full a
---                             ^ one argument, type `a`
+--                             ^ one constructor argument, type `a`
 --                        ^^^^ second data constructor
---                ^^^^^ first data constructor. zero arguments.
+--                ^^^^^ first data constructor. zero constructor arguments
 --            ^ type variable
 --   ^^^^^^^^ type name
   deriving (Eq, Show)
-  --            ^^^^ compiler generates instance `Show a => Show (Optional a)`
-  --        ^^ compiler generates instance `Eq a => Eq (Optional a)`
+--              ^^^^ compiler generates instance `Show a => Show (Optional a)`
+--          ^^ compiler generates instance `Eq a => Eq (Optional a)`
 
 contains :: Eq a => a -> Optional a -> Bool
 --                  ^ constrained type variable
 --          ^^^^ constraint: `Eq a` must be true
 --               this ensures that `(==)` is defined for signature `a -> a -> Bool`.
 contains _ Empty = False
-contains a (Full z) = a == z
---                    ^^^^^^ compare the data we found in the second argument to the first argument
---               ^ data carried by the `Full` constructor. `z :: a`
---       ^ first argument. `a :: a`
+contains a1 (Full a2) = a1 == a2
+--                      ^^^^^^^^ compare for equality
+--                ^^ data carried by the `Full` constructor. `a2 :: a`
+--       ^^ first argument. `a1 :: a`
 
 -- | Question Optional 1
 --
--- The `Optional` type we are defining here is analogous to Haskell's std lib `Maybe` type.
+-- The `Optional` type we are defining here is analogous to Haskell's base library `Maybe` type.
 -- Find `Maybe` on Hoogle, and navigate to its source.
 -- (WARNING: Hoogle search is CasE SEnsItiVe!)
 --     a) What are the data constructors of `Maybe`? What are their types?
@@ -68,7 +86,7 @@ mapOptional = error "todo: Course.Optional#mapOptional"
 -- | Question Optional 2
 --
 -- Look back at `src/Course/ExactlyOne.hs` and `src/Course/Validation.hs`.
--- Look back at `mapExactlyOne` and `mapValidation`.
+-- Specifically, look closely at `mapExactlyOne` and `mapValidation`.
 --     a) Is there a pattern that all of their type signatures fall into?
 --     b) Are there similarities in their implementations? Explain.
 question_Optional_2 :: (String, String)
@@ -140,18 +158,21 @@ question_Optional_5 :: (String, String)
 question_Optional_5 = error "todo"
 
 -- $noteToTrainee
--- We're done here! Move on to `[Course.List](../List.hs)`
+--
+-- We're done here!
+-- Hereafter in this course, we'll use `Maybe` instead of `Optional`.
+-- Move on to [Course.List](../List.hs)
 
 instance P.Functor Optional where
     fmap = M.liftM
 
 instance A.Applicative Optional where
     (<*>) = M.ap
-    pure =
-        Full
+    pure = Full
 
 instance P.Monad Optional where
     (>>=) = flip bindOptional
 
+-- That last line is what causes `ghcid` to run the tests, in case you were curious.
+
 -- $> test test_Optional
--- We're done here! Move on to [Course.List](../List.hs)

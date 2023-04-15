@@ -5,6 +5,8 @@
 -- http://www.cse.chalmers.se/~rjmh/QuickCheck/QuickCheck.hs
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# OPTIONS_GHC -fno-warn-incomplete-patterns #-}
+{-# OPTIONS_GHC -fno-warn-name-shadowing #-}
 
 module Test.Framework.Property where
 

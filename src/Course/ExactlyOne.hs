@@ -139,6 +139,14 @@ question_ExactlyOne_2 =
   , error "todo"
   )
 
+type HasExactlyOne :: Type -> Type -> Constraint
+--                                    ^^^^^^^^^^ `Constraint` is a special kind that represents a property about types.
+--                                                We use constraints to express requirments a polymorphic function might place on its _type variables_.
+--                                                Types describe data, value-level variables. Constraints describe type-level variables.
+--                    ^^^^^^^^^^^^^^^^^^^^^^^^^^ `HasExactlyOne` takes two `Type` arguments. It returns a `Constraint`.
+--                 ^^ start of kind signature
+-- ^ kind signature declaration for `HasExactlyOne` (these are optional)
+
 class HasExactlyOne t a where
 --                    ^ second type variable
 --                  ^ first type variable
@@ -271,12 +279,14 @@ showAndTell :: forall t a. (HasExactlyOne t a, Show a) => t -> P.String
 --                                             ^^^^^^ `Show a` must be true to use `showAndTell`
 --                          ^^^^^^^^^^^^^^^^^ `HasExactlyOne t a` must be true to use `showAndTell`
 --                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ constraints. `showAndTell` is constrained polymorphic
+--                                                     whereas types describe value-level variables, constraints describe type-level variables
+--                                                     in order to use this function, the types we choose for `t` and `a` must satisfy `HasExactlyOne t a` and `Show a`.
 --                      ^ declared type variable `a`
 --                    ^ declared type variable `t`
 --             ^^^^^^ declare type variables. usually optional, but we refer to `a` and `t` in the function body, so we need this declaration
 showAndTell t0 =
   let
--- ^^ keyword that allows us to make local definitions. begins a block, so indent
+-- ^^ keyword that allows us to make local definitions. begins a layout block, so indent
     ea :: ExactlyOne a
     -- ^^ type signature. usually optional, but we need this one in order to used `getExactlyOne`
     ea = getExactlyOne t0

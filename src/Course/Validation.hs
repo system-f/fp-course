@@ -23,7 +23,25 @@ type Err = String
 -- A literal translation to Typescript would look something like this.
 --
 -- > type Err = string
--- > type Validation<a> = ['Error', Err] | ['Value', a]
+-- > type Validation<A> = ['Error', Err] | ['Value', A]
+--
+-- A more-idiomatic translation to Typescript would look something like this.
+--
+-- > type Err = string
+-- >
+-- > type Validation<A> = _Error<A> | Value<A>
+-- >
+-- > class _Error<A> {
+-- >   constructor(public err: Err) {
+-- >     this.err = err
+-- >   }
+-- > }
+-- >
+-- > class Value<A> {
+-- >   constructor(public value: A) {
+-- >     this.value = value
+-- >   }
+-- > }
 --
 -- A literal translation to Kotlin would look something like this.
 --
@@ -33,14 +51,41 @@ type Err = String
 -- > data class Value<A>(val a: A) : Validation<A> {}
 --
 -- A translation to Java was not possible until Java 17, with support for sealed classes.
--- I'll omit such and example, though, so that this file won't grow too large.
+-- I'll omit such an example, though, to keep this file from growing too large.
 --
--- All of these translations are imperfect, however.
+-- All of the above translations are imperfect, however.
 -- They all differ from the Haskell version in one crucial way.
--- In each of the other examples, the Error case and the Value case are /types./
--- In Haskell, we're not defining any type named `Error` or `Value`.
--- We're defining a type named 'Validation'; 'Error' and 'Value' are that types /data constructors./
+-- In each of the other examples, the Error case and the Value case are /types/ in their own rights.
+-- This Haskell code doesn't define any types named `Error` or `Value`.
+-- We're only defining a single type named 'Validation'; 'Error' and 'Value' are that types /data constructors./
 -- 'Error' and 'Value' are not types in their own right.
+--
+-- A semantically-failfull translation to Typescript would look something like this.
+--
+-- > type Err = string
+-- >
+-- > type Validation<A> = {
+-- >   match: <T> (
+-- >     onError: (err: Err) => T,
+-- >     onValue: (value: A) => T
+-- >   ) => T
+-- > }
+-- >
+-- > function _Error<A>(err: Err): Validation<A> {
+-- >   return {
+-- >     match: (onError, _) => onError(err)
+-- >   }
+-- > }
+-- >
+-- > function Value<A>(value: A): Validation<A> {
+-- >   return {
+-- >     match: (_, onValue) => onValue(value)
+-- >   }
+-- > }
+--
+-- In this version, the two data constructors are represented by functions instead of by classes.
+-- This way `_Error<A>` and `Value<A>` are not types.
+-- The `Validation` method `match` takes the place of Haskell's pattern matching.
 data Validation a = Error Err | Value a
 --                                    ^ type of argument to 'Value'
 --                              ^^^^^ second data constructor. has one argument
@@ -53,6 +98,11 @@ data Validation a = Error Err | Value a
   --        ^^ compiler generates instance 'Eq a => Eq (Validation a)'
 
 type Validation :: Type -> Type
+--                 ^^^^^^^^^^^^ Technically, `Validation` isn't a type.
+--                              `Validation` is a "type constructor". It's a function that takes a type and returns a type.
+--                              The result of applying teh function `Validation` to the type `a` is the type `Validation a`.
+--                              As long as you  understand the distinction between types and type constructors, though,
+--                              we'll continue to just call them "types," because it's shorter.
 
 -- | Returns whether or not the given validation is an error.
 --
@@ -68,11 +118,29 @@ isError (Error _) = True
 isError (Value _) = False
 --       ^^^^^ taken together, the equations cover all data constructors of 'Validation'
 
+-- Here's another way we could have written `isError`
+--
+-- > isError :: Validation a -> Bool
+-- > isError v = case v of
+-- >   Error _ -> True
+-- >   Value _ -> False
+
 -- | Question Validation 1
 --
 -- Why do we need to define `isError` for both data constructors? Can't we just define it for `Error`?
 question_Validation_1 :: String
 question_Validation_1 = error "todo"
+
+-- | Question Validation 1.1
+--
+-- Implement `isError` in Typescript, using the semantically-failfull translation of `Validation` from above.
+question_Validation_1_1 :: String
+question_Validation_1_1 =
+  error
+    "// Haskell supports multi-line strings, but it's ugly :-(\n\
+    \function isError<A>(v: Validation<A>): boolean {\n\
+    \  error \"todo\"\n\
+    \}"
 
 -- | Returns whether or not the given validation is a value.
 --
@@ -96,7 +164,7 @@ isValue = not . isError
 -- | Question Validation 2
 --
 -- A lot of people feel that the `(.)` function is a bit confusing.
--- Partly that's because it seems to be writtin backwards.
+-- Partly that's because it seems to be written backwards.
 -- Go to [https://hoogle.haskell.org/](https://hoogle.haskell.org/) and search for the function "(.)".
 -- Navigate to its documentation, and then navigate to the "Source" link you'll see to the right.
 --     a) What's the implementation of `(.)`? What is it doing?
@@ -107,6 +175,39 @@ question_Validation_2 =
   , error "todo"
   )
 
+errorMessage :: Validation a -> String
+--                         ^ an unconstrained type variable. `errorMessage` is _fully polymorphic_ with respect to `a`
+errorMessage v = case v of
+  Error s -> s
+  Value _ -> "no error message"
+
+valueString :: Show a => Validation a -> String
+--                  ^ a constrained type variable. `valueString` is _constrained polymorphic_ with respect to `a`
+--                    At `valueString` call sites, whatever type we use for `a` must satisfy `Show a`.
+--                    For example, if we have `foo :: Bar` and we write `valueString (Value foo)` in our code,
+--                    then at this use site, the type variable `a` will be instantiated to `Bar`.
+--                    The compiler will check to see if `Bar` satisfied `Show Bar`.
+--                    If it does, then the compiler will accept the code.
+--                    If it doesn't, then the compiler will reject the code.
+--             ^^^^^^ type class constraint.
+valueString v = case v of
+  Error _ -> "no value"
+  Value x -> show x
+
+-- | Question Validation 2.1
+--
+-- Load the project in GHCi. Try to call `valueString` with an `Error` like so:
+--
+-- > data Bar = MakeBar
+-- > err = Error "message" :: Validation Bar
+-- > valueString err
+--
+--   a) Does GHC accept the program? What error do you get?
+--   b) Why is this error reasonable? Explain.
+--   c) Did the error surprise you? Why or why not?
+question_Validation_2_1 :: (String, String, String)
+question_Validation_2_1 = error "todo"
+
 -- | Maps a function on a validation's value side.
 --
 --  >>> mapValidation (+10) (Error "message")
@@ -116,23 +217,38 @@ question_Validation_2 =
 --  Value 17
 mapValidation :: (a -> b) -> Validation a -> Validation b
 --                     ^ unconstrained type variable. `mapValidation` is fully polymorphic with respect to `b`
---                ^ unconstrained type variable. `mapValidation` is _fully polymorphic_ with respect to `a`
---               ^^^^^^^^ type of first argument
-mapValidation _ (Error s) = Error s
---                                ^ constructor argument. `s` is a value of type `Err`
---                          ^^^^^ construct a value of type `Validation b` using the `Error` constructor
---                     ^ the data carried inside the `Error` constructor. `s :: Err`
---            ^ ignore callback in the `Error` case.
+--                ^ unconstrained type variable. `mapValidation` is fully polymorphic with respect to `a`
 mapValidation f (Value x) = Value (f x)
---                                 ^^^ apply callback to the data carried by the `Value` constructor in that case
---                                ^^^^^ constructor argument. Since `f :: a -> b` and `x :: a`, `f a :: b`
---                          ^^^^^ construct a value of type `Validation b` using the `Value` constructor
---                     ^ the data carried by the `Value` constructor. `x :: a`
+--                                 ^^^ apply callback. result has type `b`
+--                          ^^^^^^^^^^^ construct a `Validation b` using `Value`. requires a `b` as argument
+mapValidation _ (Error s) = Error s
+--                                ^ `s :: Err`
+--                          ^^^^^^^ construct a `Validation b` using `Error`. requires an `Err` as argument
+--            ^ ignore callback in the `Error` case.
 
 -- | Question Validation 3
 --
--- Why does the implementation of `mapValidation` ignore the first argument when the validation is an error?
-question_Validation_3 :: String
+-- In the `Error` case of `mapValidation`, the return value looks just like the matched argument.
+-- However, invoking the `Error` constructor in the return value costs us a heap allocation.
+-- Why not return the argument, intact, instead?
+--
+-- Haskell has a feature called `@-patterns` that allows us to pattern match an argument while still giving it a name.
+--
+-- > fooFunc :: Validation a -> Foo
+-- > fooFunc errVal@(Error _) = ...
+-- >                            ^^^ function body for `Error` case with `errVal :: Validation a` in scope
+-- >                 ^^^^^^^ pattern match on `errVal` while still giving it a name
+-- >         ^^^^^^ arbitrary variable name
+-- > fooFunc valVal@(Value _) = ...
+-- >                            ^^^ function body for `Value` case with `valVal :: Validation a` in scope
+--
+-- This can sometimes be used to make code more performant, because it avoids unnecessary heap allocations.
+--
+-- Refactor the `Error` case of `mapValidation` using an `@-pattern` so that you can return the argument unchanged.
+--   a) What happens when you try to compile the program? What's the error?
+--   b) Where you surprised by the error? Explain.
+--   c) Why is this error reasonable after all? Explain.
+question_Validation_3 :: (String, String, String)
 question_Validation_3 = error "todo"
 
 -- | Binds a function on a validation's value side to a new validation.
@@ -186,7 +302,7 @@ valueOr (Value a) _ = a
 -- "q"
 errorOr :: Validation a -> Err -> Err
 errorOr (Error e) _ = e
-errorOr (Value _) a = a
+errorOr (Value _) e = e
 
 valueValidation :: a -> Validation a
 valueValidation = Value
@@ -194,8 +310,13 @@ valueValidation = Value
 
 -- | Question Validation 5
 --
--- What is the type of the `Error` data constructor?
-question_Validation_5 :: String
+-- Load the project in GHCi and ask the compiler for the type of the `Error` data constructor.
+--
+-- > :t Error
+--
+--   a) What did the compiler say?
+--   b) Was the type what you expected? Why or why not?
+question_Validation_5 :: (String, String)
 question_Validation_5 = error "todo"
 
 -- $noteToTrainee
