@@ -28,7 +28,7 @@ import Prelude qualified as P
 
 type Optional :: Type -> Type
 --               ^^^^^^^^^^^^ `Optional` is a type constructor.
---                            If `Foo` is some type, then `Optional Foo` will be a type.
+--                            If `Foo` is some type, then appling `Optional` to `Foo` results in the type `Optional Foo`.
 
 -- | The `Optional` data type contains 0 or 1 value.
 --
@@ -40,8 +40,8 @@ data Optional a = Empty | Full a
 --            ^ type variable
 --   ^^^^^^^^ type name
   deriving (Eq, Show)
---              ^^^^ compiler generates instance `Show a => Show (Optional a)`
---          ^^ compiler generates instance `Eq a => Eq (Optional a)`
+  --            ^^^^ compiler generates instance `Show a => Show (Optional a)`
+  --        ^^ compiler generates instance `Eq a => Eq (Optional a)`
 
 contains :: Eq a => a -> Optional a -> Bool
 --                  ^ constrained type variable
@@ -70,6 +70,8 @@ question_Optional_1 = error "todo"
 --
 -- >>> fullOr 99 Empty
 -- 99
+--
+-- The `base` package version is called `fromMaybe`, defined in `Data.Maybe`.
 fullOr :: a -> Optional a -> a
 fullOr = error "todo: Course.Optional#fullOr"
 
@@ -138,6 +140,8 @@ question_Optional_3 = error "todo"
 --
 -- >>> optional (+1) 0 Empty
 -- 0
+--
+-- The `base` package version is called `maybe`, defined in `Data.Maybe`.
 optional :: (a -> b) -> b -> Optional a -> b
 --                      ^ fallback
 --          ^^^^^^^^ callback

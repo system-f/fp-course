@@ -127,8 +127,9 @@ isError (Value _) = False
 
 -- | Question Validation 1
 --
--- Why do we need to define `isError` for both data constructors? Can't we just define it for `Error`?
-question_Validation_1 :: String
+-- a) Why do we need to define `isError` for both data constructors? Can't we just define it for `Error`?
+-- b) Are `Error` and `Value` types? Are they type constructors?
+question_Validation_1 :: (String, String)
 question_Validation_1 = error "todo"
 
 -- | Question Validation 1.1

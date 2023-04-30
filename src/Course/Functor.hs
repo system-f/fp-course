@@ -102,7 +102,7 @@ instance Functor ((->) t) where
  Empty
 -}
 (??) :: Functor k => k (a -> b) -> a -> k b
-(??) ff a = error "todo: Course.Functor#(??)"
+(??) = error "todo: Course.Functor#(??)"
 
 infixl 1 ??
 
