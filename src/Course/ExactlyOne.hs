@@ -14,14 +14,15 @@ import Control.Monad qualified as M
 import Prelude qualified as P
 --                          ^ a name we choose for said namespace
 --             ^^^^^^^^^ import types and functions from `Prelude` into an isolated scope/namespace
---     ^^^^^^^ a std lib module. usually imported by default, but we disabled it on line 2
+--     ^^^^^^^ a std lib module. usually imported by default, but we disabled it on line 1
 
 -- | A value of type @'ExactlyOne' a@ contains exactly 1 value of type @a@.
 --
 -- This /data structure/ is intentionally trivial.
 -- It exists just as an example so we can learn Haskell's syntax.
 data ExactlyOne a = MakeExactlyOne a deriving Show
---                                            ^^^^ a type class for types that allow equality comparison
+--                                            ^^^^ a type class for types that have a textual representation
+--                                                 (mostly used for debugging)
 --                                   ^^^^^^^^ the compiler can write some boilerplate code for us
 --                                 ^ type of the first (and only) field/argument to `ExactlyOne`
 --                  ^^^^^^^^^^^^^^ data constructor name (doesn't have to match type name)
