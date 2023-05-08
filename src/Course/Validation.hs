@@ -242,21 +242,22 @@ mapValidation _ (Error s) = Error s
 --
 -- In the `Error` case of `mapValidation`, the return value looks just like the matched argument.
 -- However, invoking the `Error` constructor in the return value costs us a heap allocation.
--- Why not return the argument, intact, instead?
+-- Why not return the original argument, without re-wrapping, instead?
 --
 -- Haskell has a feature called `@-patterns` that allows us to pattern match an argument while still giving it a name.
 --
 -- > fooFunc :: Validation a -> Foo
--- > fooFunc errVal@(Error _) = ...
--- >                            ^^^ function body for `Error` case with `errVal :: Validation a` in scope
--- >                 ^^^^^^^ pattern match on `errVal` while still giving it a name
+-- > fooFunc errVal@(Error _) = errVal
+-- >                            ^^^^^^ function body for `Error` case with `errVal :: Validation a` in scope
+-- >               ^ syntax that allows you to pattern match a variable while still giving it a name
+-- >                 ^^^^^^^ pattern match `errVal` against the `Error` data constructor
 -- >         ^^^^^^ arbitrary variable name
--- > fooFunc valVal@(Value _) = ...
--- >                            ^^^ function body for `Value` case with `valVal :: Validation a` in scope
+-- > fooFunc valVal@(Value _) = Value (f x)
+-- >                            ^^^^^^^^^^^ function body for `Value` case with `valVal :: Validation a` in scope
 --
--- This can sometimes be used to make code more performant, because it avoids unnecessary heap allocations.
+-- This pattern can sometimes be used to make code more performant, because it avoids unnecessary heap allocations.
+-- However, in this particular situation, the code doesn't compile.
 --
--- Refactor the `Error` case of `mapValidation` using an `@-pattern` so that you can return the argument unchanged.
 --   a) What happens when you try to compile the program? What's the error?
 --   b) Where you surprised by the error? Explain.
 --   c) Why is this error reasonable after all? Explain.
@@ -281,11 +282,13 @@ bindValidation f (Value x) = f x
 
 -- | Question Validation 4
 --
--- Why doesn't `bindValidation` use a `Value` constructor to wrap the result of `f x`?
+-- `mapValidation` applies the `Value` data constructor to wrap the result of `f x`,
+-- so that the result will have type `Value b`.
+-- Why doesn't `bindValidation` use the `Value` data constructor to wrap the result of `f x`?
 question_Validation_4 :: String
 question_Validation_4 = error "todo"
 
--- | Returns a validation's value side or the given default if it is an error.
+-- | Returns a validation's value side or the given fallback value if the validation is an error.
 --
 --  >>> valueOr (Error "message") 3
 --  3
@@ -300,12 +303,12 @@ valueOr (Error _) a = a
 --             ^ ignore the error message
 --       ^^^^^^^ in case there's no data of type `a`
 valueOr (Value a) _ = a
---                    ^ return the data that we found inside the `Value` constructor.
+--                    ^ return the data that we found inside the `Value` data constructor.
 --                ^ ignore the fallback value
---             ^ give it a name
+--             ^ give that data a name
 --       ^^^^^^^ in case there is data of type `a`
 
--- | Returns a validation's error side or the given default if it is a value.
+-- | Returns a validation's error side or the given fallback value if the validation is a value.
 --
 -- >>> errorOr (Error "message") "q"
 -- "message"
@@ -332,4 +335,4 @@ question_Validation_5 :: (String, String)
 question_Validation_5 = error "todo"
 
 -- $noteToTrainee
--- We're done here! Move on to `[Course.Optional](../Optional.hs)`
+-- We're done here! Move on to `[Course.Optional](../Optional.hs)`, and get ready to get your hands dirty.
