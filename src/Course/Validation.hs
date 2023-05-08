@@ -55,9 +55,9 @@ type Err = String
 --
 -- All of the above translations are imperfect, however.
 -- They all differ from the Haskell version in one crucial way.
--- In each of the other examples, the Error case and the Value case are /types/ in their own rights.
--- This Haskell code doesn't define any types named `Error` or `Value`.
--- We're only defining a single type named 'Validation'; 'Error' and 'Value' are that types /data constructors./
+-- In each of the other examples, the Error case and the Value case are /types/ in their own right.
+-- On the other hand, the Haskell code doesn't define any types named `Error` or `Value`.
+-- We're only defining a single type named 'Validation'; 'Error' and 'Value' are that type's /data constructors./
 -- 'Error' and 'Value' are not types in their own right.
 --
 -- A semantically-failfull translation to Typescript would look something like this.
@@ -85,7 +85,8 @@ type Err = String
 --
 -- In this version, the two data constructors are represented by functions instead of by classes.
 -- This way `_Error<A>` and `Value<A>` are not types.
--- The `Validation` method `match` takes the place of Haskell's pattern matching.
+-- The `Validation` method `match` takes the place of Haskell's built-in pattern matching feature.
+-- The Typescript version uses callbacks to mimic the different branches of a Haskell case expression.
 data Validation a = Error Err | Value a
 --                                    ^ type of argument to 'Value'
 --                              ^^^^^ second data constructor. has one argument
@@ -100,9 +101,9 @@ data Validation a = Error Err | Value a
 type Validation :: Type -> Type
 --                 ^^^^^^^^^^^^ Technically, `Validation` isn't a type.
 --                              `Validation` is a "type constructor". It's a function that takes a type and returns a type.
---                              The result of applying teh function `Validation` to the type `a` is the type `Validation a`.
+--                              The result of applying the function `Validation` to the type `a` is the type `Validation a`.
 --                              As long as you  understand the distinction between types and type constructors, though,
---                              we'll continue to just call them "types," because it's shorter.
+--                              we'll continue to just call them all "types," because it's shorter.
 
 -- | Returns whether or not the given validation is an error.
 --
@@ -127,9 +128,10 @@ isError (Value _) = False
 
 -- | Question Validation 1
 --
--- a) Why do we need to define `isError` for both data constructors? Can't we just define it for `Error`?
--- b) Are `Error` and `Value` types? Are they type constructors?
-question_Validation_1 :: (String, String)
+--   a) Why do we need to define `isError` for both data constructors? Can't we just define it for `Error`?
+--   b) Are `Error` and `Value` types? Are they type constructors?
+--   c) What are some of the differences between a type constructor and a data constructor?
+question_Validation_1 :: (String, String, String)
 question_Validation_1 = error "todo"
 
 -- | Question Validation 1.1
@@ -139,9 +141,11 @@ question_Validation_1_1 :: String
 question_Validation_1_1 =
   error
     "// Haskell supports multi-line strings, but it's ugly :-(\n\
+    \\n\
     \function isError<A>(v: Validation<A>): boolean {\n\
     \  error \"todo\"\n\
-    \}"
+    \}\n\
+    \"
 
 -- | Returns whether or not the given validation is a value.
 --
@@ -171,18 +175,25 @@ isValue = not . isError
 --     a) What's the implementation of `(.)`? What is it doing?
 --     b) How is the order of `(.)` arguments related to (or influenced by, maybe) its implementation?
 question_Validation_2 :: (String, String)
-question_Validation_2 =
-  ( error "todo"
-  , error "todo"
-  )
+question_Validation_2 = error "todo"
 
 errorMessage :: Validation a -> String
+--                              ^^^^^^ result type
 --                         ^ an unconstrained type variable. `errorMessage` is _fully polymorphic_ with respect to `a`
+--              ^^^^^^^^^^^^ first (and only) argument
 errorMessage v = case v of
   Error s -> s
   Value _ -> "no error message"
 
+-- Here's another way we could have written `errorMessage`
+--
+-- > errorMessage :: Validation a -> String
+-- > errorMessage (Error s) = s
+-- > errorMessage _ = "no error message"
+
 valueString :: Show a => Validation a -> String
+--                                       ^^^^^^ result type
+--                       ^^^^^^^^^^^^ first (and only) argument
 --                  ^ a constrained type variable. `valueString` is _constrained polymorphic_ with respect to `a`
 --                    At `valueString` call sites, whatever type we use for `a` must satisfy `Show a`.
 --                    For example, if we have `foo :: Bar` and we write `valueString (Value foo)` in our code,
@@ -190,7 +201,7 @@ valueString :: Show a => Validation a -> String
 --                    The compiler will check to see if `Bar` satisfied `Show Bar`.
 --                    If it does, then the compiler will accept the code.
 --                    If it doesn't, then the compiler will reject the code.
---             ^^^^^^ type class constraint.
+--             ^^^^^^ function constraints. `Show a` must be satisfied by whatever type we pick for `a` any time we call this function.
 valueString v = case v of
   Error _ -> "no value"
   Value x -> show x
@@ -221,11 +232,11 @@ mapValidation :: (a -> b) -> Validation a -> Validation b
 --                ^ unconstrained type variable. `mapValidation` is fully polymorphic with respect to `a`
 mapValidation f (Value x) = Value (f x)
 --                                 ^^^ apply callback. result has type `b`
---                          ^^^^^^^^^^^ construct a `Validation b` using `Value`. requires a `b` as argument
+--                          ^^^^^^^^^^^ construct a `Validation b` using `Value` data constructor. Requires a `b` value as argument.
 mapValidation _ (Error s) = Error s
 --                                ^ `s :: Err`
---                          ^^^^^^^ construct a `Validation b` using `Error`. requires an `Err` as argument
---            ^ ignore callback in the `Error` case.
+--                          ^^^^^^^ construct a `Validation b` using `Error` data constructor. Requires an `Err` value as argument.
+--            ^ ignore the callback in the `Error` case.
 
 -- | Question Validation 3
 --
