@@ -26,6 +26,7 @@ import Course.MoreParser as X
 import Course.Optional as X
 import Course.Parser as X
 import Course.Person as X
+import Course.Scratch as X
 import Course.State as X
 import Course.StateT as X
 import Course.Traversable as X

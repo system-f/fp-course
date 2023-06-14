@@ -76,6 +76,7 @@ library
                       Course.Optional
                       Course.Parser
                       Course.Person
+                      Course.Scratch
                       Course.State
                       Course.StateT
                       Course.Traversable
