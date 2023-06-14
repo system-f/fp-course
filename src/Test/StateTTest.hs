@@ -46,7 +46,7 @@ import           Course.Monad       ((=<<), (>>=))
 import           Course.Optional    (Optional (Empty, Full))
 import           Course.State       (put, runState)
 import           Course.StateT      (Logger (Logger), OptionalT (OptionalT),
-                                     StateT (StateT, runStateT), distinct',
+                                     StateT (StateT), runStateT, distinct',
                                      distinctF, distinctG, eval', evalT, exec',
                                      execT, getT, log1, putT, runOptionalT,
                                      runState', state')
