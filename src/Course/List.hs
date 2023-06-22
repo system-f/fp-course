@@ -21,7 +21,7 @@ import Course.Optional
 import qualified System.Environment as E
 import qualified Prelude as P
 import qualified Numeric as N
-
+import Prelude(succ)
 
 -- $setup
 -- >>> import Test.QuickCheck
@@ -32,9 +32,9 @@ import qualified Numeric as N
 -- BEGIN Helper functions and data types
 
 -- The custom list type
-data List t =
-  Nil
-  | t :. List t
+-- (:.) pronounced "cons"
+-- data List t = Nil | (:.) t (List t)
+data List t = Nil | t :. List t
   deriving (Eq, Ord)
 
 -- Right-associative
@@ -72,12 +72,25 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 -- prop> \x -> x `headOr` infinity == 0
 --
 -- prop> \x -> x `headOr` Nil == x
-headOr ::
-  a
-  -> List a
-  -> a
-headOr =
-  error "todo: Course.List#headOr"
+headOr :: a -> List a -> a
+headOr = \x -> \l -> case l of
+  Nil -> x
+  h :. _ -> h
+
+headOr' :: a -> List a -> a
+headOr' x Nil = x
+headOr' x (h :. _) = h
+
+{-
+mapTwoOrThree :: (a -> b) -> TwoOrThree a -> TwoOrThree b
+mapTwoOrThree f (Twoo a1 a2) = Twoo (f a1) (f a2)
+mapTwoOrThree f (Threee a1 a2 a3) = Threee (f a1) (f a2) (f a3)
+
+mapTwoOrThree' :: (a -> b) -> TwoOrThree a -> TwoOrThree b
+mapTwoOrThree' = \f -> \t -> case t of
+  Twoo a1 a2 -> Twoo (f a1) (f a2)
+  Threee a1 a2 a3 -> Threee (f a1) (f a2) (f a3)
+-}
 
 -- | The product of the elements of a list.
 --
@@ -92,8 +105,19 @@ headOr =
 product ::
   List Int
   -> Int
-product =
-  error "todo: Course.List#product"
+product Nil = 1
+product (h :. t) = h * product t
+
+product' :: List Int -> Int
+-- product' list = foldRight (*) 1 list
+-- product' = \list -> foldRight (*) 1 list
+--   eta-reduction
+--     \x -> f x
+--     f
+product' = foldRight (*) 1
+
+-- the product of the list with 1 or more elements =
+--   the first element (h) multiplied (*) by the product of the rest of the list (t)
 
 -- | Sum the elements of the list.
 --
@@ -107,20 +131,82 @@ product =
 sum ::
   List Int
   -> Int
-sum =
-  error "todo: Course.List#sum"
+-- the sum of the empty list = 0
+-- sum Nil = 0
+-- the sum of the non-empty list = first element plus the sum of the rest
+-- sum (h :. t) = h + sum t
+sum = foldRight (+) 0
+
+{-
+operation which is associative (op) on closed sets
+   op a (op b c) = op (op a b) c
+
+two identities, left and right (x)
+   op x a = a
+   op a x = a
+
+
+(+), 0
+(*), 1
+(.), id
+(++), Nil
+...
+
+Semigroup
+Monoid
+   any Semigroup with identity
+
+-}
 
 -- | Return the length of the list.
 --
--- >>> length (1 :. 2 :. 3 :. Nil)
+-- >>> length (1 :. (2 :. (3 :. Nil)))
 -- 3
 --
 -- prop> \x -> sum (map (const 1) x) == length x
 length ::
   List a
   -> Int
-length =
-  error "todo: Course.List#length"
+-- length = foldLeft (const . succ) 0
+-- length = foldRight (\_ b -> succ b) 0
+-- length = foldRight (\_ -> succ) 0
+length = foldRight (const succ) 0
+
+-- \x -> f (g x)
+-- f . g
+
+-- \_ -> x
+-- const x
+
+data Unit = Unit
+
+type NaturalNumber = List Unit
+infinite = Unit :. infinite
+
+one = Unit :. Nil
+two = Unit :. one
+
+length' ::
+  List a
+  -> NaturalNumber
+length' = map (\_ -> Unit)
+
+{-
+
+foldLeft :: (b -> a -> b) -> b -> List a -> b
+
+foldLeft    f                z    list =
+
+var r = z
+for(el : list) {
+  r = f(r, el)
+}
+return r
+
+foldLeft (\n _ -> n + 1) 0
+
+
+-}
 
 -- | Map the given function on each element of the list.
 --
@@ -130,13 +216,27 @@ length =
 -- prop> \x -> headOr x (map (+1) infinity) == 1
 --
 -- prop> \x -> map id x == x
-map ::
-  (a -> b)
-  -> List a
-  -> List b
-map =
-  error "todo: Course.List#map"
+map :: (a -> b) -> List a -> List b
+-- map _ Nil = Nil
+-- map f (h :. t) = (:.) (f h) (map f t)
+-- map f (h :. t) = f h :. map f t
 
+-- map f = foldRight (\a b -> f a :. b) Nil
+-- map f = foldRight (\a b -> (:.) (f a)  b) Nil
+-- map f = foldRight (\a -> (:.) (f a)) Nil
+map f = foldRight ((:.) . f) Nil
+
+{-
+
+\x -> f (g x)
+f . g
+
+map f (a :. b :. c :. Nil) =
+  f a :. f b :. f c :. Nil
+
+map f ((:.) a ((:.) b ((:.) c Nil))) =
+  (:.) (f a) ((:.) (f b) (((:.) (f c) Nil)
+-}
 -- | Return elements satisfying the given predicate.
 --
 -- >>> filter even (1 :. 2 :. 3 :. 4 :. 5 :. Nil)
@@ -170,9 +270,24 @@ filter =
   List a
   -> List a
   -> List a
-(++) =
-  error "todo: Course.List#(++)"
+-- (++) Nil y = y
+-- (++) (h :. t) y = h :. t ++ y
+-- (++) x y = foldRight (:.) y x
+-- (++) = \x y -> foldRight (:.) y x
+-- (++) = \x y -> flip (foldRight (:.)) x y
+-- (++) = \x -> flip (foldRight (:.)) x
+(++) = flip (foldRight (:.))
 
+{-
+
+x = a :. b :. c :. Nil
+y = d :. e :. f :. Nil
+
+x ++ y =
+  replace (:.) with (:.) and Nil with y, in x
+  a :. b :. c :. d :. e :. f :. Nil
+
+-}
 infixr 5 ++
 
 -- | Flatten a list of lists to a list.
@@ -188,8 +303,16 @@ infixr 5 ++
 flatten ::
   List (List a)
   -> List a
-flatten =
-  error "todo: Course.List#flatten"
+-- flatten Nil = Nil
+-- flatten (h :. t) = h ++ flatten t
+-- flatten x = foldRight (++) Nil x
+flatten = foldRight (++) Nil
+{-
+
+flatten x =
+  replace (:.) with (++), Nil with Nil, in x
+
+-}
 
 -- | Map a function then flatten to a list.
 --
@@ -201,12 +324,15 @@ flatten =
 -- prop> \x -> headOr x (flatMap id (y :. infinity :. Nil)) == headOr 0 y
 --
 -- prop> \x -> flatMap id (x :: List (List Int)) == flatten x
+-- mapcat in clojure
 flatMap ::
   (a -> List b)
   -> List a
   -> List b
-flatMap =
-  error "todo: Course.List#flatMap"
+-- flatMap _ Nil = Nil
+-- flatMap f (h :. t) = f h ++ flatMap f t
+-- flatMap f x = flatten (map f x)
+flatMap f = foldRight ((++) . f) Nil
 
 -- | Flatten a list of lists to a list (again).
 -- HOWEVER, this time use the /flatMap/ function that you just wrote.
@@ -215,8 +341,7 @@ flatMap =
 flattenAgain ::
   List (List a)
   -> List a
-flattenAgain =
-  error "todo: Course.List#flattenAgain"
+flattenAgain = flatMap id
 
 -- | Convert a list of optional values to an optional list of values.
 --
@@ -300,8 +425,34 @@ reverse ::
   List a
   -> List a
 reverse =
-  error "todo: Course.List#reverse"
+  -- foldLeft (\r el -> el :. r) Nil
+  -- foldLeft (\r el -> (:.) el r) Nil
+  -- foldLeft (\r el -> flip (:.) r el) Nil
+  foldLeft (flip (:.)) Nil
 
+-- can you reverse an infinite list? YES it's Haskell!
+--
+-- >>> challenge 1223 (listh ['a'..])
+-- 1223
+challenge ::
+  Int
+  -> List a
+  -> Int
+challenge n =
+  -- reverse, then reverse, then take the first n elements, then compute the length
+  length . take n . reverse . reverse
+
+-- foldRight f z, replaces (:.) with f, Nil with z
+{-
+foldLeft :: (b -> a -> b) -> b -> List a -> b
+foldLeft    f                z    list =
+
+var r = z
+for(el : list) {
+  r = f(r, el)
+}
+return r
+-}
 -- | Produce an infinite `List` that seeds with the given value at its head,
 -- then runs the given function for subsequent elements
 --

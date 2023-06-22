@@ -31,7 +31,7 @@ f4 = \_ b -> b
 -- once-inhabited type
 -- "function composition"
 f5 :: (b -> c) -> (a -> b) -> a -> c
-f5 = \b2c -> \a2b -> \a -> b2c (a2b a)
+f5 = (.)
 
 -- "type-hole driven development"
 -- stuck? type underscore, then :reload
@@ -62,7 +62,6 @@ data TwoOrThree a = Twoo a a | Threee a a a
 mapTwoOrThree :: (a -> b) -> TwoOrThree a -> TwoOrThree b
 mapTwoOrThree f (Twoo a1 a2) = Twoo (f a1) (f a2)
 mapTwoOrThree f (Threee a1 a2 a3) = Threee (f a1) (f a2) (f a3)
-
 
 mapTwoOrThree' :: (a -> b) -> TwoOrThree a -> TwoOrThree b
 mapTwoOrThree' = \f -> \t -> case t of
