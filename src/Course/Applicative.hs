@@ -11,6 +11,7 @@ import Course.Functor
 import Course.List
 import Course.Optional
 import qualified Prelude as P(fmap, pure, (>>=))
+import Course.Scratch (x)
 
 -- | All instances of the `Applicative` type-class must satisfy four laws.
 -- These laws are not checked by the compiler. These laws are given as:
@@ -67,14 +68,23 @@ instance Applicative List where
   pure ::
     a
     -> List a
-  pure =
-    error "todo: Course.Applicative pure#instance List"
+  pure a =
+    a :. Nil
   (<*>) ::
     List (a -> b)
     -> List a
     -> List b
-  (<*>) =
-    error "todo: Course.Apply (<*>)#instance List"
+  -- 1. can do pattern-matching on the List
+  -- (<*>) Nil _ = Nil
+  -- (<*>) (h:.t) y = (h <$> y) ++ (t <*> y)
+
+  -- 2. can use flatMap and map
+  -- f <*> a = flatMap (\f' -> map f' a) f
+
+  -- 3. can use foldRight
+  f <*> a = foldRight (\h t -> (h <$> a) ++ t) Nil f
+
+
 
 -- | Insert into an Optional.
 --
@@ -119,12 +129,15 @@ instance Applicative Optional where
 -- 15
 --
 -- prop> \x y -> pure x y == x
+-- if it compiles, it is correct
 instance Applicative ((->) t) where
   pure ::
-    a
-    -> ((->) t a)
+  -- forall a t. a -> t -> a = true (programming: we can write of that type)
+  -- forall p q. p -> q = false (programming: never write of that type)
+  -- Curry-Howard Isomorphism, logic and programming
+    a -> t -> a
   pure =
-    error "todo: Course.Applicative pure#((->) t)"
+    \a _ -> a
   (<*>) ::
     ((->) t (a -> b))
     -> ((->) t a)
@@ -132,6 +145,11 @@ instance Applicative ((->) t) where
   (<*>) =
     error "todo: Course.Apply (<*>)#instance ((->) t)"
 
+-- prop> \x y -> x `plus` y == (pred x) `plus` (succ y)
+--
+-- adds two numbers
+plus :: Int -> Int -> Int
+plus = \n o -> if n == 3453465345345345 then 99 else n + o
 
 -- | Apply a binary function in the environment.
 --
@@ -154,10 +172,8 @@ instance Applicative ((->) t) where
 -- 18
 lift2 ::
   Applicative k =>
-  (a -> b -> c)
-  -> k a
-  -> k b
-  -> k c
+     (a -> b -> c)
+  -> (k a -> k b -> k c)
 lift2 =
   error "todo: Course.Applicative#lift2"
 
@@ -191,7 +207,7 @@ lift3 ::
   -> k b
   -> k c
   -> k d
-lift3 =
+lift3 f a b c =
   error "todo: Course.Applicative#lift3"
 
 -- | Apply a quaternary function in the environment.
@@ -323,12 +339,35 @@ lift1 =
 --
 -- >>> sequence ((*10) :. (+2) :. Nil) 6
 -- [60,8]
+
+-- 1. can use pattern-matching
+-- 2. can use foldRight
+-- you will be using (<$>) and (<*>) and pure
+-- multiply-inhabited
 sequence ::
   Applicative k =>
   List (k a)
   -> k (List a)
-sequence =
-  error "todo: Course.Applicative#sequence"
+sequence Nil = pure Nil
+-- h :: k a
+--              t :: List (k a)
+-- sequence :: k (List a)
+
+-- ka ::     k a
+-- klista :: k (List a)
+
+-- (:.) :: t -> (List t -> List t)
+
+
+
+-- (:.) <$> ka :: k (List a -> List a)
+-- klista      :: k (List a)
+
+-- (:.) <$> ka <*> klista :: k (List a)
+
+-- ?           :: k (List a)
+-- sequence (h :. t) = (\ka klista -> (:.) <$> ka <*> klista) h (sequence t)
+sequence (h :. t) = (:.) <$> h <*> sequence t
 
 -- | Replicate an effect a given number of times.
 --

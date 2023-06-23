@@ -73,9 +73,7 @@ foldLeft f b (h :. t) = let b' = f b h in b' `seq` foldLeft f b' t
 --
 -- prop> \x -> x `headOr` Nil == x
 headOr :: a -> List a -> a
-headOr = \x -> \l -> case l of
-  Nil -> x
-  h :. _ -> h
+headOr = foldRight const
 
 headOr' :: a -> List a -> a
 headOr' x Nil = x
@@ -365,8 +363,9 @@ flattenAgain = flatMap id
 seqOptional ::
   List (Optional a)
   -> Optional (List a)
-seqOptional =
-  error "todo: Course.List#seqOptional"
+-- seqOptional Nil = Full Nil
+-- seqOptional (h :. t) = bindOptional (\a -> mapOptional (\as -> a :. as) (seqOptional t)) h
+seqOptional = foldRight (\a as -> bindOptional (\a' -> mapOptional (\as' -> a' :. as') as) a) (Full Nil)
 
 -- | Find the first element in the list matching the predicate.
 --
@@ -407,8 +406,8 @@ find =
 lengthGT4 ::
   List a
   -> Bool
-lengthGT4 =
-  error "todo: Course.List#lengthGT4"
+lengthGT4 list =
+  length list > 4
 
 -- | Reverse a list.
 --

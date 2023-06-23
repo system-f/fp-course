@@ -20,10 +20,10 @@ import qualified Prelude as P(fmap)
 --   `∀f g x.(f . g <$> x) ≅ (f <$> (g <$> x))`
 class Functor k where
   -- Pronounced, eff-map.
-  (<$>) ::
-    (a -> b)
-    -> k a
-    -> k b
+  (<$>) :: (a -> b) -> k a -> k b
+
+effymap :: Functor k => (a -> b) -> k a -> k b
+effymap = ((((((<$>))))))
 
 infixl 4 <$>
 
@@ -52,12 +52,9 @@ instance Functor ExactlyOne where
 -- >>> (+1) <$> (1 :. 2 :. 3 :. Nil)
 -- [2,3,4]
 instance Functor List where
-  (<$>) ::
-    (a -> b)
-    -> List a
-    -> List b
+  (<$>) :: (a -> b) -> List a -> List b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance List"
+    map
 
 -- | Maps a function on the Optional functor.
 --
@@ -67,17 +64,15 @@ instance Functor List where
 -- >>> (+1) <$> Full 2
 -- Full 3
 instance Functor Optional where
-  (<$>) ::
-    (a -> b)
-    -> Optional a
-    -> Optional b
+  (<$>) :: (a -> b) -> Optional a -> Optional b
   (<$>) =
-    error "todo: Course.Functor (<$>)#instance Optional"
+    mapOptional
 
 -- | Maps a function on the reader ((->) t) functor.
 --
 -- >>> ((+1) <$> (*2)) 8
 -- 17
+-- covariant
 instance Functor ((->) t) where
   (<$>) ::
     (a -> b)
@@ -96,11 +91,28 @@ instance Functor ((->) t) where
 -- prop> \x q -> x <$ Full q == Full x
 (<$) ::
   Functor k =>
-  a
-  -> k b
-  -> k a
-(<$) =
-  error "todo: Course.Functor#(<$)"
+  a -> k b -> k a
+(<$) a kb =
+  error "bug"
+
+blah = ((+) 2) 2
+
+data List2 a = List2
+
+data Banana
+data Orange
+
+sortList :: Ord a => List a -> List a
+sortList = error "all done, somewhere I call compare func"
+
+sortListBanana ::
+  List Banana -> List Banana
+sortListBanana = error "all done"
+
+sortListOrange ::
+  List Orange -> List Orange
+sortListOrange = error "all done"
+
 
 -- | Apply a value to a functor-of-functions.
 --
@@ -121,9 +133,7 @@ instance Functor ((->) t) where
 -- Empty
 (??) ::
   Functor k =>
-  k (a -> b)
-  -> a
-  -> k b
+  k (a -> b) -> a -> k b
 (??) ff a =
   error "todo: Course.Functor#(??)"
 
@@ -146,8 +156,8 @@ void ::
   Functor k =>
   k a
   -> k ()
-void =
-  error "todo: Course.Functor#void"
+void ka =
+  () <$ ka
 
 -----------------------
 -- SUPPORT LIBRARIES --
