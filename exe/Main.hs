@@ -1,0 +1,1 @@
+main = print "Welcome to the Seek Haskell Course, 2023!"
