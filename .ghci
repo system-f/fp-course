@@ -1,5 +1,4 @@
 :set -isrc
-:set -package time
 :set -package containers
 :l src/Course.hs src/Test/Loader.hs
 :m + Test.Loader
