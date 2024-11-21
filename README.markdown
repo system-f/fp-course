@@ -423,7 +423,7 @@ What about these two Clojure programs?
     (defn p2 []
         (let
             [ file "/tmp/file"
-                expr (slurp file)
+              expr (slurp file)
             ]
         (do
             (spit file "abcdef")
