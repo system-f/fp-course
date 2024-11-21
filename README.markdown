@@ -60,7 +60,7 @@ however, your first post might be moderated. This is simply to prevent spam.
 
 ### Getting Started
 
-1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher. 
+1. Install the Glasgow Haskell Compiler (GHC) version 8.0 or higher.
    [GHCup](https://www.haskell.org/ghcup/) is the recommended way to do that these days
 
 2. Change to the directory containing this document.
@@ -342,7 +342,7 @@ The exercises in `Parser.hs` can be assisted by stating problems in a specific w
 
 ### Demonstrate IO maintains referential transparency
 
-Are these two programs, the same program?
+Are these two Haskell programs, the same program?
 
     p1 ::
       IO ()
@@ -367,7 +367,7 @@ Are these two programs, the same program?
               y <- expr
               putStrLn (show (x, y))
 
-What about these two programs?
+What about these two Python programs?
 
     def writeFile(filename, contents):
         with open(filename, "w") as f:
@@ -399,6 +399,43 @@ What about these two programs?
         writeFile(file, "ghijkl")
         y = expr
         print (x + y)
+
+What about these two Clojure programs?
+
+    (use 'clojure.java.io)
+
+    (defn p1 []
+        (let
+            [ file "/tmp/file" ]
+        (do
+            (spit file "abcdef")
+            (let
+                [ x (slurp file) ]
+            (do
+                (println x)
+                (spit file "ghijkl")
+                (let [y (slurp file)]
+                (println (str x y)))
+            ))
+        ))
+    )
+
+    (defn p2 []
+        (let
+            [ file "/tmp/file"
+                expr (slurp file)
+            ]
+        (do
+            (spit file "abcdef")
+            (let [x expr]
+            (do
+                (println x)
+                (spit file "ghijkl")
+                (let [y expr]
+                (println (str x y)))
+            ))
+        ))
+    )
 
 ### One-day
 
