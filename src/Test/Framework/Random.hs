@@ -191,7 +191,7 @@ randomIvalIntegral (l,h) = randomIvalInteger (toInteger l, toInteger h)
 randomIvalInteger :: (RandomGen g, Num a) => (Integer, Integer) -> g -> (a, g)
 randomIvalInteger (l,h) rng
  | l > h     = randomIvalInteger (h,l) rng
- | otherwise = case (f 1 0 rng) of (v, rng') -> (fromInteger (l + v `mod` k), rng')
+ | otherwise = case f 1 0 rng of (v, rng') -> (fromInteger (l + v `mod` k), rng')
      where
        (genlo, genhi) = genRange rng
        b = fromIntegral genhi - fromIntegral genlo + 1
@@ -210,7 +210,7 @@ randomIvalInteger (l,h) rng
        f mag v g | mag >= magtgt = (v, g)
                  | otherwise = v' `seq`f (mag*b) v' g' where
                         (x,g') = next g
-                        v' = (v * b + (fromIntegral x - fromIntegral genlo))
+                        v' = v * b + (fromIntegral x - fromIntegral genlo)
 
 stdRange :: (Int,Int)
 stdRange = (1, 2147483562)

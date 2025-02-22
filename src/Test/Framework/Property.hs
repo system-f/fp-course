@@ -159,7 +159,7 @@ instance Testable Bool where
   property b = result $ nothing { ok = Just b }
 
 instance (Arbitrary a, Show a, Testable b) => Testable (a -> b) where
-  property f = forAll arbitrary f
+  property = forAll arbitrary
 
 data Result = Result
   { ok :: Maybe Bool

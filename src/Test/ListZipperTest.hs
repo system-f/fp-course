@@ -320,8 +320,8 @@ moveLeftN'Test =
       moveLeftN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveLeftN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [2,1] 3 [4,5,6,7])
-  , testProperty "moving zero is `Right . id`" $ \lz ->
-      moveLeftN' 0 lz == (Right . id $ lz :: Either Int (ListZipper Integer))
+  , testProperty "moving zero is `Right`" $ \lz ->
+      moveLeftN' 0 lz == (Right lz :: Either Int (ListZipper Integer))
   , testCase "negative in range" $
       moveLeftN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [5,4,3,2,1] 6 [7])
   , testCase "negative out of bounds" $
@@ -339,8 +339,8 @@ moveRightN'Test =
       moveRightN' 4 (zipper [3,2,1] 4 [5,6,7]) @?= Left 3
   , testCase "positive in range" $
       moveRightN' 1 (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [4,3,2,1] 5 [6,7])
-  , testProperty "moving zero is `Right . id`" $ \lz ->
-      moveRightN' 0 lz == (Right . id $ lz :: Either Int (ListZipper Integer))
+  , testProperty "moving zero is `Right`" $ \lz ->
+      moveRightN' 0 lz == (Right lz :: Either Int (ListZipper Integer))
   , testCase "negative in range" $
       moveRightN' (-2) (zipper [3,2,1] 4 [5,6,7]) @?= Right (zipper [1] 2 [3,4,5,6,7])
   , testCase "negative - out of bounds both sides" $
