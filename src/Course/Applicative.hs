@@ -73,7 +73,7 @@ instance Applicative List where
         List (a -> b) ->
         List a ->
         List b
-    (<*>) fs las = flatMap (\f -> f <$> las) fs
+    (<*>) fs las = flatMap (<$> las) fs
 
 {- | Insert into an Optional.
 
@@ -121,13 +121,13 @@ prop> \x y -> pure x y == x
 instance Applicative ((->) t) where
     pure ::
         a ->
-        ((->) t a)
+        (->) t a
     pure = const
     (<*>) ::
-        ((->) t (a -> b)) ->
-        ((->) t a) ->
-        ((->) t b)
-    (<*>) tf ta = \t -> tf t (ta t)
+        (->) t (a -> b) ->
+        (->) t a ->
+        (->) t b
+    (<*>) tf ta t = tf t (ta t)
 
 {- | Apply a binary function in the environment.
 
@@ -155,7 +155,7 @@ lift2 ::
     k a ->
     k b ->
     k c
-lift2 f ka kb = (pure f) <*> ka <*> kb
+lift2 f ka kb = f <$> ka <*> kb
 
 {- | Apply a ternary function in the environment.
 /can be written using `lift2` and `(<*>)`./
@@ -188,7 +188,7 @@ lift3 ::
     k b ->
     k c ->
     k d
-lift3 f ka kb kc = pure f <*> ka <*> kb <*> kc
+lift3 f ka kb kc = f <$> ka <*> kb <*> kc
 
 {- | Apply a quaternary function in the environment.
 /can be written using `lift3` and `(<*>)`./
@@ -222,7 +222,7 @@ lift4 ::
     k c ->
     k d ->
     k e
-lift4 f ka kb kc kd = pure f <*> ka <*> kb <*> kc <*> kd
+lift4 f ka kb kc kd = f <$> ka <*> kb <*> kc <*> kd
 
 -- | Apply a nullary function in the environment.
 lift0 ::
@@ -248,7 +248,7 @@ lift1 ::
     (a -> b) ->
     k a ->
     k b
-lift1 f ka = pure f <*> ka
+lift1 f ka = f <$> ka
 
 {- | Apply, discarding the value of the first argument.
 Pronounced, right apply.
@@ -300,7 +300,7 @@ prop> \x y -> Full x <* Full y == Full x
     k b ->
     k a ->
     k b
-(<*) = lift2 (\b _ -> b)
+(<*) = lift2 const
 
 {- | Sequences a list of structures to a structure of list.
 
@@ -349,7 +349,9 @@ replicateA ::
     Int ->
     k a ->
     k (List a)
-replicateA n ka = sequence $ const ka <$> take n (infinity)
+replicateA n ka =
+  mapM (const ka) (take n infinity)
+  --sequence $ const ka <$> take n (infinity)
 
 {- | Filter a list with a predicate that produces an effect.
 

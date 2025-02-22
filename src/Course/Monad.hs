@@ -66,9 +66,9 @@ instance Monad Optional where
 -- 119
 instance Monad ((->) t) where
   (=<<) ::
-    (a -> ((->) t b))
-    -> ((->) t a)
-    -> ((->) t b)
+    (a -> (->) t b)
+    -> (->) t a
+    -> (->) t b
   (=<<) fatb ta t = fatb (ta t) t
 
 -- | Witness that all things with (=<<) and (<$>) also have (<*>).

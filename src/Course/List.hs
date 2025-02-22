@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
@@ -136,7 +135,7 @@ map ::
     (a -> b) ->
     List a ->
     List b
-map f = foldRight (\v ls -> (f v) :. ls) Nil
+map f = foldRight (\v ls -> f v :. ls) Nil
 
 {- | Return elements satisfying the given predicate.
 
@@ -174,7 +173,7 @@ prop> \x -> x ++ Nil == x
     List a
 (++) Nil ys = ys
 (++) xs Nil = xs
-(++) (x :. xs) ys = x :. ((++) xs ys)
+(++) (x :. xs) ys = x :. (++) xs ys
 
 infixr 5 ++
 
