@@ -1,15 +1,15 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RebindableSyntax #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 
 module Course.FileIO where
 
-import Course.Core
 import Course.Applicative
-import Course.Monad
+import Course.Core
 import Course.Functor
 import Course.List
+import Course.Monad
 
 {-
 
@@ -60,7 +60,7 @@ To test this module, load ghci in the root of the project directory, and do
 
 Example output:
 
-$ ghci
+\$ ghci
 GHCi, version ...
 Loading package...
 Loading ...
@@ -82,49 +82,53 @@ the contents of c
 -- Given the file name, and file contents, print them.
 -- Use @putStrLn@.
 printFile ::
-  FilePath
-  -> Chars
-  -> IO ()
-printFile =
-  error "todo: Course.FileIO#printFile"
+    FilePath ->
+    Chars ->
+    IO ()
+printFile fp cs = do
+    putStrLn $ "============ " ++ fp
+    putStrLn cs
 
 -- Given a list of (file name and file contents), print each.
 -- Use @printFile@.
 printFiles ::
-  List (FilePath, Chars)
-  -> IO ()
+    List (FilePath, Chars) ->
+    IO ()
 printFiles =
-  error "todo: Course.FileIO#printFiles"
+    foldLeft (\io (f, cs) -> io >>= const (printFile f cs)) (pure ())
 
 -- Given a file name, return (file name and file contents).
 -- Use @readFile@.
 getFile ::
-  FilePath
-  -> IO (FilePath, Chars)
-getFile =
-  error "todo: Course.FileIO#getFile"
+    FilePath ->
+    IO (FilePath, Chars)
+getFile f =
+    (f,) <$> readFile f
 
 -- Given a list of file names, return list of (file name and file contents).
 -- Use @getFile@.
 getFiles ::
-  List FilePath
-  -> IO (List (FilePath, Chars))
+    List FilePath ->
+    IO (List (FilePath, Chars))
 getFiles =
-  error "todo: Course.FileIO#getFiles"
+    foldRight (\fp acc -> getFile fp >>= \x -> (x :.) <$> acc) (pure Nil)
 
 -- Given a file name, read it and for each line in that file, read and print contents of each.
 -- Use @getFiles@, @lines@, and @printFiles@.
 run ::
-  FilePath
-  -> IO ()
-run =
-  error "todo: Course.FileIO#run"
+    FilePath ->
+    IO ()
+run fp = do
+    fpAndContent <- getFiles $ lines fp
+    fsAndContent <- getFiles $ lines . snd =<< fpAndContent
+    printFiles fsAndContent
 
 -- /Tip:/ use @getArgs@ and @run@
 main ::
-  IO ()
-main =
-  error "todo: Course.FileIO#main"
+    IO ()
+main = do
+    input <- getArgs
+    run $ headOr Nil input
 
 ----
 
